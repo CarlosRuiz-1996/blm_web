@@ -12,6 +12,7 @@ class ClientesActivosController extends Controller
     }
     public function nuevousuario()
     {
+        
         return view('clientesactivos.clientesnuevos');
 
     }

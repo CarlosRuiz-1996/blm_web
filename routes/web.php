@@ -45,7 +45,7 @@ Route::get('/usuarios/cambio-contrasenia/{user}', [UsuariosController::class, 'p
 Route::put('/usuarios/password/{user}', [UsuariosController::class, 'password'])->name('user.save-password');
 
 Route::get('/clientesactivos', [ClientesActivosController::class, 'index']);
-Route::get('/clientesactivos/nuevo', [ClientesActivosController::class, 'nuevousuario']);
+Route::get('/clientesactivos/nuevo', [ClientesActivosController::class, 'nuevousuario'])->name('cliente.create');
 Route::get('/clientesactivos/clienteCotizaciones', [ClientesActivosController::class, 'clienteCotizaciones']);
 Route::get('/ventas', [ventasController::class, 'indexventas']);
 

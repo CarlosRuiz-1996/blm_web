@@ -39,9 +39,44 @@
                                 </select>
                             </div>
                         </div>
+                       <!-- Información de contacto -->
+                       <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <label for="telefono">Teléfono:</label>
+                            <input type="number" class="form-control" id="telefono" placeholder="Ingrese el Teléfono"
+                                required>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
+                            <label for="correoElectronico">Correo Electrónico:</label>
+                            <input type="email" class="form-control" id="correoElectronico"
+                                placeholder="Ingrese el Correo Electrónico" required>
+                        </div>
+                    </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="card-header">
+                                <h5 class="text-center">Datos del contacto</h5>
+                            </div>
+                        </div>
+                        <hr/>
                         <div class="col-md-6 mb-3">
                             <div class="form-group">
                                 <label for="nombreContacto">Nombre del contacto:</label>
+                                <input type="text" class="form-control" id="nombreContacto"
+                                    placeholder="Ingrese el Nombre del Contacto" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group">
+                                <label for="nombreContacto">Apellido Paterno:</label>
+                                <input type="text" class="form-control" id="nombreContacto"
+                                    placeholder="Ingrese el Nombre del Contacto" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group">
+                                <label for="nombreContacto">Apellido Materno:</label>
                                 <input type="text" class="form-control" id="nombreContacto"
                                     placeholder="Ingrese el Nombre del Contacto" required>
                             </div>
@@ -111,21 +146,7 @@
                             </div>
                         </div>
 
-                        <!-- Información de contacto -->
-                        <div class="col-md-6 mb-3">
-                            <div class="form-group">
-                                <label for="telefono">Teléfono:</label>
-                                <input type="tel" class="form-control" id="telefono" placeholder="Ingrese el Teléfono"
-                                    required>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="form-group">
-                                <label for="correoElectronico">Correo Electrónico:</label>
-                                <input type="email" class="form-control" id="correoElectronico"
-                                    placeholder="Ingrese el Correo Electrónico" required>
-                            </div>
-                        </div>
+                        
                         <div class="col-md-6 mb-3">
                             <button type="submit" class="btn btn-danger btn-block">Cancelar</button>
                         </div>

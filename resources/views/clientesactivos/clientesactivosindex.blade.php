@@ -9,7 +9,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="form-group mt-0 text-right">
-        <button type="submit" class="btn btn-info">Nuevo</button>
+        <a href="{{route('cliente.create')}}" class="btn btn-info">Nuevo</a>
     </div>
     <div class="row">
         <div class="col-md-12">
