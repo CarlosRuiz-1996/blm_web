@@ -1,82 +1,103 @@
 @extends('adminlte::page')
 
 
-@section('title', 'Dashboard')
+@section('title', 'Usuarios')
 
 @section('content_header')
     <h1 class="ml-2">Listado de usuarios</h1>
 @stop
 @section('content')
-@livewire('crear-usuario');
+    @if (session('success'))
+        <div class="alert alert-success" role="alert">
+            <span class="fw-bold">Exito!</span> {{ session('success') }}
+        </div>
+    @endif
+    <div class="container-fluid">
+        <div class="form-group mt-0 text-right">
+            <a href="{{ route('user.create') }}" class="btn btn-info">Nuevo</a>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-outline card-info">
 
-<div class="container-fluid">
-    <div class="form-group mt-0 text-right">
-        <button type="submit" class="btn btn-info">Nuevo</button>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card card-outline card-info">
-                <div class="card-header" >
-                    <form>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="inputcuenta">Cuenta</label>
-                                    <input type="text" class="form-control" id="inputcuenta" placeholder="Ingresa la cuenta">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="inputnombre">Nombre</label>
-                                    <input type="text" class="form-control" id="inputnombre" placeholder="Ingresa el nombre">
-                                </div>
-                            </div>
 
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="inputarea">Área</label>
-                                    <input type="text" class="form-control" id="inputarea" placeholder="Ingresa el área">
-                                </div>
-                            </div>
+                    <div class="card-body">
+                        {{-- Setup data for datatables --}}
+                        @php
+                            $heads = ['ID', 'Nombre', 'Cuenta', 'Area', 'Fecha de alta', 'Estatus', ['label' => 'Actions', 'no-export' => true, 'width' => 20]];
 
-                            <div class="col-md-2 mt-2">
-                                <div class="form-group mt-4">
-                                    <button type="submit" class="btn btn-info btn-block">Buscar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                    <table class="table">
-                        <thead class="table-primary">
-                            <tr>
-                                <th>Id</th>
-                                <th>Nombre</th>
-                                <th>Cuenta</th>
-                                <th>Alta</th>
-                                <th>Área</th>
-                                <th>Estatus</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Aquí irán los datos de tu tabla -->
-                        </tbody>
-                    </table>   
-                </div>                 
+                            $config = [
+                                'language' => ['url' => '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'],
+                                'order' => [[0, 'desc']],
+                            ];
+                        @endphp
+
+                        {{-- Minimal example / fill data using the component slot --}}
+                        <x-adminlte-datatable id="table1" :heads="$heads" :config="$config">
+                            @foreach ($users as $user)
+                                <tr>
+                                    <td>
+                                        {{ $user->id }}
+                                    </td>
+                                    <td>
+                                        {{ $user->name . ' ' . $user->paterno . ' ' . $user->materno }}
+                                    </td>
+                                    <td>
+
+                                        @if ($user->roles->isEmpty())
+                                            <div>Sin rol asignado</div>
+                                        @else
+                                            @foreach ($user->roles as $role)
+                                                <div>-{{ $role->name }}</div>
+                                            @endforeach
+                                        @endif
+
+                                    </td>
+                                    <td>
+                                        @if ($user->area)
+                                            {{ $user->area->nombre }}
+                                        @else
+                                            Sin área asignada
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {{ $user->created_at }}
+                                    </td>
+                                    <td>
+
+                                        <i class="fa fa-circle"
+                                            style="color:{{ $user->status_user == 1 ? 'green' : 'red' }} "
+                                            aria-hidden="true"></i>
+
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('user.edit', $user) }}"
+                                            class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit">
+                                            <i class="fa fa-lg fa-fw fa-pen"></i>
+                                        </a>
+                                        @if ($user->status_user != 0)
+                                            <a href="{{ route('user.delete', $user) }}"
+                                                class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete">
+                                                <i class="fa fa-lg fa-fw fa-trash"></i>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('user.reactivar', $user) }}"
+                                                class="btn btn-xs btn-default text-primary mx-1 shadow" title="Reactivar">
+                                                <i class="fa fa-lg fa-fw fa-arrow-up"></i>
+                                            </a>
+                                        @endif
+                                        <a href="{{ route('user.password', $user) }}"
+                                            class="btn btn-xs btn-default text-warning mx-1 shadow" title="Cambiar contraseña">
+                                            <i class="fa fa-lg fa-fw fa-key"></i>
+                                        </a>
+                                        
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </x-adminlte-datatable>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-@stop
-
-@section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
-@stop
-
-@section('js')
-    <script> console.log('Hi!'); </script>
 @stop

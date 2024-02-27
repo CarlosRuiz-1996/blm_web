@@ -130,11 +130,11 @@ return [
     */
 
     'usermenu_enabled' => true,
-    'usermenu_header' => false,
+    'usermenu_header' => true,
     'usermenu_header_class' => 'bg-primary',
-    'usermenu_image' => false,
-    'usermenu_desc' => false,
-    'usermenu_profile_url' => false,
+    'usermenu_image' => true,
+    'usermenu_desc' => true,
+    'usermenu_profile_url' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -150,8 +150,8 @@ return [
 
     'layout_topnav' => null,
     'layout_boxed' => null,
-    'layout_fixed_sidebar' => null,
-    'layout_fixed_navbar' => null,
+    'layout_fixed_sidebar' => true,
+    'layout_fixed_navbar' => true,
     'layout_fixed_footer' => null,
     'layout_dark_mode' => null,
 
@@ -168,9 +168,9 @@ return [
     */
 
     'classes_auth_card' => 'card-outline card-primary',
-    'classes_auth_header' => '',
+    'classes_auth_header' => 'd-none',
     'classes_auth_body' => '',
-    'classes_auth_footer' => '',
+    'classes_auth_footer' => 'd-none',
     'classes_auth_icon' => '',
     'classes_auth_btn' => 'btn-flat btn-primary',
 
@@ -313,10 +313,37 @@ return [
         ],
         ['header' => 'Menu'],
         [
-            'text' => 'Usuarios',
-            'url'  => '/usuarios',
-            'icon' => 'fas fa-fw fa-user',
+            'text'    => 'Administrador',
+            'icon'    => 'fas fa-fw fa-cogs',
+            'submenu' => [
+                [
+                    'text' => 'Usuarios',
+                    'route'  => 'user.index',
+                    'icon' => 'fas fa-fw fa-user',
+                ],
+                [
+                    'text' => 'Bitácora',
+                    'route'  => 'bitacora',
+                    'icon'    => 'fas fa-fw fa-book',
+                ],
+                [
+                    'text' => 'Catalogos',
+                    'route'  => 'catalogo',
+                    'icon'    => 'fa fa-th',
+                ],
+                [
+                    'text' => 'Roles',
+                    'route'  => 'roles.index',
+                    'icon'    => 'fa fa-user-secret',
+                ],
+                [
+                    'text' => 'Permisos',
+                    'route'  => 'permisos.index',
+                    'icon'    => 'fa fa-lock',
+                ],
+            ],
         ],
+        
         [
             'text' => 'Clientes',
             'url'  => '/clientesactivos',
@@ -413,7 +440,7 @@ return [
 
     'plugins' => [
         'Datatables' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
