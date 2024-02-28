@@ -7,6 +7,6 @@
     <h1 class="ml-2">Alta cliente activo</h1>
 @stop
 @section('content')
-    @livewire('cliente-activo-create')
+    @livewire('cliente-activo-formulario')
 @stop
 

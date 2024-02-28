@@ -28,4 +28,9 @@ class Cliente extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function cp()
+    {
+        return $this->belongsTo(Ctg_Cp::class, 'ctg_cp_id');
+    }
 }

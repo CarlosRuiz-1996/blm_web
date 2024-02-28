@@ -3,6 +3,7 @@
 namespace App\Livewire\Forms;
 
 use App\Models\Cliente;
+use App\Models\Ctg_Cp;
 use App\Models\Ctg_Tipo_Cliente;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,7 @@ use Livewire\Form;
 class ClienteActivoForm extends Form
 {
 
+    public $cliente;
     public $estado;
     public $municipio;
     public $colonias;
@@ -102,4 +104,46 @@ class ClienteActivoForm extends Form
 
         $this->reset();
     }
+
+    public function setCliente(Cliente $cliente)
+    {
+        $this->cliente = $cliente;
+        $this->razon_social = $cliente->razon_social;
+        $this->rfc_cliente = $cliente->rfc_cliente;
+        $this->ctg_tipo_cliente_id = $cliente->ctg_tipo_cliente_id;
+        $this->phone = $cliente->phone;
+        $this->phone = $cliente->phone;
+        $this->email = $cliente->user->email;
+        $this->name = $cliente->user->name;
+        $this->paterno = $cliente->user->paterno;
+        $this->materno = $cliente->user->materno;
+        $this->puesto = $cliente->puesto;
+
+        $this->cp = $cliente->cp->cp;
+        $this->ctg_cp_id = $cliente->cp->id;
+        $this->municipio = $cliente->cp->municipio->municipio;
+        $this->estado = $cliente->cp->estado->name;
+        $this->direccion = $cliente->direccion;
+        // 
+        $this->cp_invalido = "";
+        $codigo = Ctg_Cp::where('cp','like','%'.$this->cp.'%')->get();
+
+        $this->colonias = $codigo;
+
+    }
+
+    public function updated(){
+
+
+        $this->validate();//validacion
+        $this->password =  bcrypt(strtolower($this->rfc_cliente));//contraseña sera el rfc en minusculas
+        $this->cliente->user->update($this->only(['name','paterno','materno' ,'email', 'password']));
+        
+        $this->cliente->update($this->only([ 'puesto', 'direccion', 'ctg_cp_id', 'razon_social', 'rfc_cliente', 
+        'phone', 'ctg_tipo_cliente_id']));
+
+
+        // $this->reset();
+    }
+
 }

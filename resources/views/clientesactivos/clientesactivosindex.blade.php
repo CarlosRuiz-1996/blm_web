@@ -82,11 +82,11 @@
                                   
                                    
                                     <td>
-                                        <a href="{{ route('user.edit', $cli) }}"
+                                        <a href=""
                                             class="btn btn-xs btn-default text-primary mx-1 shadow" title="Nueva cotizacion">
                                             <i class="fa fa-lg fa-fw fa-plus"></i>
                                         </a>
-                                        <a href="{{ route('user.edit', $cli) }}"
+                                        <a href="{{ route('cliente.detalles', $cli) }}"
                                         class="btn btn-xs btn-default text-primary mx-1 shadow" title="Detalles del cliente">
                                         <i class="fa fa-lg fa-fw fa-info-circle"></i>
                                     </a>
@@ -102,12 +102,3 @@
     </div>
 @stop
 
-@section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
-@stop
-
-@section('js')
-    <script>
-        console.log('Hi!');
-    </script>
-@stop

@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth/login');
 });
 
 Route::middleware([
@@ -47,7 +47,9 @@ Route::put('/usuarios/password/{user}', [UsuariosController::class, 'password'])
 //cliente activo
 Route::get('/clientesactivos', [ClientesActivosController::class, 'index'])->name('cliente.index');
 Route::get('/clientesactivos/nuevo', [ClientesActivosController::class, 'nuevousuario'])->name('cliente.create');
-Route::get('/clientesactivos/clienteCotizaciones', [ClientesActivosController::class, 'clienteCotizaciones']);
+Route::get('/clientesactivos/detalles/{cliente}', [ClientesActivosController::class, 'detalles'])->name('cliente.detalles');
+Route::get('/clientesactivos/editar/{cliente}', [ClientesActivosController::class, 'edit'])->name('cliente.edit');
+
 Route::get('/ventas', [ventasController::class, 'indexventas']);
 
 

@@ -19,10 +19,14 @@ class ClientesActivosController extends Controller
         return view('clientesactivos.clientesnuevos');
 
     }
-    public function clienteCotizaciones()
+    public function detalles(Cliente $cliente)
     {
-        return view('clientesactivos.clienteCotizaciones');
+        return view('clientesactivos.detalles',compact('cliente'));
 
+    }
+    public function edit(Cliente $cliente){
+        
+        return view('clientesactivos.cliente-editar',compact('cliente'));
     }
     
 }
