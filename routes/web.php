@@ -44,7 +44,8 @@ Route::get('/usuarios/reactivar/{user}', [UsuariosController::class, 'reactivar'
 Route::get('/usuarios/cambio-contrasenia/{user}', [UsuariosController::class, 'password_view'])->name('user.password');
 Route::put('/usuarios/password/{user}', [UsuariosController::class, 'password'])->name('user.save-password');
 
-Route::get('/clientesactivos', [ClientesActivosController::class, 'index']);
+//cliente activo
+Route::get('/clientesactivos', [ClientesActivosController::class, 'index'])->name('cliente.index');
 Route::get('/clientesactivos/nuevo', [ClientesActivosController::class, 'nuevousuario'])->name('cliente.create');
 Route::get('/clientesactivos/clienteCotizaciones', [ClientesActivosController::class, 'clienteCotizaciones']);
 Route::get('/ventas', [ventasController::class, 'indexventas']);
@@ -56,7 +57,6 @@ Route::resource('/admin/roles', RoleController::class)->names('roles');
 Route::get('/admin/bitacora', [BitacoraController::class,'index'])->name('bitacora');
 Route::get('/admin/catalogos', [CatalogosController::class,'index'])->name('catalogo');
 
-// bitacora-index
 //rutas para livewire
 use Livewire\Livewire;
 
