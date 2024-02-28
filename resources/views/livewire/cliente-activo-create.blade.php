@@ -13,8 +13,7 @@
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <div class="form-group">
-                                    <label>Razón Social:</label>
-                                    <x-input-validado placeholder="Ingrese la razón social" wire:model="form.razon_social" required />
+                                    <x-input-validado label="Razón Social:"  placeholder="Ingrese la razón social" wire:model="form.razon_social" required />
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
