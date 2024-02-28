@@ -1,4 +1,4 @@
-@props(['placeholder', 'required'])
+@props(['placeholder', 'wireModel', 'required'])
 
 <div class="form-group">
     <label for="{{ $attributes->get('id') }}">{{ $slot }}</label>

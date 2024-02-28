@@ -14,10 +14,7 @@
                             <div class="col-md-4 mb-3">
                                 <div class="form-group">
                                     <label>Razón Social:</label>
-                                    <input type="text" class="form-control" style="text-transform:uppercase;" wire:model='form.razon_social'
-                                        placeholder="Ingrese la razón social">
-                                    <x-input-error for="form.razon_social"  />
-
+                                    <x-input-validado placeholder="Ingrese la razón social" wire:model="form.razon_social" required />
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -60,7 +57,6 @@
                                     <x-input-error for="form.email" />
 
                                 </div>
-                                {{-- <x-input-validado placeholder="Ingrese el Puesto" wire:model="puesto" required /> --}}
 
                             </div>
                             <div class="col-md-12 mb-3">
