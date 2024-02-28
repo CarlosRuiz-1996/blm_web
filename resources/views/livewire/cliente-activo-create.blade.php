@@ -60,6 +60,8 @@
                                     <x-input-error for="form.email" />
 
                                 </div>
+                                {{-- <x-input-validado placeholder="Ingrese el Puesto" wire:model="puesto" required /> --}}
+
                             </div>
                             <div class="col-md-12 mb-3">
                                 <div class="card-header">
