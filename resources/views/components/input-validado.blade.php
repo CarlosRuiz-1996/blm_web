@@ -1,12 +1,11 @@
-@props(['label','placeholder', 'wireModel', 'required'])
+@props(['label','placeholder', 'wireModel',  'wireAttribute', 'type' => 'text'])
 
 <div class="form-group">
-    <label for="{{ $attributes->get('id') }}">{{ $label  }}</label>
-    <input type="text" class="form-control @error($attributes->get('wireModel')) is-invalid @enderror"
-           id="{{ $attributes->get('id') }}" placeholder="{{ $placeholder }}"  @if($required) required @endif
-           style="text-transform:uppercase;" 
-           >
-    @error($attributes->get('wireModel'))
+    <label for="{{ $attributes->get('id') }}">{{ $label }}</label>
+    <input type="{{ $type }}" class="form-control @error($wireAttribute) is-invalid @enderror"
+           id="{{ $attributes->get('id') }}" placeholder="{{ $placeholder }}" wire:model="{{ $wireModel }}" 
+           style="text-transform:uppercase;">
+    @error($wireAttribute)
     <div class="invalid-feedback">{{ $message }}</div>
     @enderror
 </div>

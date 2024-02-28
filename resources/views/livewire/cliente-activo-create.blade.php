@@ -13,16 +13,13 @@
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <div class="form-group">
-                                    <x-input-validado label="Razón Social:"  placeholder="Ingrese la razón social" wire:model="form.razon_social" required />
+                                    <x-input-validado label="Razón Social:"  placeholder="Ingrese la razón social" wire-model="form.razon_social" required wire-attribute="form.razon_social" type="text" />
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="form-group">
-                                    <label>RFC:</label>
-                                    <input type="text" class="form-control" style="text-transform:uppercase;" wire:model='form.rfc_cliente'
-                                        placeholder="Ingrese el RFC">
-                                    <x-input-error for="form.rfc_cliente" />
 
+                                    <x-input-validado label="RFC:"  placeholder="Ingrese la RFC" wire-model="form.rfc_cliente" wire-attribute="form.phone" type="text" />
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -41,19 +38,15 @@
                             <!-- Información de contacto -->
                             <div class="col-md-6 mb-3">
                                 <div class="form-group">
-                                    <label>Teléfono:</label>
-                                    <input type="number" class="form-control"  wire:model='form.phone'
-                                        placeholder="Ingrese el teléfono">
-                                    <x-input-error for="form.phone" />
+                                    {{-- <x-input-validado label="Teléfono:"  placeholder="Ingrese la teléfono" wire:model="form.phone" required /> --}}
+                                    <x-input-validado label="Teléfono:" placeholder="Ingrese la teléfono" wire-model="form.phone" required wire-attribute="form.phone" type="tel" />
 
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="form-group">
-                                    <label>Correo Electrónico:</label>
-                                    <input type="email" class="form-control"  wire:model='form.email'
-                                        placeholder="Ingrese el correo electrónico">
-                                    <x-input-error for="form.email" />
+                                    
+                                    <x-input-validado label="Correo Electrónico:" placeholder="Ingrese correo electrónico" wire-model="form.email" required wire-attribute="form.email" type="email" />
 
                                 </div>
 
@@ -66,39 +59,29 @@
                             <hr />
                             <div class="col-md-6 mb-3">
                                 <div class="form-group">
-                                    <label>Nombre del contacto:</label>
-                                    <input type="text" class="form-control" style="text-transform:uppercase;"
-                                        placeholder="Ingrese el nombre del Contacto" wire:model='form.name'>
-                                    <x-input-error for="form.name" />
+                                    
+                                    <x-input-validado label="Nombre del contacto:"  placeholder="Ingrese nombre" wire-model="form.name" wire-attribute="form.name" type="text" />
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <x-input-validado label="Apellido paterno:"  placeholder="Ingrese apellido paterno" wire-model="form.paterno" wire-attribute="form.paterno" type="text" />
 
 
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="form-group">
-                                    <label>Apellido Paterno:</label>
-                                    <input type="text" class="form-control" style="text-transform:uppercase;"
-                                        placeholder="Ingrese el apellido paterno del Contacto"
-                                        wire:model='form.paterno'>
-                                    <x-input-error for="form.paterno" />
+                                    <x-input-validado label="Apellido materno:"  placeholder="Ingrese apellido materno" wire-model="form.materno" wire-attribute="form.materno" type="text" />
+
 
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="form-group">
-                                    <label>Apellido Materno:</label>
-                                    <input type="text" class="form-control" style="text-transform:uppercase;" wire:model='form.materno'
-                                        placeholder="Ingrese el apellido materno del Contacto">
-                                    <x-input-error for="form.materno" />
-
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    <label>Puesto:</label>
-                                    <input type="text" class="form-control" style="text-transform:uppercase;" wire:model='form.puesto'
-                                        placeholder="Ingrese el Puesto">
-                                    <x-input-error for="form.puesto" />
+                                    
+                                    <x-input-validado label="Puesto:"  placeholder="Ingrese Puesto" wire-model="form.puesto" wire-attribute="form.puesto" type="text" />
 
                                 </div>
                             </div>
@@ -120,10 +103,9 @@
 
                             <div class="col-md-3 mb-3">
                                 <div class="form-group">
-                                    <label>Codigo postal:</label>
-                                    <input type="number" class="form-control" wire:model='form.cp'
-                                        placeholder="Codigo postal" required>
-                                        <x-input-error for="form.cp" />
+                                    
+                                    <x-input-validado label="Codigo postal:"  placeholder="Codigo postal" wire-model="form.cp" wire-attribute="form.cp" type="number" />
+
                                 </div>
                             </div>
                             <div class="col-md-2 mb-3" style="margin-top: 3%">
@@ -166,10 +148,9 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="form-group">
-                                    <label>Calle y Número:</label>
-                                    <input type="text" class="form-control" style="text-transform:uppercase;" wire:model="form.direccion"
-                                        placeholder="Ingrese la Calle y Número">
-                                    <x-input-error for="form.direccion" />
+                                    
+                                    <x-input-validado label="Calle y Número:"  placeholder="Calle y Número" wire-model="form.direccion" wire-attribute="form.direccion" type="number" />
+
                                 </div>
                             </div>
 
