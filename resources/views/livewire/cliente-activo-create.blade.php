@@ -12,44 +12,27 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <div class="form-group">
-                                    <x-input-validado label="Razón Social:"  placeholder="Ingrese la razón social" wire-model="form.razon_social" required wire-attribute="form.razon_social" type="text" />
-                                </div>
+                                    <x-input-validado label="Razón Social:"  placeholder="Ingrese la razón social" wire-model="form.razon_social" required type="text" />
                             </div>
                             <div class="col-md-4 mb-3">
-                                <div class="form-group">
 
-                                    <x-input-validado label="RFC:"  placeholder="Ingrese la RFC" wire-model="form.rfc_cliente" wire-attribute="form.phone" type="text" />
-                                </div>
+                                    <x-input-validado label="RFC:"  placeholder="Ingrese la RFC" wire-model="form.rfc_cliente" type="text" />
                             </div>
                             <div class="col-md-4 mb-3">
-                                <div class="form-group">
-                                    <label>Tipo de cliente:</label>
-                                    <select class="form-control" wire:model='form.ctg_tipo_cliente_id'>
-                                        <option value="0" selected disabled>Seleccione</option>
+                               
+                                <x-select-validado label="Tipo de cliente:" placeholder="Seleccione" wire-model="form.ctg_tipo_cliente_id" required >
                                         @foreach ($ctg_tipo_cliente as $ctg)
                                             <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
                                         @endforeach
-                                    </select>
-                                    <x-input-error for="form.ctg_tipo_cliente_id" />
-
-                                </div>
+                                </x-select-validado>
+                                
                             </div>
                             <!-- Información de contacto -->
                             <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    {{-- <x-input-validado label="Teléfono:"  placeholder="Ingrese la teléfono" wire:model="form.phone" required /> --}}
-                                    <x-input-validado label="Teléfono:" placeholder="Ingrese la teléfono" wire-model="form.phone" required wire-attribute="form.phone" type="tel" />
-
-                                </div>
+                                    <x-input-validado label="Teléfono:" placeholder="Ingrese la teléfono" wire-model="form.phone" required  type="number" />
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    
-                                    <x-input-validado label="Correo Electrónico:" placeholder="Ingrese correo electrónico" wire-model="form.email" required wire-attribute="form.email" type="email" />
-
-                                </div>
-
+                            <div class="col-md-6 mb-3">                                    
+                                    <x-input-validado label="Correo Electrónico:" placeholder="Ingrese correo electrónico" wire-model="form.email" required type="email" />
                             </div>
                             <div class="col-md-12 mb-3">
                                 <div class="card-header">
@@ -58,32 +41,17 @@
                             </div>
                             <hr />
                             <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    
-                                    <x-input-validado label="Nombre del contacto:"  placeholder="Ingrese nombre" wire-model="form.name" wire-attribute="form.name" type="text" />
-
-                                </div>
+                                    <x-input-validado label="Nombre del contacto:"  placeholder="Ingrese nombre" wire-model="form.name" type="text" />
                             </div>
                             <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    <x-input-validado label="Apellido paterno:"  placeholder="Ingrese apellido paterno" wire-model="form.paterno" wire-attribute="form.paterno" type="text" />
+                                    <x-input-validado label="Apellido paterno:"  placeholder="Ingrese apellido paterno" wire-model="form.paterno" type="text" />
 
-
-                                </div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    <x-input-validado label="Apellido materno:"  placeholder="Ingrese apellido materno" wire-model="form.materno" wire-attribute="form.materno" type="text" />
-
-
-                                </div>
+                                    <x-input-validado label="Apellido materno:"  placeholder="Ingrese apellido materno" wire-model="form.materno" type="text" />
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    
-                                    <x-input-validado label="Puesto:"  placeholder="Ingrese Puesto" wire-model="form.puesto" wire-attribute="form.puesto" type="text" />
-
-                                </div>
+                            <div class="col-md-6 mb-3"> 
+                                    <x-input-validado label="Puesto:"  placeholder="Ingrese Puesto" wire-model="form.puesto" type="text" />
                             </div>
 
                         </div>
@@ -102,11 +70,7 @@
 
 
                             <div class="col-md-3 mb-3">
-                                <div class="form-group">
-                                    
-                                    <x-input-validado label="Codigo postal:"  placeholder="Codigo postal" wire-model="form.cp" wire-attribute="form.cp" type="number" />
-
-                                </div>
+                                    <x-input-validado label="Codigo postal:"  placeholder="Codigo postal" wire-model="form.cp"  type="number" />
                             </div>
                             <div class="col-md-2 mb-3" style="margin-top: 3%">
                                 <div class="form-group">
@@ -129,12 +93,11 @@
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    <label>Colonia:</label>
-                                    <select wire:model="form.ctg_cp_id" class="w-full form-control">
-                                        @if ($form->colonias)
-                                            <option value="">Selecciona una colonia</option>
+                               
+                                    <x-select-validado label="Colonia:" placeholder="Selecciona"   wire-model="form.ctg_cp_id" required>
 
+                                        @if ($form->colonias)
+                                            
                                             @foreach ($form->colonias as $cp)
                                                 <option value="{{ $cp->id }}">{{ $cp->colonia }}</option>
                                             @endforeach
@@ -142,16 +105,10 @@
                                             <option value="">Esperando...</option>
                                         @endif
 
-                                    </select>
-                                    <x-input-error for="form.ctg_cp_id" />
-                                </div>
+                                    </x-select-validado>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    
-                                    <x-input-validado label="Calle y Número:"  placeholder="Calle y Número" wire-model="form.direccion" wire-attribute="form.direccion" type="number" />
-
-                                </div>
+                                <x-input-validado label="Calle y Número:"  placeholder="Calle y Número" wire-model="form.direccion" type="number" />
                             </div>
 
 
