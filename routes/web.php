@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\altaValidaCumplimiento;
 use App\Http\Controllers\BitacoraController;
 use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\ClientesActivosController;
@@ -48,6 +49,10 @@ Route::get('/clientesactivos', [ClientesActivosController::class, 'index']);
 Route::get('/clientesactivos/nuevo', [ClientesActivosController::class, 'nuevousuario'])->name('cliente.create');
 Route::get('/clientesactivos/clienteCotizaciones', [ClientesActivosController::class, 'clienteCotizaciones']);
 Route::get('/ventas', [ventasController::class, 'indexventas']);
+Route::get('/ventas/altaSolicitudCumplimiento', [ventasController::class, 'altaSolicitudCumplimiento']);
+Route::get('/clientesactivos/CotizacionesNuevas', [ClientesActivosController::class, 'CotizacionesNuevas']);
+
+Route::get('/cumplimiento/altaValidaCumplimiento', [altaValidaCumplimiento::class, 'index']);
 
 
 //admin

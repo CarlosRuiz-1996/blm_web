@@ -12,13 +12,17 @@ class ClientesActivosController extends Controller
     }
     public function nuevousuario()
     {
-        
         return view('clientesactivos.clientesnuevos');
 
     }
     public function clienteCotizaciones()
     {
         return view('clientesactivos.clienteCotizaciones');
+
+    }
+    public function CotizacionesNuevas()
+    {
+        return view('clientesactivos.nuevacotizacion');
 
     }
     

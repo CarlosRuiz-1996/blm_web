@@ -10,4 +10,8 @@ class ventasController extends Controller
     {
         return view('ventas.ventasindex');
     }
+    public function altaSolicitudCumplimiento()
+    {
+        return view('ventas.altaSolicitudCumplimiento');
+    }
 }
