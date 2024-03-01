@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Anexo1;
 use App\Http\Controllers\BitacoraController;
 use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\ClientesActivosController;
@@ -56,8 +57,16 @@ Route::get('/ventas', [ventasController::class, 'indexventas']);
 //admin
 Route::resource('/admin/permisos', PermisosController::class)->names('permisos');
 Route::resource('/admin/roles', RoleController::class)->names('roles');
+Route::put('/admin/rol/actualizar/{role}', [RoleController::class,'updated_rol'])->name('rol.actualizar');
+Route::put('/admin/permiso/actualizar/{permiso}', [PermisosController::class,'updated_permiso'])->name('permiso.actualizar');
+
 Route::get('/admin/bitacora', [BitacoraController::class,'index'])->name('bitacora');
 Route::get('/admin/catalogos', [CatalogosController::class,'index'])->name('catalogo');
+
+
+// anexo 1
+Route::get('ventas/anexo1/{cliente}',[Anexo1::class, 'index'])->name('anexo.index');
+
 
 //rutas para livewire
 use Livewire\Livewire;

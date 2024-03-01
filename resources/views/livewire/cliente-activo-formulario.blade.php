@@ -132,7 +132,7 @@
 
 
                         <div class="col-md-6 mb-3">
-                            <button type="submit" class="btn btn-danger btn-block">Cancelar</button>
+                            <a href="{{route('cliente.index')}}" class="btn btn-danger btn-block">Cancelar</a>
                         </div>
                         <div class="col-md-6 mb-3">
                             <button type="submit" class="btn btn-info btn-block"

@@ -315,6 +315,7 @@ return [
         [
             'text'    => 'Administrador',
             'icon'    => 'fas fa-fw fa-cogs',
+            'role'=>'Admin',
             'submenu' => [
                 [
                     'text' => 'Usuarios',
@@ -340,6 +341,7 @@ return [
                     'text' => 'Permisos',
                     'route'  => 'permisos.index',
                     'icon'    => 'fa fa-lock',
+                    
                 ],
             ],
         ],
