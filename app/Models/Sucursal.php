@@ -28,4 +28,9 @@ class Sucursal extends Model
        'status_sucursal'
 
     ];
+
+    public function sucursal_servicio()
+    {
+        return $this->hasMany(SucursalServicio::class, 'sucursal_id');
+    }
 }

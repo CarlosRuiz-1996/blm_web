@@ -308,182 +308,195 @@
                                         </div>
                                         <!-- Puedes copiar y pegar el contenido de la pestaña "Servicios" aquí y hacer las modificaciones necesarias -->
                                     </div>
-                                
-                                <!-- Contenido de la pestaña "Otra Pestaña 2" -->
-                                <div class="tab-pane fade" id="custom-tabs-one-otra-pestaña-2" role="tabpanel" aria-labelledby="custom-tabs-one-otra-pestaña-2-tab">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h3 for="">Anexo-Atendidas</h3>
+
+                                    <!-- Contenido de la pestaña "Otra Pestaña 2" -->
+                                    <div class="tab-pane fade" id="custom-tabs-one-otra-pestaña-2" role="tabpanel"
+                                        aria-labelledby="custom-tabs-one-otra-pestaña-2-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h3 for="">Anexo-Atendidas</h3>
                                             </div>
-                                        <div class="col-md-12">
-                                            <div class="card card-outline card-info">
-                                                <div class="card-header" >
-                                                    <form>
-                                                        <div class="row">
-                                                            <div class="col-md-2">
-                                                                <div class="form-group">
-                                                                    <label for="inputId">Id</label>
-                                                                    <input type="text" class="form-control" id="inputId" placeholder="Ingresa la Id">
+                                            <div class="col-md-12">
+                                                <div class="card card-outline card-info">
+                                                    <div class="card-header">
+                                                        <form>
+                                                            <div class="row">
+                                                                <div class="col-md-2">
+                                                                    <div class="form-group">
+                                                                        <label for="inputId">Id</label>
+                                                                        <input type="text" class="form-control"
+                                                                            id="inputId" placeholder="Ingresa la Id">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            for="inputcotizacionanexo">Cotización</label>
+                                                                        <input type="text" class="form-control"
+                                                                            id="inputcotizacionanexo"
+                                                                            placeholder="Ingresa Cotización">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <div class="form-group">
+                                                                        <label for="inputFechaInicio">Fecha
+                                                                            Inicio</label>
+                                                                        <input type="date" class="form-control"
+                                                                            id="inputFechaInicio"
+                                                                            placeholder="Ingresa el Fecha Inicio">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-2">
+                                                                    <div class="form-group">
+                                                                        <label for="inputFechafin">Fecha Fin</label>
+                                                                        <input type="date" class="form-control"
+                                                                            id="inputFechafin"
+                                                                            placeholder="Ingresa Fecha fin">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-md-3 mt-2">
+                                                                    <div class="form-group mt-4">
+                                                                        <button type="submit"
+                                                                            class="btn btn-info btn-block">Buscar</button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-2">
-                                                                <div class="form-group">
-                                                                    <label for="inputcotizacionanexo">Cotización</label>
-                                                                    <input type="text" class="form-control" id="inputcotizacionanexo" placeholder="Ingresa Cotización">
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-2">
-                                                                <div class="form-group">
-                                                                    <label for="inputFechaInicio">Fecha Inicio</label>
-                                                                    <input type="date" class="form-control" id="inputFechaInicio" placeholder="Ingresa el Fecha Inicio">
-                                                                </div>
-                                                            </div>
-                                
-                                                            <div class="col-md-2">
-                                                                <div class="form-group">
-                                                                    <label for="inputFechafin">Fecha Fin</label>
-                                                                    <input type="date" class="form-control" id="inputFechafin" placeholder="Ingresa Fecha fin">
-                                                                </div>
-                                                            </div>
-                                                                                  
-                                                            <div class="col-md-3 mt-2">
-                                                                <div class="form-group mt-4">
-                                                                    <button type="submit" class="btn btn-info btn-block">Buscar</button>
-                                                                </div>
-                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table">
+                                                                <thead class="table-primary">
+                                                                    <tr>
+                                                                        <th>Id</th>
+                                                                        <th>Razon Social</th>
+                                                                        <th>RFC</th>
+                                                                        <th>Contacto</th>
+                                                                        <th>Fecha de Solicitud</th>
+                                                                        <th>Opciones</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <!-- Aquí irán los datos de tu tabla -->
+                                                                </tbody>
+                                                            </table>
                                                         </div>
-                                                    </form>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="table-responsive">
-                                                    <table class="table">
-                                                        <thead class="table-primary">
-                                                            <tr>
-                                                                <th>Id</th>
-                                                                <th>Razon Social</th>
-                                                                <th>RFC</th>
-                                                                <th>Contacto</th>
-                                                                <th>Fecha de Solicitud</th>
-                                                                <th>Opciones</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <!-- Aquí irán los datos de tu tabla -->
-                                                        </tbody>
-                                                    </table>   
-                                                </div>                 
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                         <!-- Puedes copiar y pegar el contenido de la pestaña "Servicios" aquí y hacer las modificaciones necesarias -->
                                     </div>
                                 </div>
                             </div>
                         </div>
-                <div class="tab-pane fade" id="custom-tabs-one-facturacion" role="tabpanel"
-                    aria-labelledby="custom-tabs-one-facturacion-tab">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h3 for="">Memorándum de servicio</h3>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="card card-outline card-info">
-                                <div class="card-header">
-                                    <form>
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                <div class="form-group">
-                                                    <label for="inputId">Id</label>
-                                                    <input type="text" class="form-control" id="inputId"
-                                                        placeholder="Ingresa la Id">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="form-group">
-                                                    <label for="inputFechaInicio">Fecha Inicio</label>
-                                                    <input type="date" class="form-control" id="inputFechaInicio"
-                                                        placeholder="Ingresa el Fecha Inicio">
-                                                </div>
-                                            </div>
+                        <div class="tab-pane fade" id="custom-tabs-one-facturacion" role="tabpanel"
+                            aria-labelledby="custom-tabs-one-facturacion-tab">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h3 for="">Memorándum de servicio</h3>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card card-outline card-info">
+                                        <div class="card-header">
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="inputId">Id</label>
+                                                            <input type="text" class="form-control" id="inputId"
+                                                                placeholder="Ingresa la Id">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="inputFechaInicio">Fecha Inicio</label>
+                                                            <input type="date" class="form-control"
+                                                                id="inputFechaInicio"
+                                                                placeholder="Ingresa el Fecha Inicio">
+                                                        </div>
+                                                    </div>
 
-                                            <div class="col-md-3">
-                                                <div class="form-group">
-                                                    <label for="inputFechafin">Fecha Fin</label>
-                                                    <input type="date" class="form-control" id="inputFechafin"
-                                                        placeholder="Ingresa Fecha fin">
-                                                </div>
-                                            </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label for="inputFechafin">Fecha Fin</label>
+                                                            <input type="date" class="form-control" id="inputFechafin"
+                                                                placeholder="Ingresa Fecha fin">
+                                                        </div>
+                                                    </div>
 
-                                            <div class="col-md-3 mt-2">
-                                                <div class="form-group mt-4">
-                                                    <button type="submit" class="btn btn-info btn-block">Buscar</button>
+                                                    <div class="col-md-3 mt-2">
+                                                        <div class="form-group mt-4">
+                                                            <button type="submit"
+                                                                class="btn btn-info btn-block">Buscar</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
+                                            </form>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead class="table-primary">
+                                                        <tr>
+                                                            <th>Id</th>
+                                                            <th>Razon Social</th>
+                                                            <th>RFC</th>
+                                                            <th>Contacto</th>
+                                                            <th>Fecha de Solicitud</th>
+                                                            <th>Opciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- Aquí irán los datos de tu tabla -->
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead class="table-primary">
-                                                <tr>
-                                                    <th>Id</th>
-                                                    <th>Razon Social</th>
-                                                    <th>RFC</th>
-                                                    <th>Contacto</th>
-                                                    <th>Fecha de Solicitud</th>
-                                                    <th>Opciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <!-- Aquí irán los datos de tu tabla -->
-                                            </tbody>
-                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="custom-tabs-one-cotizacion" role="tabpanel"
-                    aria-labelledby="custom-tabs-one-cotizacion-tab">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h3 for="">Validación memorándum de servicios</h3>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="card card-outline card-info">
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead class="table-primary">
-                                                <tr>
-                                                    <th>No.</th>
-                                                    <th>Razon social</th>
-                                                    <th>Remitente</th>
-                                                    <th>Fecha de solicitud</th>
-                                                    <th>Fecha de aprovación</th>
-                                                    <th>Validación</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <!-- Aquí irán los datos de tu tabla -->
-                                            </tbody>
-                                        </table>
+                        <div class="tab-pane fade" id="custom-tabs-one-cotizacion" role="tabpanel"
+                            aria-labelledby="custom-tabs-one-cotizacion-tab">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h3 for="">Validación memorándum de servicios</h3>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card card-outline card-info">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead class="table-primary">
+                                                        <tr>
+                                                            <th>No.</th>
+                                                            <th>Razon social</th>
+                                                            <th>Remitente</th>
+                                                            <th>Fecha de solicitud</th>
+                                                            <th>Fecha de aprovación</th>
+                                                            <th>Validación</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <!-- Aquí irán los datos de tu tabla -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
+                        </div>
+                        <!-- Puedes agregar más contenidos según sea necesario -->
+                    </div>
                 </div>
-                <!-- Puedes agregar más contenidos según sea necesario -->
             </div>
         </div>
     </div>
-</div>
-</div>
 </div>
 @stop
 

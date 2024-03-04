@@ -378,7 +378,7 @@ return [
         ],
         [
             'text' => 'Seguridad',
-            'url'  => '/Seguridad',
+            'route'  => 'seguridad.index',
             'icon' => 'fas fa-fw fa-lock',
         ],
         [

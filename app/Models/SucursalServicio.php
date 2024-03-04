@@ -11,4 +11,8 @@ class SucursalServicio extends Model
     
     protected $table = 'sucursal_servicio';
     protected $fillable = ['servicio_id', 'sucursal_id', 'status_sucursal_servicio'];
+
+
+
+    
 }

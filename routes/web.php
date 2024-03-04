@@ -4,6 +4,7 @@ use App\Http\Controllers\Anexo1;
 use App\Http\Controllers\BitacoraController;
 use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\ClientesActivosController;
+use App\Http\Controllers\Factibilidad;
 use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsuariosController;
@@ -66,6 +67,10 @@ Route::get('/admin/catalogos', [CatalogosController::class,'index'])->name('cata
 
 // anexo 1
 Route::get('ventas/anexo1/{cliente}',[Anexo1::class, 'index'])->name('anexo.index');
+
+//factibilidad
+Route::get('seguridad/',[Factibilidad::class, 'index'])->name('seguridad.index');
+Route::get('seguridad/reporte/{cliente}',[Factibilidad::class, 'reporte'])->name('seguridad.reporte');
 
 
 //rutas para livewire
