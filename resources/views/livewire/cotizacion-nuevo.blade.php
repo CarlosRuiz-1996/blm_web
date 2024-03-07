@@ -9,56 +9,31 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
+                            <div class="col-md-4 mb-3" hidden>
+                                <x-input-validado :readonly="true" label="Razón Social:" placeholder="Ingrese la Razón Social"
+                                    wire-model="id" wire-attribute="id" type="text" />
+                            </div>
                             <div class="col-md-4 mb-3">
-                                <x-input-validado label="Razón Social:" placeholder="Ingrese la Razón Social"
+                                <x-input-validado :readonly="true" label="Razón Social:" placeholder="Ingrese la Razón Social"
                                     wire-model="razonSocial" wire-attribute="razonSocial" type="text" />
                             </div>
                             <div class="col-md-4 mb-3">
-                                <x-input-validado label="RFC" placeholder="Ingrese el rfc" wire-model="rfc"
+                                <x-input-validado :readonly="true" label="RFC" placeholder="Ingrese el rfc" wire-model="rfc"
                                     wire-attribute="rfc" type="text" />
                             </div>
                             <div class="col-md-4 mb-3">
-                                <x-select-validado label="Tipo de cliente:" placeholder="Seleccione"
-                                    wire-model="ctg_tipo_cliente_id" required>
-                                    @foreach ($tipoClientelist as $ctg)
-                                    <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
-                                    @endforeach
-                                </x-select-validado>
+                                    <x-input-validado :readonly="true" label="Tipo Cliente" placeholder="Ingrese el tipo de cliente" wire-model="tipocliente"
+                                        wire-attribute="tipocliente" type="text" />
                             </div>
                             <div class="col-md-6 mb-3">
-                                <x-input-validado label="Telefono:" placeholder="Ingrese telefono" wire-model="telefono"
-                                    wire-attribute="telefono" type="text" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <x-input-validado label="Correo Electrónico:" placeholder="Ingrese Correo Electronico"
-                                    wire-model="correoElectronico" wire-attribute="correoElectronico" type="text" />
-                            </div>
-                            <div class="col-md-12 mb-3">
-                                <h4 class="text-center">Datos del contacto</h4>
-                                <hr>
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <x-input-validado label="Nombre del contacto:"
+                                <x-input-validado :readonly="true" label="Nombre del contacto:"
                                     placeholder="Ingrese el Nombre del Contacto" wire-model="nombreContacto"
                                     wire-attribute="nombreContacto" type="text" />
                             </div>
                             <div class="col-md-6 mb-3">
-                                <x-input-validado label="Apellido Paterno:"
-                                    placeholder="Ingrese el Apellido paterno" wire-model="apepaterno"
-                                    wire-attribute="apepaterno" type="text" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <x-input-validado label="Apellido Materno:"
-                                    placeholder="Ingrese el Apellido Materno" wire-model="apematerno"
-                                    wire-attribute="apematerno" type="text" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <x-input-validado label="Puesto:" placeholder="Ingrese el Puesto" wire-model="puesto"
+                                <x-input-validado :readonly="true" label="Puesto:" placeholder="Ingrese el Puesto" wire-model="puesto"
                                     wire-attribute="puesto" type="text" />
                             </div>
-                                                        <!-- Información de contacto -->
-                           
                         </div>
                     </div>
                 </div>
@@ -73,41 +48,42 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3 mb-3">
-                                <x-input-validado label="Codigo Postal:" placeholder="Ingrese codigo postal"
-                                    wire-model="cp" wire-attribute="cp" type="text" />
-                            </div>
-                            <div class="col-md-3 mb-3 mt-2">
-                                <div class="form-group ">
-                                    <label></label>
-                                    <button wire:click='validarCp' class="btn btn-secondary btn-block ">Validar
-                                        cp</button>
-                                </div>
+                                <x-input-validado :readonly="true" label="Pais:" placeholder="Ingrese Pais"
+                                    wire-model="pais" wire-attribute="pais" type="text" />
                             </div>
                             <div class="col-md-3 mb-3">
-                                <x-input-validado label="Estado:" placeholder="esperando..." wire-model="estados"
+                                <x-input-validado :readonly="true" label="Estado:" placeholder="esperando..." wire-model="estados"
                                     wire-attribute="estados" type="text" />
                             </div>
                             <div class="col-md-3 mb-3">
                                 <div class="form-group">
-                                    <x-input-validado label="Alcaldia/Municipio:" placeholder="esperando..."
+                                    <x-input-validado :readonly="true" label="Alcaldia/Municipio:" placeholder="esperando..."
                                         wire-model="municipios" wire-attribute="municipios" type="text" />
                                 </div>
                             </div>
+                            <div class="col-md-3 mb-3">
+                                <x-input-validado :readonly="true" label="Codigo Postal:" placeholder="Ingrese codigo postal"
+                                    wire-model="cp" wire-attribute="cp" type="text" />
+                            </div>
                             <div class="col-md-6 mb-3">
-                                <x-select-validado label="Colonia:" placeholder="Seleccione" wire-model="ctg_cp_id"
-                                    required>
-                                    @foreach ($colonias as $cp)
-                                    <option value="{{ $cp->id }}">{{ $cp->colonia }}</option>
-                                    @endforeach
-                                </x-select-validado>
+                                <x-input-validado :readonly="true" label="Colonia:" placeholder="Ingrese colonia"
+                                    wire-model="colonia" wire-attribute="colonia" type="text" />
 
                             </div>
                             <div class="col-md-6 mb-3">
-                                <x-input-validado label="Calle y Número:" placeholder="Ingrese la Calle y Número"
+                                <x-input-validado :readonly="true" label="Calle y Número:" placeholder="Ingrese la Calle y Número"
                                     wire-model="calleNumero" wire-attribute="calleNumero" type="text" />
                             </div>
 
-
+                            <!-- Información de contacto -->
+                            <div class="col-md-6 mb-3">
+                                <x-input-validado :readonly="true" label="Telefono:" placeholder="Ingrese telefono" wire-model="telefono"
+                                    wire-attribute="telefono" type="text" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <x-input-validado :readonly="true" label="Correo Electrónico:" placeholder="Ingrese Correo Electronico"
+                                    wire-model="correoElectronico" wire-attribute="correoElectronico" type="text" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -232,15 +208,15 @@
                                 </div>
 
                                 <div class="col-md-4 mb-3">
-                                    <x-input-validado label="Nombre de servicio:" placeholder="Ingrese el nombre del servicio" wire-model="nombreServicio" wire-attribute="nombreServicio" type="text" />
+                                    <x-input-validado :readonly="true" label="Nombre de servicio:" placeholder="Ingrese el nombre del servicio" wire-model="nombreServicio" wire-attribute="nombreServicio" type="text" />
                                 </div>
 
                                 <div class="col-md-4 mb-3">
-                                    <x-input-validado label="Tipo de servicio:" placeholder="Ingrese el nombre del servicio" wire-model="tipoServicio" wire-attribute="tipoServicio" type="text" />
+                                    <x-input-validado :readonly="true" label="Tipo de servicio:" placeholder="Ingrese el nombre del servicio" wire-model="tipoServicio" wire-attribute="tipoServicio" type="text" />
                                 </div>
 
                                 <div class="col-md-4 mb-3">
-                                    <x-input-validado label="Unidad medida:" placeholder="Ingrese la unidad de medida" wire-model="unidadMedida" wire-attribute="unidadMedida" type="text" />
+                                    <x-input-validado :readonly="true" label="Unidad medida:" placeholder="Ingrese la unidad de medida" wire-model="unidadMedida" wire-attribute="unidadMedida" type="text" />
                                 </div>
 
                                 <div class="col-md-4 mb-3">

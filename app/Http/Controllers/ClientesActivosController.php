@@ -33,10 +33,10 @@ class ClientesActivosController extends Controller
         
         return view('clientesactivos.cliente-editar',compact('cliente'));
     }
-    public function CotizacionesNuevas()
+    public function cotizardenuevo($id)
     {
-        return view('clientesactivos.nuevacotizacion');
-
+        // Aquí puedes utilizar el valor de $id en tu lógica
+        return view('clientesactivos.cotizardenuevo', ['id' => $id]);
     }
     
 }

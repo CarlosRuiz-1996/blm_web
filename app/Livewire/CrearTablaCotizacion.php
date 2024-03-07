@@ -2,12 +2,17 @@
 
 namespace App\Livewire;
 
+use App\Models\Cliente;
+use App\Models\cotizacion;
+use App\Models\cotizacion_servicio;
 use App\Models\Ctg_Cp;
 use App\Models\Ctg_Estado;
 use App\Models\Ctg_Municipio;
 use App\Models\ctg_precio_servicio;
 use App\Models\ctg_servicios;
 use App\Models\Ctg_Tipo_Cliente;
+use App\Models\servicios;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -20,7 +25,7 @@ class CrearTablaCotizacion extends Component
     public $unidadMedida;
     public $precioUnitario;
     public $editarPrecio;
-    public $cantidad=1;
+    public $cantidad = 1;
     public $isAdmin;
     public $total;
     public $estados;
@@ -28,9 +33,9 @@ class CrearTablaCotizacion extends Component
     public $cp;
     public $colonias;
     public $cp_invalido;
-    public $ctg_cp_id="";
-    public $puesto="";
-    public $nombreContacto="";
+    public $ctg_cp_id = "";
+    public $puesto = "";
+    public $nombreContacto = "";
     public $razonSocial;
     public $rfc;
     public $ctg_tipo_cliente_id;
@@ -44,19 +49,27 @@ class CrearTablaCotizacion extends Component
     public $servicios;
     public $precio_servicio;
     public $totalreal;
-    
-    
-    
+    public $valoridcoti;
+    public $valoriidser;
+    public $valoridcliente;
+    public $valoridusuario;
+    public $password;
+    public $apepaterno;
+    public $apematerno;
+
+
+
     public function mount()
     {
-        $this->tipoClientelist=Ctg_Tipo_Cliente::all();
-        $this->condicionpagolist=collect([
+        $this->tipoClientelist = Ctg_Tipo_Cliente::all();
+        $this->condicionpagolist = collect([
             (object)['id' => 1, 'nombre' => 'Efectivo'],
-            (object)['id' => 2, 'nombre' => 'Transferencia Electrónica'],]);
+            (object)['id' => 2, 'nombre' => 'Transferencia Electrónica'],
+        ]);
         $this->colonias = collect();
-        $this->servicios=ctg_servicios::all();
-        $this->precio_servicio=ctg_precio_servicio::all();
-        $this->totalreal=0;
+        $this->servicios = ctg_servicios::all();
+        $this->precio_servicio = ctg_precio_servicio::all();
+        $this->totalreal = 0;
     }
 
     public function render()
@@ -72,12 +85,12 @@ class CrearTablaCotizacion extends Component
             'cp.required' => 'Código postal requerido.',
 
         ]);
-            $codigo = DB::select("
+        $codigo = DB::select("
                 SELECT DISTINCT cp.id, cp.colonia, m.municipio, e.name 
                 FROM ctg_cp cp 
                 LEFT JOIN ctg_estados e ON e.id = cp.ctg_estado_id
                 LEFT JOIN ctg_municipios m ON m.id = cp.ctg_municipio_id AND m.ctg_estado_id = e.id 
-                WHERE cp LIKE CONCAT('%', ".$this->cp." , '%')
+                WHERE cp LIKE CONCAT('%', " . $this->cp . " , '%')
             ");
         if ($codigo) {
             $this->municipios = $codigo[0]->municipio;
@@ -88,7 +101,7 @@ class CrearTablaCotizacion extends Component
             $this->cp_invalido = "Codigo postal no valido";
         }
     }
-    
+
     public function llenartabla()
     {
         $this->validate([
@@ -111,7 +124,7 @@ class CrearTablaCotizacion extends Component
             'total.required' => 'El campo Total es requerido.',
             'total.numeric' => 'El campo Total debe ser un número.',
         ]);
-        $this->totalreal=floatval($this->total)+floatval($this->totalreal);
+        $this->totalreal = floatval($this->total) + floatval($this->totalreal);
         $especial = $this->isAdmin ? 'Especial' : 'Normal';
         $this->data[] = [
             'id' => count($this->data) + 1,
@@ -128,7 +141,7 @@ class CrearTablaCotizacion extends Component
 
         // Limpiar los campos después de agregar un nuevo elemento
         $this->limpiarCampos();
-        
+
         return view('livewire.crear-tabla-cotizacion');
     }
 
@@ -163,8 +176,8 @@ class CrearTablaCotizacion extends Component
             'correoElectronico' => 'required|email',
             'vigencia' => 'required',
             'condicionpago' => 'required',
-            
-            
+
+
         ], [
             'razonSocial.required' => 'La Razón Social es requerida.',
             'rfc.required' => 'El RFC es requerido.',
@@ -181,29 +194,71 @@ class CrearTablaCotizacion extends Component
             'vigencia.required' => 'La vigencia es requerido.',
             'condicionpago.required' => 'Condicion de pago es requerido.',
             'estados.required' => 'El estado es requerido.',
-            
+
 
         ]);
-            $codigo = DB::select("
-                SELECT DISTINCT cp.id, cp.colonia, m.municipio, e.name 
-                FROM ctg_cp cp 
-                LEFT JOIN ctg_estados e ON e.id = cp.ctg_estado_id
-                LEFT JOIN ctg_municipios m ON m.id = cp.ctg_municipio_id AND m.ctg_estado_id = e.id 
-                WHERE cp LIKE CONCAT('%', ".$this->cp." , '%')
-            ");
-        if ($codigo) {
-            $this->municipios = $codigo[0]->municipio;
-            $this->estados = $codigo[0]->name;
-            $this->colonias = $codigo;
-            $this->cp_invalido = "";
-        } else {
-            $this->cp_invalido = "Codigo postal no valido";
+
+
+        $this->password =  bcrypt(strtolower($this->rfc)); //contraseña sera el rfc en minusculas
+
+        // ingreso en la tabla usuarios
+        $user = User::create([
+            'name' => $this->nombreContacto,
+            'paterno' => $this->apepaterno,
+            'materno' => $this->apematerno,
+            'email' => $this->correoElectronico,
+            'password' => $this->password
+        ]);
+        $user->roles()->sync(4); //asigno rol 4 que sera de cliente.
+
+        $this->valoridusuario = $user->id; //usuario_id para relacionar con la tabla cliente
+        //creo cliente
+        $this->valoridcliente=Cliente::create([
+            'user_id' => $this->valoridusuario,
+            'puesto' => $this->puesto,
+            'direccion' => $this->calleNumero,
+            'ctg_cp_id' => $this->ctg_cp_id,
+            'razon_social' => $this->razonSocial,
+            'rfc_cliente' => $this->rfc,
+            'phone' => $this->telefono,
+            'ctg_tipo_cliente_id' => $this->ctg_tipo_cliente_id
+        ]);
+
+        $this->valoridcoti = cotizacion::create([
+            'total' => $this->totalreal,
+            'vigencia' => $this->vigencia,
+            'ctg_tipo_pago_id' => $this->condicionpago,
+            'cliente_id' => $this->valoridcliente->id,
+            'status_cotizacion' => 1,
+        ]);
+
+        // Obtener el ID de la cotización recién creada
+        $cotizacionIdreturn = $this->valoridcoti->id;
+
+        foreach ($this->data as $datos) {
+            $this->valoriidser = servicios::create([
+                'precio_unitario' => $datos['preciounitario'],
+                'cantidad' => $datos['cantidad'],
+                'subtotal' => $datos['total'],
+                'ctg_precio_servicio_id' => $datos['id'],
+                'ctg_servicios_id' => $datos['servicioId'],
+                'servicio_especial' => $datos['isAdmin'] ? 1 : 0,
+                'status_servicio' => 1,
+            ]);
+
+            // Obtener el ID del servicio recién creado
+            $servicioIdreturn = $this->valoriidser->id;
+            cotizacion_servicio::create([
+                'cotizacion_id' => $cotizacionIdreturn,
+                'servicio_id' => $servicioIdreturn,
+                'status_cotizacion_servicio' => '1'
+            ]);
         }
     }
 
     public function updatedServicioId($value)
     {
-        $servicios=ctg_servicios::where('id',$value)->get();
+        $servicios = ctg_servicios::where('id', $value)->get();
         $this->nombreServicio = $servicios[0]->descripcion;
         $this->tipoServicio = $servicios[0]->tipo;
         $this->unidadMedida = $servicios[0]->unidad;
@@ -212,17 +267,14 @@ class CrearTablaCotizacion extends Component
     {
         $precioUnitarioNumerico = floatval($this->precioUnitario);
         $cantidadNumerica = floatval($this->cantidad);
-    
+
         $this->total = $precioUnitarioNumerico * $cantidadNumerica;
     }
     public function updatedPrecioUnitario()
-{
-    $precioUnitarioNumerico = floatval($this->precioUnitario);
-    $cantidadNumerica = floatval($this->cantidad);
+    {
+        $precioUnitarioNumerico = floatval($this->precioUnitario);
+        $cantidadNumerica = floatval($this->cantidad);
 
-    $this->total = $precioUnitarioNumerico * $cantidadNumerica;
-}
-
-    
-
+        $this->total = $precioUnitarioNumerico * $cantidadNumerica;
+    }
 }
