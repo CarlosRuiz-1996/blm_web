@@ -7,5 +7,5 @@
     <h1 class="ml-2">Anexo 1</h1>
 @stop
 @section('content')
-    @livewire('anexo1',['cliente' => $cliente]   )
+    @livewire('anexo1',['cotizacion' => $cotizacion]   )
 @stop

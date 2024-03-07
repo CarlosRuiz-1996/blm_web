@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cotizacion', function (Blueprint $table) {
+        Schema::create('factibilidad', function (Blueprint $table) {
             $table->id();
-            $table->string('total');
-            $table->string('vigencia');
-            $table->unsignedBigInteger('ctg_tipo_pago_id');
-            $table->foreign('ctg_tipo_pago_id')->references('id')->on('ctg_tipo_pago')->onDelete('cascade');
-            $table->unsignedBigInteger('cliente_id');
+            //al cliente que se le hace el reporte
+            $table->unsignedBigInteger('cliente_id')->nullable();
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
-            $table->integer('status_cotizacion')->default(1);
+            //quien hace el reporte
+             $table->unsignedBigInteger('user_id')->nullable();
+             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('status_factibilidad')->default(1);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cotizacion');
+        Schema::dropIfExists('factibilidad');
     }
 };

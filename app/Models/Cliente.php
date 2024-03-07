@@ -38,4 +38,8 @@ class Cliente extends Model
     {
         return $this->belongsTo(Ctg_Tipo_Cliente::class, 'ctg_tipo_cliente_id');
     }
+
+    public function sucursales (){
+        return $this->hasMany(Sucursal::class, 'cliente_id');
+    }
 }

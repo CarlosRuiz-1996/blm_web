@@ -6,6 +6,8 @@ use App\Http\Controllers\BitacoraController;
 use App\Http\Controllers\boveda;
 use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\ClientesActivosController;
+use App\Http\Controllers\Factibilidad;
+use App\Http\Controllers\MemorandumController;
 use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsuariosController;
@@ -73,12 +75,17 @@ Route::get('/admin/catalogos', [CatalogosController::class,'index'])->name('cata
 
 
 // anexo 1
-Route::get('ventas/anexo1/{cliente}',[Anexo1::class, 'index'])->name('anexo.index');
+Route::get('ventas/anexo1/{cotizacion}',[Anexo1::class, 'index'])->name('anexo.index');
 
 // boveda
 Route::get('boveda/',[boveda::class, 'index'])->name('boveda.index');
 
+//factibilidad
+Route::get('seguridad/',[Factibilidad::class, 'index'])->name('seguridad.index');
+Route::get('seguridad/reporte/{cliente}',[Factibilidad::class, 'reporte'])->name('seguridad.reporte');
 
+//memorandum
+Route::get('ventas/memorandum/{cotizacion}',[MemorandumController::class,'create'])->name('ventas.memorandum');
 //rutas para livewire
 use Livewire\Livewire;
 
