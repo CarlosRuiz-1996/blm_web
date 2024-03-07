@@ -12,7 +12,10 @@ class UsuariosController extends Controller
 {
     public function index()
     {
-        $users = User::orderBy('id', 'desc')->get();
+        // $users = User::orderBy('id', 'desc')->get();
+        $users = User::whereDoesntHave('roles', function ($query) {
+            $query->where('name', 'cliente');
+        })->orderBy('id', 'desc')->get();
 
         return view('usuarios.usuariosindex', compact('users'));
     }

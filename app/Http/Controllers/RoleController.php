@@ -32,15 +32,18 @@ class RoleController extends Controller
     {
         
         Role::create(['name'=>$request->input('rol')]);
-        return back();
+        
+        return redirect()->back()->with('success', 'Rol se creo con exito!');
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Role $role)
     {
-        //
+        $permissions = $role->permissions;
+        return response()->json(['permissions' => $permissions]);
     }
 
     /**
@@ -58,19 +61,36 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        // dd($request->permisos);
-        // die;
+      
         //asigna los permisos a los roles
         $role->permissions()->sync($request->permisos);
-    // $role->givePermissionTo($request->permisos);
         return redirect()->route('roles.edit',$role);
     }
+
+
+    public function updated_rol(Request $request,Role $role)
+    {
+        
+        $request->validate([
+            'new_name' => 'required|string|max:255'
+        ]);
+        $newName = $request->input('new_name');
+
+        // Actualiza el nombre del rol
+        $role->name = $newName;
+        $role->save();
+    
+        return redirect()->back()->with('success', 'Rol actualizado con exito!');
+        
+    }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Role $role)
     {
-        //
+        $role->delete();
+        return redirect()->back()->with('success', 'Rol eliminad con exito!');
     }
 }

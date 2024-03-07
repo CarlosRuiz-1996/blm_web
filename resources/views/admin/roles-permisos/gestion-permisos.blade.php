@@ -7,8 +7,7 @@
     <h1 class="ml-2">Gestion de permisos</h1>
 @stop
 @section('content')
-    {{-- @livewire('roles-crear') --}}
-
+    <x-alert />
     <div class="container-fluid">
         <div class="form-group mt-0 text-right">
             <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#modalPurple">Nuevo</button>
@@ -19,7 +18,7 @@
                     <div class="card-body">
                         {{-- Setup data for datatables --}}
                         @php
-                            $heads = ['ID', 'Name', ['label' => 'Actions', 'no-export' => true, 'width' => 20]];
+                            $heads = ['ID', 'Nombre', ['label' => 'Actiones', 'no-export' => true, 'width' => 20]];
 
                             $config = [
                                 'language' => ['url' => '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'],
@@ -36,17 +35,31 @@
                                     <td>
                                         {{ $permiso->name }}
                                     </td>
+
                                     <td>
-                                        <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit">
-                                            <i class="fa fa-lg fa-fw fa-pen"></i>
-                                        </button>
-                                        <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete">
-                                            <i class="fa fa-lg fa-fw fa-trash"></i>
-                                        </button>
-                                        <button class="btn btn-xs btn-default text-teal mx-1 shadow" title="Details">
-                                            <i class="fa fa-lg fa-fw fa-eye"></i>
-                                        </button>
+                                        @role('Super')
+                                            <div class="btn-group">
+                                                <button class="btn btn-xs btn-default mx-1 shadow" title="Editar"
+                                                    data-toggle="modal" data-target="#modal-edit"
+                                                    data-permiso="{{ $permiso }}">
+                                                    <i class="fa fa-lg fa-fw fa-pen" style="color:royalblue"></i>
+                                                </button>
+                                                <form id="deleteForm{{ $permiso->id }}"
+                                                    action="{{ route('permisos.destroy', $permiso) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-xs btn-default text-danger mx-1 shadow"
+                                                        title="Eliminar" onclick="confirmDelete({{ $permiso->id }})"
+                                                        type="button">
+                                                        <i class="fa fa-lg fa-fw fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @else
+                                            No se puede hacer ninguna acción...
+                                        @endrole
                                     </td>
+
                                 </tr>
                             @endforeach
                         </x-adminlte-datatable>
@@ -65,12 +78,62 @@
         <form action="{{ route('permisos.store') }}" method="POST">
             @csrf
             <div class="row">
-                <x-adminlte-input name="permiso" label="Permiso" placeholder="Ingresa el nuevo permiso" fgroup-class="col-md-6"
-                    disable-feedback />
+                <x-adminlte-input name="permiso" label="Permiso" placeholder="Ingresa el nuevo permiso"
+                    fgroup-class="col-md-6" disable-feedback />
 
 
             </div>
             <x-adminlte-button class="btn-flat" type="submit" label="Guardar" theme="primary" icon="fas fa-lg fa-save" />
         </form>
     </x-adminlte-modal>
+
+
+    {{-- EDITAR --}}
+    <x-adminlte-modal id="modal-edit" title="Editar permiso" theme="primary" icon="fas fa-bolt" size='lg'
+        disable-animations>
+        <form action="{{ route('permiso.actualizar', '') }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="row">
+                <x-adminlte-input name="new_name" label="Permiso" placeholder="Ingresa el nuevo permiso"
+                    fgroup-class="col-md-6" disable-feedback />
+
+
+            </div>
+            <x-adminlte-button class="btn-flat" type="submit" label="Guardar" theme="primary" icon="fas fa-lg fa-save" />
+        </form>
+    </x-adminlte-modal>
+@stop
+@section('js')
+    <script>
+        $(document).ready(function() {
+            $('#modal-edit').on('show.bs.modal', function(event) {
+                var button = $(event.relatedTarget);
+                var permiso = button.data('permiso');
+                document.querySelector('#modal-edit input[name="new_name"]').value = permiso['name'];
+                document.querySelector('#modal-edit  form').setAttribute('action',
+                    '{{ route('permiso.actualizar', '') }}/' + permiso['id']);
+
+
+            });
+        });
+
+        function confirmDelete(id) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: '¡No podrás revertir esto y puede causar fallas en el sistema!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminarlo!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si se confirma, redirige a la ruta de eliminar con el ID del rol
+                    document.getElementById('deleteForm' + id).submit();
+
+                }
+            });
+        }
+    </script>
 @stop

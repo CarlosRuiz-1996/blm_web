@@ -253,7 +253,7 @@ return [
     */
 
     'use_route_url' => false,
-    'dashboard_url' => 'home',
+    'dashboard_url' => 'dashboard',
     'logout_url' => 'logout',
     'login_url' => 'login',
     'register_url' => 'register',
@@ -315,6 +315,7 @@ return [
         [
             'text'    => 'Administrador',
             'icon'    => 'fas fa-fw fa-cogs',
+            'role'=>'Admin',
             'submenu' => [
                 [
                     'text' => 'Usuarios',
@@ -340,6 +341,7 @@ return [
                     'text' => 'Permisos',
                     'route'  => 'permisos.index',
                     'icon'    => 'fa fa-lock',
+                    
                 ],
             ],
         ],
@@ -485,12 +487,12 @@ return [
             ],
         ],
         'Sweetalert2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
+                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@11',
                 ],
             ],
         ],

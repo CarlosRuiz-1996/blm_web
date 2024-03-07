@@ -20,5 +20,22 @@ class Cliente extends Model
         'resguardo',
         'status_cliente',
         'ctg_tipo_cliente_id',
+        'user_id'
     ];
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function cp()
+    {
+        return $this->belongsTo(Ctg_Cp::class, 'ctg_cp_id');
+    }
+
+    public function tipo_cliente()
+    {
+        return $this->belongsTo(Ctg_Tipo_Cliente::class, 'ctg_tipo_cliente_id');
+    }
 }

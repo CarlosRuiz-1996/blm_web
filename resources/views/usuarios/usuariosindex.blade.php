@@ -7,11 +7,7 @@
     <h1 class="ml-2">Listado de usuarios</h1>
 @stop
 @section('content')
-    @if (session('success'))
-        <div class="alert alert-success" role="alert">
-            <span class="fw-bold">Exito!</span> {{ session('success') }}
-        </div>
-    @endif
+<x-alert />
     <div class="container-fluid">
         <div class="form-group mt-0 text-right">
             <a href="{{ route('user.create') }}" class="btn btn-info">Nuevo</a>

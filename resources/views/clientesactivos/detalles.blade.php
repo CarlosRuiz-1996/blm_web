@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 
-@section('title', 'Dashboard')
+@section('title', 'Cliente')
 
 @section('content_header')
 <h1 class="ml-2">Cliente</h1>
@@ -12,10 +12,17 @@
         <div class="col-md-8">
             <div class="card card-outline card-info">
                 <div class="card-body">
-                    <p>Nombre o Razón Social:</p>
-                    <p>Contacto:</p>
-                    <p>RFC:</p>
-                    <p>Dirección:</p>
+                    <h5><b>Razón Social: </b>{{$cliente->razon_social}}.</h5>
+                    <h5><b>Contacto: </b>{{$cliente->user->name.' '.$cliente->user->paterno.' '.$cliente->user->materno}}.</h5>
+                    <h5><b>RFC: </b>{{$cliente->rfc_cliente}}.</h5>
+                    <h5>
+                        <b>Dirección: </b>
+                        {{$cliente->direccion}}
+                        {{$cliente->cp->cp}}
+                        {{$cliente->cp->municipio->municipio}},
+                        {{$cliente->cp->estado->name}}.
+                    </h5>
+                    <h5><b>Telefono: </b>{{$cliente->phone}}.</h5>
                 </div>
             </div>
         </div>
@@ -23,14 +30,18 @@
             <div class="card card-outline card-info">
                 <div class="card-body text-end w-100">
                     <div class="row">
-                        <div class="col-md-12  mb-3">
-                            <h4>Estatus</h4>
+                        <div class="col-md-12 mb-3">
+                            <h4 class="text-end">Estatus 
+                                <i class="fa fa-circle" title="activo"
+                                style="color:{{ $cliente->status_cliente == 1 ? 'green' : 'red' }} "
+                                aria-hidden="true"></i>
+                            </h4>
                         </div>
                         <div class="col-md-12 mb-3">
-                            <button class="btn btn-primary btn-block">Cotización</button>
+                            <a class="btn btn-primary btn-block">Cotización</a>
                         </div>
                         <div class="col-md-12 mb-3">
-                            <button class="btn btn-secondary btn-block">Editar</button>
+                            <a href="{{route('cliente.edit',$cliente)}}" class="btn btn-secondary btn-block">Editar</a>
                         </div>
                     </div>
                 </div>
@@ -195,9 +206,7 @@
 </div>
 @stop
 
-@section('css')
-<link rel="stylesheet" href="/css/admin_custom.css">
-@stop
+
 
 @section('js')
 <script>
@@ -233,7 +242,5 @@
         options: options
     });
 </script>
-<script>
-    console.log('Hi!'); 
-</script>
+
 @stop

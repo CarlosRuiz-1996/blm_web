@@ -122,6 +122,7 @@
                             <div class="container-fluid m-3">
                                 <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
                                     <!-- Pestaña "Servicios" -->
+                                    <a href="{{route('anexo.index','2')}}">aa</a>
                                     <li class="nav-item">
                                         <a class="nav-link active" id="custom-tabs-one-anexo1coti-tab"
                                             data-toggle="pill" href="#custom-tabs-one-anexo1coti" role="tab"
