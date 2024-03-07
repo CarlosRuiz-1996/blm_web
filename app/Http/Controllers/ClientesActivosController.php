@@ -43,7 +43,7 @@ class ClientesActivosController extends Controller
     }
     public function CotizacionesNuevas()
     {
-        return view('clientesactivos.clienteCotizaciones');
+        return view('clientesactivos.nuevacotizacion');
 
     }
     public function edit(Cliente $cliente){
