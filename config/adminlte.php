@@ -286,7 +286,7 @@ return [
     |
     | For detailed instructions you can look here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/Menu-Configuration
-    |
+    |http://blm.com/admin/roles/1/edit
     */
 
     'menu' => [
@@ -312,15 +312,17 @@ return [
             'can'  => 'manage-blog',
         ],
         ['header' => 'Menu'],
+          
         [
             'text'    => 'Administrador',
             'icon'    => 'fas fa-fw fa-cogs',
-            'role'=>'Admin',
+            'can'    => 'menu-admin',
             'submenu' => [
                 [
                     'text' => 'Usuarios',
                     'route'  => 'user.index',
                     'icon' => 'fas fa-fw fa-user',
+                    'can' => 'menu-usuarios'
                 ],
                 [
                     'text' => 'Bitácora',
@@ -350,60 +352,69 @@ return [
             'text' => 'Clientes',
             'url'  => '/clientesactivos',
             'icon' => 'fas fa-fw fa-users',
+            'can' =>  'menu-clientes'
         ],
         [
             'text' => 'Ventas',
             'url'  => '/ventas',
             'icon' => 'fas fa-fw fa-dollar-sign',
+            'can'=>'menu-ventas'
         ],
         [
             'text' => 'Operaciones',
             'url'  => '/operaciones',
             'icon' => 'fas fa-fw fa-file-alt',
+            'can'=>'menu-operaciones'
+
         ],
         [
             'text' => 'cumplimiento',
             'url'  => '/cumplimiento',
             'icon' => 'fas fa-fw fa-check-square',
+            'can'=>'menu-cumplimiento'
+
         ],
         [
             'text' => 'juridico',
             'url'  => '/juridico',
             'icon' => 'fas fa-fw fa-gavel',
+            'can'=>'menu-juridico'
         ],
         [
             'text' => 'Bancos',
             'url'  => '/Bancos',
             'icon' => 'fas fa-fw fa-university',
+            'can'=>'menu-bancos'
         ],
         [
             'text' => 'Seguridad',
             'route'  => 'seguridad.index',
             'icon' => 'fas fa-fw fa-lock',
+            'can'=>'menu-seguridad'
         ],
-        [
-            'text'    => 'Configuracion',
-            'icon'    => 'fas fa-fw fa-cogs',
-            'submenu' => [
-                [
-                    'text' => 'Consulta Bitácora',
-                    'url'  => '#',
-                    'icon'    => 'fas fa-fw fa-book',
-                ],
-            ],
-        ],
-        [
-            'text'    => 'Validación Memo',
-            'icon'    => 'fas fa-fw fa-check',
-            'submenu' => [
-                [
-                    'text' => 'Valida Gerencia',
-                    'url'  => '#',
-                    'icon'    => 'fas fa-fw fa-sticky-note',
+        // [
+        //     'text'    => 'Configuracion',
+        //     'icon'    => 'fas fa-fw fa-cogs',
+        //     'submenu' => [
+        //         [
+        //             'text' => 'Consulta Bitácora',
+        //             'url'  => '#',
+        //             'icon'    => 'fas fa-fw fa-book',
+        //         ],
+        //     ],
+        // ],
+        // [
+        //     'text'    => 'Validación Memo',
+        //     'icon'    => 'fas fa-fw fa-check',
+        //     'submenu' => [
+        //         [
+        //             'text' => 'Valida Gerencia',
+        //             'url'  => '#',
+        //             'icon'    => 'fas fa-fw fa-sticky-note',
                     
-                ],
-            ],
-        ],
+        //         ],
+        //     ],
+        // ],
     ],
 
     /*
@@ -462,7 +473,7 @@ return [
             ],
         ],
         'Select2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',

@@ -33,7 +33,7 @@ return new class extends Migration
             $table->dateTime('fecha_evaluacion')->nullable();
             $table->dateTime('fecha_inicio_servicio')->nullable();
             $table->integer('rpt_factibilidad_status')->default(0);
-            $table->integer('status_sucursal')->default(1);
+            $table->integer('status_sucursal')->default(0);//0 sin servicio /1 con servicios
             $table->timestamps();
         });
     }

@@ -395,6 +395,7 @@
                         <div class="tab-pane fade" id="custom-tabs-one-facturacion" role="tabpanel"
                             aria-labelledby="custom-tabs-one-facturacion-tab">
                             <div class="row">
+                                <a href="{{route('ventas.memorandum',1)}}">aaaa</a>
                                 <div class="col-md-6">
                                     <h3 for="">Memorándum de servicio</h3>
                                 </div>

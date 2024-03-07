@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('factibilidad', function (Blueprint $table) {
+        Schema::create('factibilidad_rpt', function (Blueprint $table) {
             $table->id();
             //cliente-para quien es el reporte
             $table->unsignedBigInteger('sucursal_id')->nullable();
@@ -49,7 +49,7 @@ return new class extends Migration
 
             $table->smallInteger('observaciones')->nullable();
            
-            $table->integer('status_factibilidad')->default(1);
+            $table->integer('status_factibilidad_rpt')->default(1);
             $table->timestamps();
         });
     }
@@ -59,6 +59,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('factibilidad');
+        Schema::dropIfExists('factibilidad_rpt');
     }
 };

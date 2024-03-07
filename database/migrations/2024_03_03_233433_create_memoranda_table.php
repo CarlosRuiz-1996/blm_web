@@ -20,7 +20,10 @@ return new class extends Migration
             //tipo d servicio
             $table->unsignedBigInteger('ctg_tipo_servicio_id')->nullable();
             $table->foreign('ctg_tipo_servicio_id')->references('id')->on('ctg_tipo_servicio')->onDelete('cascade');
-            
+            //
+            $table->unsignedBigInteger('cotizacion_id')->nullable();
+            $table->foreign('cotizacion_id')->references('id')->on('cotizacion_id')->onDelete('cascade');
+
             $table->string('observaciones');
             $table->integer('status_memoranda')->default(1);
             $table->timestamps();

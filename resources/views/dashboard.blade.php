@@ -9,12 +9,8 @@
 
 @section('content')
     <input type="text" class="form-control">
-@stop
-
-@section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
-@stop
-
-@section('js')
-    <script> console.log('Hi!'); </script>
+    {{-- @role('Super') el rol debe de escribirse como en la bd
+    @endrole
+    @can('menu-admin') permiso admin-menu
+    @endcan --}}
 @stop

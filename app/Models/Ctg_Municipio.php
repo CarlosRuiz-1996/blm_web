@@ -9,4 +9,10 @@ class Ctg_Municipio extends Model
 {
     use HasFactory;
     protected $table = 'ctg_municipios';
+
+
+    public function estado()
+    {
+        return $this->belongsTo(Ctg_Estado::class, 'ctg_estado_id');
+    }
 }

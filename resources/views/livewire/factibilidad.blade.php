@@ -1,10 +1,6 @@
 <div>
     <div class="container-fluid">
-        <x-adminlte-button label="RPORTE" data-toggle="modal" data-target="#modalRpt" class="bg-secondary" />
 
-        <x-adminlte-button label="Información" data-toggle="modal"
-        data-target="#modalDetalles"
-        class="bg-secondary" />
         <div class="row">
             {{-- cabecera --}}
             <div class="col-md-12">
@@ -25,18 +21,37 @@
                             </thead>
                             <tbody>
                                 @foreach ($sucursales as $sucursal)
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                        <x-adminlte-button label="Información" data-toggle="modal"
-                                            wire:click='DetalleSucursal({{ $sucursal }})' data-target="#modalDetalles"
-                                            class="bg-secondary" />
-                                    </td>
-                                    <td></td>
-                                </tr>
+                                    <tr>
+
+                                        @foreach ($sucursal->sucursal_servicio as $sucursal_servicio)
+                                            <td>{{ $sucursal_servicio->servicio->ctg_servicio->folio }}</td>
+                                        @endforeach
+
+                                        <td>{{ $sucursal->sucursal }}</td>
+                                        <td>
+                                            {{ $sucursal->ctg_cp_id }}
+                                        </td>
+                                        @foreach ($sucursal->sucursal_servicio as $sucursal_servicio)
+                                            <td>{{ $sucursal_servicio->servicio->ctg_servicio->tipo }}</td>
+                                        @endforeach
+
+                                        <td class="text-center">
+
+
+                                            <button class="btn btn-xs btn-default text-primary mx-1 shadow"
+                                                title="Detalles de la sucursal" data-toggle="modal"
+                                                wire:click='DetalleSucursal({{ $sucursal }})'
+                                                data-target="#modalDetalles">
+                                                <i class="fa fa-lg fa-fw fa-info-circle"></i>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-xs btn-default text-primary mx-1 shadow"
+                                                title="Detalles de la sucursal" data-toggle="modal"
+                                                wire:click='DetalleReporte({{ $sucursal }})'
+                                                data-target="#modalRpt">
+                                                <i class="fa fa-lg fa-fw fa-file"></i>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -49,7 +64,7 @@
 
 
 
-    {{-- elegir sucursal --}}
+    {{-- detalles sucursal --}}
     <x-adminlte-modal wire:ignore.self id="modalDetalles" title="Detalles de sucursal" theme="info" icon="fas fa-bolt"
         size='lg' disable-animations>
         <div class="col-md-12 mb-3">
@@ -69,7 +84,7 @@
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <x-input-validado label="Sucursal:" placeholder="" wire-model="form.sucursal" required
+                    <x-input-validado label="Sucursal:" placeholder="" wire-model="form.sucursal_name" required
                         type="email" />
                 </div>
 
@@ -90,18 +105,29 @@
                     <x-input-validado label="Cargo:" placeholder="" wire-model="form.cargo" type="text" />
                 </div>
                 <div class="col-md-12 mb-3">
-                    <table class="table">
-                        <thead>
-                            <th>PDA</th>
-                            <th>SERVICIO CONTRATADO PARA SOLICITUD DE EVALUACIÓN DE RIESGO </th>
-                            <th>FECHA REQUERIDA PARA EVALUACIÓN</th>
-                        </thead>
-                        <tbody>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tbody>
-                    </table>
+                    <x-input-validado label="Direccion:" placeholder="" wire-model="form.direccion" type="text" />
+                </div>
+                <div class="col-md-12 mb-3">
+                    @if ($form->servicios)
+                        <table class="table table-striped">
+                            <thead class="table-info">
+                                <th>PDA</th>
+                                <th>SERVICIO CONTRATADO PARA SOLICITUD DE EVALUACIÓN DE RIESGO </th>
+                                <th>FECHA REQUERIDA PARA EVALUACIÓN</th>
+                            </thead>
+                            <tbody>
+
+                                @foreach ($form->servicios as $servicio)
+                                    <td>{{ $servicio->servicio->ctg_servicio->folio }}</td>
+                                    <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+                                    <td>{{ $form->fecha_evaluacion }}</td>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+                    @else
+                        <h5>Sin servicios asignados</h5>
+                    @endif
                 </div>
 
             </div>
@@ -120,57 +146,60 @@
         <div class="row g-3">
             <div class="form-group ml-3 col-md-3">
                 <label for="fecha_ev" class="form-label">Fecha de Evaluación:</label>
-                <input type="text" name="fecha_ev" class="form-control" style="text-transform:uppercase;" required
-                    value="" readonly />
+                <input type="text" readonly class="form-control" style="text-transform:uppercase;"
+                    wire:model='form.fecha_evaluacion' />
             </div>
 
             <div class="form-group  col-md-4">
                 <label for="razon" class="form-label">Razón Social:</label>
-                <input type="text" name="razon" class="form-control" style="text-transform:uppercase;" required value=""
-                    readonly />
+                <input type="text" readonly wire:model="form.razon_social" class="form-control"
+                    style="text-transform:uppercase;" />
             </div>
 
             <div class="form-group col-md-4">
                 <label for="rfc" class="form-label">RFC:</label>
-                <input type="text" name="rfc" class="form-control" style="text-transform:uppercase;" required value=""
-                    readonly />
+                <input type="text" readonly wire:model="form.rfc" class="form-control"
+                    style="text-transform:uppercase;" />
             </div>
             <div class="form-group ml-3  col-md-3">
                 <label for="sucursal" class="form-label">Sucursal:</label>
-                <input type="text" name="sucursal" class="form-control" style="text-transform:uppercase;" required
-                    value="" readonly />
+                <input type="text" readonly class="form-control"
+                    style="text-transform:uppercase;"wire:model='form.sucursal_name' />
             </div>
 
             <div class="form-group  col-md-8">
                 <label for="razonsocial" class="form-label">Domicilio:</label>
-                <input type="text" name="domicilio" class="form-control" style="text-transform:uppercase;" required
-                    value="" readonly />
+                <input type="text" readonly class="form-control"
+                    style="text-transform:uppercase;"wire:model='form.direccion' />
             </div>
             <div class="form-group ml-3 col-md-5">
                 <label class="control-label ">NOMBRE DEL EVALUADOR:</label>
                 <div class="">
-                    <input class="form-control" type="text" style="text-transform:uppercase;" name="nombreevaluador"
-                        value="" required>
+                    <input class="form-control" type="text" style="text-transform:uppercase;"
+                    wire:model='form.evaluador'
+                        readonly>
+
                 </div>
             </div>
 
         </div>
-        {{--nav --}}
+        {{-- nav --}}
         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link {{$active_form}}" id="form-tab" data-toggle="pill" href="#form" role="tab"
-                    aria-controls="form" aria-selected="true">FORMULARIO</a>
+                <a class="nav-link {{ $active_form }}" id="form-tab" data-toggle="pill" href="#form"
+                    role="tab" aria-controls="form" aria-selected="true">FORMULARIO</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link {{$active_img}}" id="img-tab" data-toggle="pill" href="#img" role="tab"
-                    aria-controls="img" aria-selected="false">FOTOGRAFIAS DEL ESTABLECIMIENTO</a>
+                <a class="nav-link {{ $active_img }}" id="img-tab" data-toggle="pill" href="#img"
+                    role="tab" aria-controls="img" aria-selected="false">FOTOGRAFIAS DEL ESTABLECIMIENTO</a>
             </li>
             <!-- Puedes agregar más pestañas según sea necesario -->
         </ul>
         {{-- content del nav --}}
         <div class="tab-content " id="custom-tabs-one-tabContent">
-            <div class="tab-pane fade {{$active_form}}" id="form" role="tabpanel" aria-labelledby="form-tab">
+            <div class="tab-pane fade {{ $active_form }}" id="form" role="tabpanel"
+                aria-labelledby="form-tab">
                 {{-- formulario --}}
                 <div class="row g-3">
                     <div class="form-group ml-3 col-md-5">
@@ -214,19 +243,22 @@
                     <div class="form-group ml-5 col-md-5">
                         <label class="control-label">2. Indique cómo se realizará el servicio:</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" value="0" wire:model='form.comohacerservicio'>
+                            <input class="form-check-input" type="radio" value="0"
+                                wire:model='form.comohacerservicio'>
                             <label class="form-check-label">
                                 Recorrido
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" value="1" wire:model='form.comohacerservicio'>
+                            <input class="form-check-input" type="radio" value="1"
+                                wire:model='form.comohacerservicio'>
                             <label class="form-check-label">
                                 Negocio del cliente
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" value="2" wire:model='form.comohacerservicio'>
+                            <input class="form-check-input" type="radio" value="2"
+                                wire:model='form.comohacerservicio'>
                             <label class="form-check-label">
                                 En unidad blindada
                             </label>
@@ -237,14 +269,14 @@
 
                     <div class="form-group ml-3 col-md-5">
                         <label class="form-label">3. Dia y horario de servicio:</label>
-                        <select id="" class="form-select form-select-md mb-3" wire:model='form.horarioservicio'
-                            aria-label=".form-select-md example" required>
+                        <select id="" class="form-select form-select-md mb-3"
+                            wire:model='form.horarioservicio' aria-label=".form-select-md example" required>
                             <OPtion>LUN A VIE 18:00 A 20:00</OPtion>
                         </select>
                         <x-input-error for="form.horarioservicio" />
                         <label class="control-label">Numero de personas que se requieren para el servicio:</label>
-                        <input class="form-control ml-5 col-sm-8" type="number" wire:model='form.personalparaservicio'
-                            style="text-transform:uppercase;">
+                        <input class="form-control ml-5 col-sm-8" type="number"
+                            wire:model='form.personalparaservicio' style="text-transform:uppercase;">
                         <x-input-error for="form.personalparaservicio" />
                     </div>
 
@@ -373,15 +405,15 @@
                         <label class="control-label">7. Cuenta con control de accesos y registro de visitantes en
                             bitácora:</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.ctrlacesos' id="pregunta7"
-                                value="0">
+                            <input class="form-check-input" type="radio" wire:model='form.ctrlacesos'
+                                id="pregunta7" value="0">
                             <label class="form-check-label">
                                 No
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.ctrlacesos' id="pregunta7"
-                                value="1">
+                            <input class="form-check-input" type="radio" wire:model='form.ctrlacesos'
+                                id="pregunta7" value="1">
                             <label class="form-check-label">
                                 Si
                             </label>
@@ -424,7 +456,7 @@
                                 <x-input-error for="form.guardiaseg" />
 
                             </div>
-                            
+
                             <div class="form-group col-md-5 mt-4">
                                 <label class="control-label ">Armados</label>
                                 <div class="form-check">
@@ -444,13 +476,14 @@
                                 <div class="form-group">
                                     <label class="control-label" id="corporación">Nombre de la corporación</label>
                                     <div class="">
-                                        <input class="form-control" type="text" wire:model='form.corporacion_armados'
-                                            id="pregunta85nombrecorporacion" style="text-transform:uppercase;">
+                                        <input class="form-control" type="text"
+                                            wire:model='form.corporacion_armados' id="pregunta85nombrecorporacion"
+                                            style="text-transform:uppercase;">
                                     </div>
                                 </div>
                                 <x-input-error for="form.armados" />
                             </div>
-                           
+
 
                         </div>
                     </div>
@@ -479,35 +512,36 @@
                     <div class="form-group ml-3 col-md-5">
                         <label class="control-label">10. El sistema de alarma transmite la señal a:</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.tiposenial' name="pregunta10"
-                                id="pregunta10" value="0" required>
+                            <input class="form-check-input" type="radio" wire:model='form.tiposenial'
+                                name="pregunta10" id="pregunta10" value="0" required>
                             <label class="form-check-label">
                                 Seguridad pública
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.tiposenial' name="pregunta10"
-                                id="pregunta10" value="1" required>
+                            <input class="form-check-input" type="radio" wire:model='form.tiposenial'
+                                name="pregunta10" id="pregunta10" value="1" required>
                             <label class="form-check-label">
                                 C.E.R.I
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.tiposenial' name="pregunta10"
-                                id="pregunta10" value="2" required>
+                            <input class="form-check-input" type="radio" wire:model='form.tiposenial'
+                                name="pregunta10" id="pregunta10" value="2" required>
                             <label class="form-check-label">
                                 Central alarmas
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.tiposenial' name="pregunta10"
-                                id="pregunta10otro" value="3" required>
+                            <input class="form-check-input" type="radio" wire:model='form.tiposenial'
+                                name="pregunta10" id="pregunta10otro" value="3" required>
                             <label class="form-check-label">
                                 Otros
                             </label>
                             <div class="">
                                 <input class="form-control" type="text" wire:model='form.otros_tiposenial'
-                                    name="pregunta10-5" id="pregunta10-5" style="text-transform:uppercase;" value="">
+                                    name="pregunta10-5" id="pregunta10-5" style="text-transform:uppercase;"
+                                    value="">
                             </div>
                         </div>
                         <x-input-error for="form.tiposenial" />
@@ -679,7 +713,8 @@
             </div>
 
             {{-- imagenes --}}
-            <div class="tab-pane fade {{$active_img}}" id="img" role="tabpanel" aria-labelledby="img-tab">
+            <div class="tab-pane fade {{ $active_img }}" id="img" role="tabpanel"
+                aria-labelledby="img-tab">
                 <div class="row g-3">
 
                     {{-- fotos --}}
@@ -700,22 +735,26 @@
                                             <td>
                                                 <input type="file" id="foto_fachada" style="display: none;"
                                                     wire:model='foto_fachada'>
-                                                <button type="button" class="btn btn-primary" wire:click='subirImagen'
+                                                <button type="button" class="btn btn-primary"
+                                                    wire:click='subirImagen'
                                                     onclick="document.getElementById('foto_fachada').click();">
-                                                    @if ($foto_fachada=='') Seleccionar Imagen @else Cambiar Imagen @endif
+                                                    @if ($foto_fachada == '')
+                                                        Seleccionar Imagen
+                                                    @else
+                                                        Cambiar Imagen
+                                                    @endif
                                                 </button>
                                             </td>
                                             <td>
-                                                <div wire:loading wire:target='foto_fachada' class="alert alert-primary"
-                                                    role="alert">
+                                                <div wire:loading wire:target='foto_fachada'
+                                                    class="alert alert-primary" role="alert">
                                                     <strong>Imagen cargando!</strong>
                                                     <span>En un momento se
                                                         vizualizara su imagen.</span>
                                                 </div>
                                                 @if ($foto_fachada)
-                                                <img class="img-thumbnail h-10 w-10"
-                                                    src="{{ $foto_fachada->temporaryUrl() }}" />
-
+                                                    <img class="img-thumbnail h-10 w-10"
+                                                        src="{{ $foto_fachada->temporaryUrl() }}" />
                                                 @endif
 
                                             </td>
@@ -725,23 +764,27 @@
                                             <td>
                                                 <input type="file" id="foto_accesos" style="display: none;"
                                                     wire:model='foto_accesos'>
-                                                <button type="button" class="btn btn-primary" wire:click='subirImagen'
+                                                <button type="button" class="btn btn-primary"
+                                                    wire:click='subirImagen'
                                                     onclick="document.getElementById('foto_accesos').click();">
-                                                    @if ($foto_accesos=='') Seleccionar Imagen @else Cambiar Imagen @endif
+                                                    @if ($foto_accesos == '')
+                                                        Seleccionar Imagen
+                                                    @else
+                                                        Cambiar Imagen
+                                                    @endif
                                                 </button>
                                             </td>
                                             <td>
 
-                                                <div wire:loading wire:target='foto_accesos' class="alert alert-primary"
-                                                    role="alert">
+                                                <div wire:loading wire:target='foto_accesos'
+                                                    class="alert alert-primary" role="alert">
                                                     <strong>Imagen cargando!</strong>
                                                     <span>En un momento se
                                                         vizualizara su imagen.</span>
                                                 </div>
                                                 @if ($foto_accesos)
-                                                <img class="img-thumbnail h-10 w-10"
-                                                    src="{{ $foto_accesos->temporaryUrl() }}" />
-
+                                                    <img class="img-thumbnail h-10 w-10"
+                                                        src="{{ $foto_accesos->temporaryUrl() }}" />
                                                 @endif
                                             </td>
                                         </tr>
@@ -750,9 +793,14 @@
                                             <td>
                                                 <input type="file" id="foto_seguridad" wire:model='foto_seguridad'
                                                     style="display: none;">
-                                                <button type="button" class="btn btn-primary" wire:click='subirImagen'
+                                                <button type="button" class="btn btn-primary"
+                                                    wire:click='subirImagen'
                                                     onclick="document.getElementById('foto_seguridad').click();">
-                                                    @if ($foto_seguridad=='') Seleccionar Imagen @else Cambiar Imagen @endif
+                                                    @if ($foto_seguridad == '')
+                                                        Seleccionar Imagen
+                                                    @else
+                                                        Cambiar Imagen
+                                                    @endif
                                                 </button>
                                             </td>
                                             <td>
@@ -764,9 +812,8 @@
                                                         vizualizara su imagen.</span>
                                                 </div>
                                                 @if ($foto_seguridad)
-                                                <img class="img-thumbnail h-10 w-10"
-                                                    src="{{ $foto_seguridad->temporaryUrl() }}" />
-
+                                                    <img class="img-thumbnail h-10 w-10"
+                                                        src="{{ $foto_seguridad->temporaryUrl() }}" />
                                                 @endif
                                             </td>
                                         </tr>
@@ -788,9 +835,37 @@
 
 
     @push('js')
+        <script>
+            document.addEventListener('livewire:initialized', () => {
 
-    <script>
-        $(document).ready(function() {
+
+                Livewire.on('success', function(message) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: message,
+                        showConfirmButton: true,
+                        timer: 2500
+                    })
+                    $('#modalRpt').modal('hide');
+                });
+
+
+
+
+            });
+
+
+            $(document).ready(function() {
+                //limpiar datos de los detalles
+                $('#modalDetalles').on('hidden.bs.modal', function() {
+                    @this.dispatch('limpiar');
+                });
+                $('#modalRpt').on('hidden.bs.modal', function() {
+                    @this.dispatch('limpiar');
+                });
+
+
+
                 var pregunta1otro = $("#pregunta1otro");
                 var pregunta1text = $("#pregunta1text");
 
@@ -803,7 +878,7 @@
                         pregunta1text.show(); // Mostrar el campo de texto si OTROS está marcado
                     } else {
                         pregunta1text.val('')
-                    .hide(); // Borrar el contenido del campo y ocultarlo si OTROS no está marcado
+                            .hide(); // Borrar el contenido del campo y ocultarlo si OTROS no está marcado
                     }
                 });
 
@@ -813,7 +888,7 @@
                         pregunta1text.show(); // Mostrar el campo de texto si OTROS está marcado
                     } else {
                         pregunta1text.val('')
-                    .hide(); // Borrar el contenido del campo y ocultarlo si OTROS no está marcado
+                            .hide(); // Borrar el contenido del campo y ocultarlo si OTROS no está marcado
                     }
                 });
 
@@ -830,7 +905,7 @@
                         pregunta4text.show(); // Mostrar el campo de texto si Otros está marcado
                     } else {
                         pregunta4text.val('')
-                    .hide(); // Borrar el contenido del campo y ocultarlo si Otros no está marcado
+                            .hide(); // Borrar el contenido del campo y ocultarlo si Otros no está marcado
                     }
                 });
 
@@ -840,7 +915,7 @@
                         pregunta4text.show(); // Mostrar el campo de texto si Otros está marcado
                     } else {
                         pregunta4text.val('')
-                    .hide(); // Borrar el contenido del campo y ocultarlo si Otros no está marcado
+                            .hide(); // Borrar el contenido del campo y ocultarlo si Otros no está marcado
                     }
                 });
 
@@ -860,7 +935,7 @@
                         pregunta8cual_label.show();
                     } else {
                         pregunta8cual.val('')
-                    .hide(); // Ocultar el campo de texto si la opción Otros no está seleccionada
+                            .hide(); // Ocultar el campo de texto si la opción Otros no está seleccionada
                         pregunta8cual_label.hide();
                     }
                 });
@@ -875,11 +950,11 @@
                 $("#pregunta85, input[name='pregunta8-5']").on("change", function() {
                     if ($("#pregunta85").is(":checked")) {
                         pregunta85nombrecorporacion
-                    .show(); // Mostrar el campo de texto si la opción "SI" está seleccionada
+                            .show(); // Mostrar el campo de texto si la opción "SI" está seleccionada
                         corporación.show();
                     } else {
                         pregunta85nombrecorporacion.val('')
-                    .hide(); // Ocultar el campo de texto si la opción "NO" está seleccionada
+                            .hide(); // Ocultar el campo de texto si la opción "NO" está seleccionada
                         corporación.hide();
                     }
                 });
@@ -897,11 +972,11 @@
                         pregunta10_5.show(); // Mostrar el campo de texto si la opción "Otros" está seleccionada
                     } else {
                         pregunta10_5
-                    .hide(); // Ocultar el campo de texto si la opción "Otros" no está seleccionada
+                            .hide(); // Ocultar el campo de texto si la opción "Otros" no está seleccionada
                     }
                 });
             });
-    </script>
+        </script>
     @endpush
 
 </div>

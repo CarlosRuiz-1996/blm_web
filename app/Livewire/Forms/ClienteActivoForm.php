@@ -119,6 +119,8 @@ class ClienteActivoForm extends Form
         $this->materno = $cliente->user->materno;
         $this->puesto = $cliente->puesto;
 
+        
+
         $this->cp = $cliente->cp->cp;
         $this->ctg_cp_id = $cliente->cp->id;
         $this->municipio = $cliente->cp->municipio->municipio;

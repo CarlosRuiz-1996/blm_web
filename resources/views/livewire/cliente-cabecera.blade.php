@@ -14,10 +14,8 @@
                 <h5><b>Correo: </b>{{ $cliente->user->email }}.</h5>
                 <h5>
                     <b>Dirección: </b>
-                    {{ $cliente->direccion }}
-                    {{ $cliente->cp->cp }}
-                    {{ $cliente->cp->municipio->municipio }},
-                    {{ $cliente->cp->estado->name }}.
+                    {{ $direccion_completa }}
+                   
                 </h5>
 
             </div>

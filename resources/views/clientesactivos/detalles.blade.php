@@ -17,10 +17,7 @@
                     <h5><b>RFC: </b>{{$cliente->rfc_cliente}}.</h5>
                     <h5>
                         <b>Dirección: </b>
-                        {{$cliente->direccion}}
-                        {{$cliente->cp->cp}}
-                        {{$cliente->cp->municipio->municipio}},
-                        {{$cliente->cp->estado->name}}.
+                        {{$direccion_completa}}.
                     </h5>
                     <h5><b>Telefono: </b>{{$cliente->phone}}.</h5>
                 </div>

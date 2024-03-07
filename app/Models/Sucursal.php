@@ -33,4 +33,16 @@ class Sucursal extends Model
     {
         return $this->hasMany(SucursalServicio::class, 'sucursal_id');
     }
+
+    public function cp()
+    {
+        return $this->belongsTo(Ctg_Cp::class, 'ctg_cp_id');
+    }
+
+    public function cliente(){
+        return $this->belongsTo(Cliente::class, 'cliente_id');
+
+    }
+
+    
 }
