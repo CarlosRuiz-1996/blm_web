@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\altaValidaCumplimiento;
 use App\Http\Controllers\Anexo1;
 use App\Http\Controllers\BitacoraController;
+use App\Http\Controllers\boveda;
 use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\ClientesActivosController;
 use App\Http\Controllers\Factibilidad;
@@ -54,6 +56,12 @@ Route::get('/clientesactivos/detalles/{cliente}', [ClientesActivosController::cl
 Route::get('/clientesactivos/editar/{cliente}', [ClientesActivosController::class, 'edit'])->name('cliente.edit');
 
 Route::get('/ventas', [ventasController::class, 'indexventas']);
+Route::get('/ventas/altaSolicitudCumplimiento/{id}', [ventasController::class, 'altaSolicitudCumplimiento'])->name('clientesactivos.altaSolicitudCumplimiento');
+Route::get('/clientesactivos/CotizacionesNuevas', [ClientesActivosController::class, 'CotizacionesNuevas'])->name('clientesactivos.CotizacionesNuevas');
+Route::get('/clientesactivos/cotizardenuevo/{id}', [ClientesActivosController::class, 'cotizardenuevo'])->name('clientesactivos.cotizardenuevo');
+
+
+Route::get('/cumplimiento/altaValidaCumplimiento', [altaValidaCumplimiento::class, 'index']);
 
 
 //admin
@@ -68,6 +76,9 @@ Route::get('/admin/catalogos', [CatalogosController::class,'index'])->name('cata
 
 // anexo 1
 Route::get('ventas/anexo1/{cotizacion}',[Anexo1::class, 'index'])->name('anexo.index');
+
+// boveda
+Route::get('boveda/',[boveda::class, 'index'])->name('boveda.index');
 
 //factibilidad
 Route::get('seguridad/',[Factibilidad::class, 'index'])->name('seguridad.index');
@@ -84,4 +95,7 @@ Livewire::setUpdateRoute(function ($handle) {
 
 Livewire::setScriptRoute(function ($handle) {
     return Route::get('/livewire/livewire.js', $handle);
+
+
+
 });

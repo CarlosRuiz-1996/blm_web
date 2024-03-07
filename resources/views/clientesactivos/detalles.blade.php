@@ -38,7 +38,7 @@
                             <a class="btn btn-primary btn-block">Cotización</a>
                         </div>
                         <div class="col-md-12 mb-3">
-                            <a href="{{route('cliente.edit',$cliente)}}" class="btn btn-secondary btn-block">Editar</a>
+                            <a href="{{route('cliente.edit',$cliente->id)}}" class="btn btn-secondary btn-block">Editar</a>
                         </div>
                     </div>
                 </div>
@@ -72,22 +72,10 @@
                     <div class="tab-content" id="custom-tabs-one-tabContent">
                         <div class="tab-pane fade show active" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
                             <div class="mb-3 d-flex justify-content-end">
-                                <button class="btn btn-primary">Editar Expediente</button>
+                                <a href="{{route('clientesactivos.altaSolicitudCumplimiento',$cliente)}}" class="btn btn-primary">Editar Expediente</a>
                             </div>
-                            <div class="table-responsive">
-                            <table class="table">
-                                <thead class="table-primary">
-                                    <tr>
-                                        <th>Documentos</th>
-                                        <th>Archivo</th>
-                                        <th>Vista Previa</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Aquí irán los datos de tu tabla -->
-                                </tbody>
-                            </table>  
-                            </div> 
+                            
+                            @livewire('tabla-documentos', ['cliente' => $cliente])
                         </div>
                         <div class="tab-pane fade" id="custom-tabs-one-servicios" role="tabpanel" aria-labelledby="custom-tabs-one-servicios-tab">
                             <div class="row">
@@ -110,7 +98,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <!-- Aquí irán los datos de tu tabla -->
+
                                             </tbody>
                                         </table>  
                                         </div> 

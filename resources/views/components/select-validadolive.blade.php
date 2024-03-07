@@ -2,7 +2,7 @@
 
 <div class="form-group">
     <label for="{{ $attributes->get('id') }}">{{ $label }}</label>
-    <select class="form-control @error($wireModel) is-invalid @enderror" id="{{ $attributes->get('id') }}" wire:model="{{ $wireModel }}" @if($required) required @endif>
+    <select class="form-control @error($wireModel) is-invalid @enderror" id="{{ $attributes->get('id') }}" wire:model.live="{{ $wireModel }}" @if($required) required @endif>
         <option value="0"  selected>{{ $placeholder }}</option>
         {{ $slot }}
     </select>
