@@ -95,4 +95,7 @@ Livewire::setUpdateRoute(function ($handle) {
 
 Livewire::setScriptRoute(function ($handle) {
     return Route::get('/livewire/livewire.js', $handle);
+
+
+
 });
