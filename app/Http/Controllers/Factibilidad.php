@@ -2,28 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cliente;
-use App\Models\Sucursal;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Anexo1;
+
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class Factibilidad extends Controller
 {
-    public function index(){
-        $solicitudes  = DB::select("
-        SELECT cliente_id, MAX(s.created_at) as max_created_at, c.razon_social, c.rfc_cliente
-        FROM sucursal s
-        INNER JOIN clientes c ON c.id = s.cliente_id
-        GROUP BY cliente_id, c.razon_social, c.rfc_cliente
-    ");
-        
-        return view('seguridad.segiridad-index',compact('solicitudes'));
+    public function index()
+    {
+        $solicitudes  = Anexo1::where('status_anexo', 1)->get();
+        $procesos  = Anexo1::where('status_anexo', 2)->get();
+        $terminados  = Anexo1::where('status_anexo', 3)->get();
+
+        return view('seguridad.segiridad-index', compact('solicitudes', 'procesos', 'terminados'));
     }
 
-    public function reporte(Cliente $cliente){
-        return view('seguridad.reporte-create', compact('cliente'));
+    public function reporte(Anexo1 $anexo)
+    {
+
+        return view('seguridad.reporte-create', compact('anexo'));
     }
 
+    public function showPDF()
+    {
+        $data = [
+            'title' => 'Ejemplo de PDF',
+            'content' => 'Este es un ejemplo de contenido para el PDF.',
+        ];
 
-    
+        $pdf = Pdf::loadView('seguridad.reporte-pdf', $data);
+
+        // return $pdf->download('ejemplo.pdf');
+        return $pdf->stream('ejemplo.pdf');
+
+    }
 }

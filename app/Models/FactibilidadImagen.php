@@ -9,6 +9,6 @@ class FactibilidadImagen extends Model
 {
     use HasFactory;
     protected $table = 'factibilidad_img';
-    protected $fillable = ['imagen', 'factibilidad_id'];
+    protected $fillable = ['imagen', 'factibilidad_rpt_id'];
 
 }

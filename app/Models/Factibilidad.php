@@ -13,10 +13,12 @@ class Factibilidad extends Model
         'cliente_id',
         'user_id',
         'status_factibilidad',
+        'anexo1_id'
     ];
 
-    public function image()
+    public function user()
     {
-        return $this->hasMany(FactibilidadImagen::class, 'factibilidad_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
+    
 }

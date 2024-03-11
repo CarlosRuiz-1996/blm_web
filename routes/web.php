@@ -82,8 +82,8 @@ Route::get('boveda/',[boveda::class, 'index'])->name('boveda.index');
 
 //factibilidad
 Route::get('seguridad/',[Factibilidad::class, 'index'])->name('seguridad.index');
-Route::get('seguridad/reporte/{cliente}',[Factibilidad::class, 'reporte'])->name('seguridad.reporte');
-
+Route::get('seguridad/reporte/{anexo}',[Factibilidad::class, 'reporte'])->name('seguridad.reporte');
+Route::get('seguridad/reportePDF',[Factibilidad::class,'showPDF'])->name('seguridad.pdf');
 //memorandum
 Route::get('ventas/memorandum/{cotizacion}',[MemorandumController::class,'create'])->name('ventas.memorandum');
 //rutas para livewire

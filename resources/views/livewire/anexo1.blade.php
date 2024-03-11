@@ -76,11 +76,8 @@
                                                             <i class="fa fa-lg fa-fw fa-info-circle"></i>
                                                         </button>
                                                     @else
-                                                        
-
-                                                            <button class="btn btn-xs btn-default text-primary mx-1 shadow"
-                                                            title="Detalles de la sucursal"
-                                                            data-toggle="modal"
+                                                        <button class="btn btn-xs btn-default text-primary mx-1 shadow"
+                                                            title="Detalles de la sucursal" data-toggle="modal"
                                                             wire:click="getSucursales({{ $servicioId }})"
                                                             data-target="#modalElegir">
                                                             <i class="fa fa-lg fa-fw fa-plus"></i>
@@ -387,15 +384,29 @@
                 // console.log('El modal se ha cerrado');
                 @this.dispatch('limpiar');
             });
-            Livewire.on('error', function(message) {
+            Livewire.on('error', function([message]) {
 
-                Swal.fire({
-                    icon: 'error',
-                    title: message,
-                    showConfirmButton: false,
-                    timer: 3000
-                });
 
+
+                if (message[1]) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: message[0],
+                        showConfirmButton: true,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/ventas';
+                        }
+                    });
+                } else {
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: message[0],
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
             });
 
 

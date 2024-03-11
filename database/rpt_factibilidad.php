@@ -47,7 +47,7 @@ return new class extends Migration
             $table->smallInteger('tipodezona')->nullable();
             $table->smallInteger('conviene')->nullable();
 
-            $table->smallInteger('observaciones')->nullable();
+            $table->text('observaciones')->nullable();
            
             $table->integer('status_factibilidad_rpt')->default(1);
             $table->timestamps();

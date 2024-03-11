@@ -29,8 +29,10 @@ class FactibilidadRpt extends Model
         'armados',
         'corporacion_armados',
         'alarma',
+        'tiposenial',
         'otros_tiposenial',
         'tipoderespuesta',
+        'tipodefalla',
         'camaras',
         'cofre',
         'descripcion_asalto',
@@ -40,5 +42,17 @@ class FactibilidadRpt extends Model
         'status_factibilidad_rpt',
     ];
 
-   
+    public function image()
+    {
+        return $this->hasMany(FactibilidadImagen::class, 'factibilidad_rpt_id');
+    }
+    public function horario()
+    {
+        return $this->belongsTo(Ctg_Horario_Servicio::class, 'horarioservicio');
+    }
+
+    public function factibilidad()
+    {
+        return $this->belongsTo(Factibilidad::class, 'factibilidad_id');
+    }
 }

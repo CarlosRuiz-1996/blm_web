@@ -4,7 +4,9 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-    <h1 class="ml-2">Solicitudes de reporte de factibilidad</h1>
+    <h1 class="ml-2">
+
+        Solicitudes de reporte de factibilidad</h1>
 @stop
 @section('content')
     <div class="container-fluid">
@@ -38,7 +40,6 @@
 
                                     @php
                                         $heads = [
-                                            
                                             ['label' => 'ID Cliente', 'width' => 10],
                                             'Razón social',
                                             'RFC',
@@ -56,21 +57,19 @@
                                     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config"
                                         head-theme="dark" striped hoverable bordered compressed>
                                         @foreach ($solicitudes as $solicitud)
-                                            
-                                                <tr>
-                                                    <td>{{ $solicitud->cliente_id }}</td>
-                                                    <td>{{ $solicitud->razon_social }}</td>
-                                                    <td>{{ $solicitud->rfc_cliente }}</td>
-                                                    <td>
-                                                        {{ $solicitud->max_created_at }}
-                                                    </td>
-                                                    <td>
-                                                        <a href="{{ route('seguridad.reporte', $solicitud->cliente_id) }}"
-                                                            class="btn btn-primary">
-                                                            Iniciar
-                                                        </a>
-                                                    </td>
-                                                </tr>
+                                            <tr>
+                                                <td>{{ $solicitud->id }}</td>
+                                                <td>{{ $solicitud->cliente->razon_social }}</td>
+                                                <td>{{ $solicitud->cliente->rfc_cliente }}</td>
+                                                <td>{{ $solicitud->created_at }}</td>
+
+                                                <td>
+                                                    <a href="{{ route('seguridad.reporte', $solicitud->id) }}"
+                                                        class="btn btn-primary">
+                                                        Iniciar
+                                                    </a>
+                                                </td>
+                                            </tr>
                                         @endforeach
 
 
@@ -102,7 +101,21 @@
 
                                     <x-adminlte-datatable id="table2" :heads="$heads" :config="$config"
                                         head-theme="dark" striped hoverable bordered compressed>
-                                      
+                                        @foreach ($procesos as $proceso)
+                                            <tr>
+                                                <td>{{ $proceso->id }}</td>
+                                                <td>{{ $proceso->cliente->razon_social }}</td>
+                                                <td>{{ $proceso->cliente->rfc_cliente }}</td>
+                                                <td>{{ $proceso->created_at }}</td>
+
+                                                <td>
+                                                    <a href="{{ route('seguridad.reporte', $proceso->id) }}"
+                                                        class="btn btn-warning">
+                                                        Continiar llenando
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
 
                                     </x-adminlte-datatable>
                                 </div>
@@ -128,8 +141,23 @@
 
                                     <x-adminlte-datatable id="table3" :heads="$heads" :config="$config"
                                         head-theme="dark" striped hoverable bordered compressed>
-                                      
 
+                                        @foreach ($terminados as $terminado)
+                                            
+                                        <tr>
+                                            <td>{{ $terminado->id }}</td>
+                                            <td>{{ $terminado->cliente->razon_social }}</td>
+                                            <td>{{ $terminado->cliente->rfc_cliente }}</td>
+                                            <td>{{ $terminado->created_at }}</td>
+                                           
+                                            <td>
+                                                <a href="{{ route('seguridad.reporte', $terminado->id) }}"
+                                                    class="btn btn-warning">
+                                                    Ver reportes
+                                                </a>
+                                            </td> 
+                                        </tr>
+                                @endforeach
 
 
                                     </x-adminlte-datatable>

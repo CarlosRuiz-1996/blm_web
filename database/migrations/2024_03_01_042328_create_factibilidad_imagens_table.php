@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('factibilidad_img', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('factibilidad_id')->nullable();
-            $table->foreign('factibilidad_id')->references('id')->on('factibilidad')->onDelete('cascade');
+            $table->unsignedBigInteger('factibilidad_rpt_id')->nullable();
+            $table->foreign('factibilidad_rpt_id')->references('id')->on('factibilidad_rpt')->onDelete('cascade');
             $table->string('imagen');
             $table->integer('status_factibilidad_img')->default(1);
 
