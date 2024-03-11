@@ -6,24 +6,24 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <x-input-validado label="Razón Social:" placeholder="Ingrese la Razón Social"
+                                <x-input-validado :readonly="true" label="Razón Social:" placeholder="Ingrese la Razón Social"
                                     wire-model="razonSocial" wire-attribute="razonSocial" type="text" />
                             </div>
                             <div class="col-md-4 mb-3">
-                                <x-input-validado label="RFC" placeholder="Ingrese el rfc" wire-model="rfc"
+                                <x-input-validado :readonly="true" label="RFC" placeholder="Ingrese el rfc" wire-model="rfc"
                                     wire-attribute="rfc" type="text" />
                             </div>
                             <div class="col-md-4 mb-3">
-                                <x-input-validado label="Tipo de cliente:" placeholder="Ingrese tipo de cliente"
+                                <x-input-validado :readonly="true" label="Tipo de cliente:" placeholder="Ingrese tipo de cliente"
                                     wire-model="ctg_tipo_cliente_id" wire-attribute="ctg_tipo_cliente_id" type="text" />
                             </div>
                             <div class="col-md-6 mb-3">
-                                <x-input-validado label="Nombre del contacto:"
+                                <x-input-validado :readonly="true" label="Nombre del contacto:"
                                     placeholder="Ingrese el Nombre del Contacto" wire-model="nombreContacto"
                                     wire-attribute="nombreContacto" type="text" />
                             </div>
                             <div class="col-md-6 mb-3">
-                                <x-input-validado label="Puesto:" placeholder="Ingrese el Puesto" wire-model="puesto"
+                                <x-input-validado :readonly="true" label="Puesto:" placeholder="Ingrese el Puesto" wire-model="puesto"
                                     wire-attribute="puesto" type="text" />
                             </div>
                         </div>
@@ -50,8 +50,30 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach($documentosexpediente as $documento)
+                                            <tr>
+                                                <td>{{ $documento->name }}</td>
+                                                <td>{{ $documento->document_name }}</td>
+                                                <td>
+                                                    <!-- Aquí debes colocar el enlace o el método para la vista previa -->
+                                                    <a href="">Vista Previa</a>
+                                                </td>
+                                                <td>
+                                                    <!-- Input para marcar si cumple -->
+                                                   <input class="form-control" wire:model.live="cumple.{{ $documento->id }}" type="radio" value="1">
+                                                </td>
+                                                <td>
+                                                    <!-- Input para marcar si no cumple -->
+                                                   <input class="form-control" wire:model.live="cumple.{{ $documento->id }}" type="radio" value="0">
+                                                </td>
+                                                <td>
+                                                    <!-- Campo de texto para observaciones -->
+                                                    <textarea wire:model.live="nota.{{ $documento->id }}" type="text" name="" class="form-control"></textarea>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
-                                </table>
+                                </table>                                
                             </div>
                         </div>
                     </div>

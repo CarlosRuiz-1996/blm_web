@@ -6,6 +6,7 @@ use App\Http\Controllers\BitacoraController;
 use App\Http\Controllers\boveda;
 use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\ClientesActivosController;
+use App\Http\Controllers\cumplimientoController;
 use App\Http\Controllers\Factibilidad;
 use App\Http\Controllers\MemorandumController;
 use App\Http\Controllers\PermisosController;
@@ -39,7 +40,7 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::get('/usuarios/', [UsuariosController::class, 'index'])->name('user.index');
+Route::get('/usuarios', [UsuariosController::class, 'index'])->name('user.index');
 Route::get('/usuarios/nuevo', [UsuariosController::class, 'nuevousuario'])->name('user.create');
 Route::post('/usuarios/save', [UsuariosController::class, 'store'])->name('user.store');
 Route::get('/usuarios/actualizar/{user}', [UsuariosController::class, 'actualizarusuario'])->name('user.edit');
@@ -60,8 +61,8 @@ Route::get('/ventas/altaSolicitudCumplimiento/{id}', [ventasController::class, '
 Route::get('/clientesactivos/CotizacionesNuevas', [ClientesActivosController::class, 'CotizacionesNuevas'])->name('clientesactivos.CotizacionesNuevas');
 Route::get('/clientesactivos/cotizardenuevo/{id}', [ClientesActivosController::class, 'cotizardenuevo'])->name('clientesactivos.cotizardenuevo');
 
-
-Route::get('/cumplimiento/altaValidaCumplimiento', [altaValidaCumplimiento::class, 'index']);
+Route::get('/cumplimiento/altaValidaCumplimiento/{id}', [altaValidaCumplimiento::class, 'index'])->name('altaValidaCumplimiento.index');
+Route::get('/cumplimiento', [cumplimientoController::class, 'index'])->name('cumplimiento.index');
 
 
 //admin

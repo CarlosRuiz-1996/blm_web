@@ -11,6 +11,7 @@ use App\Models\Ctg_Municipio;
 use App\Models\ctg_precio_servicio;
 use App\Models\ctg_servicios;
 use App\Models\Ctg_Tipo_Cliente;
+use App\Models\cumplimiento;
 use App\Models\expediente_digital;
 use App\Models\expediente_documento_beneficiario;
 use App\Models\expediente_documentos;
@@ -150,7 +151,7 @@ public function cargarDocumentosExpedienteBene()
         ]);
     
         $nombre = ctg_documentos::where('id', $this->documentoid)->first();
-    
+        DB::transaction(function () use ($nombre) {
         // Almacenar el archivo en la carpeta especificada y obtener la ruta
         $nombreLimpio = preg_replace('/[^\p{L}\p{N}]+/u', '_', $nombre->name);
         $this->documentoSelec->storeAs(path: 'documentos/'.$this->rfc, name: $nombreLimpio.'.pdf');
@@ -166,6 +167,13 @@ public function cargarDocumentosExpedienteBene()
                 'fecha_solicitud' => now(), // Puedes ajustar la fecha según tus necesidades
                 'cliente_id' => $this->id,
                 'status_expediente_digital' => 1,
+            ]);
+            cumplimiento::create([
+                'expediente_digital_id' =>  $expedienteDigital->id,
+                'dictamen' => 0,
+                'fecha_dictamen' => now(), // Puedes ajustar la fecha según tus necesidades
+                'status_cumplimiento' => 1,
+                
             ]);
         }
     
@@ -190,6 +198,7 @@ public function cargarDocumentosExpedienteBene()
             ]);
         }
         $this->cargarDocumentosExpediente();
+    });
     }
     public function agregarArchivoBeneficiario()
     {
@@ -198,6 +207,7 @@ public function cargarDocumentosExpedienteBene()
         ]);
     
         $nombredoc=ctg_documentos_beneficiarios::where('id',$this->documentoidbene)->first();
+        DB::transaction(function () use ($nombredoc) {
         $nombreLimpio = preg_replace('/[^\p{L}\p{N}]+/u', '_', $nombredoc->name);
         $this->documentoSelecbene->storeAs(path: 'documentos/' . $this->rfc . '/beneficiario', name: $nombreLimpio.'.pdf');
         
@@ -212,6 +222,13 @@ public function cargarDocumentosExpedienteBene()
                 'fecha_solicitud' => now(), // Puedes ajustar la fecha según tus necesidades
                 'cliente_id' => $this->id,
                 'status_expediente_digital' => 1,
+            ]);
+            cumplimiento::create([
+                'expediente_digital_id' =>  $expedienteDigital->id,
+                'dictamen' => 0,
+                'fecha_dictamen' => null, // Puedes ajustar la fecha según tus necesidades
+                'status_cumplimiento' => 1,
+                
             ]);
         }
 
@@ -235,6 +252,7 @@ public function cargarDocumentosExpedienteBene()
                 ]);
             }
             $this->cargarDocumentosExpedienteBene();
+        });
     }
     public function updatedcheckbeneficiario()
     {
