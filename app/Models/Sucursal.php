@@ -44,5 +44,9 @@ class Sucursal extends Model
 
     }
 
+    public function factibilidades()
+    {
+        return $this->hasMany(FactibilidadRpt::class);
+    }
     
 }

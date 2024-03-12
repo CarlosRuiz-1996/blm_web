@@ -10,7 +10,7 @@ class SucursalServicio extends Model
     use HasFactory;
     
     protected $table = 'sucursal_servicio';
-    protected $fillable = ['servicio_id', 'sucursal_id', 'status_sucursal_servicio'];
+    protected $fillable = ['servicio_id', 'sucursal_id', 'status_sucursal_servicio', 'anexo1_id'];
 
     
     public function servicio()
@@ -20,7 +20,7 @@ class SucursalServicio extends Model
 
     public function sucursal()
     {
-        return $this->belongsTo(Sucursal::class, 'id');
+        return $this->belongsTo(Sucursal::class, 'sucursal_id');
     }
     
 }

@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('factibilidad_img', function (Blueprint $table) {
+        Schema::create('anexo1', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('factibilidad_rpt_id')->nullable();
-            $table->foreign('factibilidad_rpt_id')->references('id')->on('factibilidad_rpt')->onDelete('cascade');
-            $table->string('imagen');
-            $table->integer('status_factibilidad_img')->default(1);
-
+            //al cliente 
+            $table->unsignedBigInteger('cliente_id')->nullable();
+            $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('cascade');
+            $table->integer('status_anexo')->default(1);
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('factibilidad_img');
+        Schema::dropIfExists('anexo1');
     }
 };

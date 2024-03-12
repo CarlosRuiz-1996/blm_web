@@ -2,12 +2,14 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\Anexo1;
 use App\Models\Cotizacion;
 use App\Models\CotizacionServicio;
 use App\Models\Servicios;
 use App\Models\Sucursal;
 use App\Models\SucursalServicio;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Form;
 use Illuminate\Support\Facades\Session;
 
@@ -37,6 +39,7 @@ class AnexoForm extends Form
     //servicio-sucursal
     public $sucursal_id;
     public $servicio_id;
+    public $status_sucursal;
 
     public function validarCp()
     {
@@ -76,14 +79,15 @@ class AnexoForm extends Form
     public function store_sucursal()
     {
         $this->validate();
+        $this->status_sucursal = 0;
 
         Sucursal::create($this->only([
             'cliente_id', 'ctg_cp_id', 'direccion', 'referencias',
-            'sucursal', 'contacto', 'cargo', 'correo', 'phone', 'fecha_evaluacion', 'fecha_inicio_servicio'
+            'sucursal', 'contacto', 'cargo', 'correo', 'phone', 'fecha_evaluacion', 'fecha_inicio_servicio', 'status_sucursal'
         ]));
         $this->reset([
             'ctg_cp_id', 'direccion', 'referencias',
-            'sucursal', 'contacto', 'cargo', 'correo', 'phone', 'fecha_evaluacion', 'fecha_inicio_servicio', 'cp'
+            'sucursal', 'contacto', 'cargo', 'correo', 'phone', 'fecha_evaluacion', 'fecha_inicio_servicio', 'cp', 'status_sucursal'
         ]);
     }
 
@@ -120,14 +124,14 @@ class AnexoForm extends Form
             WHERE cp LIKE CONCAT('%', " . $sucursal['cp']['cp'] . " , '%')
         ");
 
-        $colonia='';
+        $colonia = '';
         foreach ($codigo as $c) {
             if ($sucursal['ctg_cp_id'] == $c->id) {
                 $colonia = $c->colonia;
             }
         }
 
-        $this->direccion_completa = 'Calle ' . $sucursal['direccion'] .', Colonia '.$colonia. ', '.$sucursal['cp']['cp'].' ' . $codigo[0]->municipio . ' ' . $codigo[0]->name;
+        $this->direccion_completa = 'Calle ' . $sucursal['direccion'] . ', Colonia ' . $colonia . ', ' . $sucursal['cp']['cp'] . ' ' . $codigo[0]->municipio . ' ' . $codigo[0]->name;
     }
     public function updated($propertyName)
     {
@@ -139,21 +143,44 @@ class AnexoForm extends Form
         return Sucursal::find($this->sucursal_id);
     }
 
-    //relacion de sucursales y servicios
+    //guardar relacion de sucursales y servicios
     public function store()
     {
-        //guardar productos y comidas para el cliente
-        $servcios = Session::get('servicio-sucursal', []);
 
-        if (count($servcios)) {
+        try {
+            DB::beginTransaction();
+
+            $anexo1 = Anexo1::create(['cliente_id' => $this->cliente_id]);
+            //array donde se guarda la relacion de sucursales y servicios
+            $servcios = Session::get('servicio-sucursal', []);
             foreach ($servcios as $servicio) {
                 SucursalServicio::create([
                     'servicio_id' => $servicio['servicio_id'],
                     'sucursal_id' => $servicio['sucursal_id'],
+                    'anexo1_id' => $anexo1->id
                 ]);
+                $sucursalIds[] = $servicio['sucursal_id'];
             }
-        }
+            // Buscar todas las sucursales involucradas de una vez
+            $sucursales = Sucursal::whereIn('id', $sucursalIds)->get();
+            // Actualizar el estatus de cada sucursal
+            foreach ($sucursales as $sucursal) {
+                $sucursal->status_sucursal = 1;
+                // Forzamos un error para probar el manejo de errores
+                // if (true) { // Cambia esta condición a false para forzar el error
+                //     throw new \Exception("Error forzado para probar el manejo de errores");
+                // }
+                $sucursal->save();
+            }
 
-        $this->reset();
+            DB::commit();
+            $this->reset();
+            return 1;
+        } catch (\Exception $e) {
+            $this->reset();
+            DB::rollBack();
+
+            return 0;
+        }
     }
 }

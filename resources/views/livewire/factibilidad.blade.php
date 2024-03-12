@@ -4,7 +4,7 @@
         <div class="row">
             {{-- cabecera --}}
             <div class="col-md-12">
-                <livewire:cliente-cabecera :cliente="$cliente" />
+                <livewire:cliente-cabecera :cliente="$form->cliente_id" />
             </div>
             {{-- sucursales --}}
             <div class="col-md-12">
@@ -13,9 +13,9 @@
                         <table class="table table-striped table-bordered">
                             <thead class="table-info">
                                 <th>PDA</th>
+                                <th>Tipo de servicio</th>
                                 <th>Sucursal</th>
                                 <th>Domicilio</th>
-                                <th>Tipo de servicio</th>
                                 <th>Detalles</th>
                                 <th>Repote</th>
                             </thead>
@@ -23,33 +23,42 @@
                                 @foreach ($sucursales as $sucursal)
                                     <tr>
 
-                                        @foreach ($sucursal->sucursal_servicio as $sucursal_servicio)
-                                            <td>{{ $sucursal_servicio->servicio->ctg_servicio->folio }}</td>
-                                        @endforeach
 
-                                        <td>{{ $sucursal->sucursal }}</td>
-                                        <td>
-                                            {{ $sucursal->ctg_cp_id }}
+                                        <td>{{ $sucursal->servicio->ctg_servicio->folio }}</td>
+                                        <td>{{ $sucursal->servicio->ctg_servicio->descripcion }}</td>
+                                        <td>{{ $sucursal->sucursal->sucursal }}</td>
+                                        <td>{{ $sucursal->sucursal->direccion .
+                                            ' ' .
+                                            $sucursal->sucursal->cp->cp .
+                                            ' ' .
+                                            $sucursal->sucursal->cp->estado->name .
+                                            ' ' }}
                                         </td>
-                                        @foreach ($sucursal->sucursal_servicio as $sucursal_servicio)
-                                            <td>{{ $sucursal_servicio->servicio->ctg_servicio->tipo }}</td>
-                                        @endforeach
+
 
                                         <td class="text-center">
 
-
                                             <button class="btn btn-xs btn-default text-primary mx-1 shadow"
                                                 title="Detalles de la sucursal" data-toggle="modal"
-                                                wire:click='DetalleSucursal({{ $sucursal }})'
+                                                wire:click='DetalleSucursal({{ $sucursal->sucursal->id }})'
                                                 data-target="#modalDetalles">
                                                 <i class="fa fa-lg fa-fw fa-info-circle"></i>
+                                            </button>
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-xs btn-default text-primary mx-1 shadow"
-                                                title="Detalles de la sucursal" data-toggle="modal"
-                                                wire:click='DetalleReporte({{ $sucursal }})'
-                                                data-target="#modalRpt">
-                                                <i class="fa fa-lg fa-fw fa-file"></i>
+                                            @if ($sucursal->sucursal->rpt_factibilidad_status == 0)
+                                                <button class="btn btn-xs btn-default text-success mx-1 shadow"
+                                                    title="LLenar reporte" data-toggle="modal"
+                                                    wire:click='DetalleReporte({{ $sucursal->sucursal->id }})'
+                                                    data-target="#modalRpt">
+                                                    <i class="fa fa-2x fa-fw fa-file"></i>
+                                                </button>
+                                            @else
+                                                <button class="btn btn-xs btn-default text-danger mx-1 shadow"
+                                                    title="Ver reporte" wire:click="showPDF({{ $sucursal->sucursal }})">
+                                                    <i class="fas fa-2x fa-file-pdf"></i>
+                                                </button>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -138,7 +147,7 @@
 
 
 
-    {{-- reporte --}}
+    {{-- reporte generar --}}
     <x-adminlte-modal wire:ignore.self id="modalRpt" title="Reporte de factibilidad" theme="info" icon="fas fa-bolt"
         size='xl' disable-animations>
 
@@ -176,8 +185,7 @@
                 <label class="control-label ">NOMBRE DEL EVALUADOR:</label>
                 <div class="">
                     <input class="form-control" type="text" style="text-transform:uppercase;"
-                    wire:model='form.evaluador'
-                        readonly>
+                        wire:model='form.evaluador' readonly>
 
                 </div>
             </div>
@@ -186,13 +194,14 @@
         {{-- nav --}}
         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link {{ $active_form }}" id="form-tab" data-toggle="pill" href="#form"
-                    role="tab" aria-controls="form" aria-selected="true">FORMULARIO</a>
+                <a class="nav-link {{ $active_form }}" wire:click='CambiarTab' id="form-tab" data-toggle="pill"
+                    href="#form" role="tab" aria-controls="form" aria-selected="true">FORMULARIO</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link {{ $active_img }}" id="img-tab" data-toggle="pill" href="#img"
-                    role="tab" aria-controls="img" aria-selected="false">FOTOGRAFIAS DEL ESTABLECIMIENTO</a>
+                <a class="nav-link {{ $active_img }}" wire:click='CambiarTab' id="img-tab" data-toggle="pill"
+                    href="#img" role="tab" aria-controls="img" aria-selected="false">FOTOGRAFIAS DEL
+                    ESTABLECIMIENTO (OPCIONAL)</a>
             </li>
             <!-- Puedes agregar más pestañas según sea necesario -->
         </ul>
@@ -269,10 +278,14 @@
 
                     <div class="form-group ml-3 col-md-5">
                         <label class="form-label">3. Dia y horario de servicio:</label>
-                        <select id="" class="form-select form-select-md mb-3"
-                            wire:model='form.horarioservicio' aria-label=".form-select-md example" required>
-                            <OPtion>LUN A VIE 18:00 A 20:00</OPtion>
-                        </select>
+                        {{-- <select class="form-control" wire:model='form.horarioservicio'>
+                            <option value="0" selected>Seleccione</option>
+                            @foreach ($horarios as $hora)
+                                <option value="{{ $hora->id }}">{{ $hora->name }}</option>
+                            @endforeach
+                        </select> --}}
+                        <input class="form-control ml-5 col-sm-8" value="1" placeholder="LUN A VIE 18:0 A 20:00"
+                            wire:model='form.horarioservicio' readonly>
                         <x-input-error for="form.horarioservicio" />
                         <label class="control-label">Numero de personas que se requieren para el servicio:</label>
                         <input class="form-control ml-5 col-sm-8" type="number"
@@ -562,19 +575,22 @@
                     <div class="form-group ml-5 col-md-5">
                         <label class="control-label">12. En caso de falla de energía eléctrica cuenta con:</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.tipodefalla'>
+                            <input class="form-check-input" type="radio" value="0"
+                                wire:model='form.tipodefalla'>
                             <label class="form-check-label">
                                 Generador de luz de emergencia
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.tipodefalla'>
+                            <input class="form-check-input" type="radio" value="1"
+                                wire:model='form.tipodefalla'>
                             <label class="form-check-label">
                                 Lámparas de iluminación de emergencia
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.tipodefalla'>
+                            <input class="form-check-input" type="radio" value="2"
+                                wire:model='form.tipodefalla'>
                             <label class="form-check-label">
                                 Bloqueos de seguridad en puertas de área segura.
                             </label>
@@ -585,19 +601,19 @@
                     <div class="form-group ml-3 col-md-5">
                         <label class="control-label">13. Cuenta con cámaras de seguridad el establecimiento:</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.camaras'>
+                            <input class="form-check-input" type="radio" value="0" wire:model='form.camaras'>
                             <label class="form-check-label">
                                 CIRCUITO CERRADO DE TELEVISIÓN
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.camaras'>
+                            <input class="form-check-input" type="radio" value="1" wire:model='form.camaras'>
                             <label class="form-check-label">
                                 VIDEOGRABACIÓN
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.camaras'>
+                            <input class="form-check-input" type="radio" value="2" wire:model='form.camaras'>
                             <label class="form-check-label">
                                 NINGUNA
                             </label>
@@ -609,13 +625,13 @@
                             renta
                             con PRO-BLM.</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.cofre'>
+                            <input class="form-check-input" type="radio" value="0" wire:model='form.cofre'>
                             <label class="form-check-label">
                                 Propio
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.cofre'>
+                            <input class="form-check-input" type="radio" value="1" wire:model='form.cofre'>
                             <label class="form-check-label">
                                 en renta
                             </label>
@@ -655,19 +671,22 @@
                             de
                             valores, de acuerdo a los siguientes parámetros:</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.tipodezona'>
+                            <input class="form-check-input" type="radio" value="0"
+                                wire:model='form.tipodezona'>
                             <label class="form-check-label">
                                 De riesgo
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.tipodezona'>
+                            <input class="form-check-input" type="radio" value="1"
+                                wire:model='form.tipodezona'>
                             <label class="form-check-label">
                                 Regular
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.tipodezona'>
+                            <input class="form-check-input" type="radio" value="2"
+                                wire:model='form.tipodezona'>
                             <label class="form-check-label">
                                 Segura
                             </label>
@@ -682,13 +701,15 @@
                             DE
                             MÉXICO S.A. DE C.V., la realización del servicio en mención.</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.conviene'>
+                            <input class="form-check-input" type="radio" value="0"
+                                wire:model='form.conviene'>
                             <label class="form-check-label">
                                 No
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" wire:model='form.conviene'>
+                            <input class="form-check-input" type="radio" value="1"
+                                wire:model='form.conviene'>
                             <label class="form-check-label">
                                 Si
                             </label>
@@ -832,6 +853,26 @@
 
     </x-adminlte-modal>
 
+    {{-- vista reporte --}}
+    <div wire:ignore class="modal fade" id="PDFModal" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Vista previa</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="idframePDF" frameborder="0" scrolling="no" width="100%" height="600px"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     @push('js')
@@ -849,9 +890,22 @@
                     $('#modalRpt').modal('hide');
                 });
 
+                Livewire.on('error', function(message) {
 
 
+                    Swal.fire({
+                        icon: 'error',
+                        title: message,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
 
+                });
+
+                Livewire.on('pdfGenerated', function(pdfBase64) {
+                    $('#PDFModal').modal('show');
+                    $('#idframePDF').attr('src', 'data:application/pdf;base64,' + pdfBase64[0]);
+                });
             });
 
 

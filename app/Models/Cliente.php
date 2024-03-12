@@ -42,4 +42,9 @@ class Cliente extends Model
     public function sucursales (){
         return $this->hasMany(Sucursal::class, 'cliente_id');
     }
+
+    public function anexo1()
+    {
+        return $this->hasMany(Anexo1::class, 'cliente_id');
+    }
 }

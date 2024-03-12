@@ -64,7 +64,7 @@ class Anexo1 extends Component
         $this->sucursales =  $this->form->getAllSucursal();
         $this->form->servicio_id = $servicio_id;
     }
-    
+
     //detalles de la sucursal
     public $sucursal_show = false;
     public function getSucursal($sucursal_id)
@@ -125,7 +125,6 @@ class Anexo1 extends Component
         $this->limpiarDatos();
 
         $this->dispatch('alert-sucursal-add', "La sucursal se modifico");
-
     }
 
     public function eliminarSucursalServicio($servicioId)
@@ -148,37 +147,39 @@ class Anexo1 extends Component
         }
         $this->limpiarDatos();
         $this->dispatch('sucursal-delete', "La sucursal se elimino");
-
     }
 
     #[On('limpiar')]
-    public function limpiarDatos(){
+    public function limpiarDatos()
+    {
         $this->form->sucursal_id = '';
         $this->form->servicio_id = '';
         $this->selectedServicioId = '';
         $this->selectedSucursalId = '';
-        $this->sucursales= '';
+        $this->sucursales = '';
         $this->form->sucursal = '';
         $this->form->correo = '';
         $this->form->phone = '';
-        $this->form->contacto = ''; 
+        $this->form->contacto = '';
         $this->form->cargo = '';
         $this->form->direccion_completa = '';
     }
     #[On('save-servicios')]
     public function save()
     {
-        // $this->dispatch('error', "No hay servicios con sucursales.");
         if (Session::has('servicio-sucursal')) {
             // dd('entra');
-            $this->form->store();
-            session()->forget('servicio-sucursal');
-            $this->dispatch('success', ["Anexo completado con exito."]);
-
+            $res = $this->form->store();
+            if ($res == 1) {
+                session()->forget('servicio-sucursal');
+                $this->dispatch('success', ["Anexo completado con exito."]);
+            } else {
+                $this->dispatch('error', ["A ocurrido un error, intente más tarde.", 1]);
+            }
         } else {
             // dd('error');
             session()->forget('servicio-sucursal');
-            $this->dispatch('error', "  No hay servicios con sucursales.");
+            $this->dispatch('error', ["No hay servicios con sucursales."]);
         }
         // return redirect()->route('roles.index')->with('success', 'Permiso eliminad con exito!');
 

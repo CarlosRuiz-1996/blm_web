@@ -5,10 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FactibilidadImagen extends Model
+class Ctg_Horario_Servicio extends Model
 {
     use HasFactory;
-    protected $table = 'factibilidad_img';
-    protected $fillable = ['imagen', 'factibilidad_rpt_id'];
+    protected $table = 'ctg_horario_servicio';
 
 }
