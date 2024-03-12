@@ -25,6 +25,7 @@ class TablaCumplimientoEnProceso extends Component
             'cmp.expediente_digital_id',
             'cmp.status_cumplimiento',
             'cl.razon_social',
+            'cl.id as cliente_id',
             DB::raw('DATE(exp.fecha_solicitud) as fecha_solicitud'),
             DB::raw('(SELECT COUNT(*) FROM expediente_documentos WHERE expediente_digital_id = exp.id) AS documentos_count'),
             DB::raw('(SELECT COUNT(*) FROM ctg_documentos WHERE ctg_tipo_cliente_id = cl.ctg_tipo_cliente_id) AS ctg_doc_total')

@@ -56,8 +56,8 @@
                                         <td class="col-md-4 text-center">{{ $item->razon_social }}</td>
                                         <td class="col-md-4 text-center">{{ $item->fecha_solicitud }}</td>
                                         <td class="col-md-2 text-center">
-                                        @if($item->status_cumplimiento == 1 && $item->documentos_count == $item->ctg_doc_total)
-                                            <a href="{{ route('nombre.ruta', ['id' => $item->expediente_digital_id]) }}">Ir a Otra Vista</a>
+                                        @if($item->status_cumplimiento == 2 && $item->documentos_count == $item->ctg_doc_total)
+                                        <a href="{{ route('altaValidaCumplimiento.index', $item->cliente_id) }}">Continuar Llenando</a>
                                             @else
                                             <h6 class="text-warning">Faltan documentos</h6>
                                         @endif
