@@ -85,7 +85,7 @@ Route::get('seguridad/',[Factibilidad::class, 'index'])->name('seguridad.index')
 Route::get('seguridad/reporte/{anexo}',[Factibilidad::class, 'reporte'])->name('seguridad.reporte');
 Route::get('seguridad/reportePDF',[Factibilidad::class,'showPDF'])->name('seguridad.pdf');
 //memorandum
-Route::get('ventas/memorandum/{cotizacion}',[MemorandumController::class,'create'])->name('ventas.memorandum');
+Route::get('ventas/memorandum/{factibilidad}',[MemorandumController::class,'create'])->name('ventas.memorandum');
 //rutas para livewire
 use Livewire\Livewire;
 

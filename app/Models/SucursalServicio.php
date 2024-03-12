@@ -22,5 +22,5 @@ class SucursalServicio extends Model
     {
         return $this->belongsTo(Sucursal::class, 'sucursal_id');
     }
-    
+  
 }

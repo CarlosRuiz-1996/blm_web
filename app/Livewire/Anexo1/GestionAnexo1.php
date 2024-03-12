@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Anexo1;
+
 
 use Livewire\Component;
 use App\Livewire\Forms\AnexoForm;
@@ -8,7 +9,7 @@ use App\Models\Cotizacion;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\Session;
 
-class Anexo1 extends Component
+class GestionAnexo1 extends Component
 {
 
     public AnexoForm $form;
@@ -28,7 +29,7 @@ class Anexo1 extends Component
     {
         $servicios = $this->form->getAllServicios($this->cotizacion->id);
 
-        return view('livewire.anexo1', compact('servicios'));
+        return view('livewire.anexo1.gestion-anexo1', compact('servicios'));
     }
 
 
@@ -169,7 +170,7 @@ class Anexo1 extends Component
     {
         if (Session::has('servicio-sucursal')) {
             // dd('entra');
-            $res = $this->form->store();
+            $res = $this->form->store($this->cotizacion);
             if ($res == 1) {
                 session()->forget('servicio-sucursal');
                 $this->dispatch('success', ["Anexo completado con exito."]);

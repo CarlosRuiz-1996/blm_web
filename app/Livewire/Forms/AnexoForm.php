@@ -144,13 +144,13 @@ class AnexoForm extends Form
     }
 
     //guardar relacion de sucursales y servicios
-    public function store()
+    public function store(Cotizacion $cotizacion)
     {
 
         try {
             DB::beginTransaction();
 
-            $anexo1 = Anexo1::create(['cliente_id' => $this->cliente_id]);
+            $anexo1 = Anexo1::create(['cliente_id' => $this->cliente_id, 'cotizacion_id'=>$cotizacion->id]);
             //array donde se guarda la relacion de sucursales y servicios
             $servcios = Session::get('servicio-sucursal', []);
             foreach ($servcios as $servicio) {
@@ -160,19 +160,26 @@ class AnexoForm extends Form
                     'anexo1_id' => $anexo1->id
                 ]);
                 $sucursalIds[] = $servicio['sucursal_id'];
+                $serviciosIds[] = $servicio['servicio_id'];
             }
             // Buscar todas las sucursales involucradas de una vez
             $sucursales = Sucursal::whereIn('id', $sucursalIds)->get();
             // Actualizar el estatus de cada sucursal
             foreach ($sucursales as $sucursal) {
                 $sucursal->status_sucursal = 1;
-                // Forzamos un error para probar el manejo de errores
-                // if (true) { // Cambia esta condición a false para forzar el error
-                //     throw new \Exception("Error forzado para probar el manejo de errores");
-                // }
-                $sucursal->save();
+                $sucursal->update();
+            }
+            // Buscar todas las servicio involucradas de una vez
+            $servicios = Servicios::whereIn('id', $serviciosIds)->get();
+            // Actualizar el estatus de cada sucursal
+            foreach ($servicios as $servicio) {
+                $servicio->status_servicio = 2;
+                $servicio->update();
             }
 
+            //actualiza la cotizacion
+            $cotizacion->status_cotizacion = 3;
+            $cotizacion->update();
             DB::commit();
             $this->reset();
             return 1;

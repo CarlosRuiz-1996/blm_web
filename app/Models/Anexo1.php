@@ -10,7 +10,7 @@ class Anexo1 extends Model
     use HasFactory;
     protected $table = 'anexo1';
     protected $fillable = [
-        'cliente_id','status_anexo'
+        'cliente_id', 'status_anexo', 'cotizacion_id'
     ];
 
     public function cliente()
@@ -20,10 +20,10 @@ class Anexo1 extends Model
 
     public function sucursal_sercio()
     {
-        return $this->hasMany(Cliente::class, 'anexo1_id');
+        return $this->hasMany(SucursalServicio::class, 'anexo1_id');
     }
 
-
+    
     public function factibilidad()
     {
         return $this->hasMany(Factibilidad::class, 'anexo1_id');

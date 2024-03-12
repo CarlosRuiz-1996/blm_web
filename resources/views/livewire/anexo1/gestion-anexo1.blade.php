@@ -5,6 +5,7 @@
             {{-- cabecera --}}
             <div class="col-md-12">
                 <livewire:cliente-cabecera :cliente="$cliente" />
+                {{-- {{$cliente}} --}}
             </div>
             {{-- servicios --}}
             <div class="col-md-12">

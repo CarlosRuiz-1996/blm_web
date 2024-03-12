@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Ctg_Horario_Servicio extends Model
+class CtgDiaServicio extends Model
 {
     use HasFactory;
-    protected $table = 'ctg_horario_servicio';
+    protected $table = 'ctg_dia_servicio';
 
 }

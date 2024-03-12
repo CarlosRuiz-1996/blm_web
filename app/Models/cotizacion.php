@@ -16,4 +16,10 @@ class Cotizacion extends Model
     {
         return $this->hasMany(CotizacionServicio::class, 'cotizacion_id');
     }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
+    }
+
 }

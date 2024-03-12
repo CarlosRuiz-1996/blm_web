@@ -20,5 +20,15 @@ class Factibilidad extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
+    }
+
+
+    public function anexo()
+    {
+        return $this->belongsTo(Anexo1::class, 'anexo1_id');
+    }
+
 }
