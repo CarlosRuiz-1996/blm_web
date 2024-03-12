@@ -208,8 +208,6 @@
                                                 @foreach ($documentosexpedienteBene as $documentobene)
                                                     @if ($documentobene->ctg_documentos_benf_id == $doca->id)
                                                     <button data-toggle="modal" data-target="#modalpdf" wire:click="openModal('documentos/{{$rfc}}/beneficiario/{{$documentobene->document_name}}')" > {{ $documentobene->document_name}}</button>
-                                                       
-                                                    </a>
                                                         @php $documentoEncontradobe = true; @endphp
                                                     @endif
                                                 @endforeach

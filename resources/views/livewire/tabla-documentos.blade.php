@@ -5,8 +5,8 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th class="col-md-5">Documento</th>
-                    <th class="col-md-4">Archivo Adjunto</th>
+                    <th class="col-md-5 text-center">Documento</th>
+                    <th class="col-md-4 text-center">Archivo Adjunto</th>
                     <th class="col-md-4 text-center">Vista Previa</th>
                 </tr>
             </thead>
@@ -41,12 +41,14 @@
             </tbody>
         </table>
     </div>
+    <h4 class="text-center">Documentos Beneficiario(Opcional)</h4>
+    <hr>
     <div class="table-responsive">
     <table class="table">
         <thead class="table-info">
             <tr>
-                <th class="col-md-5">Documento</th>
-                <th class="col-md-4">Archivo Adjunto</th>
+                <th class="col-md-5 text-center">Documento</th>
+                <th class="col-md-4 text-center">Archivo Adjunto</th>
                 <th class="col-md-4 text-center">Vista Previa</th>
             </tr>
         </thead>
