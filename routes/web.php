@@ -8,6 +8,7 @@ use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\ClientesActivosController;
 use App\Http\Controllers\cumplimientoController;
 use App\Http\Controllers\Factibilidad;
+use App\Http\Controllers\juridicoController;
 use App\Http\Controllers\MemorandumController;
 use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\RoleController;
@@ -63,6 +64,9 @@ Route::get('/clientesactivos/cotizardenuevo/{id}', [ClientesActivosController::c
 
 Route::get('/cumplimiento/altaValidaCumplimiento/{id}', [altaValidaCumplimiento::class, 'index'])->name('altaValidaCumplimiento.index');
 Route::get('/cumplimiento', [cumplimientoController::class, 'index'])->name('cumplimiento.index');
+Route::get('/cumplimiento/pdf/{id}', [cumplimientoController::class, 'pdfcumplimiento'])->name('cumplimiento.pdfdictamencumplimiento');
+
+Route::get('/juridico', [juridicoController::class, 'index'])->name('juridico.index');
 
 
 //admin

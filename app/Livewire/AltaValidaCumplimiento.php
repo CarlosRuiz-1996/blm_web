@@ -315,6 +315,8 @@ class AltaValidaCumplimiento extends Component
                 ]);
                 $this->idcumplimiento->update([
                     'status_cumplimiento' => 3,
+                    'dictamen'=>0,
+                    'fecha_dictamen'=>now(),
                 ]);
 
             }else{
@@ -345,6 +347,8 @@ class AltaValidaCumplimiento extends Component
                     }
                     $this->idcumplimiento->update([
                         'status_cumplimiento' => 3,
+                        'dictamen'=>1,
+                        'fecha_dictamen'=>now(),
                     ]);
                 } else {
                     foreach ($this->aceptadoValid as $id => $valor) {
@@ -356,17 +360,20 @@ class AltaValidaCumplimiento extends Component
                     }
                     $this->idcumplimiento->update([
                         'status_cumplimiento' => 3,
+                        'dictamen'=>1,
+                        'fecha_dictamen'=>now(),
                     ]);
                 }
         }
+        return redirect()->route('cumplimiento.index');
     }
     public function obtenerCantidadValidados($id){
         $datosExpediente = expediente_digital::where('cliente_id', $id)->first();
         $consulta = DB::table('expediente_documentos as exp')
-    ->leftJoin('cumplimiento_doc_validacion as val', 'val.expediente_documentos_id', '=', 'exp.id')
-    ->select('val.cumple')
-    ->where('exp.expediente_digital_id', $datosExpediente->id)
-    ->get();
+        ->leftJoin('cumplimiento_doc_validacion as val', 'val.expediente_documentos_id', '=', 'exp.id')
+        ->select('val.cumple')
+        ->where('exp.expediente_digital_id', $datosExpediente->id)
+        ->get();
 
         // Inicializa contadores
         $totalRegistros = count($consulta);

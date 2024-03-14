@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card card-outline card-info">
-                <div class="card-header" >
+                <div class="card-header">
                     <form>
                         <div class="row">
                             <div class="col-md-2">
@@ -14,20 +14,23 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="razonsocial">Razon Social</label>
-                                    <input type="text" class="form-control" id="razonsocial" placeholder="Ingrese razon social">
+                                    <input type="text" class="form-control" id="razonsocial"
+                                        placeholder="Ingrese razon social">
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="inputFechaInicio">Fecha Inicio</label>
-                                    <input type="date" class="form-control" id="inputFechaInicio" placeholder="Ingresa el Fecha Inicio">
+                                    <input type="date" class="form-control" id="inputFechaInicio"
+                                        placeholder="Ingresa el Fecha Inicio">
                                 </div>
                             </div>
 
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="inputFechafin">Fecha Fin</label>
-                                    <input type="date" class="form-control" id="inputFechafin" placeholder="Ingresa Fecha fin">
+                                    <input type="date" class="form-control" id="inputFechafin"
+                                        placeholder="Ingresa Fecha fin">
                                 </div>
                             </div>
                             <div class="col-md-3 mt-2">
@@ -45,31 +48,38 @@
                                 <tr>
                                     <th class="col-md-2 text-center">No.</th>
                                     <th class="col-md-4 text-center">Razon Social</th>
-                                    <th class="col-md-4 text-center">Fecha de Solicitud</th>
-                                    <th class="col-md-2 text-center">Validación</th>
+                                    <th class="col-md-1 text-center">Fecha de Solicitud</th>
+                                    <th class="col-md-1 text-center">Dictamen</th>
+                                    <th class="col-md-2 text-center">Fecha Dictamen</th>
+                                    <th class="col-md-1 text-center">Vista previa</th>
+                                    <th class="col-md-1 text-center">Validación</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($listSolicitudes as $item)
-                                    <tr>
-                                        <td class="col-md-2 text-center">{{ $item->expediente_digital_id }}</td>
-                                        <td class="col-md-4 text-center">{{ $item->razon_social }}</td>
-                                        <td class="col-md-4 text-center">{{ $item->fecha_solicitud }}</td>
-                                        <td class="col-md-2 text-center">
-                                        @if($item->status_cumplimiento == 1 && $item->documentos_count == $item->ctg_doc_total)
-                                            <a href="{{ route('nombre.ruta', ['id' => $item->expediente_digital_id]) }}">Ir a Otra Vista</a>
-                                            @else
-                                            <h6 class="text-warning">Faltan documentos</h6>
-                                        @endif
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td class="col-md-2 text-center">{{ $item->expediente_digital_id }}</td>
+                                    <td class="col-md-4 text-center">{{ $item->razon_social }}</td>
+                                    <td class="col-md-1 text-center">{{ $item->fecha_solicitud }}</td>
+                                    <th class="col-md-1 text-center">{{ $item->dictamen }}</th>
+                                    <th class="col-md-2 text-center">{{ $item->fecha_dictamen }}</th>
+                                    <th class="col-md-1 text-center">
+                                        <a href="#" wire:click="openModal('{{ route('cumplimiento.pdfdictamencumplimiento', ['id' => 1]) }}')"
+                                            data-toggle="modal" data-target="#modalpdf" style="text-decoration: none;">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </th>
+                                    <td class="col-md-1 text-center">Validado</td>
+                                </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        
-                </div>                 
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <x-modal-pdf-creado title="PDF Modal" pdfUrl="{{ $pdfUrl }}" wire:ignore.self>
+    </x-modal-pdf>
 </div>
