@@ -15,5 +15,11 @@ class Memorandum extends Model
         'ctg_tipo_servicio_id',
         'observaciones',
         'status_memoranda',
+        'cliente_id'
     ];
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
+    }
 }

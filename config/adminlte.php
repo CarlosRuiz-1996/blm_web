@@ -392,6 +392,13 @@ return [
             'icon' => 'fas fa-fw fa-lock',
             'can'=>'menu-seguridad'
         ],
+        [
+            'text' => 'Boveda',
+            'route'  => 'seguridad.index',
+            'icon' => 'fa-regular fa-money-bill-1',
+            'can'=>'menu-seguridad'
+        ],
+       
         // [
         //     'text'    => 'Configuracion',
         //     'icon'    => 'fas fa-fw fa-cogs',

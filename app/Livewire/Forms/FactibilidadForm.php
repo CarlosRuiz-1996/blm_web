@@ -10,7 +10,6 @@ use App\Models\Sucursal;
 use App\Models\SucursalServicio;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Livewire\Attributes\Validate;
 use Livewire\Form;
 
 class FactibilidadForm extends Form

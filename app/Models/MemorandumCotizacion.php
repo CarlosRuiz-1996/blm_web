@@ -5,16 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ValidacionMemorandum extends Model
+class MemorandumCotizacion extends Model
 {
     use HasFactory;
-
-    protected $table = 'validacion_memoranda';
+    protected $table = 'memorandum_cotizacion';
     protected $fillable = [
-        'revisor_areas_id',
         'memoranda_id',
-        'status_validacion_memoranda',
-
-
+        'cotizacion_id',
+        'status_memorandum_cotizacion',
     ];
 }

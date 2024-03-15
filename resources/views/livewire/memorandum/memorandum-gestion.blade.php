@@ -1,4 +1,5 @@
 <div>
+    
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -57,7 +58,7 @@
                     </div>
                 </div>
             </div>
-           
+
 
             @foreach ($sucursales as $sucursal)
                 <div class="col-md-12" x-data="{ open: false }">
@@ -90,66 +91,62 @@
                                 <div class="card card-outline card-info">
                                     <div class="card-body">
                                         <div class="row">
-                                            
                                             <div class="col-md-5 mb-3">
                                                 <x-label>DESCRIPCÍON DEL SERVICIO:</x-label>
-
-                                                <x-input disabled value='{{ $servicio->ctg_servicio->descripcion }}'
-                                                    type="text" />
+                                                    <input class="form-control" disabled type="text" value="{{ $servicio['servicio']->ctg_servicio->descripcion }}">
                                             </div>
                                             <div class="col-md-3 mb-3">
-                                                <x-select-validado label="HORARIO DE ENTREGA:" placeholder=""
-                                                    wire-model="" required>
-                                                    <option value="0" selected>Seleccione</option>
+                                                <x-select-validadolive label="HORARIO DE ENTREGA:"
+                                                    placeholder="Selecciona"
+                                                    wire-model="form.horarioEntrega.{{ $servicio['servicio']->id}}" required>
+                                                    
                                                     @foreach ($ctg_horario_entrega as $ctg)
                                                         <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
                                                     @endforeach
 
-                                                </x-select-validado>
+                                                </x-select-validadolive>
+
                                             </div>
                                             <div class="col-md-4 mb-3">
-                                                <x-select-validado label="DIA DE ENTREGA:" placeholder="" wire-model=""
-                                                    required>
-                                                    <option value="0" selected>Seleccione</option>
+                                                <x-select-validadolive label="DIA DE ENTREGA:" placeholder="Selecciona"
+                                                    wire-model="form.diaEntrega.{{ $servicio['servicio']->id }}" required>
                                                     @foreach ($ctg_dia_entrega as $ctg)
                                                         <option value="{{ $ctg->id }}">{{ $ctg->name }}
                                                         </option>
                                                     @endforeach
 
-                                                </x-select-validado>
+                                                </x-select-validadolive>
                                             </div>
                                             <div class="col-md-4 mb-3">
-                                                <x-select-validado label="HORARIO DE SERVICIO:" placeholder=""
-                                                    wire-model="" required>
-                                                    <option value="0" selected>Seleccione</option>
+                                                <x-select-validadolive label="HORARIO DE SERVICIO:"
+                                                    placeholder="Selecciona"
+                                                    wire-model="form.horarioServicio.{{ $servicio['servicio']->id }}" required>
                                                     @foreach ($ctg_horario_servicio as $ctg)
                                                         <option value="{{ $ctg->id }}">{{ $ctg->name }}
                                                         </option>
                                                     @endforeach
 
-                                                </x-select-validado>
+                                                </x-select-validadolive>
                                             </div>
                                             <div class="col-md-4 mb-3">
-                                                <x-select-validado label="DIA DE SERVICIO:" placeholder=""
-                                                    wire-model="" required>
-                                                    <option value="0" selected>Seleccione</option>
+                                                <x-select-validadolive label="DIA DE SERVICIO:" placeholder="Selecciona"
+                                                    wire-model="form.diaServicio.{{ $servicio['servicio']->id }}" required>
                                                     @foreach ($ctg_dia_servicio as $ctg)
                                                         <option value="{{ $ctg->id }}">{{ $ctg->name }}
                                                         </option>
                                                     @endforeach
 
-                                                </x-select-validado>
+                                                </x-select-validadolive>
                                             </div>
                                             <div class="col-md-4 mb-3">
-                                                <x-select-validado label="CONSIGNATARIO:" placeholder="" wire-model=""
-                                                    required>
-                                                    <option value="0" selected>Seleccione</option>
+                                                <x-select-validadolive label="CONSIGNATARIO:" placeholder="Selecciona"
+                                                    wire-model="form.consignatorio.{{ $servicio['servicio']->id }}" required>
                                                     @foreach ($ctg_consignatario as $ctg)
                                                         <option value="{{ $ctg->id }}">{{ $ctg->name }}
                                                         </option>
                                                     @endforeach
 
-                                                </x-select-validado>
+                                                </x-select-validadolive>
                                             </div>
 
 
@@ -162,7 +159,81 @@
                     </div>
                 </div>
             @endforeach
+            <div class="col-md-12">
+                <div class="card card-outline card-info">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <x-label>Observaciones:</x-label>
+
+                                <textarea class="form-control" wire:model="form.observaciones" rows="2">
+                                </textarea>
+                                
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+
+                                <button class="btn btn-info" wire:click="$dispatch('confirm')">Guardar</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
+
+        
     </div>
+    @push('js')
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+
+            @this.on('confirm', () => {
+
+                Swal.fire({
+                    title: '¿Estas seguro?',
+                    text: "El memorandum se creara y pasara a vailidacion",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, adelante!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        @this.dispatch('save-memo');
+                    }
+                })
+            })
+
+            Livewire.on('success', function([message]) {
+                Swal.fire({
+                    icon: 'success',
+                    title: message[0],
+                    showConfirmButton: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        
+                            window.location.href = '/ventas';
+                        
+                    }
+                });
+            });
+           
+
+            Livewire.on('error', function([message]) {
+                Swal.fire({
+                        icon: 'error',
+                        title: message[0],
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+            });
+           
+       
+        });
+    </script>
+@endpush
 </div>
