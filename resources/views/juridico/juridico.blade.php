@@ -31,13 +31,13 @@
                     <div class="tab-content" id="custom-tabs-one-tabContent">
                         <div class="tab-pane fade show active" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
                             <!--livewire tabla solicitudes-->
-                            @livewire('tabla-cumplimiento-solicitud')
+                            @livewire('juridico.tabla-juridico-solicitud')
                         </div>
                         <div class="tab-pane fade" id="custom-tabs-one-servicios" role="tabpanel" aria-labelledby="custom-tabs-one-servicios-tab">
-                            @livewire('tabla-cumplimiento-en-proceso')
+                            @livewire('juridico.tabla-juridico-en-proceso')
                         </div>
                         <div class="tab-pane fade" id="custom-tabs-one-facturacion" role="tabpanel" aria-labelledby="custom-tabs-one-facturacion-tab">
-                            @livewire('tabla-cumplimiento-atendidas')
+                            @livewire('juridico.tabla-juridico-atendidas')
                         </div>
                         <div class="tab-pane fade" id="custom-tabs-one-cotizacion" role="tabpanel" aria-labelledby="custom-tabs-one-cotizacion-tab">
                             <div class="row">

@@ -15,11 +15,14 @@ use App\Models\cumplimiento;
 use App\Models\expediente_digital;
 use App\Models\expediente_documento_beneficiario;
 use App\Models\expediente_documentos;
+use App\Models\juridico;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\On;
 
 class AltaSolicitudCumplimiento extends Component
 {
@@ -130,7 +133,7 @@ class AltaSolicitudCumplimiento extends Component
         $this->documentosexpediente = DB::table('expediente_digital as exp')
             ->join('expediente_documentos as ex', 'ex.expediente_digital_id', '=', 'exp.id')
             ->where('exp.cliente_id', $this->id)
-            ->select('ex.ctg_documentos_id', 'ex.document_name')
+            ->select('ex.ctg_documentos_id', 'ex.document_name','ex.id')
             ->get();
     }
     public function cargarDocumentosExpedienteBene()
@@ -139,21 +142,21 @@ class AltaSolicitudCumplimiento extends Component
         $this->documentosexpedienteBene = DB::table('expediente_digital as exp')
             ->join('expediente_documentos_benf as ex', 'ex.expediente_digital_id', '=', 'exp.id')
             ->where('exp.cliente_id', $this->id)
-            ->select('ex.ctg_documentos_benf_id', 'ex.document_name')
+            ->select('ex.ctg_documentos_benf_id', 'ex.document_name','ex.id')
             ->get();
     }
-
-
     public function agregarArchivo()
     {
+       
         $this->validate([
             'documentoSelec' => 'required|file|mimes:pdf|max:10240', // Ajusta según tus necesidades
         ]);
+        try{
 
-        $nombre = ctg_documentos::where('id', $this->documentoid)->first();
-        DB::transaction(function () use ($nombre) {
-        // Almacenar el archivo en la carpeta especificada y obtener la ruta
-        $nombreLimpio = preg_replace('/[^\p{L}\p{N}]+/u', '_', $nombre->name);
+        $nombreDocumento = ctg_documentos::where('id', $this->documentoid)->first();
+        $nombreLimpio = preg_replace('/[^\p{L}\p{N}]+/u', '_', $nombreDocumento->name);
+
+        DB::transaction(function () use ($nombreLimpio) {
         $this->documentoSelec->storeAs(path: 'documentos/' . $this->rfc, name: $nombreLimpio . '.pdf');
 
         // Verificar si ya existe un expediente digital para el cliente
@@ -173,6 +176,13 @@ class AltaSolicitudCumplimiento extends Component
                 'dictamen' => 0,
                 'fecha_dictamen' => now(), // Puedes ajustar la fecha según tus necesidades
                 'status_cumplimiento' => 1,
+    
+            ]);
+            juridico::create([
+                'expediente_digital_id' =>  $expedienteDigital->id,
+                'dictamen' => 0,
+                'fecha_dictamen' => now(), // Puedes ajustar la fecha según tus necesidades
+                'status_juridico' => 1,
     
             ]);
         }
@@ -200,16 +210,22 @@ class AltaSolicitudCumplimiento extends Component
         }
         $this->cargarDocumentosExpediente();
     });
+    $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Se ha agregado el archivo: '.$nombreLimpio . '.pdf'],['tipomensaje' => 'success']);
+        } catch (\Exception $e) {
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Fallo al subir archivo'],['tipomensaje' => 'error']);
+        }
     }
     public function agregarArchivoBeneficiario()
     {
         $this->validate([
             'documentoSelecbene' => 'required|file|mimes:pdf|max:10240', // Ajusta según tus necesidades
         ]);
+        try{
 
         $nombredoc = ctg_documentos_beneficiarios::where('id', $this->documentoidbene)->first();
-        DB::transaction(function () use ($nombredoc) {
         $nombreLimpio = preg_replace('/[^\p{L}\p{N}]+/u', '_', $nombredoc->name);
+        DB::transaction(function () use ($nombreLimpio) {
+        
         $this->documentoSelecbene->storeAs(path: 'documentos/' . $this->rfc . '/beneficiario', name: $nombreLimpio . '.pdf');
 
         $expedienteDigital = expediente_digital::where('cliente_id', $this->id)->first();
@@ -230,6 +246,13 @@ class AltaSolicitudCumplimiento extends Component
                 'fecha_dictamen' => null, // Puedes ajustar la fecha según tus necesidades
                 'status_cumplimiento' => 1,
 
+            ]);
+            juridico::create([
+                'expediente_digital_id' =>  $expedienteDigital->id,
+                'dictamen' => 0,
+                'fecha_dictamen' => now(), // Puedes ajustar la fecha según tus necesidades
+                'status_juridico' => 1,
+    
             ]);
         }
         
@@ -254,6 +277,10 @@ class AltaSolicitudCumplimiento extends Component
         }
         $this->cargarDocumentosExpedienteBene();
     });
+    $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Se ha agregado el archivo: '.$nombreLimpio . '.pdf'],['tipomensaje' => 'success']);
+} catch (\Exception $e) {
+    $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Fallo al subir archivo'],['tipomensaje' => 'error']);
+}
     }
     public function updatedcheckbeneficiario()
     {
@@ -275,5 +302,42 @@ class AltaSolicitudCumplimiento extends Component
     {
         $this->pdfUrl = "";
         $this->isOpen = false;
+    }
+     
+    public function eliminarArchivo($iddocumento)
+    {
+        // Encuentra el documento por su ID
+        try{
+        $documento = expediente_documentos::find($iddocumento);
+        $nombreElimninado=$documento->document_name;
+        if ($documento) {
+            $rutaArchivo = 'documentos/' . $this->rfc . '/' . $documento->document_name;
+            // Elimina el archivo del sistema de archivos
+            Storage::delete($rutaArchivo);
+            $documento->delete();
+            $this->cargarDocumentosExpediente();
+        }
+        $this->dispatch('ArchivoEliminado', ['nombreArchivo' => 'Se ha Eliminado el archivo: '.$nombreElimninado],['tipomensaje' => 'success']);
+        } catch (\Exception $e) {
+            $this->dispatch('ArchivoEliminado', ['nombreArchivo' => 'Fallo al intentar eliminar archivo'],['tipomensaje' => 'error']);
+        }
+    }
+    public function eliminarArchivoBene($iddocumento)
+    {
+        // Encuentra el documento por su ID
+        try{
+        $documento = expediente_documento_beneficiario::find($iddocumento);
+        $nombreElimninado=$documento->document_name;
+        if ($documento) {
+            $rutaArchivo = 'documentos/' . $this->rfc . '/beneficiario/' . $documento->document_name;
+            // Elimina el archivo del sistema de archivos
+            Storage::delete($rutaArchivo);
+            $documento->delete();
+            $this->cargarDocumentosExpedienteBene();
+        }
+        $this->dispatch('ArchivoEliminado', ['nombreArchivo' => 'Se ha Eliminado el archivo: '.$nombreElimninado],['tipomensaje' => 'success']);
+        } catch (\Exception $e) {
+            $this->dispatch('ArchivoEliminado', ['nombreArchivo' => 'Fallo al intentar eliminar archivo'],['tipomensaje' => 'error']);
+        }
     }
 }

@@ -10,4 +10,9 @@ class juridicoController extends Controller
     {
         return view('juridico.juridico');
     }
+
+    public function validajuridico()
+    {
+        return view('juridico.altaValidaJuridico');
+    }
 }

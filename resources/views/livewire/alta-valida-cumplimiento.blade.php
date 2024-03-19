@@ -89,6 +89,61 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-12">
+                <div class="card card-outline card-info">
+                    <div class="card-body">
+                        <h3 class="text-center mb-2">Documentos Beneficiario</h3>
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="table-primary">
+                                        <tr>
+                                            <th>DOCUMENTO</th>
+                                            <th>NOMBRE DOCUMENTO</th>
+                                            <th>VISTA PREVIA</th>
+                                            <th>CUMPLE</th>
+                                            <th>NO CUMPLE</th>
+                                            <th>OBSERVACIONES</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>       
+                                        @foreach($documentosexpedienteBene as $documentobene)
+                                        <tr>
+                                            <td>{{ $documentobene->name }}</td>
+                                            <td>{{ $documentobene->document_name }}</td>
+                                            <td>
+                                                <a href="#" data-toggle="modal" data-target="#modalpdf"
+                                                    wire:click="openModal('documentos/{{$rfc}}/beneficiario/{{$documentobene->document_name}}')"
+                                                    style="text-decoration: none;">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <!-- Input para marcar si cumple -->
+                                                <input class="form-control"
+                                                    wire:model.live="cumplebene.{{ $documentobene->id }}" type="radio"
+                                                    value="1">
+                                            </td>
+                                            <td>
+                                                <!-- Input para marcar si no cumple -->
+                                                <input class="form-control"
+                                                    wire:model.live="cumplebene.{{ $documentobene->id }}" type="radio"
+                                                    value="0">
+                                            </td>
+                                            <td>
+                                                <!-- Campo de texto para observaciones -->
+                                                <textarea wire:model.live="notabene.{{ $documentobene->id }}" type="text"
+                                                    name="" class="form-control"></textarea>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-3 M-1">
                 <a href="https://qeq.com.mx/datos/pages/" target="_blank" class="btn btn-secondary btn-block "> QUIEN ES
                     QUIEN</a>
@@ -222,8 +277,7 @@
                         Después de haber revisado los datos en la Carta de Ley Antilavado, validado los documentos para
                         la integración del expediente único y realizar la verificación del cliente y sus relacionados en el
                         Web Service de Q&Q, confirmando que no existen antecedentes negativos en listas negras. <br>
-                        Se otorga el VoBo para continuar con el proceso de contratación del cliente: AUTOTRANSPORTES
-                        METROPOLITANOS DEL ORIENTE PERIFÉRICO, S.A. DE C.V.
+                        Se otorga el VoBo para continuar con el proceso de contratación del cliente: {{$razonSocial}}
                     </h6>
                     <div class="table-responsive mt-3">
                         <table class="table">
@@ -280,7 +334,7 @@
                 <h6 class="text-justify mt-4">
                     Después de haber revisado los datos en la Carta de Ley Antilavado, validado los documentos para la integración del expediente único y realizar 
                     la verificación del cliente y sus relacionados en el Web Service de Q&Q, No se otorga el VoBo para continuar con el proceso de contratación del cliente:
-                     (AUTOTRANSPORTES METROPOLITANOS DEL ORIENTE PERIFERICO, S.A. DE C.V.), debido al siguiente motivo:
+                     ( {{$razonSocial}}), debido al siguiente motivo:
                 </h6>
                 <div class="table-responsive mt-3">
                     <table class="table">
@@ -315,4 +369,5 @@
             </div>
         </div>
     </div>
+    
 </div>

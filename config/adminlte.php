@@ -392,6 +392,11 @@ return [
             'icon' => 'fas fa-fw fa-lock',
             'can'=>'menu-seguridad'
         ],
+        [
+            'text' => 'RH',
+            'route'  => 'rh.index',
+            'icon' => 'fas fa-fw fa-users',
+        ],
         // [
         //     'text'    => 'Configuracion',
         //     'icon'    => 'fas fa-fw fa-cogs',

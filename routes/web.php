@@ -11,6 +11,7 @@ use App\Http\Controllers\Factibilidad;
 use App\Http\Controllers\juridicoController;
 use App\Http\Controllers\MemorandumController;
 use App\Http\Controllers\PermisosController;
+use App\Http\Controllers\RhController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\ventasController;
@@ -40,7 +41,7 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
-
+Route::middleware('auth')->group(function () {
 Route::get('/usuarios', [UsuariosController::class, 'index'])->name('user.index');
 Route::get('/usuarios/nuevo', [UsuariosController::class, 'nuevousuario'])->name('user.create');
 Route::post('/usuarios/save', [UsuariosController::class, 'store'])->name('user.store');
@@ -65,8 +66,11 @@ Route::get('/clientesactivos/cotizardenuevo/{id}', [ClientesActivosController::c
 Route::get('/cumplimiento/altaValidaCumplimiento/{id}', [altaValidaCumplimiento::class, 'index'])->name('altaValidaCumplimiento.index');
 Route::get('/cumplimiento', [cumplimientoController::class, 'index'])->name('cumplimiento.index');
 Route::get('/cumplimiento/pdf/{id}', [cumplimientoController::class, 'pdfcumplimiento'])->name('cumplimiento.pdfdictamencumplimiento');
+Route::get('/cumplimiento/pdfnegado/{id}', [cumplimientoController::class, 'pdfcumplimientonegado'])->name('cumplimiento.pdfdictamencumplimientonegado');
+
 
 Route::get('/juridico', [juridicoController::class, 'index'])->name('juridico.index');
+Route::get('/juridico/altaValidaJuridico/{id}', [juridicoController::class, 'validajuridico'])->name('juridico.validajuridico');
 
 
 //admin
@@ -91,6 +95,11 @@ Route::get('seguridad/reporte/{anexo}',[Factibilidad::class, 'reporte'])->name('
 Route::get('seguridad/reportePDF',[Factibilidad::class,'showPDF'])->name('seguridad.pdf');
 //memorandum
 Route::get('ventas/memorandum/{factibilidad}',[MemorandumController::class,'create'])->name('ventas.memorandum');
+
+//rh
+Route::get('rh/',[RhController::class,'index'])->name('rh.index');
+Route::get('rh/altaempleado',[RhController::class,'altaempleado'])->name('rh.altaempleado');
+});
 //rutas para livewire
 use Livewire\Livewire;
 
@@ -104,3 +113,4 @@ Livewire::setScriptRoute(function ($handle) {
 
 
 });
+

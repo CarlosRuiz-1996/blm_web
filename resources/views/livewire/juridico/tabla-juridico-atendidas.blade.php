@@ -51,7 +51,6 @@
                                     <th class="col-md-1 text-center">Fecha de Solicitud</th>
                                     <th class="col-md-1 text-center">Dictamen</th>
                                     <th class="col-md-2 text-center">Fecha Dictamen</th>
-                                    <th class="col-md-1 text-center">Vista previa</th>
                                     <th class="col-md-1 text-center">Validación</th>
                                 </tr>
                             </thead>
@@ -69,19 +68,6 @@
                                         @endif
                                     </th>
                                     <th class="col-md-2 text-center">{{ $item->fecha_dictamen }}</th>
-                                    <th class="col-md-1 text-center">
-                                        @if($item->dictamen==1)
-                                        <a href="#" wire:click="openModal('{{ route('cumplimiento.pdfdictamencumplimiento', ['id' =>$item->idcump]) }}')"
-                                            data-toggle="modal" data-target="#modalpdf" style="text-decoration: none;">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        @else
-                                        <a href="#" wire:click="openModal('{{ route('cumplimiento.pdfdictamencumplimientonegado', ['id' =>$item->idcump]) }}')"
-                                            data-toggle="modal" data-target="#modalpdf" style="text-decoration: none;">
-                                            <i class="fas fa-eye"></i>
-                                        </a> 
-                                        @endif
-                                    </th>
                                     @if($item->dictamen==1)
                                     <td class="col-md-1 text-center">Validado</td>
                                     @else
