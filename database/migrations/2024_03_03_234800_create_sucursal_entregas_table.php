@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sucursal_entregas', function (Blueprint $table) {
+        Schema::create('memorandum_servicios', function (Blueprint $table) {
             $table->id();
             //tipo sucursal
-            $table->unsignedBigInteger('sucursal_id')->nullable();
-            $table->foreign('sucursal_id')->references('id')->on('sucursal')->onDelete('cascade');
+            $table->unsignedBigInteger('sucursal_servicio_id')->nullable();
+            $table->foreign('sucursal_servicio_id')->references('id')->on('sucursal_servicio')->onDelete('cascade');
             //tipo memoranda
             $table->unsignedBigInteger('memoranda_id')->nullable();
             $table->foreign('memoranda_id')->references('id')->on('memoranda')->onDelete('cascade');
@@ -45,6 +45,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sucursal_entregas');
+        Schema::dropIfExists('memorandum_servicios');
     }
 };

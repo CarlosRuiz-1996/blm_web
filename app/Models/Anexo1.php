@@ -18,7 +18,7 @@ class Anexo1 extends Model
         return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 
-    public function sucursal_sercio()
+    public function sucursal_servicio()
     {
         return $this->hasMany(SucursalServicio::class, 'anexo1_id');
     }

@@ -393,6 +393,13 @@ return [
             'can'=>'menu-seguridad'
         ],
         [
+            'text' => 'Boveda',
+            'route'  => 'seguridad.index',
+            'icon' => 'fa-regular fa-money-bill-1',
+            'can'=>'menu-seguridad'
+        ],
+       
+        [
             'text' => 'RH',
             'route'  => 'rh.index',
             'icon' => 'fas fa-fw fa-users',

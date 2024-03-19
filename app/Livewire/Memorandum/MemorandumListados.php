@@ -12,7 +12,9 @@ class MemorandumListados extends Component
     public function render()
     {
         $solicitudes = $this->form->getFactibilidadAll();
+        $proceso = $this->form->getMemorandumValidacion();
+        $terminadas = $this->form->getMemorandumTerminado();
 
-        return view('livewire.memorandum.memorandum-listados',compact('solicitudes'));
+        return view('livewire.memorandum.memorandum-listados',compact('solicitudes','proceso','terminadas'));
     }
 }

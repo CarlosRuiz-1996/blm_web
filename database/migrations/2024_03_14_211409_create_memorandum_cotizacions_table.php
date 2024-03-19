@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('memoranda_validacion', function (Blueprint $table) {
+        Schema::create('memorandum_cotizacion', function (Blueprint $table) {
             $table->id();
-            //sucursal
-            $table->unsignedBigInteger('revisor_areas_id')->nullable();
-            $table->foreign('revisor_areas_id')->references('id')->on('revisor_areas')->onDelete('cascade');
-            
+            $table->unsignedBigInteger('cotizacion_id')->nullable();
+            $table->foreign('cotizacion_id')->references('id')->on('cotizacion')->onDelete('cascade');
             //tipo memoranda
             $table->unsignedBigInteger('memoranda_id')->nullable();
             $table->foreign('memoranda_id')->references('id')->on('memoranda')->onDelete('cascade');
-            $table->integer('status_validacion_memoranda')->default(1);
+            $table->integer('status_memorandum_cotizacion')->default(1);
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('memoranda_validacion');
+        Schema::dropIfExists('memorandum_cotizacion');
     }
 };

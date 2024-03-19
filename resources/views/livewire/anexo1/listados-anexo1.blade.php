@@ -1,11 +1,14 @@
 <div>
-    <div class="container-fluid m-3">
+    <div class="col-md-6">
+        <h3 for="">Anexo 1</h3>
+    </div>
+    <div class="">
         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
             <!-- Pestaña "Servicios" -->
             <li class="nav-item">
                 <a class="nav-link active" id="custom-tabs-one-anexo1coti-tab" data-toggle="pill"
                     href="#custom-tabs-one-anexo1coti" role="tab" aria-controls="custom-tabs-one-anexo1coti"
-                    aria-selected="true">Solicitudes</a>
+                    aria-selected="true">SOLICITUDES</a>
             </li>
 
 
@@ -23,9 +26,7 @@
             <div class="tab-pane fade show active" id="custom-tabs-one-anexo1coti" role="tabpanel"
                 aria-labelledby="custom-tabs-one-anexo1coti-tab">
                 <div class="row">
-                    <div class="col-md-6">
-                        <h3 for="">Anexo-Solicitudes</h3>
-                    </div>
+                   
                     <div class="col-md-12">
                         <div class="card card-outline card-info">
                             <div class="card-header">
@@ -114,9 +115,7 @@
             <div class="tab-pane fade" id="custom-tabs-one-otra-pestaña-2" role="tabpanel"
                 aria-labelledby="custom-tabs-one-otra-pestaña-2-tab">
                 <div class="row">
-                    <div class="col-md-6">
-                        <h3 for="">Anexo-Atendidas</h3>
-                    </div>
+                    
                     <div class="col-md-12">
                         <div class="card card-outline card-info">
                             <div class="card-header">

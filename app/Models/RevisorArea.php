@@ -15,4 +15,14 @@ class RevisorArea extends Model
         'ctg_area_id',
         'status_revisor_areas',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Ctg_Area::class, 'ctg_area_id');
+    }
 }

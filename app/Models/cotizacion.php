@@ -22,4 +22,9 @@ class Cotizacion extends Model
         return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 
+    public function anexo()
+    {
+        return $this->hasOne(Anexo1::class, 'cotizacion_id');
+    }
+
 }

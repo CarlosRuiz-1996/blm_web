@@ -5,16 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ValidacionMemorandum extends Model
+class MemorandumValidacion extends Model
 {
     use HasFactory;
 
-    protected $table = 'validacion_memoranda';
+    protected $table = 'memoranda_validacion';
     protected $fillable = [
         'revisor_areas_id',
         'memoranda_id',
         'status_validacion_memoranda',
-
-
     ];
+
+    public function revisor_areas()
+    {
+        return $this->hasMany(RevisorArea::class, 'id');
+    }
 }
