@@ -14,4 +14,10 @@ class MemorandumCotizacion extends Model
         'cotizacion_id',
         'status_memorandum_cotizacion',
     ];
+
+
+    public function cotizacion()
+    {
+        return $this->belongsTo(Cotizacion::class, 'cotizacion_id');
+    }
 }

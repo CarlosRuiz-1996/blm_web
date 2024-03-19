@@ -14,7 +14,10 @@ class MemorandumValidacion extends Model
         'revisor_areas_id',
         'memoranda_id',
         'status_validacion_memoranda',
-
-
     ];
+
+    public function revisor_areas()
+    {
+        return $this->hasMany(RevisorArea::class, 'id');
+    }
 }

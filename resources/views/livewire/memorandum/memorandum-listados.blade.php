@@ -6,21 +6,19 @@
         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
             <!-- Pestaña "Servicios" -->
             <li class="nav-item">
-                <a class="nav-link active" id="memo-solicitud-tab" data-toggle="pill"
-                    href="#memo-solicitud" role="tab" aria-controls="memo-solicitud"
-                    aria-selected="true">SOLICITUDES</a>
+                <a class="nav-link active" id="memo-solicitud-tab" data-toggle="pill" href="#memo-solicitud" role="tab"
+                    aria-controls="memo-solicitud" aria-selected="true">SOLICITUDES</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" id="memo-proceso-tab" data-toggle="pill" href="#memo-proceso"
-                    role="tab" aria-controls="memo-proceso" aria-selected="true">EN VALIDACION</a>
+                <a class="nav-link" id="memo-proceso-tab" data-toggle="pill" href="#memo-proceso" role="tab"
+                    aria-controls="memo-proceso" aria-selected="true">EN VALIDACION</a>
             </li>
 
             <!-- Pestaña "Otra Pestaña 2" -->
             <li class="nav-item">
-                <a class="nav-link" id="memo-terminado-tab" data-toggle="pill"
-                    href="#memo-terminado" role="tab" aria-controls="memo-terminado"
-                    aria-selected="false">ATENDIDAS</a>
+                <a class="nav-link" id="memo-terminado-tab" data-toggle="pill" href="#memo-terminado" role="tab"
+                    aria-controls="memo-terminado" aria-selected="false">ATENDIDAS</a>
             </li>
         </ul>
 
@@ -29,7 +27,7 @@
             <div class="tab-pane fade show active" id="memo-solicitud" role="tabpanel"
                 aria-labelledby="memo-solicitud-tab">
                 <div class="row">
-                    
+
                     <div class="col-md-12">
                         <div class="card card-outline card-info">
                             <div class="card-header">
@@ -100,7 +98,7 @@
                                                 </td>
                                                 <td>{{ $solicitud->updated_at }}</td>
                                                 <td>
-                                                    <a href="{{ route('ventas.memorandum', $solicitud) }}">Llenar
+                                                    <a href="{{ route('memorandum', $solicitud) }}">Llenar
                                                         memorandum</a>
                                                 </td>
                                             @endforeach
@@ -114,10 +112,9 @@
             </div>
 
             <!-- Contenido de la pestaña "Otra Pestaña 2" -->
-            <div class="tab-pane fade" id="memo-proceso" role="tabpanel"
-                aria-labelledby="memo-proceso-tab">
+            <div class="tab-pane fade" id="memo-proceso" role="tabpanel" aria-labelledby="memo-proceso-tab">
                 <div class="row">
-                   
+
                     <div class="col-md-12">
                         <div class="card card-outline card-info">
                             <div class="card-header">
@@ -177,8 +174,8 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($proceso as $solicitud)
-                                                <td>{{ $solicitud->id}}</td>
-                                                <td>{{ $solicitud->cliente->razon_social }}</td> 
+                                                <td>{{ $solicitud->id }}</td>
+                                                <td>{{ $solicitud->cliente->razon_social }}</td>
                                                 <td>{{ $solicitud->cliente->rfc_cliente }}</td>
                                                 <td>{{ $solicitud->cliente->user->name .
                                                     ' ' .
@@ -188,8 +185,9 @@
                                                 </td>
                                                 <td>{{ $solicitud->created_at }}</td>
                                                 <td>
-                                                    pdf
-                                                </td> 
+                                                    <a href="{{ route('memorandum.validacion', $solicitud) }}">Continuar
+                                                        memorandum</a>
+                                                </td>
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -202,10 +200,9 @@
             </div>
 
             <!-- Contenido de la pestaña "Otra Pestaña 2" -->
-            <div class="tab-pane fade" id="memo-terminado" role="tabpanel"
-                aria-labelledby="memo-terminado-tab">
+            <div class="tab-pane fade" id="memo-terminado" role="tabpanel" aria-labelledby="memo-terminado-tab">
                 <div class="row">
-                   
+
                     <div class="col-md-12">
                         <div class="card card-outline card-info">
                             <div class="card-header">

@@ -13,6 +13,7 @@ use App\Models\Factibilidad;
 use App\Models\Memorandum;
 use App\Models\MemorandumCotizacion;
 use App\Models\MemorandumServicios;
+use App\Models\MemorandumValidacion;
 use App\Models\SucursalServicio;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -82,7 +83,6 @@ class MemorandumForm extends Form
         //     $query->where('status_memoranda', 1);
         // })->get();
         return Memorandum::where('status_memoranda', 1)->get();
-
     }
     public function getMemorandumTerminado()
     {
@@ -124,7 +124,27 @@ class MemorandumForm extends Form
 
         return $sucursales;
     }
+    public function setMemoDetalles($memorandum)
+    {
 
+        $this->razon_social = $memorandum->cliente->razon_social;
+        $this->rfc_cliente = $memorandum->cliente->rfc_cliente;
+        $this->fecha_solicitud = $memorandum->created_at;
+        $this->grupo = $memorandum->grupo;
+        $this->ctg_tipo_solicitud_id = $memorandum->tipo_solicitud->name;
+        $this->ctg_tipo_servicio_id = $memorandum->tipo_servicio->name;
+        $this->observaciones = $memorandum->observaciones;
+
+        //reviso si la sucursal se repite y las guardo en un arreglo para la vista
+        $sucursales = [];
+        foreach ($memorandum->memo_cotizacion->cotizacion->anexo->sucursal_servicio as $suc) {
+            $sucursal = $suc->sucursal;
+            if (!in_array($sucursal, $sucursales)) {
+                $sucursales[] = $sucursal;
+            }
+        }
+        return $sucursales;
+    }
     // inserta memo
     public $horarioEntrega = [];
     public $diaEntrega = [];
@@ -181,9 +201,9 @@ class MemorandumForm extends Form
 
             $this->validate();
 
-            $this->cliente_id= $this->factibilidad->cliente_id;
+            $this->cliente_id = $this->factibilidad->cliente_id;
             Log::info('inserta memo');
-            $memorandum = Memorandum::create($this->only(['grupo', 'ctg_tipo_solicitud_id', 'ctg_tipo_servicio_id', 'observaciones','cliente_id']));
+            $memorandum = Memorandum::create($this->only(['grupo', 'ctg_tipo_solicitud_id', 'ctg_tipo_servicio_id', 'observaciones', 'cliente_id']));
 
 
             Log::info('inserta memo cotizacion');
@@ -245,5 +265,11 @@ class MemorandumForm extends Form
             Log::error('Error al intentar guardar los datos: ' . $e->getMessage());
             return 0;
         }
+    }
+
+
+    // firmas
+    public function getFirmas($memo_id){
+        return MemorandumValidacion::where('memoranda_id',$memo_id)->get();
     }
 }

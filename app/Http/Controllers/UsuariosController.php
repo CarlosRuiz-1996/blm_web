@@ -14,7 +14,7 @@ class UsuariosController extends Controller
     {
         // $users = User::orderBy('id', 'desc')->get();
         $users = User::whereDoesntHave('roles', function ($query) {
-            $query->where('name', 'cliente');
+            $query->where('name', 'Cliente');
         })->orderBy('id', 'desc')->get();
 
         return view('usuarios.usuariosindex', compact('users'));
