@@ -29,6 +29,20 @@ class MemorandumValidando extends Component
     public function render()
     {
         $firmas = $this->form->getFirmas($this->memorandum->id);
+
         return view('livewire.memorandum.memorandum-validando',compact('firmas'));
+    }
+
+
+    #[On('save-finalizacion')]
+    public function save()
+    {
+        $res =  $this->form->storeFinalizar($this->memorandum);
+        if ($res == 1) {
+            $this->dispatch('success', ["Memorandum Finalizado con exito."]);
+
+        } else {
+            $this->dispatch('error', ["Ha ocurrido un error, intente más tarde."]);
+        }
     }
 }

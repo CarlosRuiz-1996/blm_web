@@ -2,101 +2,6 @@
 
     <div class="container-fluid">
         <div class="row">
-
-            <div class="col-md-12">
-                <div class="card card-outline card-info">
-                    <div class="card-body">
-
-
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <a class="btn btn-outline-primary" href="">ACTUALIZAR FIRMAS</a>
-                            <h1 class="text-center mb-0" style="margin-left: -150px">Validado por:</h1>
-                        </div>
-
-                        @php
-                            //contador para las firmas
-                            $no_firmas = 0;
-                        @endphp
-
-                        <table class="table table-hover table-bordered" width="100%" cellspacing="0"
-                            style="font-size:100%">
-                            <thead class="table-secondary">
-                                <th colspan="2">VENTAS</th>
-                                <th colspan="2">OPERACIONES</th>
-                                <th colspan="2">BOVEDA</th>
-                                <th colspan="2">PROCESO</th>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $tiene_firma = [];
-                                @endphp
-
-                                @foreach ($firmas as $firma)
-                                    @foreach ([1, 2, 3, 4] as $IdArea)
-                                        @if ($IdArea == $firma->revisor_areas->area->id)
-                                            <td colspan="2">
-                                                <i class="fa fa-circle" style="color: green;"> </i>
-                                                {{ $firma->revisor_areas->area->name }}
-                                            </td>
-                                            @php
-                                                $tiene_firma[] = $IdArea;
-                                                $no_firmas++;
-                                            @endphp
-                                        @endif
-                                    @endforeach
-                                @endforeach
-                                @foreach ([1, 2, 3, 4] as $IdArea)
-                                    @unless (in_array($IdArea, $tiene_firma))
-                                        <td colspan="2">Aún no validado</td>
-                                    @endunless
-                                @endforeach
-                            </tbody>
-                            <thead class="table-secondary">
-                                <th colspan="2">CONTABILIDAD</th>
-                                <th colspan="2">FACTURACIÓN</th>
-                                <th colspan="2">COBRANZA</th>
-                                <th colspan="2">Vo Bo GERENCIA</th>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $tiene_firma = [];
-                                @endphp
-
-                                @foreach ($firmas as $firma)
-                                    @foreach ([5, 6, 7, 9] as $IdArea)
-                                        @if ($IdArea == $firma->revisor_areas->area->id)
-                                            <td colspan="2">
-                                                <i class="fa fa-circle" style="color: green;"> </i>
-                                                {{ $firma->revisor_areas->area->name }}
-                                            </td>
-                                            @php
-                                                $tiene_firma[] = $IdArea;
-                                                $no_firmas++;
-                                            @endphp
-                                        @endif
-                                    @endforeach
-                                @endforeach
-                                @foreach ([5, 6, 7, 9] as $IdArea)
-                                    @unless (in_array($IdArea, $tiene_firma))
-                                        <td colspan="2">
-                                            <i class="fa fa-circle" style="color: orange;"> </i> Aún no validado
-                                        </td>
-                                    @endunless
-                                @endforeach
-                            </tbody>
-                        </table>
-                        @if ($no_firmas == 8)
-                            <div class="mt-3">
-                                <center>
-                                    <button class="btn btn-info" wire:click="$dispatch('confirm')">FINALIZAR</button>
-
-                                </center>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
             <div class="col-md-12">
                 <div class="card card-outline card-info">
                     <div class="card-body">
@@ -220,7 +125,39 @@
                     </div>
                 </div>
             @endforeach
+            <h2 class="ml-3">
+                DICTAMEN
+            </h2>
+            <div class="col-md-12">
+                <div class="card card-outline card-info">
+                    <div class="card-body">
+                        <div class="row">
+                            <table class="col-md-12 table table-hover text-center table-bordered">
+                                <thead class="table-secondary">
+                                    <th>CUMPLE</th>
+                                    <th>NO CUMPLE</th>
+                                </thead>
+                                <tbody>
+                                    <td>
+                                        <input class="form-control" name="cumple" type="radio"
+                                            wire:model='form_validacion.cumple' value="1">
+                                    </td>
+                                    <td>
+                                        <input class="form-control" name="cumple" type="radio"
+                                            wire:model='form_validacion.cumple' value="0">
+                                    </td>
+                                </tbody>
 
+                            </table>
+                            <x-input-error for='form_validacion.cumple'></x-input-error>
+
+                            <div class="col-md-12 text-center">
+                                <button class="btn btn-info" wire:click="$dispatch('confirm')">VALIDAR</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </div>
 
@@ -234,7 +171,7 @@
 
                     Swal.fire({
                         title: '¿Estas seguro?',
-                        text: "El memorandum finalizara y pasaran los servicios al area de operaciones.",
+                        text: "El memorandum se evaluado con su dictamen",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -243,7 +180,7 @@
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            @this.dispatch('save-finalizacion');
+                            @this.dispatch('save-validacion');
                         }
                     })
                 })
@@ -255,10 +192,8 @@
                         showConfirmButton: true,
                     }).then((result) => {
                         if (result.isConfirmed) {
-
-
-                            window.location.href = '/ventas';
-
+                            var previousUrl = document.referrer;
+                            window.location.href = previousUrl;
                         }
                     });
                 });

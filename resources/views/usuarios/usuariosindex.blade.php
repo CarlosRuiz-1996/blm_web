@@ -51,7 +51,7 @@
                                     </td>
                                     <td>
                                         @if ($user->area)
-                                            {{ $user->area->nombre }}
+                                            {{ $user->area->name }}
                                         @else
                                             Sin área asignada
                                         @endif

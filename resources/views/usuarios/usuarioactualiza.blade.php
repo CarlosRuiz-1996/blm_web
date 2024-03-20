@@ -61,7 +61,7 @@
                                             <option value="0" selected disabled>Seleccionar</option>
                                             @foreach ($areas as $area)
                                                 <option value="{{ $area->id }}"
-                                                    @if ($user->ctg_area_id == $area->id) selected @endif>{{ $area->nombre }}
+                                                    @if ($user->ctg_area_id == $area->id) selected @endif>{{ $area->name }}
                                                 </option>
                                             @endforeach
 

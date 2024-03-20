@@ -18,6 +18,12 @@ class MemorandumValidacion extends Model
 
     public function revisor_areas()
     {
-        return $this->hasMany(RevisorArea::class, 'id');
+        return $this->belongsTo(RevisorArea::class, 'revisor_areas_id');
+    }
+
+
+    public function memorandum()
+    {
+        return $this->belongsTo(Memorandum::class, 'memoranda_id');
     }
 }

@@ -90,11 +90,7 @@ class User extends Authenticatable
         return $this->belongsTo(Ctg_Area::class, 'ctg_area_id');
     }
 
-    public function ctg_cp()
-    {
-        return $this->belongsTo(Ctg_Cp::class, 'ctg_cp_id');
-    }
-
+    
     public function tipo_cliente()
     {
         return $this->belongsTo(Ctg_Tipo_Cliente::class, 'ctg_tipo_cliente_id');

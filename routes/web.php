@@ -4,14 +4,17 @@ use App\Http\Controllers\altaValidaCumplimiento;
 use App\Http\Controllers\Anexo1;
 use App\Http\Controllers\BitacoraController;
 use App\Http\Controllers\boveda;
+use App\Http\Controllers\BovedaController;
 use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\ClientesActivosController;
 use App\Http\Controllers\cumplimientoController;
 use App\Http\Controllers\Factibilidad;
 use App\Http\Controllers\MemorandumController;
+use App\Http\Controllers\OperacionesController;
 use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsuariosController;
+use App\Http\Controllers\ValidacionMemorandumController;
 use App\Http\Controllers\ventasController;
 use Illuminate\Support\Facades\Route;
 
@@ -80,6 +83,7 @@ Route::get('ventas/anexo1/{cotizacion}',[Anexo1::class, 'index'])->name('anexo.i
 
 // boveda
 Route::get('boveda/',[boveda::class, 'index'])->name('boveda.index');
+Route::get('/boveda/inicio',[BovedaController::class, 'index'])->name('boveda.inicio');
 
 //factibilidad
 Route::get('seguridad/',[Factibilidad::class, 'index'])->name('seguridad.index');
@@ -88,6 +92,14 @@ Route::get('seguridad/reportePDF',[Factibilidad::class,'showPDF'])->name('seguri
 //memorandum
 Route::get('ventas/memorandum/{factibilidad}',[MemorandumController::class,'create'])->name('memorandum');
 Route::get('ventas/memorandum/validacion/{memorandum}',[MemorandumController::class,'validacion'])->name('memorandum.validacion');
+
+Route::get('validacion/memorandum/{memorandum}/{area}',[ValidacionMemorandumController::class,'validar'])->name('memorandum.validar');
+Route::get('validacion/listar/{area}/{name?}',[ValidacionMemorandumController::class,'listar'])->name('memorandum.validar.listar');
+
+
+//operaciones.-rutas
+Route::get('/operaciones', [OperacionesController::class, 'index'])->name('operaciones');
+
 
 //rutas para livewire
 use Livewire\Livewire;

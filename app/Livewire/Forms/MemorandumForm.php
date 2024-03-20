@@ -272,4 +272,33 @@ class MemorandumForm extends Form
     public function getFirmas($memo_id){
         return MemorandumValidacion::where('memoranda_id',$memo_id)->get();
     }
+
+
+    //guardar validacion del memorandum
+    public function storeFinalizar(Memorandum $memo)
+    {
+
+        try {
+            DB::beginTransaction();
+            
+            //finalizo el memorandum
+            $memo->status_memoranda=2;
+            $memo->save();
+
+            //finalizo la cotizacion
+            $memo->memo_cotizacion->cotizacion->status_cotizacion = 4;
+            $memo->memo_cotizacion->cotizacion->save();
+
+            //se vuelve cliente activo
+            $memo->cliente->status_cliente = 1;
+            $memo->cliente->save();
+
+            DB::commit();
+            return 1;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al intentar guardar los datos: ' . $e->getMessage());
+            return 0;
+        }
+    }
 }
