@@ -41,8 +41,9 @@ class MemoValidacionForm extends Form
         if($area ==8){
             $area = 9;
         }
+        $empleado_id = auth()->user()->empleado->id;
 
-        $revisor = RevisorArea::where('user_id', auth()->user()->id)
+        $revisor = RevisorArea::where('user_id', $empleado_id)
             ->where('ctg_area_id', $area)->first();
 
             if (!$revisor) {

@@ -15,23 +15,8 @@
     <!-- Content Row -->
     <div class="row">
 
-        <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2 text-center">
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Personal de seguridad</div>
-                            <br>
-                            <a class="btn btn-primary text-center" href="viewEquipos.php">Editar</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Earnings (Monthly) Card Example -->
+       
+        <!-- vihiculos -->
         <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
@@ -40,7 +25,39 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 Vehiculos</div>
                             <br>
-                            <a class="btn btn-primary text-center" href="viewEquipos.php">Editar</a>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',1)}}">Editar</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+         <!-- marcas vihiculos -->
+         <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2 text-center">
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                               Marcas de Vehiculos</div>
+                            <br>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',2)}}">Editar</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+         <!--modelos vihiculos -->
+         <div class="col-xl-4 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2 text-center">
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                Modelos de Vehiculos</div>
+                            <br>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',3)}}">Editar</a>
                         </div>
 
                     </div>

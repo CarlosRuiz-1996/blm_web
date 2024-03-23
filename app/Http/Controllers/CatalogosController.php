@@ -9,4 +9,8 @@ class CatalogosController extends Controller
     public function index(){
         return view('admin.catalogos.catalogos-index');
     }
+
+    public function listar($op){
+        return view('admin.catalogos.catalogos-listar', compact('op'));
+    }
 }

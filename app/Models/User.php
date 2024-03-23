@@ -66,38 +66,37 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public function adminlte_image() {
+    public function adminlte_image()
+    {
         //retorno una imagen
         return 'https://picsum.photos/200/300';
     }
 
-    public function adminlte_desc() {
+    public function adminlte_desc()
+    {
         //retorno una imagen
-        
+
         return 'Administrador';
     }
 
-    
-    public function adminlte_profile_url() {
+
+    public function adminlte_profile_url()
+    {
         //retorno una imagen
-        
+
         return 'user/profile';
     }
 
-    //relaciones de usuario/cliente/revisor area
-    public function area()
+    ///relacion con mi empleado
+    public function empleado()
     {
-        return $this->belongsTo(Ctg_Area::class, 'ctg_area_id');
+        return $this->hasOne(Empleado::class);
     }
-
-    
-    public function tipo_cliente()
+    ///relacion con mi cliente
+    public function cliente()
     {
-        return $this->belongsTo(Ctg_Tipo_Cliente::class, 'ctg_tipo_cliente_id');
+        return $this->hasOne(Cliente::class);
     }
-
-
-
     // bitacora
     public static function boot()
     {

@@ -76,6 +76,8 @@ Route::put('/admin/permiso/actualizar/{permiso}', [PermisosController::class,'up
 
 Route::get('/admin/bitacora', [BitacoraController::class,'index'])->name('bitacora');
 Route::get('/admin/catalogos', [CatalogosController::class,'index'])->name('catalogo');
+Route::get('/admin/catalogos/listar/{op}', [CatalogosController::class,'listar'])->name('catalogo.listar');
+
 
 
 // anexo 1
@@ -99,6 +101,7 @@ Route::get('validacion/listar/{area}/{name?}',[ValidacionMemorandumController::c
 
 //operaciones.-rutas
 Route::get('/operaciones', [OperacionesController::class, 'index'])->name('operaciones');
+Route::get('/ruta/nueva/{op}/{ruta?}', [OperacionesController::class, 'ruta_create'])->name('ruta.create');
 
 
 //rutas para livewire
