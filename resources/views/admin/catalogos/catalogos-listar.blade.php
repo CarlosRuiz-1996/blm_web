@@ -15,5 +15,13 @@
         <livewire:catalogos.vehiculos-marcas />
     @elseif($op == 3)
         <livewire:catalogos.vehiculos-modelos />
+    @elseif($op == 4)
+        <livewire:catalogos.rutas-estados />
+    @elseif($op == 5)
+        <livewire:catalogos.rutas-nombres />
+    @elseif($op == 6)
+        <livewire:catalogos.rutas-riesgos />
+    @elseif($op == 7)
+        <livewire:catalogos.rutas-dias />
     @endif
 @stop

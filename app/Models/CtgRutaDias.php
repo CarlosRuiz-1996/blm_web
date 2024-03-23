@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class CtgRutaDias extends Model
 {
     use HasFactory;
+    protected $table = 'ctg_ruta_dias';
+    protected $fillable = [
+        'name','status_ctg_ruta_dias'
+    ];
 }

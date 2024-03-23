@@ -10,7 +10,7 @@ class CtgRutas extends Model
     use HasFactory;
     protected $table = 'ctg_rutas';
     protected $fillable = [
-        'name','status_ctg_rutas'
+        'name','status_ctg_ruta'
     ];
     
 }
