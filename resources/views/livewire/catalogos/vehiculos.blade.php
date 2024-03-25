@@ -45,7 +45,7 @@
                             <tr>
                                 <td>{{ $vehiculo->id }}</td>
                                 <td>{{ $vehiculo->placas }}</td>
-                                <td>{{ $vehiculo->marca->name }}</td>
+                                <td>{{ $vehiculo->modelo->marca->name }}</td>
                                 <td>{{ $vehiculo->anio }}</td>
                                 <td>{{ $vehiculo->modelo->name }}</td>
                                 <td>{{ $vehiculo->serie }}</td>
@@ -112,14 +112,13 @@
                         <div class="col-md-4 mb-3">
 
 
-                            <x-select-validado label="Marca:" placeholder="Selecciona"
+                            <x-select-validadolive label="Marca:" placeholder="Selecciona"
                                 wire-model="form.ctg_vehiculo_marca_id" required>
 
-                                <option value="0" selected>Selecciona</option>
                                 @foreach ($marcas as $marca)
                                     <option value="{{ $marca->id }}">{{ $marca->name }}</option>
                                 @endforeach
-                            </x-select-validado>
+                            </x-select-validadolive>
                         </div>
 
                         <div class="col-md-4 mb-3">
@@ -130,9 +129,13 @@
                                 required>
 
                                 <option value="0" selected>Selecciona</option>
+                                @if($modelos)
                                 @foreach ($modelos as $modelo)
                                     <option value="{{ $modelo->id }}">{{ $modelo->name }}</option>
                                 @endforeach
+                                @else 
+                                <option value="0" disabled>Esperando que seleccione la marca</option>
+                                @endif
                             </x-select-validado>
                         </div>
 
@@ -251,7 +254,6 @@
                 });
                 //inicializo de nuevo 
                 Livewire.on('datatable', function() {
-                    console.log('entra')
                     restar_table();
                 });
                 Livewire.on('edit-vehiculo', function() {

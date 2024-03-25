@@ -11,7 +11,7 @@ class OperacionesController extends Controller
         return view('operaciones.operacion-index');
     }
 
-    public function ruta_create($op,$ruta = null){
-        return view('operaciones.ruta-create',compact('op','ruta'));
+    public function ruta_gestion($op,$ruta = null){
+        return view('operaciones.ruta-gestion',compact('op','ruta'));
     }
 }

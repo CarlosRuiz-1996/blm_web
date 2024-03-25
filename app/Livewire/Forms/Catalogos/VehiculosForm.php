@@ -16,12 +16,12 @@ class VehiculosForm extends Form
 
     public $descripcion, $serie, $anio, $ctg_vehiculo_marca_id, $ctg_vehiculo_modelo_id, $placas, $status_ctg_vehiculos;
     protected $rules = [
-        'descripcion' => 'required', 
-        'serie' => 'required', 
-        'anio' => 'required', 
+        'descripcion' => 'required',
+        'serie' => 'required',
+        // 'anio' => 'required', 
         'ctg_vehiculo_marca_id' => 'required',
-        'ctg_vehiculo_modelo_id' => 'required', 
-        'placas' => 'required', 
+        'ctg_vehiculo_modelo_id' => 'required',
+        'placas' => 'required',
     ];
     public function getAllVehiculos()
     {
@@ -35,34 +35,47 @@ class VehiculosForm extends Form
     {
         return CtgVehiculosModelo::all();
     }
-
+    public function getAllModelosByMarca()
+    {
+        return CtgVehiculosModelo::where('ctg_vehiculo_marca_id',$this->ctg_vehiculo_marca_id)->get();
+    }
     public function store($op)
     {
         $this->validate([
-            'name' => 'required|string|max:255', // Define tus reglas de validación aquí
-        ], ['name' => 'Debe de ingresar el nombre']);
-
+            'name' => 'required|string|max:255',
+            'ctg_vehiculo_marca_id' => $op == 1 ? '' : 'required'
+        ], [
+            'name.required' => 'Debe de ingresar el nombre',
+            'ctg_vehiculo_marca_id.required' => 'Debe de ingresar la marca'
+        ]);
 
         $this->name = strtoupper($this->name);
 
         if ($op == 1) {
             CtgVehiculosMarca::create($this->only(['name']));
         } elseif ($op == 2) {
-            CtgVehiculosModelo::create($this->only(['name']));
+            CtgVehiculosModelo::create($this->only(['name', 'ctg_vehiculo_marca_id']));
         }
         $this->reset();
     }
 
 
-    public function update($ctg)
+    public function update($ctg, $op)
     {
         $this->validate([
-            'name' => 'required|string|max:255', // Define tus reglas de validación aquí
-        ], ['name' => 'Debe de ingresar el nombre']);
-
-        $ctg->update([
-            'name' => strtoupper($this->name),
+            'name' => 'required|string|max:255',
+            'ctg_vehiculo_marca_id' => $op == 1 ? '' : 'required'
+        ], [
+            'name.required' => 'Debe de ingresar el nombre',
+            'ctg_vehiculo_marca_id.required' => 'Debe de ingresar la marca'
         ]);
+
+        $ctg->name = strtoupper($this->name);
+        if ($op == 2) {
+            $ctg->ctg_vehiculo_marca_id = $this->ctg_vehiculo_marca_id;
+        }
+        $ctg->save();
+
         $this->reset();
     }
 
@@ -115,15 +128,14 @@ class VehiculosForm extends Form
     public function storeVehiculo()
     {
         try {
-           
+
             $this->validate();
-            CtgVehiculos::create($this->only(['descripcion', 'serie', 'anio', 'ctg_vehiculo_modelo_id', 'ctg_vehiculo_marca_id', 'placas']));
+            CtgVehiculos::create($this->only(['descripcion', 'serie', 'anio', 'ctg_vehiculo_modelo_id', 'placas']));
             $this->reset();
             return 1;
         } catch (\Exception $e) {
-        
+
             return 0;
-           
         }
     }
 
@@ -131,34 +143,33 @@ class VehiculosForm extends Form
     public function updateVehiculo(CtgVehiculos $vehiculo)
     {
         try {
-           
+
             $this->validate();
-            $vehiculo->update($this->only(['descripcion', 'serie', 'anio', 'ctg_vehiculo_modelo_id', 'ctg_vehiculo_marca_id', 'placas']));
+            $vehiculo->update($this->only(['descripcion', 'serie', 'anio', 'ctg_vehiculo_modelo_id',  'placas']));
             $this->reset();
             return 1;
         } catch (\Exception $e) {
-        
+
             return 0;
-           
         }
     }
 
 
     public function bajaVehiculo(CtgVehiculos $vehiculo)
     {
-        
-            $vehiculo->update([
-                'status_ctg_vehiculos' => 0,
-            ]);
+
+        $vehiculo->update([
+            'status_ctg_vehiculos' => 0,
+        ]);
         $this->reset();
     }
 
     public function reactivarVehiculo(CtgVehiculos $vehiculo)
     {
-        
-            $vehiculo->update([
-                'status_ctg_vehiculos' => 1,
-            ]);
+
+        $vehiculo->update([
+            'status_ctg_vehiculos' => 1,
+        ]);
         $this->reset();
     }
 

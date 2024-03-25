@@ -33,22 +33,40 @@ class RutasForm extends Form
     }
     public function store($op)
     {
-        $this->validate();
+        DB::beginTransaction();
 
+        try {
+            $this->validate();
+    
+            // $this->name = strtoupper($this->name);
+            $this->name = mb_strtoupper($this->name, 'UTF-8');
 
-        $this->name = strtoupper($this->name);
-
-        if ($op == 1) {
-            CtgRutasEstado::create($this->only(['name']));
-        } elseif ($op == 2) {
-            CtgRutas::create($this->only(['name']));
-        }elseif ($op == 3) {
-            CtgRutasRiesgo::create($this->only(['name']));
+            $modelMap = [
+                1 => CtgRutasEstado::class,
+                2 => CtgRutas::class,
+                3 => CtgRutasRiesgo::class,
+                4 => CtgRutaDias::class,
+            ];
+    
+            $modelClass = $modelMap[$op];
+    
+            $modelClass::create($this->only(['name']));
+            $this->reset();
+            DB::commit();
+            return 1;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $modelError = [
+                1 =>'El estado ya existe',
+                2 => 'El nombre de la ruta ya existe',
+                3 => 'El riesgo ya existe',
+                4 => 'El dia ya existe',
+            ];
+    
+            $msgError = $modelError[$op];
+            $this->addError('name', $msgError);
+            return 0;
         }
-        elseif ($op == 4) {
-            CtgRutaDias::create($this->only(['name']));
-        }
-        $this->reset();
     }
 
 
@@ -56,10 +74,24 @@ class RutasForm extends Form
     {
         $this->validate();
 
-        $ctg->update([
-            'name' => strtoupper($this->name),
-        ]);
-        $this->reset();
+
+
+        DB::beginTransaction();
+
+        try {
+            $ctg->update([
+                'name' => mb_strtoupper($this->name, 'UTF-8'),
+            ]);
+            $this->reset();
+            DB::commit();
+            return 1;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->addError('name', 'El dia ya existe');
+
+            return 0;
+
+        }
     }
 
     public function delete($ctg)
@@ -85,16 +117,15 @@ class RutasForm extends Form
             $ctg->update([
                 'status_ctg_rutas_estados' => 0,
             ]);
-        } else if ($op == 2){
+        } else if ($op == 2) {
             $ctg->update([
                 'status_ctg_ruta' => 0,
             ]);
-        }else if ($op == 3){
+        } else if ($op == 3) {
             $ctg->update([
                 'status_ctg_rutas_riesgos' => 0,
             ]);
-        }
-        else if ($op == 4){
+        } else if ($op == 4) {
             $ctg->update([
                 'status_ctg_ruta_dias' => 0,
             ]);
@@ -108,16 +139,15 @@ class RutasForm extends Form
             $ctg->update([
                 'status_ctg_rutas_estados' => 1,
             ]);
-        } else if ($op == 2){
+        } else if ($op == 2) {
             $ctg->update([
                 'status_ctg_ruta' => 1,
             ]);
-        } else if ($op == 3){
+        } else if ($op == 3) {
             $ctg->update([
                 'status_ctg_rutas_riesgos' => 1,
             ]);
-        }
-        else if ($op == 4){
+        } else if ($op == 4) {
             $ctg->update([
                 'status_ctg_ruta_dias' => 1,
             ]);

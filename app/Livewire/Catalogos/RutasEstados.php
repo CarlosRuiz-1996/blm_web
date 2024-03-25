@@ -14,15 +14,20 @@ class RutasEstados extends Component
 
     public function render()
     {
-        $estados= $this->form->getAllRutasEstados();
-        return view('livewire.catalogos.rutas-estados',compact('estados'));
+        $estados = $this->form->getAllRutasEstados();
+        return view('livewire.catalogos.rutas-estados', compact('estados'));
     }
 
     #[On('save-estado')]
     public function save()
     {
-        $this->form->store(1);
-        $this->dispatch('success-estado', "El nombre del estado se agrego al catalogo.");
+        $res = $this->form->store(1);
+
+        if ($res == 1) {
+            $this->dispatch('success-estado', "El nombre del estado se agrego al catalogo.");
+        } else {
+            $this->dispatch('datatable');
+        }
     }
 
     public $estado_id = 0;
@@ -40,6 +45,7 @@ class RutasEstados extends Component
 
     public function limpiar()
     {
+        $this->resetValidation();
         $this->form->name = '';
         $this->estado_id = 0;
         $this->estado = '';
@@ -49,8 +55,12 @@ class RutasEstados extends Component
     #[On('update-estado')]
     public function update()
     {
-        $this->form->update($this->estado);
-        $this->dispatch('success-estado', "El nombre de la ruta se actualizo con exito.");
+        $res = $this->form->update($this->estado);
+        if ($res == 1) {
+            $this->dispatch('success-estado', "El nombre de la ruta se actualizo con exito.");
+        } else {
+            $this->dispatch('datatable');
+        }
     }
 
     #[On('delete-estado')]
@@ -67,14 +77,14 @@ class RutasEstados extends Component
     #[On('baja-estado')]
     public function baja(CtgRutasEstado $estado)
     {
-        $this->form->baja($estado,1);
+        $this->form->baja($estado, 1);
         $this->dispatch('success-estado', "El estado de la ruta se dio de baja correctamente.");
     }
 
     #[On('delete-reactivar')]
     public function reactivar(CtgRutasEstado $estado)
     {
-        $this->form->reactivar($estado,1);
+        $this->form->reactivar($estado, 1);
         $this->dispatch('success-estado', "El estado de la ruta se restauro correctamente.");
     }
 }

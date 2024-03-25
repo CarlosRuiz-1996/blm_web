@@ -13,16 +13,21 @@ class RutasRiesgos extends Component
 
     public function render()
     {
-        $riesgos= $this->form->getAllRutasRiesgos();
-        return view('livewire.catalogos.rutas-riesgos',compact('riesgos'));
+        $riesgos = $this->form->getAllRutasRiesgos();
+        return view('livewire.catalogos.rutas-riesgos', compact('riesgos'));
     }
 
-    
+
     #[On('save-riesgo')]
     public function save()
     {
-        $this->form->store(3);
-        $this->dispatch('success-riesgo', "El nombre de la riesgo se agrego al catalogo.");
+        $res = $this->form->store(3);
+
+        if ($res == 1) {
+            $this->dispatch('success-riesgo', "El nombre de la riesgo se agrego al catalogo.");
+        } else {
+            $this->dispatch('datatable');
+        }
     }
 
     public $riesgo_id = 0;
@@ -40,6 +45,7 @@ class RutasRiesgos extends Component
 
     public function limpiar()
     {
+        $this->resetValidation();
         $this->form->name = '';
         $this->riesgo_id = 0;
         $this->riesgo = '';
@@ -49,8 +55,13 @@ class RutasRiesgos extends Component
     #[On('update-riesgo')]
     public function update()
     {
-        $this->form->update($this->riesgo);
-        $this->dispatch('success-riesgo', "El nombre del riesgo se actualizo con exito.");
+
+        $res =  $this->form->update($this->riesgo);
+        if ($res == 1) {
+            $this->dispatch('success-riesgo', "El nombre del riesgo se actualizo con exito.");
+        } else {
+            $this->dispatch('datatable');
+        }
     }
 
     #[On('delete-riesgo')]
@@ -67,14 +78,14 @@ class RutasRiesgos extends Component
     #[On('baja-riesgo')]
     public function baja(CtgRutasRiesgo $riesgo)
     {
-        $this->form->baja($riesgo,3);
+        $this->form->baja($riesgo, 3);
         $this->dispatch('success-riesgo', "El nombre del riesgo se dio de baja correctamente.");
     }
 
     #[On('delete-reactivar')]
     public function reactivar(CtgRutasRiesgo $riesgo)
     {
-        $this->form->reactivar($riesgo,3);
+        $this->form->reactivar($riesgo, 3);
         $this->dispatch('success-riesgo', "El nombre del riesgo se restauro correctamente.");
     }
 }

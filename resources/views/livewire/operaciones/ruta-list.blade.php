@@ -33,30 +33,29 @@
                                     <table class="table">
                                         <thead class="table-primary">
                                             <tr>
-                                                <th>Id</th>
-                                                <th>Razon Social</th>
-                                                <th>RFC</th>
-                                                <th>Contacto</th>
-                                                <th>Fecha de Solicitud</th>
+                                                <th>ID</th>
+                                                <th>Nombre</th>
+                                                <th>Dia</th>
+                                                <th>Riesgo</th>
+                                                <th>Estado</th>
+                                                <th>Hora Inicio</th>
+                                                <th>Hora Finalización</th>
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{-- @foreach ($solicitudes as $solicitud)
-                                                <td>{{ $solicitud->id }}</td>
-                                                <td>{{ $solicitud->cliente->razon_social }}</td>
-                                                <td>{{ $solicitud->cliente->rfc_cliente }}</td>
-                                                <td>{{ $solicitud->cliente->user->name .
-                                                    ' ' .
-                                                    $solicitud->cliente->user->paterno .
-                                                    ' ' .
-                                                    $solicitud->cliente->user->materno }}
-                                                </td>
-                                                <td>{{ $solicitud->updated_at }}</td>
+                                            @foreach ($rutas as $ruta)
+                                                <td>{{ $ruta->id }}</td>
+                                                <td>{{ $ruta->nombre->name }}</td>
+                                                <td>{{ $ruta->dia->name }}</td>
+                                                <td>{{ $ruta->riesgo->name}}</td>
+                                                <td>{{ $ruta->estado->name}}</td>
+                                                <td>{{ $ruta->hora_inicio }}</td>
+                                                <td>{{ $ruta->hora_fin }}</td>
                                                 <td>
-                                                    <a href="{{route('anexo.index', $solicitud->id)}}">Comenzar anexo1</a>
+                                                    <a href="{{route('ruta.gestion', [2,$ruta])}}">Detalles</a>
                                                 </td>
-                                            @endforeach --}}
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>

@@ -14,20 +14,40 @@ class RutasDias extends Component
 
     public function render()
     {
-        $dias= $this->form->getAllRutasDias();
+        $dias = $this->form->getAllRutasDias();
 
         return view('livewire.catalogos.rutas-dias', compact('dias'));
     }
 
-    
-    
+
+
+
+    public $dias_array = array('LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO', 'DOMINGO');
     #[On('save-dia')]
     public function save()
     {
-        $this->form->store(4);
-        $this->dispatch('success-dia', "El nombre del dia se agrego al catalogo.");
-    }
 
+        $sin_acentos = strtoupper($this->removeAccents($this->form->name));
+        if (in_array($sin_acentos, $this->dias_array)) {
+            $res = $this->form->store(4);
+            if ($res == 1) {
+                $this->dispatch('success-dia', "El nombre del dia se agrego al catalogo.");
+            } else {
+                $this->dispatch('datatable');
+            }
+        } else {
+            $this->dispatch('error', "Este no es un dia de la semana.");
+        }
+    }
+    private function removeAccents($str)
+    {
+        //quita acentos del texto que ingrso
+        return strtr(
+            utf8_decode($str),
+            utf8_decode('ÁÉÍÓÚÑáéíóúñ'),
+            'AEIOUNaeioun'
+        );
+    }
     public $dia_id = 0;
     public $dia;
 
@@ -43,6 +63,7 @@ class RutasDias extends Component
 
     public function limpiar()
     {
+        $this->resetValidation();
         $this->form->name = '';
         $this->dia_id = 0;
         $this->dia = '';
@@ -52,8 +73,20 @@ class RutasDias extends Component
     #[On('update-dia')]
     public function update()
     {
-        $this->form->update($this->dia);
-        $this->dispatch('success-dia', "El nombre del dia se actualizo con exito.");
+
+
+
+        $sin_acentos = strtoupper($this->removeAccents($this->form->name));
+        if (in_array($sin_acentos, $this->dias_array)) {
+            $res = $this->form->update($this->dia);
+            if ($res == 1) {
+                $this->dispatch('success-dia', "El nombre del dia se actualizo con exito.");
+            } else {
+                $this->dispatch('datatable');
+            }
+        } else {
+            $this->dispatch('error', "Este no es un dia de la semana.");
+        }
     }
 
     #[On('delete-dia')]
@@ -70,14 +103,14 @@ class RutasDias extends Component
     #[On('baja-dia')]
     public function baja(CtgRutaDias $dia)
     {
-        $this->form->baja($dia,4);
+        $this->form->baja($dia, 4);
         $this->dispatch('success-dia', "El nombre del dia se dio de baja correctamente.");
     }
 
     #[On('delete-reactivar')]
     public function reactivar(CtgRutaDias $dia)
     {
-        $this->form->reactivar($dia,4);
+        $this->form->reactivar($dia, 4);
         $this->dispatch('success-dia', "El nombre del dia se restauro correctamente.");
     }
 }

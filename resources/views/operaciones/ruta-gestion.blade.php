@@ -9,13 +9,15 @@
             <a href="/operaciones" title="ATRAS">
                 <i class="fa fa-arrow-left"></i>
             </a>
-            {{ $op == 1 ? 'Nueva Ruta' : 'Editar Ruta' }}
+            {{ $op == 1 ? 'Nueva Ruta' : 'Gestión de Ruta' }}
         </h1>
 
-       
-        <livewire:operaciones.ruta-ctg-ruta />
-    @stop
-    @section('content')
-        <livewire:operaciones.ruta-formulario :op="$op" :ruta="$ruta" />
+        @if($op == 1)
+        <livewire:operaciones.rutas.ruta-ctg-ruta />
+        @endif
+    </div>
+@stop
+@section('content')
+    <livewire:operaciones.ruta-gestion :ruta="$ruta" />
 
-    @stop
+@stop

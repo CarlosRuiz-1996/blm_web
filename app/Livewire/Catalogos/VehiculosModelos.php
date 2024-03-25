@@ -15,8 +15,9 @@ class VehiculosModelos extends Component
     public function render()
     {
         $modelos = $this->form->getAllModelos();
+        $marcas = $this->form->getAllMarcas();
 
-        return view('livewire.catalogos.vehiculos-modelos',compact('modelos'));
+        return view('livewire.catalogos.vehiculos-modelos',compact('modelos','marcas'));
     }
 
     #[On('save-modelo')]
@@ -33,6 +34,7 @@ class VehiculosModelos extends Component
     {
         $this->limpiar();
         $this->form->name = $modelo->name;
+        $this->form->ctg_vehiculo_marca_id = $modelo->ctg_vehiculo_marca_id;
         $this->modelo_id = $modelo->id;
         $this->modelo = $modelo;
 
@@ -50,7 +52,7 @@ class VehiculosModelos extends Component
     #[On('update-modelo')]
     public function update()
     {
-        $this->form->update($this->modelo);
+        $this->form->update($this->modelo,2);
         $this->dispatch('success-modelo', "El nombre de la modelo se actualizo con exito.");
     }
 

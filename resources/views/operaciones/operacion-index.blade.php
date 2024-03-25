@@ -7,7 +7,7 @@
     <div class="d-sm-flex align-items-center justify-content-between">
 
         <h1 class="ml-2">Operaciones</h1>
-        <a href="{{ route('ruta.create',1) }}" class="btn btn-primary">
+        <a href="{{ route('ruta.gestion',1) }}" class="btn btn-primary">
             Nueva Ruta
             <i class="fa fa-plus" aria-hidden="true"></i>
         </a>

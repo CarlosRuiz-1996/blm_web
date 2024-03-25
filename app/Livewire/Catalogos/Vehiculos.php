@@ -9,14 +9,23 @@ use Livewire\Attributes\On;
 class Vehiculos extends Component
 {
     public VehiculosForm $form;
+    public $modelos;
     public function render()
     {
         $vehiculos = $this->form->getAllVehiculos();
-        $modelos = $this->form->getAllModelos();
         $marcas = $this->form->getAllMarcas();
-        return view('livewire.catalogos.vehiculos', compact('vehiculos', 'marcas','modelos'));
+        return view('livewire.catalogos.vehiculos', compact('vehiculos', 'marcas'));
     }
+    public function updated($property)
+    {
 
+        if ($property === 'form.ctg_vehiculo_marca_id') {
+            $this->reset('form.ctg_vehiculo_modelo_id');
+            if ($this->form->ctg_vehiculo_marca_id != 0) {
+                $this->modelos = $this->form->getAllModelosByMarca();
+            } 
+        }
+    }
     #[On('save-vehiculo')]
     public function save()
     {
@@ -76,7 +85,7 @@ class Vehiculos extends Component
         $this->form->anio = $vehiculo->anio;
         $this->form->serie = $vehiculo->serie;
         $this->form->ctg_vehiculo_modelo_id = $vehiculo->modelo->id;
-        $this->form->ctg_vehiculo_marca_id = $vehiculo->marca->id;
+        $this->form->ctg_vehiculo_marca_id = $vehiculo->modelo->marca->id;
 
         $this->dispatch('edit-vehiculo');
     }

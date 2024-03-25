@@ -101,7 +101,7 @@ Route::get('validacion/listar/{area}/{name?}',[ValidacionMemorandumController::c
 
 //operaciones.-rutas
 Route::get('/operaciones', [OperacionesController::class, 'index'])->name('operaciones');
-Route::get('/ruta/nueva/{op}/{ruta?}', [OperacionesController::class, 'ruta_create'])->name('ruta.create');
+Route::get('/ruta/gestion/{op}/{ruta?}', [OperacionesController::class, 'ruta_gestion'])->name('ruta.gestion');
 
 
 //rutas para livewire

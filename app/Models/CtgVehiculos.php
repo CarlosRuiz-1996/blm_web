@@ -20,7 +20,8 @@ class CtgVehiculos extends Model
     }
 
 
-    public function marca(){
-        return $this->belongsTo(CtgVehiculosMarca::class,'ctg_vehiculo_marca_id');
+    public function rutas()
+    {
+        return $this->belongsToMany(Ruta::class, 'ruta_vehiculos', 'ctg_vehiculo_id', 'ruta_id');
     }
 }

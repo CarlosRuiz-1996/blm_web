@@ -25,6 +25,7 @@
                         $heads = [
                             'ID',
                             'Modelo',
+                            'Marca',
                             'Estatus',
                             ['label' => 'Actiones', 'no-export' => true, 'width' => 20],
                         ];
@@ -44,6 +45,9 @@
                                 </td>
                                 <td>
                                     {{ $modelo->name }}
+                                </td>
+                                <td>
+                                    {{$modelo->marca? $modelo->marca->name:''}}
                                 </td>
                                 <td>
 
@@ -98,7 +102,14 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12 mb-3">
+                        <x-select-validado label="Marca:" placeholder="Selecciona"
+                            wire-model="form.ctg_vehiculo_marca_id" required>
 
+                            <option value="0" selected>Selecciona</option>
+                            @foreach ($marcas as $marca)
+                                <option value="{{ $marca->id }}">{{ $marca->name }}</option>
+                            @endforeach
+                        </x-select-validado>
                         <x-input-validado label="Nombre:" placeholder="nombre" wire-model="form.name" type="text" />
                     </div>
 

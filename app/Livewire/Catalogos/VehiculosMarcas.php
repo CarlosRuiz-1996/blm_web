@@ -49,7 +49,7 @@ class VehiculosMarcas extends Component
     #[On('update-marca')]
     public function update()
     {
-        $this->form->update($this->marca);
+        $this->form->update($this->marca,1);
         $this->dispatch('success-marca', "El nombre de la marca se actualizo con exito.");
     }
 

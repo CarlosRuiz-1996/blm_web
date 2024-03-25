@@ -3,7 +3,7 @@
     {{-- Example button to open modal --}}
     <button title="Agrega una nueva ruta al catalogo" class="btn btn-primary m-2" data-toggle="modal"
         data-target="#ctg-ruta">
-        Agregar ruta
+        Nombre Ruta
         <i class="fa fa-plus" aria-hidden="true"></i>
 
     </button>
@@ -55,7 +55,7 @@
                     });
                 });
 
-               
+
                 Livewire.on('error', function([message]) {
                     Swal.fire({
                         icon: 'error',

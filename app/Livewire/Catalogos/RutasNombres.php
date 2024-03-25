@@ -23,8 +23,13 @@ class RutasNombres extends Component
     #[On('save-ruta')]
     public function save()
     {
-        $this->form->store(2);
-        $this->dispatch('success-ruta', "El nombre de la ruta se agrego al catalogo.");
+        $res =$this->form->store(2);
+
+        if ($res == 1) {
+            $this->dispatch('success-ruta', "El nombre de la ruta se agrego al catalogo.");
+        } else {
+            $this->dispatch('datatable');
+        }
     }
 
     public $ruta_id = 0;
@@ -42,6 +47,8 @@ class RutasNombres extends Component
 
     public function limpiar()
     {
+        $this->resetValidation();
+
         $this->form->name = '';
         $this->ruta_id = 0;
         $this->ruta = '';
@@ -51,8 +58,12 @@ class RutasNombres extends Component
     #[On('update-ruta')]
     public function update()
     {
-        $this->form->update($this->ruta);
-        $this->dispatch('success-ruta', "El nombre de la ruta se actualizo con exito.");
+        $res = $this->form->update($this->ruta);
+        if ($res == 1) {
+            $this->dispatch('success-ruta', "El nombre de la ruta se actualizo con exito.");
+        } else {
+            $this->dispatch('datatable');
+        }
     }
 
     #[On('delete-ruta')]

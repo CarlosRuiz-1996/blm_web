@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Operaciones;
+namespace App\Livewire\Operaciones\Rutas;
 
 use App\Models\CtgRutas;
 use Livewire\Component;
@@ -14,7 +14,7 @@ class RutaCtgRuta extends Component
     public $name;
     public function render()
     {
-        return view('livewire.operaciones.ruta-ctg-ruta');
+        return view('livewire.operaciones.rutas.ruta-ctg-ruta');
     }
     #[On('save-ctg-ruta')]
     public function save()
