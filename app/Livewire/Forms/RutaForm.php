@@ -7,6 +7,8 @@ use App\Models\CtgRutas;
 use App\Models\CtgVehiculos;
 use App\Models\Ruta;
 use App\Models\RutaVehiculo;
+use App\Models\Servicios;
+use App\Models\SucursalServicio;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -21,15 +23,6 @@ class RutaForm extends Form
 
     //para poder guardardar el model de la ruta
     public $ruta;
-
-    // protected $rules = [
-    //     'hora_inicio' => 'required',
-    //     // 'hora_fin' => 'required',
-    //     'ctg_rutas_id' => 'required',
-    //     'ctg_ruta_dia_id' => 'required',
-    //     // 'ctg_rutas_riesgo_id' => 'required',
-    //     // 'ctg_rutas_estado_id' => 'required',
-    // ];
 
     public function getCtgRutas($dia_id)
     {
@@ -118,5 +111,16 @@ class RutaForm extends Form
     public function deleteVehiculos($vehiculo)
     {
         $vehiculo->delete();
+    }
+
+
+    //servicios
+    public function getServicios()
+    {
+        return SucursalServicio::with('servicio')
+            ->whereHas('servicio', function ($query) {
+                $query->where('status_servicio', 3);
+            })
+            ->get();
     }
 }

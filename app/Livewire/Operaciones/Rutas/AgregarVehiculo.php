@@ -48,9 +48,8 @@ class AgregarVehiculo extends Component
             $vehiculos = [];
             $ruta_vehiculos = [];
         }
-        return view(
-            'livewire.operaciones.rutas.agregar-vehiculo',
-            [
+        return view('livewire.operaciones.rutas.agregar-vehiculo',
+        [
                 'vehiculos' => $vehiculos,
                 'ruta_vehiculos' => $ruta_vehiculos
             ]

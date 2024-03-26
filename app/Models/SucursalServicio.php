@@ -23,6 +23,14 @@ class SucursalServicio extends Model
         return $this->belongsTo(Sucursal::class, 'sucursal_id');
     }
 
-    
+    public function memorandum()
+    {
+        return $this->hasOne(MemorandumServicios::class, 'sucursal_servicio_id');
+    }
+
+    public function anexo()
+    {
+        return $this->belongsTo(Anexo1::class, 'anexo1_id');
+    }
   
 }

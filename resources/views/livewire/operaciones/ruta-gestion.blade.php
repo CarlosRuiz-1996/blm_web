@@ -74,7 +74,7 @@
         @if ($form->ruta)
             {{-- vehiculos --}}
             
-                <livewire:operaciones.rutas.agregar-vehiculo :ruta="$form->ruta"/>
+            <livewire:operaciones.rutas.agregar-vehiculo :ruta="$form->ruta"/>
             
             {{-- elementos de seguridad --}}
             <div class="row">
@@ -91,20 +91,8 @@
                 </div>
             </div>
             {{-- servicios --}}
-            <div class="row">
-                <h1 class="ml-3">Servicios </h1>
-                <div class="col-md-12">
-                    <div class="card card-outline card-info">
-                        <div class="card-body">
-                            <div class="row">
+            <livewire:operaciones.rutas.agregar-servicio />
 
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="col-md-12 ">
                 <button wire:click='save' class="btn btn-info btn-block">Guardar</button>
