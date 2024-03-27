@@ -64,6 +64,8 @@ Route::get('/ventas', [ventasController::class, 'indexventas']);
 Route::get('/ventas/altaSolicitudCumplimiento/{id}', [ventasController::class, 'altaSolicitudCumplimiento'])->name('clientesactivos.altaSolicitudCumplimiento');
 Route::get('/clientesactivos/CotizacionesNuevas', [ClientesActivosController::class, 'CotizacionesNuevas'])->name('clientesactivos.CotizacionesNuevas');
 Route::get('/clientesactivos/cotizardenuevo/{id}', [ClientesActivosController::class, 'cotizardenuevo'])->name('clientesactivos.cotizardenuevo');
+Route::get('/ventas/detalle-cotizacion/{cotizacion}', [ClientesActivosController::class, 'detalle_cotizacion'])->name('cotizacion.detalle');
+Route::get('/ventas/cotizacion-pdf/{cotizacion}', [ClientesActivosController::class, 'cotizacion_pdf'])->name('cotizacion.pdf');
 
 Route::get('/cumplimiento/altaValidaCumplimiento/{id}', [altaValidaCumplimiento::class, 'index'])->name('altaValidaCumplimiento.index');
 Route::get('/cumplimiento', [cumplimientoController::class, 'index'])->name('cumplimiento.index');
@@ -89,6 +91,7 @@ Route::get('/admin/catalogos/listar/{op}', [CatalogosController::class,'listar']
 
 // anexo 1
 Route::get('ventas/anexo1/{cotizacion}',[Anexo1::class, 'index'])->name('anexo.index');
+Route::get('ventas/anexo1-pdf/{anexo}',[Anexo1::class, 'anexo_pdf'])->name('anexo.pdf');
 
 // boveda
 Route::get('boveda/',[boveda::class, 'index'])->name('boveda.index');
