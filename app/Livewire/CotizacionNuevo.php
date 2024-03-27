@@ -227,7 +227,7 @@ class CotizacionNuevo extends Component
                 'status_cotizacion_servicio' => '1'
             ]);
         }
-        $this->dispatch('success-cotizacion','La cotización se creo con exito');
+        $this->dispatch('success-cotizacion',['La cotización se creo con exito']);
     }
 
     public function updatedServicioId($value)

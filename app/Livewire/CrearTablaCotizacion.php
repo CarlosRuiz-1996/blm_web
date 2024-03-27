@@ -258,7 +258,7 @@ class CrearTablaCotizacion extends Component
             ]);
         }
 
-        $this->dispatch('success-cotizacion','La cotización se creo con exito');
+        $this->dispatch('success-cotizacion',['La cotización se creo con exito']);
     }
 
     public function updatedServicioId($value)
