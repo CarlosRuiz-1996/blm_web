@@ -17,7 +17,7 @@
                 <h1 class="font-weight-bold">Cotización - Detalle</h1>
             </td>
             <td align="right">
-                <a href="exportPDF_Cotizacion.php?id=" target="_blank">
+                <a href="{{route('cotizacion.pdf',$cotizacion)}}" target="_blank">
                     <i title="Descargar Archivo" style="color: red;" class="fas fa-file-pdf fa-2x" aria-hidden="true"></i>
                 </a>
             </td>
