@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Cliente;
+use App\Models\Cotizacion;
 use App\Models\ctg_aceptado;
 use App\Models\ctg_rechazo;
 use App\Models\cumplimiento;
@@ -47,15 +48,15 @@ class AltaValidaCumplimiento extends Component
     public $aceptadoValid = [];
     public $aceptadoOrNegado;
     public $documentosexpedienteBene;
-    public $notabene=[];
-    public $cumplebene=[];
+    public $notabene = [];
+    public $cumplebene = [];
     public $valornotabene;
 
 
     public function mount($expedienteId)
     {
-        $this->cumplebene=[];
-        $this->notabene=[];
+        $this->cumplebene = [];
+        $this->notabene = [];
         $this->cumple = [];
         $this->nota = [];
         $this->notaevidencias = [];
@@ -84,8 +85,8 @@ class AltaValidaCumplimiento extends Component
             $this->catalogoRechazado();
             $this->obtenerCantidadValidados($expedienteId);
             $this->cargarDocumentosExpedienteBene($expedienteId);
-        $this->cargarDeValidacionBene($expedienteId);
-    }
+            $this->cargarDeValidacionBene($expedienteId);
+        }
     }
     public function render()
     {
@@ -321,8 +322,8 @@ class AltaValidaCumplimiento extends Component
                 ]);
                 $this->idcumplimiento->update([
                     'status_cumplimiento' => 3,
-                    'dictamen'=>0,
-                    'fecha_dictamen'=>now(),
+                    'dictamen' => 0,
+                    'fecha_dictamen' => now(),
                 ]);
             } else {
                 $cumpliRechazado->update([
@@ -330,8 +331,8 @@ class AltaValidaCumplimiento extends Component
                 ]);
                 $this->idcumplimiento->update([
                     'status_cumplimiento' => 3,
-                    'dictamen'=>0,
-                    'fecha_dictamen'=>now(),
+                    'dictamen' => 0,
+                    'fecha_dictamen' => now(),
                 ]);
             }
         }
@@ -356,8 +357,8 @@ class AltaValidaCumplimiento extends Component
                 }
                 $this->idcumplimiento->update([
                     'status_cumplimiento' => 3,
-                        'dictamen'=>1,
-                        'fecha_dictamen'=>now(),
+                    'dictamen' => 1,
+                    'fecha_dictamen' => now(),
                 ]);
             } else {
                 foreach ($this->aceptadoValid as $id => $valor) {
@@ -369,9 +370,21 @@ class AltaValidaCumplimiento extends Component
                 }
                 $this->idcumplimiento->update([
                     'status_cumplimiento' => 3,
-                        'dictamen'=>1,
-                        'fecha_dictamen'=>now(),
+                    'dictamen' => 1,
+                    'fecha_dictamen' => now(),
                 ]);
+            }
+
+            $datosExpediente->cumplimiento = 2;
+            $datosExpediente->save();
+
+            if ($datosExpediente->juridico == 2) {
+                $datosExpediente->status_expediente_digital = 2;
+                $datosExpediente->save();
+            }
+
+            if($datosExpediente->juridico == 2 && $datosExpediente->cumplimiento = 2){
+                Cotizacion::where('cliente_id', $datosExpediente->cliente_id)->update(['status_cotizacion' => 3]);
             }
         }
         return redirect()->route('cumplimiento.index');
@@ -380,15 +393,15 @@ class AltaValidaCumplimiento extends Component
     {
         $datosExpediente = expediente_digital::where('cliente_id', $id)->first();
         $consulta = DB::table('expediente_documentos as exp')
-                ->leftJoin('cumplimiento_doc_validacion as val', 'val.expediente_documentos_id', '=', 'exp.id')
-                ->select('val.cumple')
-                ->where('exp.expediente_digital_id', $datosExpediente->id)
-                ->get();
+            ->leftJoin('cumplimiento_doc_validacion as val', 'val.expediente_documentos_id', '=', 'exp.id')
+            ->select('val.cumple')
+            ->where('exp.expediente_digital_id', $datosExpediente->id)
+            ->get();
         $consulta2 = DB::table('expediente_documentos_benf as exp')
-        ->leftJoin('cumplimiento_doc_validacion_beneficiario as val', 'val.expediente_documentos_benf_id', '=', 'exp.id')
-        ->select('val.cumple')
-        ->where('exp.expediente_digital_id', $datosExpediente->id)
-        ->get();
+            ->leftJoin('cumplimiento_doc_validacion_beneficiario as val', 'val.expediente_documentos_benf_id', '=', 'exp.id')
+            ->select('val.cumple')
+            ->where('exp.expediente_digital_id', $datosExpediente->id)
+            ->get();
 
         // Inicializa contadores
         $totalRegistros = count($consulta);
@@ -412,17 +425,17 @@ class AltaValidaCumplimiento extends Component
             }
         }
         //recorre beneficiarios documentos
-        if($totalRegistrosbene>0){
-        foreach ($consulta2 as $registro2) {
-            if ($registro2->cumple === null) {
-                $registrosNullbene++;
-            } elseif ($registro2->cumple == 1) {
-                $registros1bene++;
-            } elseif ($registro2->cumple == 0) {
-                $registros0bene++;
+        if ($totalRegistrosbene > 0) {
+            foreach ($consulta2 as $registro2) {
+                if ($registro2->cumple === null) {
+                    $registrosNullbene++;
+                } elseif ($registro2->cumple == 1) {
+                    $registros1bene++;
+                } elseif ($registro2->cumple == 0) {
+                    $registros0bene++;
+                }
             }
         }
-    }
 
         if ($registrosNull == $totalRegistros) {
             $this->aceptadoOrNegado = 0;  // Todos los registros son 0
@@ -432,8 +445,8 @@ class AltaValidaCumplimiento extends Component
             $this->aceptadoOrNegado = 2;  // Todos los registros son 1
         }
         //valida beneficiarios documentos
-        if ($totalRegistrosbene>0){
-        if($this->aceptadoOrNegado == 2){
+        if ($totalRegistrosbene > 0) {
+            if ($this->aceptadoOrNegado == 2) {
                 if ($registrosNullbene == $totalRegistrosbene) {
                     $this->aceptadoOrNegado = 0;  // Todos los registros son 0
                 } elseif ($registrosNullbene >= 1 || $registros0bene >= 1) {
@@ -441,24 +454,24 @@ class AltaValidaCumplimiento extends Component
                 } else {
                     $this->aceptadoOrNegado = 2;  // Todos los registros son 1
                 }
-        }else{
-            $this->aceptadoOrNegado = 1;
+            } else {
+                $this->aceptadoOrNegado = 1;
+            }
         }
     }
-}
 
     //documentos beneficiario
     public function cargarDocumentosExpedienteBene($id)
     {
         $datosExpediente = expediente_digital::where('cliente_id', $id)->first();
-    
+
         if ($datosExpediente) {
             $this->documentosexpedienteBene = DB::table('expediente_documentos_benf as exp')
                 ->join('ctg_documentos_benf as ctgdoc', 'exp.ctg_documentos_benf_id', '=', 'ctgdoc.id')
                 ->select('exp.id', 'exp.expediente_digital_id', 'exp.document_name', 'ctgdoc.name')
                 ->where('exp.expediente_digital_id', $datosExpediente->id)
                 ->get();
-            $this->idcumplimiento=cumplimiento::where('expediente_digital_id',$datosExpediente->id)->first();
+            $this->idcumplimiento = cumplimiento::where('expediente_digital_id', $datosExpediente->id)->first();
         } else {
             // Manejo de error si no se encuentra el expediente_digital
         }
@@ -466,19 +479,18 @@ class AltaValidaCumplimiento extends Component
     public function cargarDeValidacionBene($id)
     {
         $datosExpediente = expediente_digital::where('cliente_id', $id)->first();
-    
+
         if ($datosExpediente) {
             $this->valornotabene = DB::table('cumplimiento as c')
                 ->join('cumplimiento_doc_validacion_beneficiario as val', 'c.id', '=', 'val.cumplimiento_id')
                 ->where('c.expediente_digital_id', $datosExpediente->id)
                 ->select('val.expediente_documentos_benf_id', 'val.nota', 'val.cumple')
                 ->get();
-    
+
             // Actualiza las propiedades $nota y $cumple
             foreach ($this->valornotabene as $notavbene) {
                 $this->notabene[$notavbene->expediente_documentos_benf_id] = $notavbene->nota;
                 $this->cumplebene[$notavbene->expediente_documentos_benf_id] = $notavbene->cumple;
-                
             }
         }
     }
@@ -490,61 +502,55 @@ class AltaValidaCumplimiento extends Component
         $registroExistente = validacioncumplimientobene::where('cumplimiento_id', $this->idcumplimiento->id)
             ->where('expediente_documentos_benf_id', $documentoId)
             ->first();
-    
-            if ($registroExistente) {
-                // Si el registro existe, actualízalo
-                $registroExistente->update([
-                    'cumple' => $value,
-                ]);
-            } else {
-                // Si el registro no existe, créalo
-                validacioncumplimientobene::create([
-                    'cumplimiento_id' => $this->idcumplimiento->id,
-                    'expediente_documentos_benf_id' => $documentoId,
-                    'cumple' => $value,
-                    'status_validacion_doc_cumplimiento_beneficiario'=>1,
-                ]);
-            }
-            $this->obtenerCantidadValidados($this->idexpedientedig);
+
+        if ($registroExistente) {
+            // Si el registro existe, actualízalo
+            $registroExistente->update([
+                'cumple' => $value,
+            ]);
+        } else {
+            // Si el registro no existe, créalo
+            validacioncumplimientobene::create([
+                'cumplimiento_id' => $this->idcumplimiento->id,
+                'expediente_documentos_benf_id' => $documentoId,
+                'cumple' => $value,
+                'status_validacion_doc_cumplimiento_beneficiario' => 1,
+            ]);
+        }
+        $this->obtenerCantidadValidados($this->idexpedientedig);
     }
     public function updatedNotaBene($value, $documentoId)
-{
-     // Verifica si $documentoId existe como clave en el array $this->nota
-     if (array_key_exists($documentoId, $this->notabene)) {
-        // Obtén el valor actualizado de la nota
-        $notaActualizada = $value;
-    } else {
-        // Maneja el caso en el que $documentoId no existe en el array
-        // Puedes agregar alguna lógica adicional según tus necesidades
-        $notaActualizada = '';
+    {
+        // Verifica si $documentoId existe como clave en el array $this->nota
+        if (array_key_exists($documentoId, $this->notabene)) {
+            // Obtén el valor actualizado de la nota
+            $notaActualizada = $value;
+        } else {
+            // Maneja el caso en el que $documentoId no existe en el array
+            // Puedes agregar alguna lógica adicional según tus necesidades
+            $notaActualizada = '';
+        }
+
+        // Busca y actualiza el registro existente para el documento y el cumplimiento
+        $registroExistente = validacioncumplimientobene::where('cumplimiento_id', $this->idcumplimiento->id)
+            ->where('expediente_documentos_benf_id', $documentoId)
+            ->first();
+
+        if ($registroExistente) {
+            // Si el registro existe, actualízalo
+            $registroExistente->update([
+                'nota' => $notaActualizada,
+            ]);
+        } else {
+            // Si el registro no existe, créalo
+            validacioncumplimiento::create([
+                'cumplimiento_id' => $this->idcumplimiento->id,
+                'expediente_documentos_benf_id' => $documentoId,
+                'cumple' => 0, // Ajusta según tus necesidades
+                'nota' => $notaActualizada,
+                'status_validacion_doc_cumplimiento_beneficiario' => 1,
+            ]);
+        }
+        $this->obtenerCantidadValidados($this->idexpedientedig);
     }
-
-    // Busca y actualiza el registro existente para el documento y el cumplimiento
-    $registroExistente = validacioncumplimientobene::where('cumplimiento_id', $this->idcumplimiento->id)
-        ->where('expediente_documentos_benf_id', $documentoId)
-        ->first();
-
-    if ($registroExistente) {
-        // Si el registro existe, actualízalo
-        $registroExistente->update([
-            'nota' => $notaActualizada,
-        ]);
-    } else {
-        // Si el registro no existe, créalo
-        validacioncumplimiento::create([
-            'cumplimiento_id' => $this->idcumplimiento->id,
-            'expediente_documentos_benf_id' => $documentoId,
-            'cumple' => 0, // Ajusta según tus necesidades
-            'nota' => $notaActualizada,
-            'status_validacion_doc_cumplimiento_beneficiario' => 1,
-        ]);
-    }
-    $this->obtenerCantidadValidados($this->idexpedientedig);
-}
-    
-    
-
-    
-
-    
 }
