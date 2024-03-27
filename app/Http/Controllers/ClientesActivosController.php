@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\Cotizacion;
 use App\Models\Ctg_Tipo_Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ClientesActivosController extends Controller
 {
@@ -56,4 +58,15 @@ class ClientesActivosController extends Controller
         return view('clientesactivos.cotizardenuevo', ['id' => $id]);
     }
     
+
+    public function detalle_cotizacion( Cotizacion $cotizacion){
+        return view('ventas.cotizacion-detalles', compact('cotizacion'));
+    }
+    
+    public function cotizacion_pdf(Cotizacion $cotizacion){
+        $pdf = new PDF();
+        // $pdf->loadHTML('<h1>Contenido del PDF</h1>', compact('cotizacion')); 
+        $pdf = PDF::loadView('ventas.cotizacion-pdf', compact('cotizacion'));
+        return $pdf->stream();
+    }
 }

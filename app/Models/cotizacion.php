@@ -26,5 +26,8 @@ class Cotizacion extends Model
     {
         return $this->hasOne(Anexo1::class, 'cotizacion_id');
     }
+    public function tipo_pago(){
+        return $this->belongsTo(CtgTipoPago::class, 'ctg_tipo_pago_id');
+    }
 
 }

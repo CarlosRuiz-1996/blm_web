@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Anexo1;
 
+use App\Models\Anexo1;
 use App\Models\Cotizacion;
 use Livewire\Component;
 
@@ -16,7 +17,7 @@ class ListadosAnexo1 extends Component
     public function mount()
     {
         $this->solicitudes = Cotizacion::where('status_cotizacion','=',2)->get();
-        $this->terminadas = Cotizacion::where('status_cotizacion','=',3)->get();
+        $this->terminadas = Anexo1::all();
 
     }
     public function render()
@@ -47,9 +48,9 @@ class ListadosAnexo1 extends Component
         }
 
         // Aplicar otros filtros si es necesario
-
+        // $query->orderBy('id', 'DESC');
         // Obtener los resultados
-        $this->solicitudes = $query->where('status_cotizacion', 2)->get();
+        $this->solicitudes = $query->where('status_cotizacion', 2)->paginate(5);
     }
 }
 }

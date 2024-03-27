@@ -48,7 +48,7 @@ class CotizacionesIndexTabla extends Component
         if (!empty($this->nombrecliente)) {
             $query->where('cl.razon_social', 'like', '%' . $this->nombrecliente . '%');
         }
-    
+        $query->orderBy('ctz.id', 'desc');
         return $query->paginate(5);
     }
     
