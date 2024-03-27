@@ -15,6 +15,7 @@ use App\Models\servicios;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 class CrearTablaCotizacion extends Component
 {
@@ -159,6 +160,7 @@ class CrearTablaCotizacion extends Component
         $this->total = '';
     }
 
+    #[On('save-cotizacion')]
     public function validaInfo()
     {
         $this->validate([
@@ -221,7 +223,8 @@ class CrearTablaCotizacion extends Component
             'razon_social' => $this->razonSocial,
             'rfc_cliente' => $this->rfc,
             'phone' => $this->telefono,
-            'ctg_tipo_cliente_id' => $this->ctg_tipo_cliente_id
+            'ctg_tipo_cliente_id' => $this->ctg_tipo_cliente_id,
+            'status_cliente' => 0
         ]);
 
         $this->valoridcoti = cotizacion::create([
@@ -254,6 +257,8 @@ class CrearTablaCotizacion extends Component
                 'status_cotizacion_servicio' => '1'
             ]);
         }
+
+        $this->dispatch('success-cotizacion','La cotización se creo con exito');
     }
 
     public function updatedServicioId($value)

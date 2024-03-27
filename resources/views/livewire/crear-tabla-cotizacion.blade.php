@@ -193,7 +193,9 @@
                                 </x-select-validado>
                             </div>
                             <div class="col-md-12">
-                                <button wire:click='validaInfo' class="btn btn-secondary btn-block ">Guardar
+                                <button
+                                wire:click="$dispatch('confirm')"
+                                class="btn btn-secondary btn-block ">Guardar
                                     Cotización</button>
                             </div>
                         </div>
@@ -286,4 +288,55 @@
         </div>
     </div>
 
+    @push('js')
+        <script>
+            document.addEventListener('livewire:initialized', () => {
+
+                @this.on('confirm', () => {
+
+                    Swal.fire({
+                        title: '¿Estas seguro?',
+                        text: "La cotizacion se generara y comenzara el proceso de contratación.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, adelante!',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            @this.dispatch('save-cotizacion');
+                        }
+                    })
+                })
+
+                Livewire.on('success-cotizacion', function([message]) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: message[0],
+                        showConfirmButton: true,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+
+
+                            window.location.href = '/ventas';
+
+                        }
+                    });
+                });
+
+
+                Livewire.on('error', function([message]) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: message[0],
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+
+
+            });
+        </script>
+    @endpush
 </div>
