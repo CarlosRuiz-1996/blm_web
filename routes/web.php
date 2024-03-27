@@ -91,6 +91,7 @@ Route::get('/admin/catalogos/listar/{op}', [CatalogosController::class,'listar']
 
 // anexo 1
 Route::get('ventas/anexo1/{cotizacion}',[Anexo1::class, 'index'])->name('anexo.index');
+Route::get('ventas/anexo1-pdf/{anexo}',[Anexo1::class, 'anexo_pdf'])->name('anexo.pdf');
 
 // boveda
 Route::get('boveda/',[boveda::class, 'index'])->name('boveda.index');

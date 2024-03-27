@@ -183,8 +183,10 @@
                                             </td>
                                             <td>{{ $solicitud->updated_at }}</td>
                                             <td>
-                                                pdf
-                                                {{-- <a href="{{route('anexo.index', $solicitud->id)}}">Comenzar anexo1</a> --}}
+                                                
+                                                <a href="{{ route('anexo.pdf', $solicitud->id) }}" class="btn text-danger" target="_blank">
+                                                    <i class="fas fa-file-pdf "></i> 
+                                                </a>
                                             </td>
                                         @endforeach
                                         </tbody>
