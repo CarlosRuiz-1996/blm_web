@@ -226,7 +226,7 @@ class CrearTablaCotizacion extends Component
             'ctg_tipo_cliente_id' => $this->ctg_tipo_cliente_id,
             'status_cliente' => 0
         ]);
-
+        
         $this->valoridcoti = cotizacion::create([
             'total' => $this->totalreal,
             'vigencia' => $this->vigencia,
