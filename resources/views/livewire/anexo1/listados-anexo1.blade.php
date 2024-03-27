@@ -81,7 +81,7 @@
                                             @foreach ($solicitudes as $solicitud)
                                             <tr>
                                                 <td>{{ $solicitud->id }}</td>
-                                                <td>{{ $solicitud->cliente->razon_social }}</td>
+                                                <td>{{ $solicitud->cliente->razon_social?$solicitud->cliente->razon_social:'' }}</td>
                                                 <td>{{ $solicitud->cliente->rfc_cliente }}</td>
                                                 <td>{{ $solicitud->cliente->user->name .
                                                     ' ' .

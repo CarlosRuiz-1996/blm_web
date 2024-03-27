@@ -27,32 +27,12 @@ class AgregarServicio extends Component
         );
     }
 
-    // public function rules()
-    // {
-
-    //     $rules = [];
-
-    //     if (!empty($this->selectServicios)) {
-    //         foreach ($this->selectServicios as $id => $selected) {
-
-
-    //             if ($selected) {
-
-    //                 $rules["montoArray.$id"] = 'required';
-    //             }
-    //         }
-    //     }
-
-    //     dd($rules);
-    //     return $rules;
-    // }
-
-    public function addServicios()
+    public function rules()
     {
-        $rules = [];
-        $servicios = $this->selectServicios;
-        if (!empty($this->selectServicios)) {
 
+        $rules = [];
+
+        if (!empty($this->selectServicios)) {
             foreach ($this->selectServicios as $id => $selected) {
 
 
@@ -61,12 +41,34 @@ class AgregarServicio extends Component
                     $rules["montoArray.$id"] = 'required';
                 }
             }
-            $this->validate($rules);
-            $this->dispatch('success-servicio', ['Servicio agregados con exito']);
-            $this->selectServicios = $servicios;
-        } else {
-            $this->dispatch('error-servicio', 'No hay ningun servicio seleccionado');
         }
+
+        // dd($rules);
+        return $rules;
+    }
+
+    public function addServicios()
+    {
+        // dd($this->selectServicios);
+        $this->validate();
+        // $rules = [];
+        // $servicios = $this->selectServicios;
+        // if (!empty($this->selectServicios)) {
+
+        //     foreach ($this->selectServicios as $id => $selected) {
+
+
+        //         if ($selected) {
+
+        //             $rules["montoArray.$id"] = 'required';
+        //         }
+        //     }
+        //     $this->validate($rules);
+        //     $this->dispatch('success-servicio', ['Servicio agregados con exito']);
+        //     $this->selectServicios = $servicios;
+        // } else {
+        //     $this->dispatch('error-servicio', 'No hay ningun servicio seleccionado');
+        // }
     }
 
     public function getServicios()
