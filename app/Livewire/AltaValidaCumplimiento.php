@@ -431,7 +431,6 @@ class AltaValidaCumplimiento extends Component
         } else {
             $this->aceptadoOrNegado = 2;  // Todos los registros son 1
         }
-    }
         //valida beneficiarios documentos
         if ($totalRegistrosbene>0){
         if($this->aceptadoOrNegado == 2){

@@ -118,46 +118,39 @@
                     <div class="col-md-12">
                         <div class="card card-outline card-info">
                             <div class="card-header">
-                                <form>
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label for="inputId">Id</label>
-                                                <input type="text" class="form-control" id="inputId"
-                                                    placeholder="Ingresa la Id">
+                                    <form wire:submit.prevent="buscar">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="inputId">Id</label>
+                                                    <input wire:model="idproceso" type="text" class="form-control" id="inputId" placeholder="Ingresa la Id">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="inputcotizacionanexo">Cotización</label>
+                                                    <input wire:model="cotizacionproceso" type="text" class="form-control" id="inputcotizacionanexo" placeholder="Ingresa Cotización">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="inputFechaInicio">Fecha Inicio</label>
+                                                    <input wire:model="fechaInicioproceso" type="date" class="form-control" id="inputFechaInicio" placeholder="Ingresa la Fecha Inicio">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="inputFechafin">Fecha Fin</label>
+                                                    <input wire:model="fechaFinproceso" type="date" class="form-control" id="inputFechafin" placeholder="Ingresa la Fecha Fin">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 mt-2">
+                                                <div class="form-group mt-4">
+                                                    <button type="submit" class="btn btn-info btn-block">Buscar</button>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label for="inputcotizacionanexo">Cotización</label>
-                                                <input type="text" class="form-control" id="inputcotizacionanexo"
-                                                    placeholder="Ingresa Cotización">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label for="inputFechaInicio">Fecha
-                                                    Inicio</label>
-                                                <input type="date" class="form-control" id="inputFechaInicio"
-                                                    placeholder="Ingresa el Fecha Inicio">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label for="inputFechafin">Fecha Fin</label>
-                                                <input type="date" class="form-control" id="inputFechafin"
-                                                    placeholder="Ingresa Fecha fin">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-3 mt-2">
-                                            <div class="form-group mt-4">
-                                                <button type="submit" class="btn btn-info btn-block">Buscar</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
+                                    </form>                                
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">

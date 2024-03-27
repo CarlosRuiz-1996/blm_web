@@ -57,7 +57,8 @@
                                         <td class="col-md-4 text-center">{{ $item->fecha_solicitud }}</td>
                                         <td class="col-md-2 text-center">
                                         @if($item->status_juridico == 1 && $item->documentos_count == $item->ctg_doc_total)
-                                        <a href="{{ route('juridico.validajuridico', $item->cliente_id) }}">Iniciar</a>
+                                        
+                                        <a wire:click="$dispatch('crearvalidacion',{{$item->cliente_id}})">Iniciar</a>
                                             @else
                                             <h6 class="text-warning">Faltan documentos</h6>
                                         @endif
@@ -72,4 +73,32 @@
             </div>
         </div>
     </div>
+    @push('js')
+    <script>
+        Livewire.on('crearvalidacion', id =>  {
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: "¡Comenzara la validacion de documentos!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonText: "Cancelar",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Sí, comenzar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Obtener el ID del ítem desde id
+                    var itemId = id;
+                    console.log(itemId);
+                    // Construir la URL de redireccionamiento con el ID del ítem
+                    var redirectUrl = "{{ route('juridico.validajuridico', ':itemId') }}";
+                    redirectUrl = redirectUrl.replace(':itemId', itemId);
+
+                    // Redireccionar a la URL construida
+                    window.location.href = redirectUrl;
+                }
+            });
+        });
+    </script>
+     @endpush
 </div>
