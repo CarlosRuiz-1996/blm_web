@@ -26,7 +26,7 @@
                                 </x-select-validado>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <x-input-validado label="Telefono:" placeholder="Ingrese telefono" wire-model="telefono"
+                                <x-input-validado-telefono label="Telefono:" placeholder="Ingrese telefono" wire-model="telefono"
                                     wire-attribute="telefono" type="text" />
                             </div>
                             <div class="col-md-6 mb-3">
@@ -234,15 +234,15 @@
                                 </div>
 
                                 <div class="col-md-4 mb-3">
-                                    <x-input-validado label="Nombre de servicio:" placeholder="Ingrese el nombre del servicio" wire-model="nombreServicio" wire-attribute="nombreServicio" type="text" />
+                                    <x-input-validado label="Nombre de servicio:" :readonly="true" placeholder="Ingrese el nombre del servicio" wire-model="nombreServicio" wire-attribute="nombreServicio" type="text" />
                                 </div>
 
                                 <div class="col-md-4 mb-3">
-                                    <x-input-validado label="Tipo de servicio:" placeholder="Ingrese el nombre del servicio" wire-model="tipoServicio" wire-attribute="tipoServicio" type="text" />
+                                    <x-input-validado label="Tipo de servicio:" :readonly="true" placeholder="Ingrese el nombre del servicio" wire-model="tipoServicio" wire-attribute="tipoServicio" type="text" />
                                 </div>
 
                                 <div class="col-md-4 mb-3">
-                                    <x-input-validado label="Unidad medida:" placeholder="Ingrese la unidad de medida" wire-model="unidadMedida" wire-attribute="unidadMedida" type="text" />
+                                    <x-input-validado label="Unidad medida:" :readonly="true" placeholder="Ingrese la unidad de medida" wire-model="unidadMedida" wire-attribute="unidadMedida" type="text" />
                                 </div>
 
                                 <div class="col-md-4 mb-3">
@@ -253,14 +253,28 @@
                                     @endforeach
                                     </x-select-validado>
                                 </div>
-
-
                                 <div class="col-md-4 mb-3">
-                                    <x-input-validado label="Editar precio:" placeholder="Ingrese el precio" wire-model="editarPrecio" wire-attribute="editarPrecio" type="number" />
+
+                                    <div class="form-group">
+                                        <div class="custom-control custom-switch custom-switch-xl mt-2">
+                                            <input type="checkbox" class="custom-control-input" wire:model.live='editarPreciocheck'
+                                                id="editarPreciocheck" name="editarPreciocheck">
+                                            <label class="custom-control-label" for="editarPreciocheck">Editar Precio:</label>
+                                        </div>
+                                        <input type="number" class="form-control" wire:model.live="editarPrecio" @if(!$editarPreciohabilitado) readonly @endif/>
+
                                 </div>
-
+                            </div>
                                 <div class="col-md-4 mb-3">
-                                    <x-input-validadolive label="Cantidad:" placeholder="Ingrese la cantidad" wire-model="cantidad" wire-attribute="cantidad" type="number" />
+
+                                        <div class="form-group">
+                                            <div class="custom-control custom-switch custom-switch-xl mt-2">
+                                                <input type="checkbox" class="custom-control-input" wire:model.live='cantidadcheck'
+                                                    id="cantidadcheck" name="cantidadcheck">
+                                                <label class="custom-control-label" for="cantidadcheck">cantidad:</label>
+                                            </div>
+                                            <input type="number" class="form-control" wire:model.live='cantidad' @if(!$cantidadhabilitado) readonly @endif/>
+                                    </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <div class="form-group mt-5">
@@ -327,6 +341,23 @@
 
 
                 Livewire.on('error', function([message]) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: message[0],
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+
+                Livewire.on('errorTablaDatos', function([message]) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: message[0],
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+                Livewire.on('errorTabla', function([message]) {
                     Swal.fire({
                         icon: 'error',
                         title: message[0],
