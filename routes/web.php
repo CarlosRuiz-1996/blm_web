@@ -4,16 +4,19 @@ use App\Http\Controllers\altaValidaCumplimiento;
 use App\Http\Controllers\Anexo1;
 use App\Http\Controllers\BitacoraController;
 use App\Http\Controllers\boveda;
+use App\Http\Controllers\BovedaController;
 use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\ClientesActivosController;
 use App\Http\Controllers\cumplimientoController;
 use App\Http\Controllers\Factibilidad;
 use App\Http\Controllers\juridicoController;
 use App\Http\Controllers\MemorandumController;
+use App\Http\Controllers\OperacionesController;
 use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\RhController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsuariosController;
+use App\Http\Controllers\ValidacionMemorandumController;
 use App\Http\Controllers\ventasController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,7 +44,6 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
-Route::middleware('auth')->group(function () {
 Route::get('/usuarios', [UsuariosController::class, 'index'])->name('user.index');
 Route::get('/usuarios/nuevo', [UsuariosController::class, 'nuevousuario'])->name('user.create');
 Route::post('/usuarios/save', [UsuariosController::class, 'store'])->name('user.store');
@@ -81,6 +83,8 @@ Route::put('/admin/permiso/actualizar/{permiso}', [PermisosController::class,'up
 
 Route::get('/admin/bitacora', [BitacoraController::class,'index'])->name('bitacora');
 Route::get('/admin/catalogos', [CatalogosController::class,'index'])->name('catalogo');
+Route::get('/admin/catalogos/listar/{op}', [CatalogosController::class,'listar'])->name('catalogo.listar');
+
 
 
 // anexo 1
@@ -88,6 +92,7 @@ Route::get('ventas/anexo1/{cotizacion}',[Anexo1::class, 'index'])->name('anexo.i
 
 // boveda
 Route::get('boveda/',[boveda::class, 'index'])->name('boveda.index');
+Route::get('/boveda/inicio',[BovedaController::class, 'index'])->name('boveda.inicio');
 
 //factibilidad
 Route::get('seguridad/',[Factibilidad::class, 'index'])->name('seguridad.index');
@@ -98,10 +103,19 @@ Route::get('ventas/memorandum/{factibilidad}',[MemorandumController::class,'crea
 Route::get('ventas/memorandum/validacion/{memorandum}',[MemorandumController::class,'validacion'])->name('memorandum.validacion');
 
 
+
 //rh
 Route::get('rh/',[RhController::class,'index'])->name('rh.index');
 Route::get('rh/altaempleado',[RhController::class,'altaempleado'])->name('rh.altaempleado');
-});
+
+Route::get('validacion/memorandum/{memorandum}/{area}',[ValidacionMemorandumController::class,'validar'])->name('memorandum.validar');
+Route::get('validacion/listar/{area}/{name?}',[ValidacionMemorandumController::class,'listar'])->name('memorandum.validar.listar');
+
+
+//operaciones.-rutas
+Route::get('/operaciones', [OperacionesController::class, 'index'])->name('operaciones');
+Route::get('/ruta/gestion/{op}/{ruta?}', [OperacionesController::class, 'ruta_gestion'])->name('ruta.gestion');
+
 //rutas para livewire
 use Livewire\Livewire;
 

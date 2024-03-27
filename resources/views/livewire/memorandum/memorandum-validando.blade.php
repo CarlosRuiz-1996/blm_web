@@ -20,7 +20,6 @@
 
                         <table class="table table-hover table-bordered" width="100%" cellspacing="0"
                             style="font-size:100%">
-
                             <thead class="table-secondary">
                                 <th colspan="2">VENTAS</th>
                                 <th colspan="2">OPERACIONES</th>
@@ -29,42 +28,28 @@
                             </thead>
                             <tbody>
                                 @php
-                                    //reviso las firmas para que solo se muestren una ves en la vista
-                                    $areasValidadas = [];
-                                    foreach ($firmas as $firma) {
-                                        foreach ($firma->revisor_areas as $revisor_area) {
-                                            $areaId = $revisor_area->area->id;
-                                            if (!isset($areasValidadas[$areaId])) {
-                                                $areasValidadas[$areaId] = [
-                                                    'validado' => false,
-                                                    'nombre_usuario' => '',
-                                                ];
-                                            }
-                                            if (!$areasValidadas[$areaId]['validado']) {
-                                                $areasValidadas[$areaId]['validado'] = true;
-                                                $areasValidadas[$areaId]['nombre_usuario'] = $revisor_area->user->name;
-                                            }
-                                        }
-                                    }
+                                    $tiene_firma = [];
                                 @endphp
 
-                                <tr>
-                                    {{-- recorro el arreglo de las areas validadas --}}
-                                    @foreach ([1, 2, 3, 4] as $areaId)
-                                        <td colspan="2">
-                                            @if (isset($areasValidadas[$areaId]))
-                                                @if ($areasValidadas[$areaId]['validado'])
-                                                    <i class="fa fa-circle" style="color: green;"> </i>
-                                                    {{ $areasValidadas[$areaId]['nombre_usuario'] }}
-                                                    @php $no_firmas++; @endphp
-                                                @endif
-                                            @else
-                                                <i class="fa fa-circle" aria-hidden="true" style="color: orange;"></i>
-                                                Sin validar
-                                            @endif
-                                        </td>
+                                @foreach ($firmas as $firma)
+                                    @foreach ([1, 2, 3, 4] as $IdArea)
+                                        @if ($IdArea == $firma->revisor_areas->area->id)
+                                            <td colspan="2">
+                                                <i class="fa fa-circle" style="color: green;"> </i>
+                                                {{ $firma->revisor_areas->area->name }}
+                                            </td>
+                                            @php
+                                                $tiene_firma[] = $IdArea;
+                                                $no_firmas++;
+                                            @endphp
+                                        @endif
                                     @endforeach
-                                </tr>
+                                @endforeach
+                                @foreach ([1, 2, 3, 4] as $IdArea)
+                                    @unless (in_array($IdArea, $tiene_firma))
+                                        <td colspan="2">Aún no validado</td>
+                                    @endunless
+                                @endforeach
                             </tbody>
                             <thead class="table-secondary">
                                 <th colspan="2">CONTABILIDAD</th>
@@ -74,40 +59,30 @@
                             </thead>
                             <tbody>
                                 @php
-                                    $areasValidadas = [];
-                                    foreach ($firmas as $firma) {
-                                        foreach ($firma->revisor_areas as $revisor_area) {
-                                            $areaId = $revisor_area->area->id;
-                                            if (!isset($areasValidadas[$areaId])) {
-                                                $areasValidadas[$areaId] = [
-                                                    'validado' => false,
-                                                    'nombre_usuario' => '',
-                                                ];
-                                            }
-                                            if (!$areasValidadas[$areaId]['validado']) {
-                                                $areasValidadas[$areaId]['validado'] = true;
-                                                $areasValidadas[$areaId]['nombre_usuario'] = $revisor_area->user->name;
-                                            }
-                                        }
-                                    }
+                                    $tiene_firma = [];
                                 @endphp
 
-                                <tr>
-                                    @foreach ([5, 6, 7, 8] as $areaId)
-                                        <td colspan="2">
-                                            @if (isset($areasValidadas[$areaId]))
-                                                @if ($areasValidadas[$areaId]['validado'])
-                                                    <i class="fa fa-circle" style="color: green;"> </i>
-                                                    {{ $areasValidadas[$areaId]['nombre_usuario'] }}
-                                                    @php $no_firmas++; @endphp
-                                                @endif
-                                            @else
-                                                <i class="fa fa-circle" aria-hidden="true" style="color: orange;"></i>
-                                                Sin validar
-                                            @endif
-                                        </td>
+                                @foreach ($firmas as $firma)
+                                    @foreach ([5, 6, 7, 9] as $IdArea)
+                                        @if ($IdArea == $firma->revisor_areas->area->id)
+                                            <td colspan="2">
+                                                <i class="fa fa-circle" style="color: green;"> </i>
+                                                {{ $firma->revisor_areas->area->name }}
+                                            </td>
+                                            @php
+                                                $tiene_firma[] = $IdArea;
+                                                $no_firmas++;
+                                            @endphp
+                                        @endif
                                     @endforeach
-                                </tr>
+                                @endforeach
+                                @foreach ([5, 6, 7, 9] as $IdArea)
+                                    @unless (in_array($IdArea, $tiene_firma))
+                                        <td colspan="2">
+                                            <i class="fa fa-circle" style="color: orange;"> </i> Aún no validado
+                                        </td>
+                                    @endunless
+                                @endforeach
                             </tbody>
                         </table>
                         @if ($no_firmas == 8)
@@ -259,7 +234,7 @@
 
                     Swal.fire({
                         title: '¿Estas seguro?',
-                        text: "El memorandum se creara y pasara a vailidacion",
+                        text: "El memorandum finalizara y pasaran los servicios al area de operaciones.",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -268,7 +243,7 @@
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            @this.dispatch('save-memo');
+                            @this.dispatch('save-finalizacion');
                         }
                     })
                 })

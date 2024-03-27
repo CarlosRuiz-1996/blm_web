@@ -26,12 +26,12 @@
                         <li class="nav-item">
                             <a class="nav-link" id="custom-tabs-one-facturacion-tab" data-toggle="pill"
                                 href="#custom-tabs-one-facturacion" role="tab"
-                                aria-controls="custom-tabs-one-facturacion" aria-selected="false">MEMORANDUM</a>
+                                aria-controls="custom-tabs-one-facturacion" aria-selected="false">MEMORÁNDUM</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="custom-tabs-one-cotizacion-tab" data-toggle="pill"
                                 href="#custom-tabs-one-cotizacion" role="tab" aria-controls="custom-tabs-one-cotizacion"
-                                aria-selected="false">VALIDACIÓN MEMO</a>
+                                aria-selected="false">VALIDACIÓN MEMORÁNDUM</a>
                         </li>
                         <!-- Puedes agregar más pestañas según sea necesario -->
                     </ul>
@@ -66,34 +66,8 @@
                         </div>
                         <div class="tab-pane fade" id="custom-tabs-one-cotizacion" role="tabpanel"
                             aria-labelledby="custom-tabs-one-cotizacion-tab">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h3 for="">Validación memorándum de servicios</h3>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="card card-outline card-info">
-                                        <div class="card-body">
-                                            <div class="table-responsive">
-                                                <table class="table">
-                                                    <thead class="table-primary">
-                                                        <tr>
-                                                            <th>No.</th>
-                                                            <th>Razon social</th>
-                                                            <th>Remitente</th>
-                                                            <th>Fecha de solicitud</th>
-                                                            <th>Fecha de aprovación</th>
-                                                            <th>Validación</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <!-- Aquí irán los datos de tu tabla -->
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <livewire:memorandum-validacion.validacion-listados :area="1"/>
+                           
 
                         </div>
                         <!-- Puedes agregar más contenidos según sea necesario -->

@@ -363,7 +363,7 @@ return [
         [
             'text' => 'Operaciones',
             'url'  => '/operaciones',
-            'icon' => 'fas fa-fw fa-file-alt',
+            'icon' => 'fa fa-fw fa-car',
             'can'=>'menu-operaciones'
 
         ],
@@ -394,8 +394,8 @@ return [
         ],
         [
             'text' => 'Boveda',
-            'route'  => 'seguridad.index',
-            'icon' => 'fa-regular fa-money-bill-1',
+            'route'  => 'boveda.inicio',
+            'icon' => 'fa fa-fw fa-lock',
             'can'=>'menu-seguridad'
         ],
        
@@ -415,18 +415,61 @@ return [
         //         ],
         //     ],
         // ],
-        // [
-        //     'text'    => 'Validación Memo',
-        //     'icon'    => 'fas fa-fw fa-check',
-        //     'submenu' => [
-        //         [
-        //             'text' => 'Valida Gerencia',
-        //             'url'  => '#',
-        //             'icon'    => 'fas fa-fw fa-sticky-note',
+        [
+            'text'    => 'Validación Memo',
+            'icon'    => 'fas fa-fw fa-check',
+            'can'     => 'menu-validacion-memo',
+            'submenu' => [
+                [
+                    'text' => 'Valida Ventas',
+                    'url'  => 'validacion/listar/1/Ventas',
+                    'icon'    => 'fas fa-fw fa-sticky-note',
                     
-        //         ],
-        //     ],
-        // ],
+                ],
+                [
+                    'text' => 'Valida Operaciones',
+                    'url'  => 'validacion/listar/2/Operaciones',
+                    'icon'    => 'fas fa-fw fa-sticky-note',
+                    
+                ],
+                [
+                    'text' => 'Valida Boveda',
+                    'url'  => 'validacion/listar/3/Boveda',
+                    'icon'    => 'fas fa-fw fa-sticky-note',
+                    
+                ],
+                [
+                    'text' => 'Valida Proceso',
+                    'url'  => 'validacion/listar/4/Proceso',
+                    'icon'    => 'fas fa-fw fa-sticky-note',
+                    
+                ],
+                [
+                    'text' => 'Valida Contabilidad',
+                    'url'  => 'validacion/listar/5/Contabilidad',
+                    'icon'    => 'fas fa-fw fa-sticky-note',
+                    
+                ],
+                [
+                    'text' => 'Valida Facturación',
+                    'url'  => 'validacion/listar/6/Facturación',
+                    'icon'    => 'fas fa-fw fa-sticky-note',
+                    
+                ],
+                [
+                    'text' => 'Valida Cobranza',
+                    'url'  => 'validacion/listar/7/Cobranza',
+                    'icon'    => 'fas fa-fw fa-sticky-note',
+                    
+                ],
+                [
+                    'text' => 'Valida Gerencia',
+                    'url'  => 'validacion/listar/8/Gerencia',
+                    'icon'    => 'fas fa-fw fa-sticky-note',
+                    
+                ],
+            ],
+        ],
     ],
 
     /*

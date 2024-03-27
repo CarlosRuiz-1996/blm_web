@@ -44,14 +44,14 @@ class ClienteActivoFormulario extends Component
     #[On('save-cliente')]
     public function save()
     {
-        // $this->form->store();
+        $this->form->store();
         $this->dispatch('alert', ["El cliente se creo exitosamente."]);
     }
 
     #[On('edit-cliente')]
     public function updated()
     {
-        // $this->form->updated();
+        $this->form->updated();
         $this->dispatch('alert', ["La informacion de cliente se actualizo exitosamente.", $this->form->cliente]);
     }
 }

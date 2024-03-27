@@ -1,6 +1,6 @@
 <div>
     <div class="col-md-6">
-        <h3 for="">Memorandum de servicio</h3>
+        <h3 for="">Memorándum de servicio</h3>
     </div>
     <div class="">
         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
@@ -178,7 +178,7 @@
                                                 </td>
                                                 <td>{{ $solicitud->created_at }}</td>
                                                 <td>
-                                                    <a href="{{ route('memorandum.validacion', $solicitud) }}">Continuar
+                                                    <a class="btn btn-warning text-white" href="{{ route('memorandum.validacion', $solicitud) }}">Continuar
                                                         memorandum</a>
                                                 </td>
                                             @endforeach
