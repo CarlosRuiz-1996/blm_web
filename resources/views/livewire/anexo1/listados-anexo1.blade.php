@@ -78,23 +78,25 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($solicitudes as $solicitud)
-                                            <tr>
-                                                <td>{{ $solicitud->id }}</td>
-                                                <td>{{ $solicitud->cliente->razon_social?$solicitud->cliente->razon_social:'' }}</td>
-                                                <td>{{ $solicitud->cliente->rfc_cliente }}</td>
-                                                <td>{{ $solicitud->cliente->user->name .
-                                                    ' ' .
-                                                    $solicitud->cliente->user->paterno .
-                                                    ' ' .
-                                                    $solicitud->cliente->user->materno }}
-                                                </td>
-                                                <td>{{ $solicitud->updated_at }}</td>
-                                                <td>
-                                                    <a href="{{route('anexo.index', $solicitud->id)}}">Comenzar anexo1</a>
-                                                </td>
-                                                <tr>
-                                            @endforeach
+                                            @if($solicitudes)
+                                                    @foreach ($solicitudes as $solicitud)
+                                                        <tr>
+                                                            <td>{{ $solicitud->id }}</td>
+                                                            <td>{{ $solicitud->cliente->razon_social ?? 'N/A' }}</td>
+                                                            <td>{{ $solicitud->cliente->rfc_cliente ?? 'N/A' }}</td>
+                                                            <td>{{ ($solicitud->cliente->user->name ?? '') . ' ' . ($solicitud->cliente->user->paterno ?? '') . ' ' . ($solicitud->cliente->user->materno ?? '') }}</td>
+                                                            <td>{{ $solicitud->updated_at }}</td>
+                                                            <td>
+                                                                <a href="{{ route('anexo.index', $solicitud->id) }}">Comenzar anexo1</a>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                @else
+                                                    <tr>
+                                                        <td colspan="6">No hay solicitudes disponibles</td>
+                                                    </tr>
+                                                @endif
+
                                         </tbody>
                                     </table>
                                 </div>
