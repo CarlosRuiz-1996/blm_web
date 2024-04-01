@@ -36,6 +36,7 @@
                 </div>
             </div>
         </div>
+        @if($cliente_sts==0)
         <div class="row">
             <div class="col-md-12">
                 <div class="card card-outline card-info">
@@ -90,6 +91,7 @@
                 </div>
             </div>
         </div>
+        @endif
         <!--tabla documentacion-->
         <div class="row">
             <div class="col-md-12">
@@ -104,7 +106,7 @@
                                     <x-select-validado label="Documento:" placeholder="Seleccione tipo de documento"
                                         wire-model="documentoid" required>
                                         @foreach ($documentos as $doc)
-                                        <option value="{{ $doc->id }}">{{ $doc->name }}</option>
+                                            <option value="{{ $doc->id }}">{{ $doc->name }}</option>
                                         @endforeach
                                     </x-select-validado>
                                 </div>
@@ -113,16 +115,16 @@
 
 
                                     <!--prueba carga-->
-                                    <div x-data="{ uploading: false, progress: 0 }"
-                                        x-on:livewire-upload-start="uploading = true"
+                                    <div x-data="{ uploading: false, progress: 0 }" x-on:livewire-upload-start="uploading = true"
                                         x-on:livewire-upload-finish="uploading = false"
                                         x-on:livewire-upload-cancel="uploading = false"
                                         x-on:livewire-upload-error="uploading = false"
                                         x-on:livewire-upload-progress="progress = $event.detail.progress">
                                         <div class="input-group mt-3">
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input" wire:model="documentoSelec"
-                                                    id="docuemntosselec" accept="application/pdf">
+                                                <input type="file" class="custom-file-input"
+                                                    wire:model="documentoSelec" id="docuemntosselec"
+                                                    accept="application/pdf">
                                                 <label class="custom-file-label xp" for="docuemntosselecbene"
                                                     aria-describedby="docuemntosselecbene">Seleccione un
                                                     archivo</label>
@@ -133,7 +135,9 @@
                                             <progress max="100" x-bind:value="progress"></progress>
                                         </div>
                                     </div>
-                                    @error('documentoSelec') <span class="error">{{ $message }}</span> @enderror
+                                    @error('documentoSelec')
+                                        <span class="error">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="col-md-4 mt-3">
                                     <button wire:click="agregarArchivo" class="btn btn-primary mt-3">Subir
@@ -152,37 +156,39 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($documentos as $doc)
-                                        <tr>
-                                            <td class="col-md-5">{{ $doc->name }}</td>
-                                            <td class="col-md-4">
-                                                @php $documentoEncontrado = false; @endphp
-                                                @foreach ($documentosexpediente as $documento)
-                                                @if ($documento->ctg_documentos_id == $doc->id)
-                                                <a data-toggle="modal" style="cursor: pointer;" data-target="#modalpdf"
-                                                    wire:click="openModal('documentos/{{$rfc}}/{{$documento->document_name}}')">
-                                                    {{ $documento->document_name}}</a>
-                                                @php $documentoEncontrado = true; @endphp
-                                                @endif
-                                                @endforeach
-                                            </td>
-                                            <td class="col-md-2 text-center f-2">
-                                                @if ($documentoEncontrado)
-                                                <i class="fas fa-circle text-success"></i>
-                                                @else
-                                                <i class="fas fa-circle text-danger"></i>
-                                                @endif
-                                            </td>
-                                            <td class="col-md-1">
-                                                @foreach ($documentosexpediente as $documentoss)
-                                                @if ($documentoss->ctg_documentos_id == $doc->id)
-                                                <button wire:click="eliminarArchivo({{$documentoss->id}})"
-                                                    class="btn btn-danger">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                                @endif
-                                                @endforeach
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td class="col-md-5">{{ $doc->name }}</td>
+                                                <td class="col-md-4">
+                                                    @php $documentoEncontrado = false; @endphp
+                                                    @foreach ($documentosexpediente as $documento)
+                                                        @if ($documento->ctg_documentos_id == $doc->id)
+                                                            <a data-toggle="modal" style="cursor: pointer;"
+                                                                data-target="#modalpdf"
+                                                                wire:click="openModal('documentos/{{ $rfc }}/{{ $documento->document_name }}')">
+                                                                {{ $documento->document_name }}</a>
+                                                            @php $documentoEncontrado = true; @endphp
+                                                        @endif
+                                                    @endforeach
+                                                </td>
+                                                <td class="col-md-2 text-center f-2">
+                                                    @if ($documentoEncontrado)
+                                                        <i class="fas fa-circle text-success"></i>
+                                                    @else
+                                                        <i class="fas fa-circle text-danger"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="col-md-1">
+                                                    @foreach ($documentosexpediente as $documentoss)
+                                                        @if ($documentoss->ctg_documentos_id == $doc->id)
+                                                            <button
+                                                                wire:click="eliminarArchivo({{ $documentoss->id }})"
+                                                                class="btn btn-danger">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        @endif
+                                                    @endforeach
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -208,10 +214,11 @@
                                         wire:model.live='checkbeneficiario'>
                                 </div>
                                 <div class="col-md-4" {{ $habilitados ? 'hidden' : '' }}>
-                                    <x-select-validadolive label="Documento:" placeholder="Seleccione tipo de documento"
-                                        wire-model="documentoidbene" required>
+                                    <x-select-validadolive label="Documento:"
+                                        placeholder="Seleccione tipo de documento" wire-model="documentoidbene"
+                                        required>
                                         @foreach ($documentos_beneficiarios as $doc)
-                                        <option value="{{ $doc->id }}">{{ $doc->name }}</option>
+                                            <option value="{{ $doc->id }}">{{ $doc->name }}</option>
                                         @endforeach
                                         </x-select-validado>
                                 </div>
@@ -219,8 +226,7 @@
 
 
                                     <!--prueba carga-->
-                                    <div x-data="{ uploading: false, progress: 0 }"
-                                        x-on:livewire-upload-start="uploading = true"
+                                    <div x-data="{ uploading: false, progress: 0 }" x-on:livewire-upload-start="uploading = true"
                                         x-on:livewire-upload-finish="uploading = false"
                                         x-on:livewire-upload-cancel="uploading = false"
                                         x-on:livewire-upload-error="uploading = false"
@@ -240,7 +246,9 @@
                                             <progress max="100" x-bind:value="progress"></progress>
                                         </div>
                                     </div>
-                                    @error('documentoSelecbene') <span class="error">{{ $message }}</span> @enderror
+                                    @error('documentoSelecbene')
+                                        <span class="error">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <!--dfdsf-->
                                 <div class="col-md-2 mt-3" {{ $habilitados ? 'hidden' : '' }}>
@@ -261,37 +269,40 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($documentos_beneficiarios as $doca)
-                                        <tr>
-                                            <td class="col-md-3">
-                                                {{ $doca->name }}
-                                            </td>
-                                            <td class="col-md-4">
-                                                @php $documentoEncontradobe = false; @endphp
-                                                @foreach ($documentosexpedienteBene as $documentobene)
-                                                @if ($documentobene->ctg_documentos_benf_id == $doca->id)
-                                                <a data-toggle="modal" style="cursor: pointer;" data-target="#modalpdf"
-                                                    wire:click="openModal('documentos/{{$rfc}}/beneficiario/{{$documentobene->document_name}}')">
-                                                    {{ $documentobene->document_name}}</a>
-                                                @php $documentoEncontradobe = true; @endphp
-                                                @endif
-                                                @endforeach
-                                            </td>
-                                            <td class="col-md-2 text-center f-2">
-                                                @if ($documentoEncontradobe)
-                                                <i class="fas fa-circle text-success"></i>
-                                                @else
-                                                <i class="fas fa-circle text-danger"></i>
-                                                @endif
-                                            </td>
-                                            <td class="col-md-1">
-                                                @foreach ($documentosexpedienteBene as $documentobeness)
-                                                @if ($documentobeness->ctg_documentos_benf_id == $doca->id)
-                                                <button wire:click="eliminarArchivoBene({{$documentobeness->id}})"
-                                                    class="btn btn-danger"> <i class="fas fa-trash"></i></button>
-                                                @endif
-                                                @endforeach
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td class="col-md-3">
+                                                    {{ $doca->name }}
+                                                </td>
+                                                <td class="col-md-4">
+                                                    @php $documentoEncontradobe = false; @endphp
+                                                    @foreach ($documentosexpedienteBene as $documentobene)
+                                                        @if ($documentobene->ctg_documentos_benf_id == $doca->id)
+                                                            <a data-toggle="modal" style="cursor: pointer;"
+                                                                data-target="#modalpdf"
+                                                                wire:click="openModal('documentos/{{ $rfc }}/beneficiario/{{ $documentobene->document_name }}')">
+                                                                {{ $documentobene->document_name }}</a>
+                                                            @php $documentoEncontradobe = true; @endphp
+                                                        @endif
+                                                    @endforeach
+                                                </td>
+                                                <td class="col-md-2 text-center f-2">
+                                                    @if ($documentoEncontradobe)
+                                                        <i class="fas fa-circle text-success"></i>
+                                                    @else
+                                                        <i class="fas fa-circle text-danger"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="col-md-1">
+                                                    @foreach ($documentosexpedienteBene as $documentobeness)
+                                                        @if ($documentobeness->ctg_documentos_benf_id == $doca->id)
+                                                            <button
+                                                                wire:click="eliminarArchivoBene({{ $documentobeness->id }})"
+                                                                class="btn btn-danger"> <i
+                                                                    class="fas fa-trash"></i></button>
+                                                        @endif
+                                                    @endforeach
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -315,33 +326,33 @@
         });
     </script>
     @once
-    @push('js')
-    <script>
-        Livewire.on('agregarArchivocre', function(params) {
-            const nombreArchivo = params[0].nombreArchivo;
-            const tipomensaje = params[1].tipomensaje;
-        Swal.fire({
-            position: 'top-end',
-            icon: tipomensaje,
-            title: nombreArchivo,
-            showConfirmButton: false,
-            timer: 1500
-        });
-    });
-    //eliminar alerta
-    Livewire.on('ArchivoEliminado', function(params) {
-            const nombreArchivo = params[0].nombreArchivo;
-            const tipomensaje = params[1].tipomensaje;
-        Swal.fire({
-            position: 'top-end',
-            icon: tipomensaje,
-            title: nombreArchivo,
-            showConfirmButton: false,
-            timer: 1500
-        });
-    });
-    </script>
-    @endpush
+        @push('js')
+            <script>
+                Livewire.on('agregarArchivocre', function(params) {
+                    const nombreArchivo = params[0].nombreArchivo;
+                    const tipomensaje = params[1].tipomensaje;
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: tipomensaje,
+                        title: nombreArchivo,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+                //eliminar alerta
+                Livewire.on('ArchivoEliminado', function(params) {
+                    const nombreArchivo = params[0].nombreArchivo;
+                    const tipomensaje = params[1].tipomensaje;
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: tipomensaje,
+                        title: nombreArchivo,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
+            </script>
+        @endpush
     @endonce
     <x-modal-pdf title="Documento Cargado" pdfUrl="{{ $pdfUrl }}" wire:ignore.self>
     </x-modal-pdf>

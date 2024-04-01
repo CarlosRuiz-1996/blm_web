@@ -36,7 +36,14 @@ class FactibilidadForm extends Form
 
     public function getSucursales(Anexo1 $anexo)
     {
-        return SucursalServicio::where('anexo1_id', '=', $anexo->id)->get();
+        // return SucursalServicio::where('anexo1_id', '=', $anexo->id)->get();
+
+
+        return Sucursal::with('sucursal_servicio')
+            ->whereHas('sucursal_servicio', function ($query) use ($anexo) {
+                $query->where('anexo1_id', $anexo->id);
+            })
+            ->get();
     }
     public function DetalleSucursal($sucursal)
     {
@@ -148,17 +155,17 @@ class FactibilidadForm extends Form
 
     public function store(Anexo1 $anexo, $img_fachada, $img_acceso, $img_seguridad)
     {
-       
+
         try {
             DB::beginTransaction();
             $this->validate();
             $this->anexo1_id = $anexo->id;
 
-            if (count($anexo->factibilidad)>0) {
+            if (count($anexo->factibilidad) > 0) {
                 $factibilidad = $anexo->factibilidad[0];
                 $this->factibilidad_id = $factibilidad->id;
             } else {
-                $factibilidad = Factibilidad::create($this->only(['cliente_id', 'user_id','anexo1_id']));
+                $factibilidad = Factibilidad::create($this->only(['cliente_id', 'user_id', 'anexo1_id']));
                 $this->factibilidad_id = $factibilidad->id;
             }
 
@@ -270,7 +277,7 @@ class FactibilidadForm extends Form
 
             $this->reset([
                 'sucursal_id', 'factibilidad_id', 'sucursal',
-                'user_id','anexo1_id',
+                'user_id', 'anexo1_id',
                 'tiposervicio',
                 'otro_tiposervicio',
                 'comohacerservicio',

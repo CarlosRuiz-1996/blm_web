@@ -350,7 +350,7 @@ return [
         
         [
             'text' => 'Clientes',
-            'url'  => '/clientesactivos',
+            'route'  => 'cliente.index',
             'icon' => 'fas fa-fw fa-users',
             'can' =>  'menu-clientes'
         ],

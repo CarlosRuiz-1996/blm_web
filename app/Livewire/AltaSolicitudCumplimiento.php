@@ -85,11 +85,12 @@ class AltaSolicitudCumplimiento extends Component
     public $documentosexpedienteBene;
     public $pdfUrl;
     public $isOpen = false;
-
+    public $cliente_sts;
 
 
     public function mount(Request $request)
     {
+        $this->cliente_sts = $request->route('sts');
         $id = $request->route('id');
         $this->id = $id;
         $this->datoscliente = Cliente::where('id', $id)->get();
@@ -209,7 +210,7 @@ class AltaSolicitudCumplimiento extends Component
                     ]);
                 }
 
-                
+
                 $this->cargarDocumentosExpediente();
             });
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Se ha agregado el archivo: ' . $nombreLimpio . '.pdf'], ['tipomensaje' => 'success']);

@@ -27,7 +27,8 @@ class TablaDocumentos extends Component
     public $isOpen = false;
     public $cliente;
 
-    public function mount(Cliente $cliente)
+    public $cliente_status;    
+    public function mount(Cliente $cliente,$cliente_status)
     {
         $this->cliente = $cliente;
         $this->id = $cliente->id;

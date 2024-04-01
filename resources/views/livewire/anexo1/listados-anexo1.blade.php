@@ -172,6 +172,7 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($terminadas as $solicitud)
+                                            <tr>
                                             <td>{{ $solicitud->id }}</td>
                                             <td>{{ $solicitud->cliente->razon_social }}</td>
                                             <td>{{ $solicitud->cliente->rfc_cliente }}</td>
@@ -188,6 +189,7 @@
                                                     <i class="fas fa-file-pdf "></i> 
                                                 </a>
                                             </td>
+                                        </tr>
                                         @endforeach
                                         </tbody>
                                     </table>

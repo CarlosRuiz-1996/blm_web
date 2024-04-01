@@ -22,7 +22,7 @@ class ClientesActivosController extends Controller
         return view('clientesactivos.clientesnuevos');
 
     }
-    public function detalles(Cliente $cliente)
+    public function detalles(Cliente $cliente, $op)
     {   
 
         $codigo = DB::select("
@@ -40,7 +40,7 @@ class ClientesActivosController extends Controller
         }
 
         $direccion_completa = 'Calle ' . $cliente->direccion.', Colonia '.$colonia. ', ' . $codigo[0]->municipio . ' ' . $codigo[0]->name;
-        return view('clientesactivos.detalles',compact('cliente','direccion_completa'));
+        return view('clientesactivos.detalles',compact('cliente','direccion_completa','op'));
 
     }
     public function CotizacionesNuevas()

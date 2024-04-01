@@ -50,7 +50,7 @@
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->fecha }}</td>
                                 <td><a
-                                        href="{{ route('cliente.detalles', $item->cliente_id) }}">{{ $item->razon_social }}</a>
+                                        href="{{ route('cliente.detalles', [$item->cliente_id,2]) }}">{{ $item->razon_social }}</a>
                                 </td>
                                 <td>{{ $item->status_cotizacion }}</td>
                                 <td>{{ $item->total }}</td>
