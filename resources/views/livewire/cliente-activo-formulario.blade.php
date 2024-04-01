@@ -106,7 +106,7 @@
 
                                     @if ($form->colonias)
 
-                                      
+
 
                                         @foreach ($form->colonias as $cp)
                                             @if ($form->ctg_cp_id == $cp->id)
@@ -114,10 +114,10 @@
                                                 </option>
                                             @break
 
-                                            @else
-                                                <option value="{{ $cp->id }}">{{ $cp->colonia}}</option>
-                                            @endif
-                                        @endforeach
+                                        @else
+                                            <option value="{{ $cp->id }}">{{ $cp->colonia }}</option>
+                                        @endif
+                                    @endforeach
                                 @else
                                     <option value="">Esperando...</option>
                                 @endif
@@ -132,7 +132,7 @@
 
 
                         <div class="col-md-6 mb-3">
-                            <a href="{{route('cliente.index')}}" class="btn btn-danger btn-block">Cancelar</a>
+                            <a href="{{ route('cliente.index') }}" class="btn btn-danger btn-block">Cancelar</a>
                         </div>
                         <div class="col-md-6 mb-3">
                             <button type="submit" class="btn btn-info btn-block"
@@ -170,16 +170,21 @@
             })
         })
         Livewire.on('alert', function([message]) {
+            var title = message[0];
+            var cliente = message[1];
             Swal.fire({
                 icon: 'success',
-                title: message[0],
+                title: title,
                 showConfirmButton: true,
             }).then((result) => {
                 if (result.isConfirmed) {
 
-                    if (message[1]) {
-                        window.location.href = '{{ route('cliente.detalles', '') }}' + '/' +
-                            message[1]['id'];
+                    if (cliente) {
+                        window.location.href =
+                            '{{ route('cliente.detalles', [':cliente', ':op']) }}'
+                            .replace(':cliente', cliente.id)
+                            .replace(':op', 1);
+
                     } else {
                         window.location.href = '{{ route('cliente.index') }}';
                     }
