@@ -5,6 +5,7 @@
 
 @section('content_header')
     <h1 class="ml-2">Clientes activos</h1>
+    
 @stop
 @section('content')
     <div class="container-fluid">
@@ -89,7 +90,7 @@
                                             class="btn btn-xs btn-default text-primary mx-1 shadow" title="Nueva cotizacion">
                                             <i class="fa fa-lg fa-fw fa-plus"></i>
                                         </a>
-                                        <a href="{{ route('cliente.detalles', $cli) }}"
+                                        <a href="{{ route('cliente.detalles', [$cli, 1]) }}"
                                         class="btn btn-xs btn-default text-primary mx-1 shadow" title="Detalles del cliente">
                                         <i class="fa fa-lg fa-fw fa-info-circle"></i>
                                     </a>

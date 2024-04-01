@@ -4,7 +4,7 @@
         <div class="row">
             {{-- cabecera --}}
             <div class="col-md-12">
-                <livewire:cliente-cabecera :cliente="$cliente" />
+                <livewire:cliente-cabecera :cliente="$form->cliente_id" />
                 {{-- {{$cliente}} --}}
             </div>
             {{-- servicios --}}
@@ -28,10 +28,13 @@
                                     <th>Sucursal</th>
                                 </thead>
                                 <tbody>
+
                                     @if ($servicios)
+
                                         @foreach ($servicios as $servicio)
                                             <tr>
-                                                <td>{{ $servicio->servicios->ctg_servicio->folio }}</td>
+                                                <td>
+                                                    {{ $servicio->servicios->ctg_servicio->folio }}</td>
                                                 <td>{{ $servicio->servicios->ctg_servicio->descripcion }}</td>
                                                 <td>{{ $servicio->servicios->ctg_servicio->unidad }}</td>
                                                 <td>{{ $servicio->servicios->cantidad }}</td>
@@ -132,7 +135,7 @@
 
                         <!-- Información de contacto -->
                         <div class="col-md-4 mb-3">
-                            <x-input-validado label="Teléfono:" placeholder="Ingrese la teléfono de la sucursal"
+                            <x-input-validado  label="Teléfono:" placeholder="Ingrese la teléfono de la sucursal"
                                 wire-model="form.phone" required type="number" />
                         </div>
                         <div class="col-md-6 mb-3">
@@ -146,7 +149,7 @@
                                 wire-model="form.cargo" type="text" />
                         </div>
                         <div class="col-md-4 mb-3">
-                            <x-input-validado label="Fecha de evaluación:"
+                            <x-input-validado-date label="Fecha de evaluación:"
                                 placeholder="Ingrese cargo del contacto de la sucursal"
                                 wire-model="form.fecha_evaluacion" type="date" />
                         </div>
@@ -194,130 +197,130 @@
                                             </option>
                                         @break
 
-                                    @else
-                                        <option value="{{ $cp->id }}">{{ $cp->colonia }}</option>
-                                    @endif
+                                        @else
+                                            <option value="{{ $cp->id }}">{{ $cp->colonia }}</option>
+                                        @endif
+                                    @endforeach
+                                @else
+                                    <option value="">Esperando...</option>
+                                @endif
+
+                            </x-select-validado>
+                        </div>
+                    
+                        <div class="col-md-4 mb-3">
+                            <x-input-validado label="Calle y Número:" placeholder="Calle y Número"
+                                wire-model="form.direccion" type="text" />
+
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <x-input-validado label="Referencias:" placeholder="Alguna referencia"
+                                wire-model="form.referencias" type="text" />
+
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-info btn-block"
+                                wire:click="$dispatch('confirm', 1)">Guardar</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </x-adminlte-modal>
+    {{-- detalles nueva --}}
+    <x-adminlte-modal wire:ignore.self id="modalShow" title="Detalles de sucursal" theme="info" icon="fas fa-bolt"
+        size='xl' disable-animations>
+        {{-- sucursales --}}
+
+        <div class="col-md-12">
+            <div class="card card-outline card-info">
+
+                <div class="card-body">
+                    {{-- sucursal general --}}
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label>Sucursal:</label>
+                            <x-input wire:model="form.sucursal" type="text" disabled />
+                        </div>
+                        <div class="col-md-4 mb-3">
+
+                            <label>Correo:</label>
+                            <x-input wire:model="form.correo" type="email" disabled />
+                        </div>
+
+                        <!-- Información de contacto -->
+                        <div class="col-md-4 mb-3">
+                            <label>Teléfono:</label>
+                            <x-input wire:model="form.phone" type="number" disabled />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Contacto:</label>
+                            <x-input wire:model="form.contacto" type="email" disabled />
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+                            <label>Cargo:</label>
+                            <x-input wire:model="form.cargo" type="text" disabled />
+                        </div>
+
+
+                        <div class="col-md-12 mb-3">
+                            <label>Direccion:</label>
+                            <x-input wire:model="form.direccion_completa" type="text" disabled />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </x-adminlte-modal>
+    {{-- elegir sucursal --}}
+    <div class="modal fade" wire:ignore.self id="modalElegir" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" id="exampleModalLabel">Elegir sucursal</h5>
+                    <button type="button" wire:click='limpiarDatos' class="close" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12 mb-3">
+                        <x-select-validado label="Sucursales:" placeholder="" wire-model="form.sucursal_id" required>
+                            @if ($sucursales && count($sucursales) > 0)
+                                @foreach ($sucursales as $sucursal)
+                                    {{-- <option value="{{ $sucursal->id }}"> --}}
+                                    <option value="{{ $sucursal->id }}"
+                                        {{ $selectedSucursalId == $sucursal->id ? 'selected' : '' }}>
+
+                                        {{ $sucursal->sucursal }}</option>
                                 @endforeach
                             @else
-                                <option value="">Esperando...</option>
+                                <option value="">Sin sucursales</option>
                             @endif
-
                         </x-select-validado>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <x-input-validado label="Calle y Número:" placeholder="Calle y Número"
-                            wire-model="form.direccion" type="text" />
-
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <x-input-validado label="Referencias:" placeholder="Alguna referencia"
-                            wire-model="form.referencias" type="text" />
-
-                    </div>
-
-
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-info btn-block"
-                            wire:click="$dispatch('confirm', 1)">Guardar</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</x-adminlte-modal>
-{{-- detalles nueva --}}
-<x-adminlte-modal wire:ignore.self id="modalShow" title="Detalles de sucursal" theme="info" icon="fas fa-bolt"
-    size='xl' disable-animations>
-    {{-- sucursales --}}
-
-    <div class="col-md-12">
-        <div class="card card-outline card-info">
-
-            <div class="card-body">
-                {{-- sucursal general --}}
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label>Sucursal:</label>
-                        <x-input wire:model="form.sucursal" type="text" disabled />
-                    </div>
-                    <div class="col-md-4 mb-3">
-
-                        <label>Correo:</label>
-                        <x-input wire:model="form.correo" type="email" disabled />
-                    </div>
-
-                    <!-- Información de contacto -->
-                    <div class="col-md-4 mb-3">
-                        <label>Teléfono:</label>
-                        <x-input wire:model="form.phone" type="number" disabled />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label>Contacto:</label>
-                        <x-input wire:model="form.contacto" type="email" disabled />
-                    </div>
-
-
-                    <div class="col-md-6 mb-3">
-                        <label>Cargo:</label>
-                        <x-input wire:model="form.cargo" type="text" disabled />
-                    </div>
-
-
-                    <div class="col-md-12 mb-3">
-                        <label>Direccion:</label>
-                        <x-input wire:model="form.direccion_completa" type="text" disabled />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</x-adminlte-modal>
-{{-- elegir sucursal --}}
-<div class="modal fade" wire:ignore.self id="modalElegir" tabindex="-1" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-header bg-info">
-                <h5 class="modal-title" id="exampleModalLabel">Elegir sucursal</h5>
-                <button type="button" wire:click='limpiarDatos' class="close" data-dismiss="modal"
-                    aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-                <div class="col-md-12 mb-3">
-                    <x-select-validado label="Sucursales:" placeholder="" wire-model="form.sucursal_id" required>
-                        @if ($sucursales && count($sucursales) > 0)
-                            <option value="0" disabled selected>Seleccione</option>
-                            @foreach ($sucursales as $sucursal)
-                                {{-- <option value="{{ $sucursal->id }}"> --}}
-                                <option value="{{ $sucursal->id }}"
-                                    {{ $selectedSucursalId == $sucursal->id ? 'selected' : '' }}>
-
-                                    {{ $sucursal->sucursal }}</option>
-                            @endforeach
+                    @if ($sucursales && count($sucursales) > 0)
+                        @if ($selectedSucursalId == '')
+                            <x-adminlte-button class="btn-flat ml-2" type="submit" wire:click='sucursal_servicio'
+                                label="Asignar" theme="info" icon="fas fa-lg fa-save" />
                         @else
-                            <option value="">Sin sucursales</option>
+                            <x-adminlte-button class="btn-flat ml-2" type="submit"
+                                wire:click='actualizarSucursalServicio' label="Cambiar" theme="info"
+                                icon="fas fa-lg fa-save" />
                         @endif
-                    </x-select-validado>
-                </div>
-                @if ($sucursales && count($sucursales) > 0)
-                    @if ($selectedSucursalId == '')
-                        <x-adminlte-button class="btn-flat ml-2" type="submit" wire:click='sucursal_servicio'
-                            label="Asignar" theme="info" icon="fas fa-lg fa-save" />
-                    @else
-                        <x-adminlte-button class="btn-flat ml-2" type="submit"
-                            wire:click='actualizarSucursalServicio' label="Cambiar" theme="info"
-                            icon="fas fa-lg fa-save" />
                     @endif
-                @endif
-            </div>
-            <div class="modal-footer">
-                <button type="button" wire:click='limpiarDatos' class="btn btn-secondary"
-                    data-dismiss="modal">Cerrar</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" wire:click='limpiarDatos' class="btn btn-secondary"
+                        data-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 @push('js')
     <script>

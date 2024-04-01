@@ -12,26 +12,28 @@
                     <div class="card-body">
                         <table class="table table-striped table-bordered">
                             <thead class="table-info">
-                                <th>PDA</th>
-                                <th>Tipo de servicio</th>
+                                <th>No.Sucursal</th>
                                 <th>Sucursal</th>
+                                <th>Correo</th>
+                                <th>Teléfono</th>
                                 <th>Domicilio</th>
                                 <th>Detalles</th>
                                 <th>Repote</th>
                             </thead>
-                            <tbody>
+                            <tbody class="text-center">
                                 @foreach ($sucursales as $sucursal)
                                     <tr>
 
 
-                                        <td>{{ $sucursal->servicio->ctg_servicio->folio }}</td>
-                                        <td>{{ $sucursal->servicio->ctg_servicio->descripcion }}</td>
-                                        <td>{{ $sucursal->sucursal->sucursal }}</td>
-                                        <td>{{ $sucursal->sucursal->direccion .
+                                        <td>{{ $sucursal->id}}</td>
+                                        <td>{{ $sucursal->sucursal }}</td>
+                                        <td>{{ $sucursal->correo }}</td>
+                                        <td>{{ $sucursal->phone }}</td>
+                                        <td>Calle {{ $sucursal->direccion .
                                             ' ' .
-                                            $sucursal->sucursal->cp->cp .
+                                            $sucursal->cp->cp .
                                             ' ' .
-                                            $sucursal->sucursal->cp->estado->name .
+                                            $sucursal->cp->estado->name .
                                             ' ' }}
                                         </td>
 
@@ -40,22 +42,22 @@
 
                                             <button class="btn btn-xs btn-default text-primary mx-1 shadow"
                                                 title="Detalles de la sucursal" data-toggle="modal"
-                                                wire:click='DetalleSucursal({{ $sucursal->sucursal->id }})'
+                                                wire:click='DetalleSucursal({{ $sucursal->id }})'
                                                 data-target="#modalDetalles">
                                                 <i class="fa fa-lg fa-fw fa-info-circle"></i>
                                             </button>
                                         </td>
                                         <td class="text-center">
-                                            @if ($sucursal->sucursal->rpt_factibilidad_status == 0)
+                                            @if ($sucursal->rpt_factibilidad_status == 0)
                                                 <button class="btn btn-xs btn-default text-success mx-1 shadow"
                                                     title="LLenar reporte" data-toggle="modal"
-                                                    wire:click='DetalleReporte({{ $sucursal->sucursal->id }})'
+                                                    wire:click='DetalleReporte({{ $sucursal->id }})'
                                                     data-target="#modalRpt">
                                                     <i class="fa fa-2x fa-fw fa-file"></i>
                                                 </button>
                                             @else
                                                 <button class="btn btn-xs btn-default text-danger mx-1 shadow"
-                                                    title="Ver reporte" wire:click="showPDF({{ $sucursal->sucursal }})">
+                                                    title="Ver reporte" wire:click="showPDF({{ $sucursal }})">
                                                     <i class="fas fa-2x fa-file-pdf"></i>
                                                 </button>
                                             @endif
@@ -79,42 +81,42 @@
         <div class="col-md-12 mb-3">
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <x-input-validado label="Evaluación:" placeholder="" wire-model="form.fecha_evaluacion"
+                    <x-input-validado :readonly="true" label="Evaluación:" placeholder="" wire-model="form.fecha_evaluacion"
                         type="text" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <x-input-validado label="Inicio de servicio:" placeholder="" wire-model="form.fecha_inicio_servicio"
+                    <x-input-validado :readonly="true" label="Inicio de servicio:" placeholder="" wire-model="form.fecha_inicio_servicio"
                         type="text" />
                 </div>
                 <div class="col-md-4 mb-3">
-                    <x-input-validado label="Ejecutivo de cuenta:" placeholder="" wire-model="form.ejecutivo" required
+                    <x-input-validado :readonly="true" label="Ejecutivo de cuenta:" placeholder="" wire-model="form.ejecutivo" required
                         type="text" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <x-input-validado label="Sucursal:" placeholder="" wire-model="form.sucursal_name" required
+                    <x-input-validado :readonly="true" label="Sucursal:" placeholder="" wire-model="form.sucursal_name" required
                         type="email" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <x-input-validado label="Domicilio:" placeholder="" wire-model="form.direccion" type="text" />
+                    <x-input-validado :readonly="true" label="Domicilio:" placeholder="" wire-model="form.direccion" type="text" />
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <x-input-validado label="Correo:" placeholder="" wire-model="form.correo" type="text" />
+                    <x-input-validado :readonly="true" label="Correo:" placeholder="" wire-model="form.correo" type="text" />
                 </div>
                 <div class="col-md-4 mb-3">
-                    <x-input-validado label="Telefono:" placeholder="" wire-model="form.phone" type="text" />
+                    <x-input-validado :readonly="true" label="Telefono:" placeholder="" wire-model="form.phone" type="text" />
                 </div>
                 <div class="col-md-4 mb-3">
-                    <x-input-validado label="Contacto:" placeholder="" wire-model="form.contacto" type="text" />
+                    <x-input-validado :readonly="true" label="Contacto:" placeholder="" wire-model="form.contacto" type="text" />
                 </div>
                 <div class="col-md-4 mb-3">
-                    <x-input-validado label="Cargo:" placeholder="" wire-model="form.cargo" type="text" />
+                    <x-input-validado :readonly="true" label="Cargo:" placeholder="" wire-model="form.cargo" type="text" />
                 </div>
                 <div class="col-md-12 mb-3">
-                    <x-input-validado label="Direccion:" placeholder="" wire-model="form.direccion" type="text" />
+                    <x-input-validado :readonly="true" label="Direccion:" placeholder="" wire-model="form.direccion" type="text" />
                 </div>
                 <div class="col-md-12 mb-3">
                     @if ($form->servicios)
@@ -127,9 +129,11 @@
                             <tbody>
 
                                 @foreach ($form->servicios as $servicio)
+                                <tr>
                                     <td>{{ $servicio->servicio->ctg_servicio->folio }}</td>
                                     <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
                                     <td>{{ $form->fecha_evaluacion }}</td>
+                                </tr>
                                 @endforeach
 
                             </tbody>

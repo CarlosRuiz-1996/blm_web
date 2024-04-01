@@ -15,14 +15,13 @@ class GestionAnexo1 extends Component
     public AnexoForm $form;
 
     public $cotizacion;
-    public $cliente;
     public $sucursal; //sucursal del modal
 
     //obtengo datos de cliente para pasarlos a la cabecera
     public function mount(Cotizacion $cotizacion)
     {
-        $this->cliente = $cotizacion->cliente_id;
         $this->form->cliente_id = $cotizacion->cliente_id;
+        $this->form->direcconFiscal();
     }
 
     public function render()
@@ -51,8 +50,13 @@ class GestionAnexo1 extends Component
     #[On('save-sucursal')]
     public function save_sucursal()
     {
-        $this->form->store_sucursal();
+        $res = $this->form->store_sucursal();
+
+        if($res==1){
         $this->dispatch('success', ["La sucursal creo exitosamente.", 1]);
+        }else{
+            $this->dispatch('error', ["Ha ocurrido un error, intente más tarde."]);
+        }
         $this->reset('sucursales');
     }
 
@@ -77,6 +81,7 @@ class GestionAnexo1 extends Component
     //relacionar sucursal y servicios
     public function sucursal_servicio()
     {
+
 
         $sucursal =  $this->form->getSucursalName();
 

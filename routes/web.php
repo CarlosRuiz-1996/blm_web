@@ -55,13 +55,15 @@ Route::get('/usuarios/cambio-contrasenia/{user}', [UsuariosController::class, 'p
 Route::put('/usuarios/password/{user}', [UsuariosController::class, 'password'])->name('user.save-password');
 
 //cliente activo
-Route::get('/clientesactivos', [ClientesActivosController::class, 'index'])->name('cliente.index');
-Route::get('/clientesactivos/nuevo', [ClientesActivosController::class, 'nuevousuario'])->name('cliente.create');
-Route::get('/clientesactivos/detalles/{cliente}', [ClientesActivosController::class, 'detalles'])->name('cliente.detalles');
-Route::get('/clientesactivos/editar/{cliente}', [ClientesActivosController::class, 'edit'])->name('cliente.edit');
+Route::get('/clientes-activos', [ClientesActivosController::class, 'index'])->name('cliente.index');
+Route::get('/cliente/nuevo', [ClientesActivosController::class, 'nuevousuario'])->name('cliente.create');
+Route::get('/cliente/detalles/{cliente}/{op}', [ClientesActivosController::class, 'detalles'])->name('cliente.detalles');
+Route::get('/cliente/editar/{cliente}', [ClientesActivosController::class, 'edit'])->name('cliente.edit');
 
 Route::get('/ventas', [ventasController::class, 'indexventas']);
 Route::get('/ventas/altaSolicitudCumplimiento/{id}', [ventasController::class, 'altaSolicitudCumplimiento'])->name('clientesactivos.altaSolicitudCumplimiento');
+Route::get('/ventas/expediente-digital/{id}/{sts}', [ventasController::class, 'expediente_digital'])->name('cliente.expediente');
+
 Route::get('/clientesactivos/CotizacionesNuevas', [ClientesActivosController::class, 'CotizacionesNuevas'])->name('clientesactivos.CotizacionesNuevas');
 Route::get('/clientesactivos/cotizardenuevo/{id}', [ClientesActivosController::class, 'cotizardenuevo'])->name('clientesactivos.cotizardenuevo');
 Route::get('/ventas/detalle-cotizacion/{cotizacion}', [ClientesActivosController::class, 'detalle_cotizacion'])->name('cotizacion.detalle');

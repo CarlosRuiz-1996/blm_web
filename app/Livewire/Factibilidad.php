@@ -25,6 +25,8 @@ class Factibilidad extends Component
     {
 
         $this->sucursales = $this->form->getSucursales($anexo);
+
+        // dd($this->sucursales );
         $this->form->cliente_id = $anexo->cliente_id;
     }
 
