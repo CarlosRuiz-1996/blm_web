@@ -90,7 +90,7 @@ class CotizacionNuevo extends Component
 
         $this->puesto = $this->datoscliente[0]->puesto;
         $this->calleNumero = $this->datoscliente[0]->direccion;
-        $this->iduser = $this->datoscliente[0]->id;
+        $this->iduser = $this->datoscliente[0]->user_id;
         $this->listuser = User::where('id', $this->iduser)->get();
         $this->correoElectronico = $this->listuser[0]->email;
         $this->nombreContacto = $this->listuser[0]->name . ' ' . $this->listuser[0]->paterno . ' ' . $this->listuser[0]->materno;

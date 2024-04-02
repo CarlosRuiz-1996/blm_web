@@ -145,6 +145,8 @@
                 </div>
             </div>
         </div>
+        <x-modal-pdf title="PDF Modal" pdfUrl="{{ $pdfUrl }}" wire:ignore.self>
+        </x-modal-pdf>    
         <div class="row mt-4 mb-4">
             <div class="col-md-12">
                 @if($aceptadoOrNegado==2)

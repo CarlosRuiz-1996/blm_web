@@ -33,7 +33,9 @@ class TablaCumplimientoAtendidas extends Component
             DB::raw('DATE(cmp.fecha_dictamen)as fecha_dictamen'),
             DB::raw('DATE(exp.fecha_solicitud) as fecha_solicitud'),
             DB::raw('(SELECT COUNT(*) FROM expediente_documentos WHERE expediente_digital_id = exp.id) AS documentos_count'),
-            DB::raw('(SELECT COUNT(*) FROM ctg_documentos WHERE ctg_tipo_cliente_id = cl.ctg_tipo_cliente_id) AS ctg_doc_total')
+            DB::raw('(SELECT COUNT(*) FROM ctg_documentos WHERE ctg_tipo_cliente_id = cl.ctg_tipo_cliente_id) AS ctg_doc_total'),
+            DB::raw('(SELECT COUNT(*) FROM expediente_documentos_benf WHERE expediente_digital_id = exp.id) AS documentosbene_count'),
+            DB::raw('(SELECT COUNT(*) FROM ctg_documentos_benf ) AS ctg_docbene_total'),
         )
         ->join('expediente_digital as exp', 'exp.id', '=', 'cmp.expediente_digital_id')
         ->join('clientes as cl', 'cl.id', '=', 'exp.cliente_id')

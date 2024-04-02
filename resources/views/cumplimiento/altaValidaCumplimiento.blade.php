@@ -4,7 +4,12 @@
 @section('title', 'Dashboard')
 
 @section('content_header')
-<h1 class="ml-2">Evaluación de Cumplimiento</h1>
+<h1 class="ml-2">
+    <a href="{{route('cumplimiento.index')}}" title="ATRAS">
+        <i class="fa fa-arrow-left"></i>
+    </a>
+    Evaluación de Cumplimiento
+</h1>
 @stop
 @section('content')
 @livewire('alta-valida-cumplimiento', ['expedienteId' => request()->route('id')])
