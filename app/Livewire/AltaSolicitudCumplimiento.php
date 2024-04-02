@@ -117,7 +117,7 @@ class AltaSolicitudCumplimiento extends Component
         $this->correoElectronico = $this->listuser[0]->email;
         $this->nombreContacto = $this->listuser[0]->name . ' ' . $this->listuser[0]->paterno . ' ' . $this->listuser[0]->materno;
         $this->totalreal = 0;
-        $this->documentos = ctg_documentos::where('ctg_tipo_cliente_id', 1)->get();
+        $this->documentos = ctg_documentos::where('ctg_tipo_cliente_id', $this->datoscliente[0]->ctg_tipo_cliente_id)->get();
         $this->documentos_beneficiarios = ctg_documentos_beneficiarios::all();
         $this->checkbeneficiario = false;
         $this->habilitados = true;

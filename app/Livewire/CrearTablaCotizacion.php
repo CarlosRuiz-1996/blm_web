@@ -183,7 +183,7 @@ class CrearTablaCotizacion extends Component
         $this->validate([
             'cp' => 'required|digits_between:1,5',
             'razonSocial' => 'required|string',
-            'rfc' => 'required|string',
+            'rfc' => 'required|string|unique:clientes,rfc_cliente',
             'ctg_tipo_cliente_id' => 'required|in:1,2,3',
             'nombreContacto' => 'required|string',
             'apematerno' => 'required|string',
@@ -299,7 +299,7 @@ class CrearTablaCotizacion extends Component
     }
     public function updatedCantidad()
     {
-        if ($this->cantidadhabilitado) {
+        if ($this->editarPreciohabilitado) {
             $precioUnitarioNumerico = floatval($this->editarPrecio);
         } else {
             $precioUnitarioNumerico = floatval($this->precioUnitario);
@@ -338,7 +338,7 @@ class CrearTablaCotizacion extends Component
         } else {
             $this->cantidadhabilitado = false;
             $this->cantidad = 1;
-            $this->total = 0;
+            $this->updatedCantidad();
         }
     }
     public function updatededitarPreciocheck()
@@ -349,7 +349,7 @@ class CrearTablaCotizacion extends Component
         } else {
             $this->editarPreciohabilitado = false;
             $this->editarPrecio = "";
-            $this->total = 0;
+            $this->updatedPrecioUnitario();
         }
     }
 }

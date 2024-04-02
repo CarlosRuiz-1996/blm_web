@@ -92,7 +92,7 @@
                             </td>
                             <td class="col-md-4 text-center f-2">
                                 @if ($documentoEncontradobe)
-                                    <button data-toggle="modal" data-target="#modalpdf"
+                                    <button  class="btn"  data-toggle="modal" data-target="#modalpdf"
                                         wire:click="openModal('documentos/{{ $rfc }}/beneficiario/{{ $nombreDocumentoBene }}')">
                                         <i class="fas fa-eye text-success"></i>
                                     </button>

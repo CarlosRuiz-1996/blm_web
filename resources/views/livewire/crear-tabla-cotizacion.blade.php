@@ -229,7 +229,7 @@
                                     <x-select-validadolive label="Servicio:" placeholder="Seleccione"
                                         wire-model="servicioId" required>
                                         @foreach ($servicios as $servicio)
-                                            <option value="{{ $servicio->id }}">{{ $servicio->folio }}</option>
+                                            <option value="{{ $servicio->id }}">{{ $servicio->folio }}  /  {{ $servicio->descripcion }}</option>
                                         @endforeach
                                         </x-select-validado>
                                 </div>

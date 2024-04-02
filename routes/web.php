@@ -60,7 +60,7 @@ Route::get('/cliente/nuevo', [ClientesActivosController::class, 'nuevousuario'])
 Route::get('/cliente/detalles/{cliente}/{op}', [ClientesActivosController::class, 'detalles'])->name('cliente.detalles');
 Route::get('/cliente/editar/{cliente}', [ClientesActivosController::class, 'edit'])->name('cliente.edit');
 
-Route::get('/ventas', [ventasController::class, 'indexventas']);
+Route::get('/ventas', [ventasController::class, 'indexventas'])->name('ventas.indexventas');
 Route::get('/ventas/altaSolicitudCumplimiento/{id}', [ventasController::class, 'altaSolicitudCumplimiento'])->name('clientesactivos.altaSolicitudCumplimiento');
 Route::get('/ventas/expediente-digital/{id}/{sts}', [ventasController::class, 'expediente_digital'])->name('cliente.expediente');
 
