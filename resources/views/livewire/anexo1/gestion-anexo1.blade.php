@@ -135,8 +135,8 @@
 
                         <!-- Información de contacto -->
                         <div class="col-md-4 mb-3">
-                            <x-input-validado  label="Teléfono:" placeholder="Ingrese la teléfono de la sucursal"
-                                wire-model="form.phone" required type="number" />
+                            <x-input-validado-telefono  label="Teléfono:" placeholder="Ingrese la teléfono de la sucursal"
+                                wire-model="form.phone" required  />
                         </div>
                         <div class="col-md-6 mb-3">
                             <x-input-validado label="Contacto:" placeholder="Ingrese contacto de la sucursal"
@@ -148,6 +148,7 @@
                             <x-input-validado label="Cargo:" placeholder="Ingrese cargo del contacto de la sucursal"
                                 wire-model="form.cargo" type="text" />
                         </div>
+                        
                         <div class="col-md-4 mb-3">
                             <x-input-validado-date label="Fecha de evaluación:"
                                 placeholder="Ingrese cargo del contacto de la sucursal"
@@ -155,7 +156,7 @@
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <x-input-validado label="Fecha de inicio de servicio:"
+                            <x-input-validado-date label="Fecha de inicio de servicio:"
                                 placeholder="Ingrese cargo del contacto de la sucursal"
                                 wire-model="form.fecha_inicio_servicio" type="date" />
                         </div>

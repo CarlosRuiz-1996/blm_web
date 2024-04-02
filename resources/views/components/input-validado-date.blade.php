@@ -6,7 +6,7 @@
            class="form-control @error($wireModel) is-invalid @enderror"
            id="{{ $attributes->get('id') }}"
            placeholder="{{ $placeholder }}"
-           wire:model="{{ $wireModel }}"
+           wire:model.live="{{ $wireModel }}" 
            @if($readonly) readonly @endif
            style="text-transform:uppercase;">
     @error($wireModel)
