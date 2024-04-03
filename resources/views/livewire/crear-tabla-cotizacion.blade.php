@@ -304,6 +304,85 @@
                                     <x-input-validado label="Total:" :readonly="true" placeholder="Total"
                                         wire-model="total" wire-attribute="total" type="number" />
                                 </div>
+                               <!--servicios foraneos-->
+                               <div class="col-md-4 mb-3">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <div class="custom-control custom-switch custom-switch-xl">
+                                            <input type="checkbox" class="custom-control-input"
+                                                wire:model='isAdmin' id="isAdminSwitch" name="isAdmin">
+                                            <label class="custom-control-label"
+                                                for="isAdminSwitch">Activar Servicios Foraneos</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                               <hr>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <h3 class="text-center">Servicios Foraneos</h3>
+                             </div>
+                             <div class="col-md-6 mb-3">
+                                <x-input-validado label="Inicio:" :readonly="false"
+                                    placeholder="Ingrese Inicio" wire-model="inicioruta"
+                                    wire-attribute="inicioruta" type="text" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <x-input-validado label="Destino:" :readonly="false"
+                                    placeholder="Ingrese Destino" wire-model="destinoruta"
+                                    wire-attribute="destinoruta" type="text" />
+                            </div>
+                             <div class="col-md-4 mb-3">
+                                <x-input-validadolive label="Kilometros:" :readonly="false"
+                                    placeholder="Ingrese la cantidad de Kilometros" wire-model="unidadMedida"
+                                    wire-attribute="unidadMedida" type="text" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <x-input-validadolive label="Costo por Kilometro:" :readonly="false"
+                                    placeholder="Ingrese costo por Kilometro" wire-model="unidadMedida"
+                                    wire-attribute="unidadMedida" type="text" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <x-input-validadolive label="Costo total Kilometros:" :readonly="true"
+                                    placeholder="Ingrese costo por Kilometro" wire-model="unidadMedida"
+                                    wire-attribute="unidadMedida" type="text" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <x-input-validadolive label="Miles:" :readonly="false"
+                                    placeholder="Ingrese la cantidad de Miles" wire-model="unidadMedida"
+                                    wire-attribute="unidadMedida" type="text" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <x-input-validadolive label="Costo por Miles:" :readonly="false"
+                                    placeholder="Ingrese costo por Miles" wire-model="unidadMedida"
+                                    wire-attribute="unidadMedida" type="text" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <x-input-validadolive label="Costo total Miles:" :readonly="true"
+                                    placeholder="Ingrese costo por Miles" wire-model="unidadMedida"
+                                    wire-attribute="unidadMedida" type="text" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <x-input-validadolive label="G/Operacion:" :readonly="false"
+                                    placeholder="Ingrese la cantidad de G/Operacion" wire-model="unidadMedida"
+                                    wire-attribute="unidadMedida" type="text" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <x-input-validadolive label="Iva:" :readonly="false"
+                                    placeholder="Ingrese la cantidad de Iva" wire-model="unidadMedida"
+                                    wire-attribute="unidadMedida" type="text" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <x-input-validadolive label="Total Iva:" :readonly="true"
+                                    placeholder="Ingrese la cantidad de Iva" wire-model="unidadMedida"
+                                    wire-attribute="unidadMedida" type="text" />
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <x-input-validadolive label="Total:" :readonly="true"
+                                placeholder="Calculando total" wire-model="unidadMedida"
+                                wire-attribute="unidadMedida" type="text" />
+                            </div>
                             </div>
                         </form>
                     </div>
