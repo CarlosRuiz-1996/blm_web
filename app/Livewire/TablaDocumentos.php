@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Cliente;
 use App\Models\ctg_documentos;
 use App\Models\ctg_documentos_beneficiarios;
+use App\Models\expediente_digital;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
@@ -27,9 +28,11 @@ class TablaDocumentos extends Component
     public $isOpen = false;
     public $cliente;
 
-    public $cliente_status;    
+    public $cliente_status;  
+    public $expediente;
     public function mount(Cliente $cliente,$cliente_status)
     {
+        $this->expediente = expediente_digital::where('cliente_id',$cliente->id)->first();
         $this->cliente = $cliente;
         $this->id = $cliente->id;
         $this->rfc = $cliente->rfc_cliente;

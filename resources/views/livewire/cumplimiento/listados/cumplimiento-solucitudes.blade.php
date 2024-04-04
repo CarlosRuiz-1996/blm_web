@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card card-outline card-info">
-                <div class="card-header" >
+                <div class="card-header">
                     <form>
                         <div class="row">
                             <div class="col-md-2">
@@ -14,20 +14,23 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="razonsocial">Razon Social</label>
-                                    <input type="text" class="form-control" id="razonsocial" placeholder="Ingrese razon social">
+                                    <input type="text" class="form-control" id="razonsocial"
+                                        placeholder="Ingrese razon social">
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="inputFechaInicio">Fecha Inicio</label>
-                                    <input type="date" class="form-control" id="inputFechaInicio" placeholder="Ingresa el Fecha Inicio">
+                                    <input type="date" class="form-control" id="inputFechaInicio"
+                                        placeholder="Ingresa el Fecha Inicio">
                                 </div>
                             </div>
 
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="inputFechafin">Fecha Fin</label>
-                                    <input type="date" class="form-control" id="inputFechafin" placeholder="Ingresa Fecha fin">
+                                    <input type="date" class="form-control" id="inputFechafin"
+                                        placeholder="Ingresa Fecha fin">
                                 </div>
                             </div>
                             <div class="col-md-3 mt-2">
@@ -50,56 +53,60 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($listSolicitudes as $item)
+                                @foreach ($listSolicitudes as $item)
                                     <tr>
                                         <td class="col-md-2 text-center">{{ $item->expediente_digital_id }}</td>
                                         <td class="col-md-4 text-center">{{ $item->razon_social }}</td>
                                         <td class="col-md-4 text-center">{{ $item->fecha_solicitud }}</td>
                                         <td class="col-md-2 text-center">
-                                        @if(($item->status_cumplimiento == 1 && $item->documentos_count == $item->ctg_doc_total) && ($item->ctg_docbene_total==$item->documentosbene_count || $item->documentosbene_count==0 ))
-                                        <a wire:click="$dispatch('crearvalidacion',{{$item->cliente_id}})">Iniciar</a>
+                                            @if (
+                                                $item->status_cumplimiento == 1 &&
+                                                    $item->documentos_count == $item->ctg_doc_total &&
+                                                    ($item->ctg_docbene_total == $item->documentosbene_count || $item->documentosbene_count == 0))
+                                                <a class="btn btn-primary"
+                                                    wire:click="$dispatch('crearvalidacion',{{ $item->cliente_id }})">Iniciar</a>
                                             @else
-                                            <h6 class="text-warning">Faltan documentos</h6>
-                                        @endif
+                                                <h6 class="text-warning">Faltan documentos</h6>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                        
-                </div>                 
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     @push('js')
-    <script>
-        Livewire.on('crearvalidacion', id =>  {
-            Swal.fire({
-                title: "¿Estás seguro?",
-                text: "¡Comenzara la validacion de documentos!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonText: "Cancelar",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sí, comenzar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Obtener el ID del ítem desde id
-                    var itemId = id;
-                    console.log(itemId);
+        <script>
+            Livewire.on('crearvalidacion', id => {
+                Swal.fire({
+                    title: "¿Estás seguro?",
+                    text: "¡Comenzara la validacion de documentos!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonText: "Cancelar",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Sí, comenzar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Obtener el ID del ítem desde id
+                        var itemId = id;
+                        console.log(itemId);
 
-                    // Construir la URL de redireccionamiento con el ID del ítem
-                    var redirectUrl = "{{ route('altaValidaCumplimiento.index', ':itemId') }}";
-                    redirectUrl = redirectUrl.replace(':itemId', itemId);
+                        // Construir la URL de redireccionamiento con el ID del ítem
+                        var redirectUrl = "{{ route('cumplimiento.validacion', ':itemId') }}";
+                        redirectUrl = redirectUrl.replace(':itemId', itemId);
 
-                    // Redireccionar a la URL construida
-                    window.location.href = redirectUrl;
-                }
+                        // Redireccionar a la URL construida
+                        window.location.href = redirectUrl;
+                    }
+                });
             });
-        });
-    </script>
-@endpush
+        </script>
+    @endpush
 </div>

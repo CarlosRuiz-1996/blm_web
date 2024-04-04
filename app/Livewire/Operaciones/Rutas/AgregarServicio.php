@@ -19,8 +19,7 @@ class AgregarServicio extends Component
         $servicios = $this->form->getServicios();
 
 
-        return view(
-            'livewire.operaciones.rutas.agregar-servicio',
+        return view('livewire.operaciones.rutas.agregar-servicio',
             [
                 'servicios' => $servicios
             ]

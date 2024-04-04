@@ -11,6 +11,7 @@ use App\Models\Ctg_Municipio;
 use App\Models\ctg_precio_servicio;
 use App\Models\ctg_servicios;
 use App\Models\Ctg_Tipo_Cliente;
+use App\Models\expediente_digital;
 use App\Models\servicios;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -192,17 +193,28 @@ class CotizacionNuevo extends Component
         $this->isAdmin = '';
         $this->total = '';
     }
-    
+
     #[On('save-cotizacion')]
     public function validaInfo()
     {
+        $exp = expediente_digital::where('cliente_id', $this->id)->first();
+        $sts = 1;
 
+        //status de la cotizacion
+        if ($exp) {
+            if ($exp->status_expediente_digital !=3) {
+                $sts = 2;
+            }
+            if ($exp->status_expediente_digital == 3) {
+                $sts = 3;
+            }
+        }
         $this->valoridcoti = cotizacion::create([
             'total' => $this->totalreal,
             'vigencia' => $this->vigencia,
             'ctg_tipo_pago_id' => $this->condicionpago,
             'cliente_id' => $this->id,
-            'status_cotizacion' => 1,
+            'status_cotizacion' => $sts,
         ]);
 
         // Obtener el ID de la cotización recién creada
@@ -227,7 +239,7 @@ class CotizacionNuevo extends Component
                 'status_cotizacion_servicio' => '1'
             ]);
         }
-        $this->dispatch('success-cotizacion',['La cotización se creo con exito']);
+        $this->dispatch('success-cotizacion', ['La cotización se creo con exito']);
     }
 
     public function updatedServicioId($value)

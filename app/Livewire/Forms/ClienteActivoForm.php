@@ -3,6 +3,7 @@
 namespace App\Livewire\Forms;
 
 use App\Models\Cliente;
+use App\Models\Cotizacion;
 use App\Models\Ctg_Cp;
 use App\Models\Ctg_Tipo_Cliente;
 use App\Models\User;
@@ -146,6 +147,10 @@ class ClienteActivoForm extends Form
 
 
         // $this->reset();
+    }
+
+    public function getCotizaciones($cliente_id){
+            return Cotizacion::where('cliente_id',$cliente_id)->orderBy('id','DESC')->paginate(10);
     }
 
 }

@@ -69,7 +69,9 @@ Route::get('/clientesactivos/cotizardenuevo/{id}', [ClientesActivosController::c
 Route::get('/ventas/detalle-cotizacion/{cotizacion}', [ClientesActivosController::class, 'detalle_cotizacion'])->name('cotizacion.detalle');
 Route::get('/ventas/cotizacion-pdf/{cotizacion}', [ClientesActivosController::class, 'cotizacion_pdf'])->name('cotizacion.pdf');
 
-Route::get('/cumplimiento/altaValidaCumplimiento/{id}', [altaValidaCumplimiento::class, 'index'])->name('altaValidaCumplimiento.index');
+// Route::get('/cumplimiento/altaValidaCumplimiento/{id}', [altaValidaCumplimiento::class, 'index'])->name('altaValidaCumplimiento.index');
+Route::get('/cumplimiento/validacion-cumplimiento/{id}', [cumplimientoController::class, 'validacion'])->name('cumplimiento.validacion');
+
 Route::get('/cumplimiento', [cumplimientoController::class, 'index'])->name('cumplimiento.index');
 Route::get('/cumplimiento/pdf/{id}', [cumplimientoController::class, 'pdfcumplimiento'])->name('cumplimiento.pdfdictamencumplimiento');
 Route::get('/cumplimiento/pdfnegado/{id}', [cumplimientoController::class, 'pdfcumplimientonegado'])->name('cumplimiento.pdfdictamencumplimientonegado');

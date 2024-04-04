@@ -1,12 +1,17 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Cumplimiento\Listados;
 
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Illuminate\Support\Facades\DB;
 
-class TablaCumplimientoAtendidas extends Component
+class CumplimientoAtendidas extends Component
 {
+    public function render()
+    {
+        return view('livewire.cumplimiento.listados.cumplimiento-atendidas');
+    }
+
     public $pdfUrl;
     public $isOpen;
     public $listSolicitudes;
@@ -14,10 +19,7 @@ class TablaCumplimientoAtendidas extends Component
     {
         $this->listaSolicitudes();
     }
-    public function render()
-    {
-        return view('livewire.tabla-cumplimiento-atendidas');
-    }
+   
 
     public function listaSolicitudes()
     {

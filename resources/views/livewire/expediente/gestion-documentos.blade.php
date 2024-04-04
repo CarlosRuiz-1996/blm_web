@@ -2,96 +2,11 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <div class="card card-outline card-info">
-                    <div class="card-header">
-                        <h3 class="text-center">Cliente</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <x-input-validado :readonly="true" label="Razón Social:"
-                                    placeholder="Ingrese la Razón Social" wire-model="razonSocial"
-                                    wire-attribute="razonSocial" type="text" />
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <x-input-validado :readonly="true" label="RFC" placeholder="Ingrese el rfc"
-                                    wire-model="rfc" wire-attribute="rfc" type="text" />
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <x-input-validado :readonly="true" label="Tipo de cliente:"
-                                    placeholder="Ingrese tipo de cliente" wire-model="tipocliente"
-                                    wire-attribute="tipocliente" type="text" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <x-input-validado :readonly="true" label="Nombre del contacto:"
-                                    placeholder="Ingrese el Nombre del Contacto" wire-model="nombreContacto"
-                                    wire-attribute="nombreContacto" type="text" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <x-input-validado :readonly="true" label="Puesto:" placeholder="Ingrese el Puesto"
-                                    wire-model="puesto" wire-attribute="puesto" type="text" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <livewire:cliente-cabecera :cliente="$id" />
+                {{-- {{$cliente}} --}}
             </div>
         </div>
-        @if($cliente_sts==0)
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card card-outline card-info">
-                    <div class="card-header">
-                        <h3 class="text-center">Domicilio fiscal</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <x-input-validado :readonly="true" label="Pais:" placeholder="Ingrese pais"
-                                    wire-model="pais" wire-attribute="pais" type="text" />
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <x-input-validado :readonly="true" label="Estado:" placeholder="esperando..."
-                                    wire-model="estados" wire-attribute="estados" type="text" />
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="form-group">
-                                    <x-input-validado :readonly="true" label="Alcaldia/Municipio:"
-                                        placeholder="esperando..." wire-model="municipios" wire-attribute="municipios"
-                                        type="text" />
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <x-input-validado :readonly="true" label="Codigo Postal:"
-                                    placeholder="Ingrese codigo postal" wire-model="cp" wire-attribute="cp"
-                                    type="text" />
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <x-input-validado :readonly="true" label="Colonia:" placeholder="Ingrese la Colonia"
-                                    wire-model="colonia" wire-attribute="colonia" type="text" />
 
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <x-input-validado :readonly="true" label="Calle y Número:"
-                                    placeholder="Ingrese la Calle y Número" wire-model="calleNumero"
-                                    wire-attribute="calleNumero" type="text" />
-                            </div>
-
-                            <!-- Información de contacto -->
-                            <div class="col-md-6 mb-3">
-                                <x-input-validado :readonly="true" label="Telefono:" placeholder="Ingrese telefono"
-                                    wire-model="telefono" wire-attribute="telefono" type="text" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <x-input-validado :readonly="true" label="Correo Electrónico:"
-                                    placeholder="Ingrese Correo Electronico" wire-model="correoElectronico"
-                                    wire-attribute="correoElectronico" type="text" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif
         <!--tabla documentacion-->
         <div class="row">
             <div class="col-md-12">
@@ -140,9 +55,11 @@
                                     @enderror
                                 </div>
                                 <div class="col-md-4 mt-3">
-                                    <button wire:click="agregarArchivo" class="btn btn-primary mt-3">Subir
+                                    <button wire:click="agregarArchivo" onclick="showProgressModal()"
+                                        class="btn btn-primary mt-3">Subir
                                         Archivo</button>
                                 </div>
+
                             </div>
                             <div class="table-responsive">
                                 <table class="table">
@@ -180,8 +97,7 @@
                                                 <td class="col-md-1">
                                                     @foreach ($documentosexpediente as $documentoss)
                                                         @if ($documentoss->ctg_documentos_id == $doc->id)
-                                                            <button
-                                                                wire:click="eliminarArchivo({{ $documentoss->id }})"
+                                                            <button wire:click="eliminarArchivo({{ $documentoss->id }})"
                                                                 class="btn btn-danger">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
@@ -214,9 +130,8 @@
                                         wire:model.live='checkbeneficiario'>
                                 </div>
                                 <div class="col-md-4" {{ $habilitados ? 'hidden' : '' }}>
-                                    <x-select-validadolive label="Documento:"
-                                        placeholder="Seleccione tipo de documento" wire-model="documentoidbene"
-                                        required>
+                                    <x-select-validadolive label="Documento:" placeholder="Seleccione tipo de documento"
+                                        wire-model="documentoidbene" required>
                                         @foreach ($documentos_beneficiarios as $doc)
                                             <option value="{{ $doc->id }}">{{ $doc->name }}</option>
                                         @endforeach
@@ -312,6 +227,11 @@
                 </div>
             </div>
         </div>
+        @if ($cliente_sts == 0)
+            <div class="text-center mb-5">
+                <button class="btn btn-info btn-block" wire:click="$dispatch('confirm')">Finalizar</button>
+            </div>
+        @endif
     </div>
     <script>
         document.getElementById('docuemntosselec').addEventListener('change', function() {
@@ -328,29 +248,96 @@
     @once
         @push('js')
             <script>
-                Livewire.on('agregarArchivocre', function(params) {
-                    const nombreArchivo = params[0].nombreArchivo;
-                    const tipomensaje = params[1].tipomensaje;
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: tipomensaje,
-                        title: nombreArchivo,
-                        showConfirmButton: false,
-                        timer: 1500
+                document.addEventListener('livewire:initialized', () => {
+                    @this.on('confirm', () => {
+
+                        Swal.fire({
+                            title: '¿Estas seguro?',
+                            text: "El expediente pasara a validación y ya no se podran realizar cambios",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Si, adelante!',
+                            cancelButtonText: 'Cancelar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                @this.dispatch('finalizar-expediente');
+                            }
+                        })
+                    })
+
+                    Livewire.on('agregarArchivocre', function(params) {
+                        const nombreArchivo = params[0].nombreArchivo;
+                        const tipomensaje = params[1].tipomensaje;
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: tipomensaje,
+                            title: nombreArchivo,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    });
+                    //eliminar alerta
+                    Livewire.on('ArchivoEliminado', function(params) {
+                        const nombreArchivo = params[0].nombreArchivo;
+                        const tipomensaje = params[1].tipomensaje;
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: tipomensaje,
+                            title: nombreArchivo,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    });
+
+                    Livewire.on('error', function() {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Faltan subir documentos',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    });
+                    Livewire.on('success', function([message]) {
+                        var cliente = message[1];
+                        Swal.fire({
+                            icon: 'success',
+                            title: message[0],
+                            showConfirmButton: false,
+                            timer: 3000,
+                        }).then((result) => {
+
+                                if (cliente) {
+                                    window.location.href =
+                                        '{{ route('cliente.detalles', [':cliente', ':op']) }}'
+                                        .replace(':cliente', cliente.id)
+                                        .replace(':op', 1);
+                                }
+                            
+                        });
                     });
                 });
-                //eliminar alerta
-                Livewire.on('ArchivoEliminado', function(params) {
-                    const nombreArchivo = params[0].nombreArchivo;
-                    const tipomensaje = params[1].tipomensaje;
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: tipomensaje,
-                        title: nombreArchivo,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                });
+
+                function showProgressModal() {
+
+                    var doc = document.getElementById('docuemntosselec');
+
+                    if (doc.value) {
+                        let timerInterval;
+                        Swal.fire({
+                            title: "Subiendo documento!",
+                            html: "Esto puede tardar unos segundos.",
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading();
+
+                            },
+
+                        });
+                    }
+                }
             </script>
         @endpush
     @endonce

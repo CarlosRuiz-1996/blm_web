@@ -17,5 +17,5 @@
 
 @stop
 @section('content')
-    @livewire('alta-solicitud-cumplimiento')
+    @livewire('expediente.gestion-documentos')
 @stop

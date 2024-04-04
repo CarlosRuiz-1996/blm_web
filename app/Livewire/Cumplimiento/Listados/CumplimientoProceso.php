@@ -1,22 +1,19 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Cumplimiento\Listados;
 
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Illuminate\Support\Facades\DB;
 
-class TablaCumplimientoEnProceso extends Component
+class CumplimientoProceso extends Component
 {
+
     public $listSolicitudes;
     public function mount()
     {
         $this->listaSolicitudes();
     }
-    public function render()
-    {
-        return view('livewire.tabla-cumplimiento-en-proceso');
-    }
-
+    
     public function listaSolicitudes()
     {
         // Obtener los documentos del expediente digital actualizado
@@ -37,4 +34,8 @@ class TablaCumplimientoEnProceso extends Component
         ->where('cmp.status_cumplimiento', 2) // Agrega la condición WHERE
         ->get();
 }
+    public function render()
+    {
+        return view('livewire.cumplimiento.listados.cumplimiento-proceso');
+    }
 }

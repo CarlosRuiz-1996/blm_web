@@ -48,5 +48,11 @@ class cumplimientoController extends Controller
         $pdf=Pdf::loadView('cumplimiento.pdfdictamencumplimientonegado',compact('cumplimentovalidado','razonSocial'));
         return $pdf->stream('negadopdf.pdf');
     }
+
+
+    public function validacion()
+    {
+        return view('cumplimiento.altaValidaCumplimiento');
+    }
 }
 

@@ -57,7 +57,7 @@
                                         <td class="col-md-4 text-center">{{ $item->fecha_solicitud }}</td>
                                         <td class="col-md-2 text-center">
                                             @if(($item->status_cumplimiento == 2 && $item->documentos_count == $item->ctg_doc_total) && ($item->ctg_docbene_total==$item->documentosbene_count || $item->documentosbene_count==0 ))
-                                        <a wire:click="$dispatch('crearvalidacion',{{$item->cliente_id}})">Continuar Llenando</a>
+                                        <a class="btn btn-primary" wire:click="$dispatch('crearvalidacion',{{$item->cliente_id}})">Continuar Llenando</a>
                                             @else
                                             <h6 class="text-warning">Faltan documentos</h6>
                                         @endif
@@ -91,7 +91,7 @@
                     var itemId = id;
                     console.log(itemId);
                     // Construir la URL de redireccionamiento con el ID del ítem
-                    var redirectUrl = "{{ route('altaValidaCumplimiento.index', ':itemId') }}";
+                    var redirectUrl = "{{ route('cumplimiento.validacion', ':itemId') }}";
                     redirectUrl = redirectUrl.replace(':itemId', itemId);
 
                     // Redireccionar a la URL construida
