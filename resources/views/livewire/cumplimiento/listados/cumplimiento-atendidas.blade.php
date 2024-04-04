@@ -86,7 +86,7 @@
                                     <td class="col-md-1 text-center">Validado</td>
                                     @else
                                     <td class="col-md-1 text-center">
-                                    <a href="{{route('clientesactivos.altaSolicitudCumplimiento',$item->id)}}" class="btn btn-primary">Editar Expediente</a>
+                                    <a href="{{route('cliente.expediente',[$item->id,0])}}" class="btn btn-primary">Editar Expediente</a>
                                     </td>
                                     @endif
                                 </tr>

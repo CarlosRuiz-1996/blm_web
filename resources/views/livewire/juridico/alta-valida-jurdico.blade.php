@@ -160,5 +160,21 @@
                 @endif
             </div>
         </div>
-    </div>    
+    </div>  
+    
+    
+    @push('js')
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('error', function(message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            });
+        });
+    </script>
+@endpush
 </div>

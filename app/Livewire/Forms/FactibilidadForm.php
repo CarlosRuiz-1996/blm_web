@@ -158,7 +158,7 @@ class FactibilidadForm extends Form
 
         try {
             DB::beginTransaction();
-            $this->validate();
+           
             $this->anexo1_id = $anexo->id;
 
             if (count($anexo->factibilidad) > 0) {

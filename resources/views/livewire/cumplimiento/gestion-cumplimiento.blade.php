@@ -88,74 +88,82 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12">
-                <div class="card card-outline card-info">
-                    <div class="card-body">
-                        <h3 class="text-center mb-2">Documentos Beneficiario</h3>
-                        <div class="row">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead class="table-primary">
-                                        <tr>
-                                            <th>DOCUMENTO</th>
-                                            <th>NOMBRE DOCUMENTO</th>
-                                            <th>VISTA PREVIA</th>
-                                            <th>CUMPLE</th>
-                                            <th>NO CUMPLE</th>
-                                            <th>OBSERVACIONES</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($documentosexpedienteBene as $documentobene)
+            {{-- beneficiarios --}}
+            @if (count($documentosexpedienteBene))
+                <div class="col-md-12">
+                    <div class="card card-outline card-info">
+                        <div class="card-body">
+                            <h3 class="text-center mb-2">Documentos Beneficiario</h3>
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead class="table-primary">
                                             <tr>
-                                                <td>{{ $documentobene->name }}</td>
-                                                <td>{{ $documentobene->document_name }}</td>
-                                                <td>
-                                                    <a href="#" data-toggle="modal" data-target="#modalpdf"
-                                                        wire:click="openModal('documentos/{{ $rfc }}/beneficiario/{{ $documentobene->document_name }}')"
-                                                        style="text-decoration: none;">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    <!-- Input para marcar si cumple -->
-                                                    <input class="form-control"
-                                                        wire:model.live="cumplebene.{{ $documentobene->id }}"
-                                                        type="radio" value="1">
-                                                </td>
-                                                <td>
-                                                    <!-- Input para marcar si no cumple -->
-                                                    <input class="form-control"
-                                                        wire:model.live="cumplebene.{{ $documentobene->id }}"
-                                                        type="radio" value="0">
-                                                </td>
-                                                <td>
-                                                    <!-- Campo de texto para observaciones -->
-                                                    <textarea wire:model.live="notabene.{{ $documentobene->id }}" type="text" name="" class="form-control"></textarea>
-                                                </td>
+                                                <th>DOCUMENTO</th>
+                                                <th>NOMBRE DOCUMENTO</th>
+                                                <th>VISTA PREVIA</th>
+                                                <th>CUMPLE</th>
+                                                <th>NO CUMPLE</th>
+                                                <th>OBSERVACIONES</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($documentosexpedienteBene as $documentobene)
+                                                <tr>
+                                                    <td>{{ $documentobene->name }}</td>
+                                                    <td>{{ $documentobene->document_name }}</td>
+                                                    <td>
+                                                        <a href="#" data-toggle="modal" data-target="#modalpdf"
+                                                            wire:click="openModal('documentos/{{ $rfc }}/beneficiario/{{ $documentobene->document_name }}')"
+                                                            style="text-decoration: none;">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <!-- Input para marcar si cumple -->
+                                                        <input class="form-control"
+                                                            wire:model.live="cumplebene.{{ $documentobene->id }}"
+                                                            type="radio" value="1">
+                                                    </td>
+                                                    <td>
+                                                        <!-- Input para marcar si no cumple -->
+                                                        <input class="form-control"
+                                                            wire:model.live="cumplebene.{{ $documentobene->id }}"
+                                                            type="radio" value="0">
+                                                    </td>
+                                                    <td>
+                                                        <!-- Campo de texto para observaciones -->
+                                                        <textarea wire:model.live="notabene.{{ $documentobene->id }}" type="text" name="" class="form-control"></textarea>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-3 M-1">
-                <a href="https://qeq.com.mx/datos/pages/" target="_blank" class="btn btn-secondary btn-block "> QUIEN ES
-                    QUIEN</a>
-            </div>
-            <div class="col-md-3 M-1">
-                <a href="https://www.gob.mx/curp/" target="_blank" class="btn btn-secondary btn-block ">CURP</a>
-            </div>
-            <div class="col-md-3 M-1">
-                <a href="https://listanominal.ine.mx/scpln/" target="_blank"
-                    class="btn btn-secondary btn-block ">INE</a>
-            </div>
-            <div class="col-md-3 M-1">
-                <a href="https://agsc.siat.sat.gob.mx/PTSC/ValidaRFC/index.jsf" target="_blank"
-                    class="btn btn-secondary btn-block ">RFC</a>
+            @endif
+
+            {{-- links a otras paginas --}}
+            <div class="row col-md-12">
+                <div class="col-md-3 M-1">
+                    <a href="https://qeq.com.mx/datos/pages/" target="_blank" class="btn btn-secondary btn-block ">
+                        QUIEN ES
+                        QUIEN</a>
+                </div>
+                <div class="col-md-3 M-1">
+                    <a href="https://www.gob.mx/curp/" target="_blank" class="btn btn-secondary btn-block ">CURP</a>
+                </div>
+                <div class="col-md-3 M-1">
+                    <a href="https://listanominal.ine.mx/scpln/" target="_blank"
+                        class="btn btn-secondary btn-block ">INE</a>
+                </div>
+                <div class="col-md-3 M-1">
+                    <a href="https://agsc.siat.sat.gob.mx/PTSC/ValidaRFC/index.jsf" target="_blank"
+                        class="btn btn-secondary btn-block ">RFC</a>
+                </div>
             </div>
         </div>
         <!--validacion docuemntos listas negras-->
@@ -168,25 +176,38 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4">
-                                <x-select-validado label="" placeholder="Seleccione tipo de documento"
-                                    wire-model="evidencias" required>
-                                    <option value="1">Listas Negras</option>
-                                </x-select-validado>
+                                <input placeholder="Listas negras" readonly class="form-control mt-4 mb-3">
                             </div>
                             <div class="col-md-4 mt-3">
-                                <div class="custom-file mt-2">
-                                    <input type="file" class="custom-file-input" wire:model="documentoevidencia"
-                                        accept="application/pdf">
-                                    <label class="custom-file-label" for="documentoevidencia">Seleccione un
-                                        archivo</label>
-                                    @error('documentoevidencia')
-                                        <span class="error">{{ $message }}</span>
-                                    @enderror
+
+                                <div x-data="{ uploading: false, progress: 0 }" x-on:livewire-upload-start="uploading = true"
+                                    x-on:livewire-upload-finish="uploading = false"
+                                    x-on:livewire-upload-cancel="uploading = false"
+                                    x-on:livewire-upload-error="uploading = false"
+                                    x-on:livewire-upload-progress="progress = $event.detail.progress">
+                                    <div class="input-group mt-2">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input"
+                                                wire:model="documentoevidencia" id="documentoevidencia"
+                                                accept="application/pdf">
+                                            <label class="custom-file-label xp" for="documentoevidencia"
+                                                aria-describedby="documentoevidencia">Seleccione un
+                                                archivo</label>
+                                        </div>
+                                    </div>
+                                    <!-- Progress Bar -->
+                                    <div x-show="uploading">
+                                        <progress max="100" x-bind:value="progress"></progress>
+                                    </div>
                                 </div>
+                                @error('documentoevidencia')
+                                    <span class="error">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="col-md-4 mt-2">
                                 <div class="input-group">
-                                    <button wire:click="agregarEvidencia" class="btn btn-primary mt-3">Subir
+                                    <button wire:click="agregarEvidencia" onclick="showProgressModal()"
+                                        class="btn btn-primary mt-3">Subir
                                         Archivo</button>
                                 </div>
                             </div>
@@ -317,7 +338,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" wire:click="aceptadaValida">Aceptar</button>
+                    <button type="button" class="btn btn-primary"
+                        wire:click="$dispatch('confirm',1)">Aceptar</button>
                 </div>
             </div>
         </div>
@@ -374,7 +396,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" wire:click="negadaValida">Aceptar</button>
+                    <button type="button" class="btn btn-primary"
+                        wire:click="$dispatch('confirm',2)">Aceptar</button>
                 </div>
             </div>
         </div>
@@ -383,6 +406,25 @@
     @push('js')
         <script>
             document.addEventListener('livewire:initialized', () => {
+
+                @this.on('confirm', (op) => {
+
+                    Swal.fire({
+                        title: '¿Estas seguro?',
+                        text: "La validacion no se podra editar.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, adelante!',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            @this.dispatch(op == 1 ? 'valida-aceptada' : 'valida-rechazo');
+                        }
+                    })
+                })
+
                 Livewire.on('error', function(message) {
                     Swal.fire({
                         icon: 'error',
@@ -391,7 +433,38 @@
                         timer: 3000
                     });
                 });
+
+                Livewire.on('agregarArchivocre', function(params) {
+                    const nombreArchivo = params[0].nombreArchivo;
+                    const tipomensaje = params[1].tipomensaje;
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: tipomensaje,
+                        title: nombreArchivo,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                });
             });
+
+            function showProgressModal() {
+
+                var doc = document.getElementById('documentoevidencia');
+
+                if (doc.value) {
+                    let timerInterval;
+                    Swal.fire({
+                        title: "Subiendo documento!",
+                        html: "Esto puede tardar unos segundos.",
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            Swal.showLoading();
+
+                        },
+
+                    });
+                }
+            }
         </script>
     @endpush
 </div>

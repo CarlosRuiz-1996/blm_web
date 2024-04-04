@@ -12,6 +12,6 @@
 </h1>
 @stop
 @section('content')
-@livewire('alta-valida-cumplimiento', ['expedienteId' => request()->route('id')])
+@livewire('cumplimiento.gestion-cumplimiento', ['expedienteId' => request()->route('id')])
 @stop
 

@@ -121,26 +121,32 @@ class AltaValidaJurdico extends Component
 
     public function updatedCumple($value, $documentoId)
     {
-        // Busca un registro existente para el documento y el cumplimiento
-        $registroExistente = validacionjuridico::where('juridico_id', $this->idcumplimiento->id)
-            ->where('expediente_documentos_id', $documentoId)
-            ->first();
+        $exp = expediente_digital::where('cliente_id', $this->idexpedientedig)->first();
 
-        if ($registroExistente) {
-            // Si el registro existe, actualízalo
-            $registroExistente->update([
-                'cumple' => $value,
-            ]);
+        if ($exp->status_expediente_digital == 2) {
+            // Busca un registro existente para el documento y el cumplimiento
+            $registroExistente = validacionjuridico::where('juridico_id', $this->idcumplimiento->id)
+                ->where('expediente_documentos_id', $documentoId)
+                ->first();
+
+            if ($registroExistente) {
+                // Si el registro existe, actualízalo
+                $registroExistente->update([
+                    'cumple' => $value,
+                ]);
+            } else {
+                // Si el registro no existe, créalo
+                validacionjuridico::create([
+                    'juridico_id' => $this->idcumplimiento->id,
+                    'expediente_documentos_id' => $documentoId,
+                    'cumple' => $value,
+                    'status_validacion_doc_juridico' => 1,
+                ]);
+            }
+            $this->obtenerCantidadValidados($this->idexpedientedig);
         } else {
-            // Si el registro no existe, créalo
-            validacionjuridico::create([
-                'juridico_id' => $this->idcumplimiento->id,
-                'expediente_documentos_id' => $documentoId,
-                'cumple' => $value,
-                'status_validacion_doc_juridico' => 1,
-            ]);
+            $this->dispatch('error', 'Algun usuario esta subiendo documentos');
         }
-        $this->obtenerCantidadValidados($this->idexpedientedig);
     }
     public function updatedNota($value, $documentoId)
     {
@@ -240,10 +246,10 @@ class AltaValidaJurdico extends Component
         $datosExpediente->save();
 
         if ($datosExpediente->cumplimiento == 2) {
-            $datosExpediente->status_expediente_digital = 2;
+            $datosExpediente->status_expediente_digital = 3;
             $datosExpediente->save();
         }
-        if($datosExpediente->juridico == 2 && $datosExpediente->cumplimiento = 2){
+        if ($datosExpediente->juridico == 2 && $datosExpediente->cumplimiento = 2) {
             Cotizacion::where('cliente_id', $datosExpediente->cliente_id)->update(['status_cotizacion' => 3]);
         }
         return redirect()->route('juridico.index');

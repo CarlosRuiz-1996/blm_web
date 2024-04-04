@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Expediente;
+
 
 use App\Models\Cliente;
+use App\Models\Cotizacion;
 use App\Models\Ctg_Cp;
 use App\Models\ctg_documentos;
 use App\Models\ctg_documentos_beneficiarios;
@@ -24,8 +26,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 
-class AltaSolicitudCumplimiento extends Component
+class GestionDocumentos extends Component
 {
+
+
     public $tuVariable;
     public $documentos;
     public $documentos_beneficiarios;
@@ -90,10 +94,13 @@ class AltaSolicitudCumplimiento extends Component
 
     public function mount(Request $request)
     {
+
         $this->cliente_sts = $request->route('sts');
         $id = $request->route('id');
+
         $this->id = $id;
         $this->datoscliente = Cliente::where('id', $id)->get();
+
         $this->listcliente = Ctg_Tipo_Cliente::where('id', $this->datoscliente[0]->ctg_tipo_cliente_id)->get();
         $this->ctg_tipo_cliente_id = $this->listcliente[0]->id;
         $this->tipocliente = $this->listcliente[0]->name;
@@ -126,7 +133,7 @@ class AltaSolicitudCumplimiento extends Component
     }
     public function render()
     {
-        return view('livewire.alta-solicitud-cumplimiento');
+        return view('livewire.expediente.gestion-documentos');
     }
     public function cargarDocumentosExpediente()
     {
@@ -148,10 +155,10 @@ class AltaSolicitudCumplimiento extends Component
     }
     public function agregarArchivo()
     {
-
         $this->validate([
             'documentoSelec' => 'required|file|mimes:pdf|max:10240', // Ajusta según tus necesidades
         ]);
+
         try {
 
             $nombreDocumento = ctg_documentos::where('id', $this->documentoid)->first();
@@ -172,21 +179,14 @@ class AltaSolicitudCumplimiento extends Component
                         'cliente_id' => $this->id,
                         'status_expediente_digital' => 1,
                     ]);
-                    cumplimiento::create([
-                        'expediente_digital_id' =>  $expedienteDigital->id,
-                        'dictamen' => 0,
-                        'fecha_dictamen' => now(), // Puedes ajustar la fecha según tus necesidades
-                        'status_cumplimiento' => 1,
-
-                    ]);
-                    juridico::create([
-                        'expediente_digital_id' =>  $expedienteDigital->id,
-                        'dictamen' => 0,
-                        'fecha_dictamen' => now(), // Puedes ajustar la fecha según tus necesidades
-                        'status_juridico' => 1,
-
-                    ]);
                 }
+
+                //actualizar cotizaciones en 2 
+                $cliente = Cliente::find($expedienteDigital->cliente_id);
+                if ($cliente->status_cliente == 0) {
+                    Cotizacion::where('cliente_id', $cliente->id)->where('status_cotizacion', 1)->update(['status_cotizacion' => 2]);
+                }
+
 
 
                 // Verificar si ya existe un registro con el mismo ctg_documento_id y expediente_digital
@@ -209,6 +209,8 @@ class AltaSolicitudCumplimiento extends Component
                         'status_expediente_doc' => 1,
                     ]);
                 }
+
+
 
 
                 $this->cargarDocumentosExpediente();
@@ -243,22 +245,11 @@ class AltaSolicitudCumplimiento extends Component
                         'cliente_id' => $this->id,
                         'status_expediente_digital' => 1,
                     ]);
-                    cumplimiento::create([
-                        'expediente_digital_id' =>  $expedienteDigital->id,
-                        'dictamen' => 0,
-                        'fecha_dictamen' => null, // Puedes ajustar la fecha según tus necesidades
-                        'status_cumplimiento' => 1,
-
-                    ]);
-                    juridico::create([
-                        'expediente_digital_id' =>  $expedienteDigital->id,
-                        'dictamen' => 0,
-                        'fecha_dictamen' => now(), // Puedes ajustar la fecha según tus necesidades
-                        'status_juridico' => 1,
-
-                    ]);
                 }
-
+                $cliente = Cliente::find($expedienteDigital->cliente_id);
+                if ($cliente->status_cliente == 0) {
+                    Cotizacion::where('cliente_id', $cliente->id)->where('status_cotizacion', 1)->update(['status_cotizacion' => 2]);
+                }
                 $documentoExistente = expediente_documento_beneficiario::where('ctg_documentos_benf_id', $this->documentoidbene)
                     ->where('expediente_digital_id', $expedienteDigital->id)
                     ->first();
@@ -341,6 +332,44 @@ class AltaSolicitudCumplimiento extends Component
             $this->dispatch('ArchivoEliminado', ['nombreArchivo' => 'Se ha Eliminado el archivo: ' . $nombreElimninado], ['tipomensaje' => 'success']);
         } catch (\Exception $e) {
             $this->dispatch('ArchivoEliminado', ['nombreArchivo' => 'Fallo al intentar eliminar archivo'], ['tipomensaje' => 'error']);
+        }
+    }
+
+
+    /**finalizar expediente. */
+    #[On('finalizar-expediente')]
+    public function finalizaExpediente()
+    {
+        $expedienteDigital = expediente_digital::where('cliente_id', $this->id)->first();
+        //actualiza los status
+        $documentos =  expediente_documentos::where('expediente_digital_id', $expedienteDigital->id)->count();
+        $benef =  expediente_documento_beneficiario::where('expediente_digital_id', $expedienteDigital->id)->count();
+        $ctg = ctg_documentos::where('ctg_tipo_cliente_id', $this->datoscliente[0]->ctg_tipo_cliente_id)->count();
+
+
+        // dd($benef);
+        if ($ctg == $documentos && ($benef == 0 || $benef == 3)) {
+
+            $expedienteDigital->status_expediente_digital = 2;
+            $expedienteDigital->save();
+            cumplimiento::create([
+                'expediente_digital_id' =>  $expedienteDigital->id,
+                'dictamen' => 0,
+                'fecha_dictamen' => now(), // Puedes ajustar la fecha según tus necesidades
+                'status_cumplimiento' => 1,
+
+            ]);
+            juridico::create([
+                'expediente_digital_id' =>  $expedienteDigital->id,
+                'dictamen' => 0,
+                'fecha_dictamen' => now(), // Puedes ajustar la fecha según tus necesidades
+                'status_juridico' => 1,
+
+            ]);
+            
+            $this->dispatch('success',['Expediente generado con exito',$this->datoscliente[0]]);
+        }else{
+            $this->dispatch('error');
         }
     }
 }

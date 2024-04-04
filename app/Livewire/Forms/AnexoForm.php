@@ -61,21 +61,50 @@ class AnexoForm extends Form
             $this->cp_invalido = "Codigo postal no valido";
         }
     }
-    protected $rules = [
+    // protected $rules = [
 
-        'referencias' => 'required',
-        'sucursal' => 'required',
-        'contacto' => 'required',
-        'cargo' => 'required',
-        'fecha_evaluacion' => 'required',
-        'phone' => 'required|max:10|min:8',
-        'correo' => 'required|email',
-        'direccion' => 'required',
-        'ctg_cp_id' => 'required',
-        'fecha_inicio_servicio' => 'required',
-        'cp' => 'required|max:5',
+    //     'referencias' => 'required',
+    //     'sucursal' => 'required',
+    //     'contacto' => 'required',
+    //     'cargo' => 'required',
+    //     'fecha_evaluacion' => 'required',
+    //     'phone' => 'required|numeric|max:10|min:8',
+    //     'correo' => 'required|email',
+    //     'direccion' => 'required',
+    //     'ctg_cp_id' => 'required',
+    //     'fecha_inicio_servicio' => 'required',
+    //     'cp' => 'required|max:5',
 
-    ];
+    // ];
+    protected function rules()
+    {
+        return [
+            'referencias' => 'required',
+            'sucursal' => 'required',
+            'contacto' => 'required',
+            'cargo' => 'required',
+            'fecha_evaluacion' => 'required',
+            'phone' => 'required|regex:/^[0-9]{8,11}$/',
+
+            'correo' => 'required|email',
+            'direccion' => 'required',
+            'ctg_cp_id' => 'required',
+            'fecha_inicio_servicio' => 'required',
+            'cp' => 'required|max:5',
+            'fecha_evaluacion' => ['required', function ($attribute, $value, $fail) {
+                if ($value > $this->fecha_inicio_servicio) {
+                    $fail('La fecha de evaluación debe ser mayor a la fecha de inicio de servicio.');
+                }
+            }],
+            'fecha_inicio_servicio' => ['required', function ($attribute, $value, $fail) {
+                if ($value < $this->fecha_evaluacion) {
+                    $fail('No se puede iniciar el servicio sin evaluación.');
+                }
+            }],
+            // ... otras reglas ...
+        ];
+    }
+
     public function store_sucursal()
     {
 
@@ -221,7 +250,7 @@ class AnexoForm extends Form
             $this->direccion = $cliente->direccion;
             $this->referencias = 'Sin referencias';
             $this->sucursal = 'Direccion fiscal';
-            $this->contacto = $cliente->user->name.' '.$cliente->user->paterno.' '.$cliente->user->materno;
+            $this->contacto = $cliente->user->name . ' ' . $cliente->user->paterno . ' ' . $cliente->user->materno;
             $this->cargo = $cliente->puesto;
             $this->correo = $cliente->user->email;
             $this->phone = $cliente->phone;

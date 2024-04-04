@@ -1,22 +1,24 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Cumplimiento\Listados;
 
-use App\Models\cumplimiento;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Illuminate\Support\Facades\DB;
 
-class TablaCumplimientoSolicitud extends Component
+class CumplimientoSolucitudes extends Component
 {
+    public function render()
+    {
+        return view('livewire.cumplimiento.listados.cumplimiento-solucitudes');
+    }
+
+
     public $listSolicitudes;
     public function mount()
     {
         $this->listaSolicitudes();
     }
-    public function render()
-    {
-        return view('livewire.tabla-cumplimiento-solicitud');
-    }
+
 
     public function listaSolicitudes()
     {

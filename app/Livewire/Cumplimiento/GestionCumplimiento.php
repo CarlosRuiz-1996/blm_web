@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Cumplimiento;
 
 use App\Models\Cliente;
 use App\Models\Cotizacion;
@@ -16,9 +16,12 @@ use App\Models\validacioncumplimientobene;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\On;
 
-class AltaValidaCumplimiento extends Component
+class GestionCumplimiento extends Component
 {
+
+
     use WithFileUploads;
     public $expedienteId;
     public $datosCliente;
@@ -90,7 +93,7 @@ class AltaValidaCumplimiento extends Component
     }
     public function render()
     {
-        return view('livewire.alta-valida-cumplimiento');
+        return view('livewire.cumplimiento.gestion-cumplimiento');
     }
     public function cargarDocumentosExpediente($id)
     {
@@ -144,26 +147,33 @@ class AltaValidaCumplimiento extends Component
 
     public function updatedCumple($value, $documentoId)
     {
-        // Busca un registro existente para el documento y el cumplimiento
-        $registroExistente = validacioncumplimiento::where('cumplimiento_id', $this->idcumplimiento->id)
-            ->where('expediente_documentos_id', $documentoId)
-            ->first();
+        $exp = expediente_digital::where('cliente_id', $this->idexpedientedig)->first();
 
-        if ($registroExistente) {
-            // Si el registro existe, actualízalo
-            $registroExistente->update([
-                'cumple' => $value,
-            ]);
+
+        if ($exp->status_expediente_digital == 2) {
+            // Busca un registro existente para el documento y el cumplimiento
+            $registroExistente = validacioncumplimiento::where('cumplimiento_id', $this->idcumplimiento->id)
+                ->where('expediente_documentos_id', $documentoId)
+                ->first();
+
+            if ($registroExistente) {
+                // Si el registro existe, actualízalo
+                $registroExistente->update([
+                    'cumple' => $value,
+                ]);
+            } else {
+                // Si el registro no existe, créalo
+                validacioncumplimiento::create([
+                    'cumplimiento_id' => $this->idcumplimiento->id,
+                    'expediente_documentos_id' => $documentoId,
+                    'cumple' => $value,
+                    'status_validacion_doc_cumplimiento' => 1,
+                ]);
+            }
+            $this->obtenerCantidadValidados($this->idexpedientedig);
         } else {
-            // Si el registro no existe, créalo
-            validacioncumplimiento::create([
-                'cumplimiento_id' => $this->idcumplimiento->id,
-                'expediente_documentos_id' => $documentoId,
-                'cumple' => $value,
-                'status_validacion_doc_cumplimiento' => 1,
-            ]);
+            $this->dispatch('error', 'Algun usuario esta subiendo documentos');
         }
-        $this->obtenerCantidadValidados($this->idexpedientedig);
     }
     public function updatedNota($value, $documentoId)
     {
@@ -218,22 +228,38 @@ class AltaValidaCumplimiento extends Component
         $this->validate([
             'documentoevidencia' => 'required|file|mimes:pdf|max:10240', // Ajusta según tus necesidades
         ]);
+        try {
+            DB::beginTransaction();
 
-        $nombreLimpio = 'evidencias';
-        $this->documentoevidencia->storeAs(path: 'documentos/' . $this->rfc . '/evidencias', name: $nombreLimpio . '.pdf');
+            $nombreLimpio = 'evidencias';
+            $this->documentoevidencia->storeAs(path: 'documentos/' . $this->rfc . '/evidencias', name: $nombreLimpio . '.pdf');
 
-        $datosevidencia = cumplimientoEvidencias::where('cumplimiento_id', $this->idcumplimiento->id)->first();
+            $datosevidencia = cumplimientoEvidencias::where('cumplimiento_id', $this->idcumplimiento->id)->first();
 
-        if (!$datosevidencia) {
-            cumplimientoEvidencias::create([
-                'cumplimiento_id' =>  $this->idcumplimiento->id,
-                'dictamen' => 0,
-                'document_name' => $nombreLimpio . '.pdf', // Puedes ajustar la fecha según tus necesidades
-                'status_cumplimiento_evidencias' => 1,
-                'cumple' => 0,
-                'nota' => '',
+            if (!$datosevidencia) {
+                cumplimientoEvidencias::create([
+                    'cumplimiento_id' =>  $this->idcumplimiento->id,
+                    'dictamen' => 0,
+                    'document_name' => $nombreLimpio . '.pdf',
+                    'status_cumplimiento_evidencias' => 1,
+                    'cumple' => 0,
+                    'nota' => '',
+                ]);
+            } else {
+                $datosevidencia->update([
+                    'document_name' => $nombreLimpio . '.pdf',
+                    'status_expediente_doc' => 1,
+                ]);
+            }
 
-            ]);
+            $exp = expediente_digital::where('cliente_id', $this->idexpedientedig)->first();
+
+            $this->cargarDocumentosEvidencia($exp->cliente_id);
+            DB::commit();
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Se ha agregado el archivo: ' . $nombreLimpio . '.pdf'], ['tipomensaje' => 'success']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Fallo al subir archivo'], ['tipomensaje' => 'error']);
         }
     }
 
@@ -307,6 +333,8 @@ class AltaValidaCumplimiento extends Component
         // Establece el valor de aceptado según el ID del motivo de rechazo seleccionado
         $this->aceptado = $id;
     }
+    
+    #[On('valida-rechazo')]
     public function negadaValida()
     {
         $datosExpediente = expediente_digital::where('cliente_id', $this->idexpedientedig)->first();
@@ -335,10 +363,13 @@ class AltaValidaCumplimiento extends Component
                     'fecha_dictamen' => now(),
                 ]);
             }
+            $datosExpediente->status_expediente_digital = 1;
+            $datosExpediente->save();
         }
         return redirect()->route('cumplimiento.index');
     }
-
+    
+    #[On('valida-aceptada')]
     public function aceptadaValida()
     {
         $datosExpediente = expediente_digital::where('cliente_id', $this->idexpedientedig)->first();
@@ -379,11 +410,11 @@ class AltaValidaCumplimiento extends Component
             $datosExpediente->save();
 
             if ($datosExpediente->juridico == 2) {
-                $datosExpediente->status_expediente_digital = 2;
+                $datosExpediente->status_expediente_digital = 3;
                 $datosExpediente->save();
             }
 
-            if($datosExpediente->juridico == 2 && $datosExpediente->cumplimiento = 2){
+            if ($datosExpediente->juridico == 2 && $datosExpediente->cumplimiento = 2) {
                 Cotizacion::where('cliente_id', $datosExpediente->cliente_id)->update(['status_cotizacion' => 3]);
             }
         }

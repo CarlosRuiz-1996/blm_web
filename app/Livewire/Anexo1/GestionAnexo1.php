@@ -52,9 +52,9 @@ class GestionAnexo1 extends Component
     {
         $res = $this->form->store_sucursal();
 
-        if($res==1){
-        $this->dispatch('success', ["La sucursal creo exitosamente.", 1]);
-        }else{
+        if ($res == 1) {
+            $this->dispatch('success', ["La sucursal creo exitosamente.", 1]);
+        } else {
             $this->dispatch('error', ["Ha ocurrido un error, intente más tarde."]);
         }
         $this->reset('sucursales');
@@ -189,5 +189,29 @@ class GestionAnexo1 extends Component
         }
         // return redirect()->route('roles.index')->with('success', 'Permiso eliminad con exito!');
 
+    }
+
+
+    public function updating($property, $value)
+    {
+        if ($property === 'form.fecha_evaluacion') {
+
+            if ($this->form->fecha_inicio_servicio) {
+                if ($value > $this->form->fecha_inicio_servicio) {
+                    $this->addError('form.fecha_evaluacion', 'La fecha de evaluación debe ser menor a la fecha de inicio de servicio.');
+                } else {
+                    $this->resetValidation('form.fecha_evaluacion');
+                }
+            }
+        }
+        if ($property === 'form.fecha_inicio_servicio') {
+            if ($this->form->fecha_evaluacion) {
+                if ($value < $this->form->fecha_evaluacion) {
+                    $this->addError('form.fecha_inicio_servicio', 'No se puede iniciar el servicio sin evaluación.');
+                } else {
+                    $this->resetValidation('form.fecha_inicio_servicio');
+                }
+            }
+        }
     }
 }

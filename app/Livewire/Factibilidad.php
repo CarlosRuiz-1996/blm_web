@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Livewire;
+
 use Barryvdh\DomPDF\Facade\Pdf;
 
 use Livewire\Component;
@@ -46,16 +47,36 @@ class Factibilidad extends Component
     {
         $this->form->DetalleReporte($sucursal);
     }
+
+    #[On('save-factibilidad')]
     public function save_form()
     {
-       
-        $res =  $this->form->store($this->anexo,$this->foto_fachada, $this->foto_accesos, $this->foto_seguridad);
-        // $this->reset(['foto_fachada','foto_accesos','foto_seguridad']);
-        if ($res == 1) {
-            $this->limpiarDatos();
-            $this->dispatch('success', "El Reporte se genero correctamente.");
+        $this->validate();
+        $tiene_fotos = 0;
+        if ($this->foto_fachada != '') {
+
+            $tiene_fotos++;
+        }
+        if ($this->foto_accesos != '') {
+
+            $tiene_fotos++;
+        }
+        if ($this->foto_seguridad != '') {
+
+            $tiene_fotos++;
+        }
+        if ($tiene_fotos == 3) {
+
+            $res =  $this->form->store($this->anexo, $this->foto_fachada, $this->foto_accesos, $this->foto_seguridad);
+            if ($res == 1) {
+                $this->limpiarDatos();
+                $this->dispatch('success', "El Reporte se genero correctamente.");
+            } else {
+                $this->dispatch('error', "Ha surgido un error, intente más tarde.");
+            }
         } else {
-            $this->dispatch('error', "Ha surgido un error, intente más tarde.");
+
+            $this->dispatch('error', "Falta agregar imagenes del establecimiento.");
         }
     }
 
@@ -100,6 +121,9 @@ class Factibilidad extends Component
         $this->form->rfc = '';
         $this->active_form = 'show active';
         $this->active_img = '';
+        $this->foto_fachada = '';
+        $this->foto_accesos = '';
+        $this->foto_seguridad = '';
     }
 
 
@@ -107,12 +131,12 @@ class Factibilidad extends Component
 
     public function showPDF(Sucursal $sucursal)
     {
-        
+
         $direccion = $this->form->direccionSucursal($sucursal);
         $factibilidad = $sucursal->factibilidades[0];
 
         $evaluador = $sucursal->factibilidades[0]->factibilidad->user;
-        $pdf = Pdf::loadView('seguridad.reporte-pdf', compact('sucursal','direccion','factibilidad','evaluador'));
+        $pdf = Pdf::loadView('seguridad.reporte-pdf', compact('sucursal', 'direccion', 'factibilidad', 'evaluador'));
         $pdfData = $pdf->output();
         $pdfBase64 = base64_encode($pdfData);
 

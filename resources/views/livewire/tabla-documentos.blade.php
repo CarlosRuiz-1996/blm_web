@@ -1,11 +1,13 @@
 <div>
-    <a href="{{ route('cliente.expediente', [$cliente,$cliente_status]) }}" class="btn btn-primary">
-        @if (count($documentosexpedienteBene) || count($documentosexpediente))
-            Editar Expediente
-        @else
-            Generar Expediente
-        @endif
-    </a>
+    @if (!$expediente || $expediente->status_expediente_digital != 2)
+        <a href="{{ route('cliente.expediente', [$cliente, $cliente_status]) }}" class="btn btn-primary">
+            @if (count($documentosexpedienteBene) || count($documentosexpediente))
+                Editar Expediente
+            @else
+                Generar Expediente
+            @endif
+        </a>
+    @endif
 
     @if (count($documentosexpediente))
         <div class="text-center">
@@ -92,7 +94,7 @@
                             </td>
                             <td class="col-md-4 text-center f-2">
                                 @if ($documentoEncontradobe)
-                                    <button  class="btn"  data-toggle="modal" data-target="#modalpdf"
+                                    <button class="btn" data-toggle="modal" data-target="#modalpdf"
                                         wire:click="openModal('documentos/{{ $rfc }}/beneficiario/{{ $nombreDocumentoBene }}')">
                                         <i class="fas fa-eye text-success"></i>
                                     </button>
