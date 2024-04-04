@@ -67,7 +67,7 @@
 
             </tbody>
         </table>
-        <button wire:click='addServicios()'>Guardar</button>
+        <button wire:click='addServicios()' class="btn btn-success">Guardar</button>
     </x-adminlte-modal>
 
 

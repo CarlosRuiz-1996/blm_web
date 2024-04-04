@@ -52,21 +52,16 @@
                         $servicio->sucursal->cp->estado->name }}
                     </td>
                     <td>
-                        {{-- x-model="monto" x-bind:disabled="!enabled" --}}
-                        <input type="text"
-                              
-                               class="form-control"
-                                wire:model='montoArray.{{ $servicio->id }}'
-                                >
-                            @error('montoArray.{{ $servicio->id }}')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <x-input-validado label="" placeholder="Ingrese monto" wire-model='montoArray.{{ $servicio->id }}'
+                        type="text" />
                         </td>
                         <td>
-                            <input type="text" class="form-control">
+                            <x-input-validado label="" placeholder="Ingrese papeleta" wire-model='folioArray.{{ $servicio->id }}'
+                                type="text" />
                         </td>
                         <td>
-                            <input type="text" class="form-control">
+                            <x-input-validado label="" placeholder="Ingrese envases" wire-model='envaseArray.{{ $servicio->id }}'
+                                type="text" />
                         </td>
                     </tr>
                 @endforeach
