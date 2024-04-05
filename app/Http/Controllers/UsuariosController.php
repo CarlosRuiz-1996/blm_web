@@ -43,7 +43,7 @@ class UsuariosController extends Controller
         $user->materno = $request->input('materno');
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
-        $user->ctg_area_id = $request->input('area');
+        // $user->ctg_area_id = $request->input('area');
         // Guardar otros campos del usuario si los tienes
 
         // Guardar el usuario en la base de datos

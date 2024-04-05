@@ -51,6 +51,7 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($solicitudes as $solicitud)
+                                            <tr>
                                                 <td>{{ $solicitud->id }}</td>
                                                 <td>{{ $solicitud->cliente->razon_social }}</td>
                                                 <td>{{ $solicitud->cliente->rfc_cliente }}</td>
@@ -65,6 +66,7 @@
                                                     <a class="btn btn-primary"
                                                         href="{{ route('memorandum.validar', ['memorandum' => $solicitud, 'area' => $area]) }}">Validar</a>
                                                 </td>
+                                            </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -99,6 +101,7 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($terminadas as $solicitud)
+                                            <tr>
                                                 <td>{{ $solicitud->id }}</td>
                                                 <td>{{ $solicitud->memorandum->cliente->razon_social }}</td>
                                                 <td>{{ $solicitud->memorandum->cliente->rfc_cliente }}</td>
@@ -115,6 +118,7 @@
                                                     </i>
 
                                                 </td>
+                                            </tr>
                                             @endforeach
                                         </tbody>
                                     </table>

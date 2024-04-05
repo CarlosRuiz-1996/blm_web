@@ -72,7 +72,7 @@
                                         <select class="form-control" id="area" name="area" required>
                                             <option value="0" selected disabled>Seleccionar</option>
                                             @foreach ($areas as $area)
-                                                <option value="{{ $area->id }}">{{ $area->nombre }}</option>
+                                                <option value="{{ $area->id }}">{{ $area->name }}</option>
                                             @endforeach
 
 
@@ -105,12 +105,4 @@
         </div>
     @stop
 
-    @section('css')
-        <link rel="stylesheet" href="/css/admin_custom.css">
-    @stop
-
-    @section('js')
-        <script>
-            console.log('Hi!');
-        </script>
-    @stop
+   

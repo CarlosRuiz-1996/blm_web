@@ -82,12 +82,10 @@
 @livewire('modal-cotizacion-nuevo')
 @stop
 
-@section('css')
-<link rel="stylesheet" href="/css/admin_custom.css">
-@stop
+
 
 @section('js')
-<script>
+{{-- <script>
     // Obtener el contexto del lienzo (canvas)
     var ctx = document.getElementById('myChart').getContext('2d');
 
@@ -119,8 +117,6 @@
         data: data,
         options: options
     });
-</script>
-<script>
-    console.log('Hi!'); 
-</script>
+</script> --}}
+
 @stop

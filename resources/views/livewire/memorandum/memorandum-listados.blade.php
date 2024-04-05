@@ -87,20 +87,23 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($solicitudes as $solicitud)
-                                                <td>{{ $solicitud->id }}</td>
-                                                <td>{{ $solicitud->cliente->razon_social }}</td>
-                                                <td>{{ $solicitud->cliente->rfc_cliente }}</td>
-                                                <td>{{ $solicitud->cliente->user->name .
-                                                    ' ' .
-                                                    $solicitud->cliente->user->paterno .
-                                                    ' ' .
-                                                    $solicitud->cliente->user->materno }}
-                                                </td>
-                                                <td>{{ $solicitud->updated_at }}</td>
-                                                <td>
-                                                    <a href="{{ route('memorandum', $solicitud) }}">Llenar
-                                                        memorandum</a>
-                                                </td>
+                                                <tr>
+                                                    <td>{{ $solicitud->id }}</td>
+                                                    <td>{{ $solicitud->cliente->razon_social }}</td>
+                                                    <td>{{ $solicitud->cliente->rfc_cliente }}</td>
+                                                    <td>{{ $solicitud->cliente->user->name .
+                                                        ' ' .
+                                                        $solicitud->cliente->user->paterno .
+                                                        ' ' .
+                                                        $solicitud->cliente->user->materno }}
+                                                    </td>
+                                                    <td>{{ $solicitud->updated_at }}</td>
+                                                    <td>
+                                                        <button class="btn btn-primary" 
+                                                        wire:click="$dispatch('confirm', [1, {{$solicitud->id}}])">Comenzar</button>
+
+                                                    </td>
+                                                </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -118,39 +121,46 @@
                     <div class="col-md-12">
                         <div class="card card-outline card-info">
                             <div class="card-header">
-                                    <form wire:submit.prevent="buscar">
-                                        <div class="row">
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label for="inputId">Id</label>
-                                                    <input wire:model="idproceso" type="text" class="form-control" id="inputId" placeholder="Ingresa la Id">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label for="inputcotizacionanexo">Cotización</label>
-                                                    <input wire:model="cotizacionproceso" type="text" class="form-control" id="inputcotizacionanexo" placeholder="Ingresa Cotización">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label for="inputFechaInicio">Fecha Inicio</label>
-                                                    <input wire:model="fechaInicioproceso" type="date" class="form-control" id="inputFechaInicio" placeholder="Ingresa la Fecha Inicio">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label for="inputFechafin">Fecha Fin</label>
-                                                    <input wire:model="fechaFinproceso" type="date" class="form-control" id="inputFechafin" placeholder="Ingresa la Fecha Fin">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 mt-2">
-                                                <div class="form-group mt-4">
-                                                    <button type="submit" class="btn btn-info btn-block">Buscar</button>
-                                                </div>
+                                <form wire:submit.prevent="buscar">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="inputId">Id</label>
+                                                <input wire:model="idproceso" type="text" class="form-control"
+                                                    id="inputId" placeholder="Ingresa la Id">
                                             </div>
                                         </div>
-                                    </form>                                
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="inputcotizacionanexo">Cotización</label>
+                                                <input wire:model="cotizacionproceso" type="text"
+                                                    class="form-control" id="inputcotizacionanexo"
+                                                    placeholder="Ingresa Cotización">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="inputFechaInicio">Fecha Inicio</label>
+                                                <input wire:model="fechaInicioproceso" type="date"
+                                                    class="form-control" id="inputFechaInicio"
+                                                    placeholder="Ingresa la Fecha Inicio">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label for="inputFechafin">Fecha Fin</label>
+                                                <input wire:model="fechaFinproceso" type="date"
+                                                    class="form-control" id="inputFechafin"
+                                                    placeholder="Ingresa la Fecha Fin">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mt-2">
+                                            <div class="form-group mt-4">
+                                                <button type="submit" class="btn btn-info btn-block">Buscar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -167,20 +177,25 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($proceso as $solicitud)
-                                                <td>{{ $solicitud->id }}</td>
-                                                <td>{{ $solicitud->cliente->razon_social }}</td>
-                                                <td>{{ $solicitud->cliente->rfc_cliente }}</td>
-                                                <td>{{ $solicitud->cliente->user->name .
-                                                    ' ' .
-                                                    $solicitud->cliente->user->paterno .
-                                                    ' ' .
-                                                    $solicitud->cliente->user->materno }}
-                                                </td>
-                                                <td>{{ $solicitud->created_at }}</td>
-                                                <td>
-                                                    <a class="btn btn-warning text-white" href="{{ route('memorandum.validacion', $solicitud) }}">Continuar
-                                                        memorandum</a>
-                                                </td>
+                                                <tr>
+                                                    <td>{{ $solicitud->id }}</td>
+                                                    <td>{{ $solicitud->cliente->razon_social }}</td>
+                                                    <td>{{ $solicitud->cliente->rfc_cliente }}</td>
+                                                    <td>{{ $solicitud->cliente->user->name .
+                                                        ' ' .
+                                                        $solicitud->cliente->user->paterno .
+                                                        ' ' .
+                                                        $solicitud->cliente->user->materno }}
+                                                    </td>
+                                                    <td>{{ $solicitud->created_at }}</td>
+                                                    <td>
+                                                        <a class="btn btn-primary text-white"
+                                                        wire:click="$dispatch('confirm', [2, {{$solicitud->id}}])"
+                                                            
+                                                            >
+                                                            Detalles</a>
+                                                    </td>
+                                                </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -255,20 +270,22 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($terminadas as $solicitud)
-                                                <td>{{ $solicitud->id }}</td>
-                                                <td>{{ $solicitud->cliente->razon_social }}</td>
-                                                <td>{{ $solicitud->cliente->rfc_cliente }}</td>
-                                                <td>{{ $solicitud->cliente->user->name .
-                                                    ' ' .
-                                                    $solicitud->cliente->user->paterno .
-                                                    ' ' .
-                                                    $solicitud->cliente->user->materno }}
-                                                </td>
-                                                <td>{{ $solicitud->updated_at }}</td>
-                                                <td>
-                                                    pdf
-                                                    {{-- <a href="{{route('anexo.index', $solicitud->id)}}">Comenzar anexo1</a> --}}
-                                                </td>
+                                                <tr>
+                                                    <td>{{ $solicitud->id }}</td>
+                                                    <td>{{ $solicitud->cliente->razon_social }}</td>
+                                                    <td>{{ $solicitud->cliente->rfc_cliente }}</td>
+                                                    <td>{{ $solicitud->cliente->user->name .
+                                                        ' ' .
+                                                        $solicitud->cliente->user->paterno .
+                                                        ' ' .
+                                                        $solicitud->cliente->user->materno }}
+                                                    </td>
+                                                    <td>{{ $solicitud->updated_at }}</td>
+                                                    <td>
+                                                        pdf
+                                                        {{-- <a href="{{route('anexo.index', $solicitud->id)}}">Comenzar anexo1</a> --}}
+                                                    </td>
+                                                </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -281,4 +298,33 @@
             </div>
         </div>
     </div>
+
+    @push('js')
+        <script>
+            document.addEventListener('livewire:initialized', () => {
+            @this.on('confirm', ([op, id]) => {
+                Swal.fire({
+                    title: op==1?'¿Seguro de inicar el memorandum?':'¿Esta seguro?',
+                    text: op==2?'Desde esta area se podra finalizar el memorandum':'',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, adelante!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if(op==1){
+                            window.location.href = '{{ route('memorandum', [':factibilidad']) }}'
+                                        .replace(':factibilidad', id)
+                        }else if(op == 2){
+                            window.location.href = '{{ route('memorandum.validacion', [':memorandum']) }}'
+                                        .replace(':memorandum', id)
+                        }
+                    }
+                })
+            })
+        });
+        </script>
+    @endpush
 </div>

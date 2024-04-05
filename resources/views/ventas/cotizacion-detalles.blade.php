@@ -46,13 +46,13 @@
                             @php $total=0; @endphp
                             @foreach ($cotizacion->cotizacion_servicio as $servicio)
                                 <tr>
-                                    <td>{{ $servicio->servicios->id }}</td>
-                                    <td>{{ $servicio->servicios->ctg_servicio->descripcion }}</td>
-                                    <td>{{ $servicio->servicios->ctg_servicio->unidad }}</td>
-                                    <td>{{ $servicio->servicios->cantidad }}</td>
-                                    <td>${{ $servicio->servicios->precio_unitario }}</td>
-                                    <td>${{ $servicio->servicios->subtotal }}</td>
-                                    @php $total += $servicio->servicios->subtotal @endphp
+                                    <td>{{ $servicio->servicio->id }}</td>
+                                    <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+                                    <td>{{ $servicio->servicio->ctg_servicio->unidad }}</td>
+                                    <td>{{ $servicio->servicio->cantidad }}</td>
+                                    <td>${{ $servicio->servicio->precio_unitario }}</td>
+                                    <td>${{ $servicio->servicio->subtotal }}</td>
+                                    @php $total += $servicio->servicio->subtotal @endphp
                                 </tr>
                             @endforeach
                             <tr>
