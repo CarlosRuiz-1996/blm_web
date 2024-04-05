@@ -10,11 +10,14 @@ class CotizacionServicio extends Model
     use HasFactory;
     protected $table = 'cotizacion_servicio';
 
-    public function servicios()
+    // public function servicios()
+    // {
+    //     return $this->belongsTo(Servicios::class, 'id');
+    // }
+    public function servicio()
     {
-        return $this->belongsTo(Servicios::class, 'id');
+        return $this->belongsTo(Servicios::class, 'servicio_id');
     }
-
     public function cotizaciones()
     {
         return $this->belongsTo(Cotizacion::class, 'id');

@@ -35,7 +35,6 @@
 
                                 <x-select-validado label="Tipo de solicitud:" placeholder="Seleccione"
                                     wire-model="form.ctg_tipo_solicitud_id" required>
-                                    <option value="0" selected>Seleccione</option>
                                     @foreach ($ctg_tipo_solicitud as $ctg)
                                         <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
                                     @endforeach
@@ -46,7 +45,6 @@
 
                                 <x-select-validado label="Tipo de servicio:" placeholder="Seleccione"
                                     wire-model="form.ctg_tipo_servicio_id" required>
-                                    <option value="0" selected>Seleccione</option>
 
                                     @foreach ($ctg_tipo_servicio as $ctg)
                                         <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>

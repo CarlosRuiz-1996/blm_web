@@ -269,8 +269,9 @@ class MemorandumForm extends Form
 
 
     // firmas
-    public function getFirmas($memo_id){
-        return MemorandumValidacion::where('memoranda_id',$memo_id)->get();
+    public function getFirmas($memo_id)
+    {
+        return MemorandumValidacion::where('memoranda_id', $memo_id)->get();
     }
 
 
@@ -280,14 +281,25 @@ class MemorandumForm extends Form
 
         try {
             DB::beginTransaction();
-            
+
             //finalizo el memorandum
-            $memo->status_memoranda=2;
+            $memo->status_memoranda = 2;
             $memo->save();
 
             //finalizo la cotizacion
-            $memo->memo_cotizacion->cotizacion->status_cotizacion = 4;
+            $memo->memo_cotizacion->cotizacion->status_cotizacion = 5;
             $memo->memo_cotizacion->cotizacion->save();
+
+
+            //actualizo los servicios que tengan sucursal a 3, para listarlos en rutas
+            $memo->memo_servicio()
+                ->whereHas('sucursal_servicio.servicio', function ($query) {
+                    $query->where('status_servicio', 2);
+                })
+                ->each(function ($servicio) {
+                    $servicio->sucursal_servicio->servicio->status_servicio = 3;
+                    $servicio->sucursal_servicio->servicio->save();
+                });
 
             //se vuelve cliente activo
             $memo->cliente->status_cliente = 1;

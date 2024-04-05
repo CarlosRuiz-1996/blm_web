@@ -97,17 +97,5 @@ class AgregarVehiculo extends Component
         $this->dispatch('success-vehiculo', ['Vehículo eliminado con exito']);
     }
 
-    public function addServicio()
-    {
-        // foreach ($this->selectVehiculos as $vehiculo_id => $i) {
-        //     $vehiculo = CtgVehiculos::find($vehiculo_id);
-        //     Session::push('vehiculos-agregados', [
-        //         'vehiculo' => $vehiculo,
-        //     ]);
-        // }
-        // $this->vehiculos_session = Session::get('vehiculos-agregados', []);
-
-        // Session::forget('vehiculos-agregados' . $index);
-        // $this->vehiculos_session = Session::get('vehiculos-agregados', []);
-    }
+    
 }

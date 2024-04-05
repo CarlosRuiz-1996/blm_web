@@ -91,7 +91,7 @@
                 </div>
             </div>
             {{-- servicios --}}
-            <livewire:operaciones.rutas.agregar-servicio />
+            <livewire:operaciones.rutas.agregar-servicio :ruta="$form->ruta"/>
 
 
             <div class="col-md-12 ">

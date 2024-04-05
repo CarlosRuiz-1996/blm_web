@@ -8,6 +8,7 @@ use App\Models\RevisorArea;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
+use Illuminate\Support\Facades\Log;
 
 class MemoValidacionForm extends Form
 {
@@ -35,28 +36,33 @@ class MemoValidacionForm extends Form
 
     public function store($area, $memorandum_id)
     {
+        
+        try {
+            DB::beginTransaction();
+            $this->validate();
 
-        $this->validate();
-
-        if($area ==8){
-            $area = 9;
-        }
-        $empleado_id = auth()->user()->empleado->id;
-
-        $revisor = RevisorArea::where('user_id', $empleado_id)
-            ->where('ctg_area_id', $area)->first();
-
-            if (!$revisor) {
-                return 0;
-            } else {
-                MemorandumValidacion::create([
-                    'memoranda_id' => $memorandum_id,
-                    'revisor_areas_id' => $revisor->id,
-                    'status_validacion_memoranda' => $this->cumple
-                ]);
-                return 1;
+            if ($area == 8) {
+                $area = 9;
             }
+            $empleado_id = auth()->user()->empleado->id;
 
-      
+            $revisor = RevisorArea::where('empleado_id', $empleado_id)
+                ->where('ctg_area_id', $area)->first();
+
+            MemorandumValidacion::create([
+                'memoranda_id' => $memorandum_id,
+                'revisor_areas_id' => $revisor->id,
+                'status_validacion_memoranda' => $this->cumple
+            ]);
+
+            DB::commit();
+            return 1;
+        } catch (\Exception $e) {
+            $this->validate();
+            DB::rollBack();
+            Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
+            Log::info('Info: ' . $e);
+            return 0;
+        }
     }
 }

@@ -2,15 +2,19 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\Cliente;
 use App\Models\CtgRutaDias;
 use App\Models\CtgRutas;
 use App\Models\CtgVehiculos;
 use App\Models\Ruta;
+use App\Models\RutaServicio;
 use App\Models\RutaVehiculo;
 use App\Models\Servicios;
 use App\Models\SucursalServicio;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class RutaForm extends Form
 {
@@ -115,12 +119,58 @@ class RutaForm extends Form
 
 
     //servicios
+    public $searchClienteModal;
+    public $searchClienteSelect;
     public function getServicios()
     {
         return SucursalServicio::with('servicio')
             ->whereHas('servicio', function ($query) {
-                $query->where('status_servicio', 3);
+                $query->where('status_servicio','=', 3);
             })
-            ->get();
+            ->whereHas('anexo', function ($subquery) {
+                $subquery->whereHas('cliente', function ($subquerycliente) {
+                    $subquerycliente->where(function ($query) {
+                        $query->where('rfc_cliente', 'ilike', '%' . $this->searchClienteModal . '%')
+                            ->orWhere('razon_social', 'ilike', '%' . $this->searchClienteModal . '%');
+                    })
+                        ->when($this->searchClienteSelect, function ($query, $searchClienteSelect) {
+                            return $query->where('id', $searchClienteSelect);
+                        });
+                });
+            })
+            ->orderBy('id', 'DESC')->paginate(10);
+    }
+
+    public function getClientes()
+    {
+        return Cliente::where('status_cliente', 1)->get();
+    }
+
+    public function storeRutaServicio($seleccionados)
+    {
+        try {
+            DB::beginTransaction();
+
+            foreach ($seleccionados as $data) {
+
+                $servicio_ruta = RutaServicio::create([
+                    'servicio_id' => $data['servicio_id'],
+                    'ruta_id' => $this->ruta->id,
+                    'monto' => $data['monto'],
+                    'folio' => $data['folio'],
+                    'envases' => $data['envases'],
+                ]);
+
+               $servicio_ruta->servicio->status_servicio=4;
+               $servicio_ruta->servicio->save();
+            }
+            DB::commit();
+            return 1;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
+            Log::info('Info: ' . $e);
+            return 0;
+        }
     }
 }

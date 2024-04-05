@@ -10,7 +10,8 @@ class Servicios extends Model
     use HasFactory;
     protected $table = 'servicios';
     protected $fillable = [
-        'precio_unitario','cantidad','subtotal','ctg_precio_servicio_id','ctg_servicios_id','servicio_especial','status_servicio'
+        'precio_unitario','cantidad','subtotal','ctg_precio_servicio_id','ctg_servicios_id',
+        'servicio_especial','status_servicio'
     ];
 
     public function ctg_servicio()

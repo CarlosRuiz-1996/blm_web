@@ -34,16 +34,16 @@
                                         @foreach ($servicios as $servicio)
                                             <tr>
                                                 <td>
-                                                    {{ $servicio->servicios->ctg_servicio->folio }}</td>
-                                                <td>{{ $servicio->servicios->ctg_servicio->descripcion }}</td>
-                                                <td>{{ $servicio->servicios->ctg_servicio->unidad }}</td>
-                                                <td>{{ $servicio->servicios->cantidad }}</td>
-                                                <td>{{ $servicio->servicios->precio_unitario }}</td>
-                                                <td>{{ $servicio->servicios->subtotal }}</td>
+                                                    {{ $servicio->servicio->ctg_servicio->folio }}</td>
+                                                <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+                                                <td>{{ $servicio->servicio->ctg_servicio->unidad }}</td>
+                                                <td>{{ $servicio->servicio->cantidad }}</td>
+                                                <td>{{ $servicio->servicio->precio_unitario }}</td>
+                                                <td>{{ $servicio->servicio->subtotal }}</td>
                                                 <td>
                                                     @php
                                                         $sucursalAsignada = null;
-                                                        $servicioId = $servicio->servicios->id;
+                                                        $servicioId = $servicio->servicio->id;
                                                         $sucursalAsignadaId = 0;
                                                         // Verificar si hay una sucursal asignada para este servicio en la sesión
                                                         if (Session::has('servicio-sucursal')) {
