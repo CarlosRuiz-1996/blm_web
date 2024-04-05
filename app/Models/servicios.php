@@ -28,10 +28,19 @@ class Servicios extends Model
     {
         return $this->hasMany(SucursalServicio::class, 'servicio_id');
     }
-
+    public function sucursal()
+    {
+        return $this->hasOne(SucursalServicio::class, 'servicio_id');
+    }
 
     public function cliente()
     {
         return $this->belongsTo(Cliente::class, 'cliente_id');
+    }
+
+
+    public function rutas()
+    {
+        return $this->belongsToMany(Ruta::class, 'ruta_servicios', 'servicio_id', 'ruta_id');
     }
 }

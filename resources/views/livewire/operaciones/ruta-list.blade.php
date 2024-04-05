@@ -1,7 +1,7 @@
 <div>
     <div class="d-sm-flex align-items-center justify-content-between">
         <h3 for="">RUTAS</h3>
-        
+
     </div>
     <div class="">
         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
@@ -45,16 +45,18 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($rutas as $ruta)
-                                                <td>{{ $ruta->id }}</td>
-                                                <td>{{ $ruta->nombre->name }}</td>
-                                                <td>{{ $ruta->dia->name }}</td>
-                                                <td>{{ $ruta->riesgo->name}}</td>
-                                                <td>{{ $ruta->estado->name}}</td>
-                                                <td>{{ $ruta->hora_inicio }}</td>
-                                                <td>{{ $ruta->hora_fin }}</td>
-                                                <td>
-                                                    <a href="{{route('ruta.gestion', [2,$ruta])}}">Detalles</a>
-                                                </td>
+                                                <tr>
+                                                    <td>{{ $ruta->id }}</td>
+                                                    <td>{{ $ruta->nombre->name }}</td>
+                                                    <td>{{ $ruta->dia->name }}</td>
+                                                    <td>{{ $ruta->riesgo->name }}</td>
+                                                    <td>{{ $ruta->estado->name }}</td>
+                                                    <td>{{ $ruta->hora_inicio }}</td>
+                                                    <td>{{ $ruta->hora_fin }}</td>
+                                                    <td>
+                                                        <a href="{{ route('ruta.gestion', [2, $ruta]) }}">Detalles</a>
+                                                    </td>
+                                                </tr>
                                             @endforeach
                                         </tbody>
                                     </table>

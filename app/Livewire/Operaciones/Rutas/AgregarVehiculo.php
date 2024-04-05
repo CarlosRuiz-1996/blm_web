@@ -4,10 +4,8 @@ namespace App\Livewire\Operaciones\Rutas;
 
 use Livewire\Component;
 use App\Livewire\Forms\RutaForm;
-use App\Models\CtgVehiculos;
 use App\Models\Ruta;
 use App\Models\RutaVehiculo;
-use Illuminate\Support\Facades\Session;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
 
@@ -70,7 +68,7 @@ class AgregarVehiculo extends Component
     public function AddVehiculos()
     {
 
-
+        $this->selectVehiculos = array_filter($this->selectVehiculos);
         if (!empty($this->selectVehiculos)) {
 
             foreach ($this->selectVehiculos as $vehiculo_id => $i) {
@@ -89,6 +87,7 @@ class AgregarVehiculo extends Component
     public function clean()
     {
         $this->selectVehiculos = [];
+        $this->resetValidation();
     }
     #[On('delete-vehiculo')]
     public function DeleteVehiculo(RutaVehiculo $vehiculo)

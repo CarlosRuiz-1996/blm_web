@@ -50,7 +50,6 @@ class RutaGestion extends Component
     #[On('save-ruta')]
     public function save()
     {
-        dd('save');
         $this->validate([
             'form.ctg_rutas_id' => 'required',
             'form.hora_inicio' => 'required',
@@ -60,9 +59,13 @@ class RutaGestion extends Component
             'form.hora_inicio' => 'La hora de inicio es obligatorio',
             'form.ctg_ruta_dia_id' => 'El dia de la ruta es obligatorio'
         ]);
-        $this->form->ruta = 1;
-        // $this->form->store();
-        $this->dispatch('success', ['La ruta se creo con exito', 'Ahora vamos complementarla']);
+        // $this->form->ruta = 1;
+        $res =  $this->form->store();
+        if ($res == 1) {
+            $this->dispatch('success', ['La ruta se creo con exito', 'Ahora vamos complementarla',$this->form->ruta->id]);
+        } else {
+            $this->dispatch('error', 'Ocurrio un error, Intenta mas tarde');
+        }
     }
 
     #[On('update-ruta')]

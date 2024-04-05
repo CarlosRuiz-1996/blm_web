@@ -45,7 +45,7 @@
                                                 <td>{{ $servicio->id }}</td>
                                                 <td>{{ $servicio->servicio->cliente->razon_social }}</td>
                                                 <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
-                                                
+
                                                 <td>{{ $servicio->monto }}</td>
                                                 <td>{{ $servicio->folio }}</td>
                                                 <td>{{ $servicio->envases }}</td>
@@ -131,32 +131,33 @@
                         @foreach ($servicios as $servicio)
                             <tr x-data="{ checkServicio: false, monto: '', folio: '', contenedor: '' }">
                                 <td>
-                                    <input type="checkbox" wire:model='selectServicios.{{ $servicio->servicio->id }}'
-                                        x-model="checkServicio"
-                                        wire:click="resetError('{{ $servicio->servicio->id }}')" />
+                                    <input type="checkbox" wire:model='selectServicios.{{ $servicio->id }}'
+                                        x-model="checkServicio" wire:click="resetError('{{ $servicio->id }}')" />
                                 </td>
-                                <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
-                                <td>{{ $servicio->servicio->cliente->razon_social }}</td>
-                                <td>{{ $servicio->sucursal->direccion .
+                                <td>{{ $servicio->ctg_servicio->descripcion }}</td>
+                                <td>{{ $servicio->cliente->razon_social }}</td>
+                                <td>{{ $servicio->sucursal->sucursal->direccion .
                                     ' ' .
-                                    $servicio->sucursal->cp->cp .
+                                    $servicio->sucursal->sucursal->cp->cp .
                                     '' .
-                                    $servicio->sucursal->cp->estado->name }}
+                                    $servicio->sucursal->sucursal->cp->estado->name }}
+
+
                                 </td>
                                 <td>
                                     <x-input-validado x-bind:value="checkServicio ? monto : ''" style="margin-top: -20%"
                                         x-bind:disabled="!checkServicio" placeholder="Monto"
-                                        wire-model='montoArray.{{ $servicio->servicio->id }}' type="number" />
+                                        wire-model='montoArray.{{ $servicio->id }}' type="number" />
                                 </td>
                                 <td>
                                     <x-input-validado x-bind:value="checkServicio ? folio : ''" style="margin-top: -20%"
                                         x-bind:disabled="!checkServicio" placeholder="Papeleta"
-                                        wire-model='folioArray.{{ $servicio->servicio->id }}' type="text" />
+                                        wire-model='folioArray.{{ $servicio->id }}' type="text" />
                                 </td>
                                 <td>
                                     <x-input-validado x-bind:value="checkServicio ? contenedor : ''"
                                         style="margin-top: -20%" x-bind:disabled="!checkServicio" placeholder="Envases"
-                                        wire-model='envaseArray.{{ $servicio->servicio->id }}' type="number" />
+                                        wire-model='envaseArray.{{ $servicio->id }}' type="number" />
                                 </td>
                             </tr>
                         @endforeach
@@ -193,8 +194,8 @@
 
 
         <div>
-            <x-input-validado label="Descripción:" :readonly="true" placeholder="Descripción" wire-model='form.servicio_desc'
-                type="text" />
+            <x-input-validado label="Descripción:" :readonly="true" placeholder="Descripción"
+                wire-model='form.servicio_desc' type="text" />
 
             <x-input-validado label="Monto:" placeholder="Monto" wire-model='form.monto' type="number" />
             <x-input-validado label="Papeleta:" placeholder="Papeleta" wire-model='form.folio' type="text" />

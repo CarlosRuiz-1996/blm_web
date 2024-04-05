@@ -21,7 +21,6 @@
                                         <x-select-validado label="Nombre de la ruta:" placeholder="Seleccione"
                                             wire-model="form.ctg_rutas_id" required>
                                             {{ $form->ctg_rutas_id }}
-                                            <option value="0" selected>Seleccione:</option>
                                             @foreach ($rutas as $ctg)
                                                 <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
                                             @endforeach
@@ -73,25 +72,13 @@
         {{-- complementos de la ruta --}}
         @if ($form->ruta)
             {{-- vehiculos --}}
-            
-            <livewire:operaciones.rutas.agregar-vehiculo :ruta="$form->ruta"/>
-            
+
+            <livewire:operaciones.rutas.agregar-vehiculo :ruta="$form->ruta" />
+
             {{-- elementos de seguridad --}}
-            <div class="row">
-                <h1 class="ml-3">Equipo de seguridad</h1>
-                <div class="col-md-12">
-                    <div class="card card-outline card-info">
-                        <div class="card-body">
-                            <div class="row">
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <livewire:operaciones.rutas.agregar-personal :ruta="$form->ruta" />
             {{-- servicios --}}
-            <livewire:operaciones.rutas.agregar-servicio :ruta="$form->ruta"/>
+            <livewire:operaciones.rutas.agregar-servicio :ruta="$form->ruta" />
 
 
             <div class="col-md-12 ">
@@ -110,7 +97,8 @@
 
                     Swal.fire({
                         title: '¿Estas seguro?',
-                        text: op == 1 ? "La ruta sera guardada en la base de datos" : "La ruta pasara a boveda.",
+                        text: op == 1 ? "La ruta sera guardada en la base de datos" :
+                            "La ruta pasara a boveda.",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -119,12 +107,16 @@
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta',{accion:1});
+                            @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta', {
+                                accion: 1
+                            });
                         }
                     })
                 })
 
                 Livewire.on('success', function([message]) {
+                    var ruta = message[2];
+
                     Swal.fire({
                         icon: 'success',
                         title: message[0],
@@ -132,7 +124,12 @@
                         showConfirmButton: false,
                         timer: 4000
                     });
-                    window.location.href = '{{ route('operaciones') }}';
+                    if (ruta) {
+                        window.location.href = 
+                        '{{ route('ruta.gestion', [':op', ':ruta']) }}'
+                        .replace(':ruta', ruta)
+                            .replace(':op', 2);
+                    }
 
                 });
 
@@ -144,7 +141,7 @@
                         showConfirmButton: false,
                         timer: 3000
                     });
-                   
+
                 });
 
 
