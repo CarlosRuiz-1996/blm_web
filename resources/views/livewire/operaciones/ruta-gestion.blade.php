@@ -95,7 +95,7 @@
 
 
             <div class="col-md-12 ">
-                <button wire:click='save' class="btn btn-info btn-block">Guardar</button>
+                <button wire:click="$dispatch('confirm',2)" class="btn btn-info btn-block">Enviar a boveda</button>
 
             </div>
         @endif
@@ -110,7 +110,7 @@
 
                     Swal.fire({
                         title: '¿Estas seguro?',
-                        text: op == 1 ? "La ruta sera guardada en la base de datos" : "",
+                        text: op == 1 ? "La ruta sera guardada en la base de datos" : "La ruta pasara a boveda.",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -119,7 +119,7 @@
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta');
+                            @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta',{accion:1});
                         }
                     })
                 })
@@ -132,16 +132,19 @@
                         showConfirmButton: false,
                         timer: 4000
                     });
+                    window.location.href = '{{ route('operaciones') }}';
+
                 });
 
 
-                Livewire.on('error', function([message]) {
+                Livewire.on('error', function(message) {
                     Swal.fire({
                         icon: 'error',
-                        title: message[0],
+                        title: message,
                         showConfirmButton: false,
                         timer: 3000
                     });
+                   
                 });
 
 

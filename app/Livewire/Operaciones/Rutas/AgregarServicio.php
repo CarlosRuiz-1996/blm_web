@@ -5,6 +5,7 @@ namespace App\Livewire\Operaciones\Rutas;
 use Livewire\Component;
 use App\Livewire\Forms\RutaForm;
 use App\Models\Ruta;
+use App\Models\RutaServicio;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
 
@@ -16,6 +17,7 @@ class AgregarServicio extends Component
     public $montoArray = [];
     public $folioArray = [];
     public $envaseArray = [];
+    public $readyToLoad = false;
 
     protected $rules = [];
     public $clientes;
@@ -30,13 +32,28 @@ class AgregarServicio extends Component
         $this->clientes = $this->form->getClientes();
     }
 
-    #[On('render-servicios')]
+    #[On('render-modal-vehiculos')]
     public function render()
     {
-        $servicios = $this->form->getServicios();
-        return view('livewire.operaciones.rutas.agregar-servicio', compact('servicios'));
+        if ($this->readyToLoad) {
+            $servicios = $this->form->getServicios();
+            $ruta_servicios = $this->form->getRutaServicios();
+        } else {
+            $servicios = [];
+            $ruta_servicios = [];
+        }
+        return view('livewire.operaciones.rutas.agregar-servicio', compact('servicios', 'ruta_servicios'));
+    }
+    public function loadServicios()
+    {
+        $this->readyToLoad = true;
     }
 
+    public function getServicios()
+    {
+        $this->dispatch('render-modal-vehiculos');
+        $this->readyToLoad = true;
+    }
     public function updated($property)
     {
         // $property: The name of the current property that was updated
@@ -127,20 +144,73 @@ class AgregarServicio extends Component
             $res = $this->form->storeRutaServicio($seleccionados);
 
             if ($res == 1) {
-                $this->montoArray = [];
-                $this->folioArray = [];
-                $this->envaseArray = [];
+                $this->dispatch('clean-servicios');
                 $seleccionados = [];
                 $this->dispatch('success-servicio', 'Servicios agregados con exito a la ruta');
-                $this->dispatch('render-servicios');
+                $this->dispatch('render-modal-vehiculos');
             } else {
-                $this->dispatch('error-servicio', 'Ha ocurrido un problema, intenta mas tarde');
+                $this->dispatch('error-servicio');
             }
         }
     }
 
-
-    public function getServicios()
+    #[On('delete-servicio')]
+    public function DeleteServicio(RutaServicio $servicio)
     {
+        $res = $this->form->deleteServicio($servicio);
+        if ($res == 1) {
+            $this->dispatch('success-servicio', 'Servicio eliminado con exito');
+        } else {
+            $this->dispatch('error-servicio');
+        }
+    }
+
+    public function servicioEdit(RutaServicio $ruta_servicio)
+    {
+
+        $this->form->servicio_edit = $ruta_servicio;
+        $this->form->monto = $ruta_servicio->monto;
+        $this->form->folio = $ruta_servicio->folio;
+        $this->form->envases = $ruta_servicio->envases;
+        $this->form->servicio_desc = $ruta_servicio->servicio->cliente->razon_social;
+    }
+
+    #[On('update-servicio')]
+    public function servicioUpdate()
+    {
+        $this->validate([
+            'form.monto' => 'required',
+            'form.folio' => 'required',
+            'form.envases' => 'required',
+        ], [
+            'form.monto' => 'El monto es obligatorio.',
+            'form.folio' => 'El folio es obligatorio.',
+            'form.envases' => 'El envases es obligatorio',
+        ]);
+        $res = $this->form->updateServicio();
+        if ($res == 1) {
+            $this->dispatch('clean-servicios');
+            $this->dispatch('success-servicio', 'Servicio actualizado con exito');
+        } else {
+            $this->dispatch('error-servicio');
+        }
+    }
+
+    #[On('clean-servicios')]
+    public function clean()
+    {
+        $this->reset(
+            'form.monto',
+            'form.folio',
+            'form.envases',
+            'form.servicio_desc',
+            'form.servicio_edit',
+            'selectServicios',
+            'montoArray',
+            'folioArray',
+            'envaseArray'
+        );
+
+        $this->resetValidation();
     }
 }

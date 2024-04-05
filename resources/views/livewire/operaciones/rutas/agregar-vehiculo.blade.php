@@ -23,7 +23,7 @@
                             <input type="text" class="form-control w-full" placeholder="Busca un vehículo"
                                 wire:model.live='form.searchVehiculo'>
 
-                            {{ $form->searchVehiculo }}
+                            {{-- {{ $form->searchVehiculo }} --}}
 
                         </div>
 

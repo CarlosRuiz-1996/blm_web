@@ -57,6 +57,18 @@ class RutaForm extends Form
         return Ruta::all();
     }
 
+
+    public function boveda()
+    {
+
+        try {
+            $this->ruta->ctg_rutas_estado_id = 2;
+            $this->ruta->save();
+            return 1;
+        } catch (\Exception $e) {
+            return 0;
+        }
+    }
     //vehiculos
     public $searchVehiculoModal;
     public function getVehiculos($sort, $orderBy, $list)
@@ -125,7 +137,7 @@ class RutaForm extends Form
     {
         return SucursalServicio::with('servicio')
             ->whereHas('servicio', function ($query) {
-                $query->where('status_servicio','=', 3);
+                $query->where('status_servicio', '=', 3);
             })
             ->whereHas('anexo', function ($subquery) {
                 $subquery->whereHas('cliente', function ($subquerycliente) {
@@ -140,16 +152,44 @@ class RutaForm extends Form
             })
             ->orderBy('id', 'DESC')->paginate(10);
     }
-
+    public $searchServicio;
+    public function getRutaServicios()
+    {
+        return RutaServicio::where('ruta_id', $this->ruta->id)
+            // ->WhereHas('servicio', function ($query) {
+            //     $query->where('placas', 'ilike', '%' . $this->searchVehiculo . '%')
+            //         ->orWhere('descripcion', 'ilike', '%' . $this->searchVehiculo . '%')
+            //         ->orWhere('serie', 'ilike', '%' . $this->searchVehiculo . '%')
+            //         ->orWhere('anio', 'ilike', '%' . $this->searchVehiculo . '%')
+            //         ->orWhereHas('modelo', function ($subquery) {
+            //             $subquery->where('name', 'ilike', '%' . $this->searchVehiculo . '%')
+            //                 ->orWhereHas('marca', function ($subsubquery) {
+            //                     $subsubquery->where('name', 'ilike', '%' . $this->searchVehiculo . '%');
+            //                 });
+            //         });
+            // })
+            ->get();
+    }
     public function getClientes()
     {
         return Cliente::where('status_cliente', 1)->get();
     }
 
+    public function calculaRiesgo($totalRuta)
+    {
+        if ($totalRuta >= 0 && $totalRuta <= 6999999.99) {
+            return 4;
+        } else if ($totalRuta >= 7000000 && $totalRuta <= 9999999.99) {
+            return 3;
+        } else if ($totalRuta >= 10000000) {
+            return 2;
+        }
+    }
     public function storeRutaServicio($seleccionados)
     {
         try {
             DB::beginTransaction();
+            $totalRuta = 0;
 
             foreach ($seleccionados as $data) {
 
@@ -161,15 +201,78 @@ class RutaForm extends Form
                     'envases' => $data['envases'],
                 ]);
 
-               $servicio_ruta->servicio->status_servicio=4;
-               $servicio_ruta->servicio->save();
+                $servicio_ruta->servicio->status_servicio = 4;
+                $servicio_ruta->servicio->save();
+
+                $totalRuta += $data['monto'];
             }
+
+
+            //calcular riesgo de la ruta:
+            $riesgo = $this->calculaRiesgo($totalRuta);
+            //guardo el monto de mi ruta.
+            $this->ruta->total_ruta += $totalRuta;
+            $this->ruta->ctg_rutas_riesgo_id = $riesgo;
+            $this->ruta->save();
             DB::commit();
             return 1;
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
             Log::info('Info: ' . $e);
+            return 0;
+        }
+    }
+
+    public function deleteServicio($servicio)
+    {
+
+        try {
+            DB::beginTransaction();
+            //actualizo el status del servicio para que se seleccione de nuevo
+            $servicio->servicio->status_servicio = 3;
+            $servicio->servicio->save();
+
+
+            //actualizo el monto de la ruta y riesgo
+            $this->ruta->total_ruta -= $servicio->monto;
+            $riesgo = $this->calculaRiesgo($this->ruta->total_ruta);
+            $this->ruta->ctg_rutas_riesgo_id = $riesgo;
+            $this->ruta->save();
+            //elimino de la tabla ruta_servicio
+            $servicio->delete();
+            DB::commit();
+            return 1;
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return 0;
+        }
+    }
+
+    public $monto;
+    public $folio;
+    public $envases;
+    public $servicio_desc;
+    public $servicio_edit;
+    public function updateServicio()
+    {
+
+        try {
+            DB::beginTransaction();
+
+            //actualizo el monto de la ruta y riesgo
+            $this->ruta->total_ruta -= $this->servicio_edit->monto;
+            $this->ruta->total_ruta += $this->monto;
+            $riesgo = $this->calculaRiesgo($this->ruta->total_ruta);
+            $this->ruta->ctg_rutas_riesgo_id = $riesgo;
+            $this->ruta->save();
+            $this->servicio_edit->update($this->only(['monto', 'folio', 'envases']));
+
+            DB::commit();
+            return 1;
+        } catch (\Exception $e) {
+            DB::rollBack();
             return 0;
         }
     }

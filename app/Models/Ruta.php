@@ -16,7 +16,8 @@ class Ruta extends Model
         'ctg_ruta_dia_id',
         'ctg_rutas_riesgo_id',
         'ctg_rutas_estado_id',
-        'status_ruta'
+        'status_ruta',
+        'total_ruta'
     ];
 
 

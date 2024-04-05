@@ -50,6 +50,7 @@ class RutaGestion extends Component
     #[On('save-ruta')]
     public function save()
     {
+        dd('save');
         $this->validate([
             'form.ctg_rutas_id' => 'required',
             'form.hora_inicio' => 'required',
@@ -62,5 +63,21 @@ class RutaGestion extends Component
         $this->form->ruta = 1;
         // $this->form->store();
         $this->dispatch('success', ['La ruta se creo con exito', 'Ahora vamos complementarla']);
+    }
+
+    #[On('update-ruta')]
+    public function update($accion)
+    {
+
+        if ($accion == 1) {
+
+            $res = $this->form->boveda();
+
+            if ($res == 1) {
+                $this->dispatch('success',  ['La ruta paso al proceso de gestión en boveda']);
+            } else {
+                $this->dispatch('error', 'Hubo un error, intenta mas tarde');
+            }
+        }
     }
 }
