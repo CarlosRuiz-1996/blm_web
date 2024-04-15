@@ -47,4 +47,9 @@ class Cliente extends Model
     {
         return $this->hasMany(Anexo1::class, 'cliente_id');
     }
+
+
+    public function servicios(){
+        return $this->hasMany(Servicios::class, 'cliente_id');
+    }
 }

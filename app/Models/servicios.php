@@ -43,4 +43,14 @@ class Servicios extends Model
     {
         return $this->belongsToMany(Ruta::class, 'ruta_servicios', 'servicio_id', 'ruta_id');
     }
+
+
+    public function ruta_servicios()
+    {
+        return $this->hasMany(RutaServicio::class, 'servicio_id');
+    }
+    public function ruta_servicio()
+    {
+        return $this->hasOne(RutaServicio::class, 'servicio_id');
+    }
 }

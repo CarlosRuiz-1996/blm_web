@@ -66,7 +66,32 @@ class RutaForm extends Form
         return Ruta::all();
     }
 
+    //para todos los servicios listo los clientes y despues los servicios de cada cliente.
+    public function getAllServicios()
+    {
+        return Cliente::withCount('servicios')
+            ->whereHas('servicios', function ($query) {
+                $query->where('status_servicio', '>', 2);
+            })
+            ->get();
+    }
+    public function DetalleServicioCliente(Cliente $cliente)
+    {
+        // return Servicios::whereHas('ruta_servicios', function ($query) use ($cliente) {
+        //     $query->where('cliente_id', $cliente->id)
+        //         ->where('status_servicio', '>', 2);
+        // })
+        // ->get();
 
+        return Servicios::with('ruta_servicios')
+            ->where('cliente_id', $cliente->id)
+            ->where('status_servicio', '>', 2)
+            ->where(function ($query) {
+                $query->whereHas('ruta_servicios')
+                    ->orWhereDoesntHave('ruta_servicios');
+            })
+            ->get();
+    }
     public function boveda()
     {
 
@@ -144,30 +169,7 @@ class RutaForm extends Form
     public $searchClienteSelect;
     public function getServicios()
     {
-        // return SucursalServicio::with('servicio')
-        //     ->whereDoesntHave('rutas', function ($query) {
-        //         // Obtener el día de la semana de la ruta
-        //         $dia_semana_ruta = $this->ruta->ctg_ruta_dia_id;
-
-        //         $query->whereHas('dia', function ($subquery) use ($dia_semana_ruta) {
-        //             $subquery->where('id', $dia_semana_ruta);
-        //         });
-        //     })
-        //     ->whereHas('servicio', function ($query) {
-        //         $query->where('status_servicio', '=', 3);
-        //     })
-        //     ->whereHas('anexo', function ($subquery) {
-        //         $subquery->whereHas('cliente', function ($subquerycliente) {
-        //             $subquerycliente->where(function ($query) {
-        //                 $query->where('rfc_cliente', 'ilike', '%' . $this->searchClienteModal . '%')
-        //                     ->orWhere('razon_social', 'ilike', '%' . $this->searchClienteModal . '%');
-        //             })
-        //                 ->when($this->searchClienteSelect, function ($query, $searchClienteSelect) {
-        //                     return $query->where('id', $searchClienteSelect);
-        //                 });
-        //         });
-        //     })
-        //     ->orderBy('id', 'DESC')->paginate(10);
+        
 
         return Servicios::where('status_servicio', '=', 3)
             ->whereDoesntHave('rutas', function ($query) {
@@ -192,26 +194,6 @@ class RutaForm extends Form
     public $searchServicio;
     public function getRutaServicios()
     {
-
-        // return RutaServicio::where('ruta_id', $this->ruta->id)
-        //     ->where('folio', 'ilike', '%' . $this->searchServicio . '%')
-        //     ->orWhere('monto', 'ilike', '%' . $this->searchServicio . '%')
-        //     ->orWhere('monto', 'ilike', '%' . $this->searchServicio . '%')
-
-
-
-        //     ->whereHas('servicio', function ($query) {
-        //         $query->whereHas('ctg_servicio', function ($subquery) {
-        //             $subquery->where('descripcion', 'ilike', '%' . $this->searchServicio . '%')
-        //                 ->orWhere('folio', 'ilike', '%' . $this->searchServicio . '%');
-        //         })
-        //             ->orWhereHas('cliente', function ($cliente) {
-        //                 $cliente->where('rfc_cliente', 'ilike', '%' . $this->searchServicio . '%')
-        //                     ->orWhere('razon_social', 'ilike', '%' . $this->searchServicio . '%');
-        //             });
-        //     })
-        //     ->get();
-
         return RutaServicio::where('ruta_id', $this->ruta->id)
             ->where(function ($query) {
                 $query->where('folio', 'ilike', '%' . $this->searchServicio . '%')
@@ -222,16 +204,15 @@ class RutaForm extends Form
                 $query->where(function ($subquery) {
                     $subquery->whereHas('ctg_servicio', function ($subsubquery) {
                         $subsubquery->where('descripcion', 'ilike', '%' . $this->searchServicio . '%')
-                                    ->orWhere('folio', 'ilike', '%' . $this->searchServicio . '%');
+                            ->orWhere('folio', 'ilike', '%' . $this->searchServicio . '%');
                     });
                 })
-                ->orWhereHas('cliente', function ($subquery) {
-                    $subquery->where('rfc_cliente', 'ilike', '%' . $this->searchServicio . '%')
-                              ->orWhere('razon_social', 'ilike', '%' . $this->searchServicio . '%');
-                });
+                    ->orWhereHas('cliente', function ($subquery) {
+                        $subquery->where('rfc_cliente', 'ilike', '%' . $this->searchServicio . '%')
+                            ->orWhere('razon_social', 'ilike', '%' . $this->searchServicio . '%');
+                    });
             })
             ->get();
-
     }
     public function getClientes()
     {
@@ -264,8 +245,8 @@ class RutaForm extends Form
                     'envases' => $data['envases'],
                 ]);
 
-                // $servicio_ruta->servicio->status_servicio = 4;
-                // $servicio_ruta->servicio->save();
+                $servicio_ruta->servicio->status_servicio = 4;
+                $servicio_ruta->servicio->save();
 
                 $totalRuta += $data['monto'];
             }
@@ -293,8 +274,8 @@ class RutaForm extends Form
         try {
             DB::beginTransaction();
             //actualizo el status del servicio para que se seleccione de nuevo
-            // $servicio->servicio->status_servicio = 3;
-            // $servicio->servicio->save();
+            $servicio->servicio->status_servicio = 3;
+            $servicio->servicio->save();
 
 
             //actualizo el monto de la ruta y riesgo
