@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Livewire\Catalogos\RutasDias;
 use App\Models\Cliente;
 use App\Models\CtgRutaDias;
 use App\Models\CtgRutas;
@@ -92,6 +93,27 @@ class RutaForm extends Form
             })
             ->get();
     }
+
+    public function getNewServicio()
+    {
+        // return Servicios::where('status_servicio','=',3)->get();
+        return Cliente::withCount('servicios')
+            ->whereHas('servicios', function ($query) {
+                $query->where('status_servicio', '=', 3);
+            })
+            ->get();
+    }
+
+    public function countServiciosNews(){
+        return Servicios::where('status_servicio', '=', 3)->count();
+    }
+
+    //dias para agregar servicio a la ruta:
+    public function getAllDias()
+    {
+        return CtgRutaDias::all();
+    }
+
     public function boveda()
     {
 
@@ -169,7 +191,7 @@ class RutaForm extends Form
     public $searchClienteSelect;
     public function getServicios()
     {
-        
+
 
         return Servicios::where('status_servicio', '=', 3)
             ->whereDoesntHave('rutas', function ($query) {
@@ -380,4 +402,9 @@ class RutaForm extends Form
     {
         $empleado->delete();
     }
+
+
+    //asignar servicio a la ruta:
+
+    public $ruta_id;
 }
