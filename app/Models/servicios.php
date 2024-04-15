@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Servicios extends Model
 {
-
     use HasFactory;
     protected $table = 'servicios';
     protected $fillable = [
-        'precio_unitario','cantidad','subtotal','ctg_precio_servicio_id','ctg_servicios_id',
-        'servicio_especial','status_servicio','cliente_id'
+        'precio_unitario','cantidad','subtotal','ctg_precio_servicio_id','ctg_servicios_id','servicio_especial','status_servicio'
     ];
 
     public function ctg_servicio()
@@ -29,7 +27,7 @@ class Servicios extends Model
     {
         return $this->hasMany(SucursalServicio::class, 'servicio_id');
     }
-    public function sucursal()
+     public function sucursal()
     {
         return $this->hasOne(SucursalServicio::class, 'servicio_id');
     }
@@ -54,6 +52,4 @@ class Servicios extends Model
     {
         return $this->hasOne(RutaServicio::class, 'servicio_id');
     }
-
-    
 }
