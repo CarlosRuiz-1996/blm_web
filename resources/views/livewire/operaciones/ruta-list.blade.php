@@ -282,8 +282,8 @@
             </x-select-validadolive>
 
             @if ($form->ctg_ruta_dia_id)
-                <x-select-validadolive label="Ruta:" placeholder="Selecciona una ruta"
-                    wire-model="form.ruta_id" required>
+                <x-select-validadolive label="Ruta:" placeholder="Selecciona una ruta" wire-model="form.ruta_id"
+                    required>
 
                     @if ($rutas_dia)
                         @foreach ($rutas_dia as $ruta)
@@ -309,7 +309,9 @@
             // detecto cuando cierra modal y limpio array
             $(document).ready(function() {
                 $('#modalPendientes').on('hidden.bs.modal', function(event) {
-                    @this.dispatch('clean-servicios');
+                    if ($('#addServicioRuta').hasClass('show')) {
+                        @this.dispatch('clean-servicios');
+                    }
                 });
                 $('#addServicioRuta').on('hidden.bs.modal', function(event) {
                     @this.dispatch('clean-servicios');
