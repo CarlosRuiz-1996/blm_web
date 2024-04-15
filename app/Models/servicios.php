@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Servicios extends Model
 {
+
     use HasFactory;
     protected $table = 'servicios';
     protected $fillable = [
@@ -53,7 +54,6 @@ class Servicios extends Model
     {
         return $this->hasOne(RutaServicio::class, 'servicio_id');
     }
-
 
     
 }
