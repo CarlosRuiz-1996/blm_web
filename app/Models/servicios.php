@@ -53,4 +53,7 @@ class Servicios extends Model
     {
         return $this->hasOne(RutaServicio::class, 'servicio_id');
     }
+
+
+    
 }

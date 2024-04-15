@@ -30,4 +30,6 @@ class Cotizacion extends Model
         return $this->belongsTo(CtgTipoPago::class, 'ctg_tipo_pago_id');
     }
 
+    
+
 }
