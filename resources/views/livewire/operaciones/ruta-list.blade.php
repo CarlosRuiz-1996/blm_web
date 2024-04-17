@@ -300,7 +300,7 @@
 
 
 
-            @if ($form->ruta_id)
+            @if ($form->ruta_id && $form->ctg_ruta_dia_id)
                 
                 <x-input-validado label="Monto:"
                                 placeholder="Ingrese cargo del contacto de la sucursal"
