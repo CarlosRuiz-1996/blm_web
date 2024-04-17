@@ -12,7 +12,7 @@ use App\Models\ctg_precio_servicio;
 use App\Models\ctg_servicios;
 use App\Models\Ctg_Tipo_Cliente;
 use App\Models\expediente_digital;
-use App\Models\servicios;
+use App\Models\Servicios;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -221,7 +221,7 @@ class CotizacionNuevo extends Component
         $cotizacionIdreturn = $this->valoridcoti->id;
 
         foreach ($this->data as $datos) {
-            $this->valoriidser = servicios::create([
+            $this->valoriidser = Servicios::create([
                 'precio_unitario' => $datos['preciounitario'],
                 'cantidad' => $datos['cantidad'],
                 'subtotal' => $datos['total'],
