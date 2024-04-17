@@ -104,7 +104,8 @@ class RutaForm extends Form
             ->get();
     }
 
-    public function countServiciosNews(){
+    public function countServiciosNews()
+    {
         return Servicios::where('status_servicio', '=', 3)->count();
     }
 
@@ -407,4 +408,42 @@ class RutaForm extends Form
     //asignar servicio a la ruta:
 
     public $ruta_id;
+    public function storeServicioRuta($servicio_id)
+    {
+        try {
+            DB::beginTransaction();
+
+
+            $servicio_ruta = RutaServicio::create([
+                'servicio_id' => $servicio_id,
+                'ruta_id' => $this->ruta_id,
+                'monto' => $this->monto,
+                'folio' => $this->folio,
+                'envases' => $this->envases,
+            ]);
+
+            $servicio_ruta->servicio->status_servicio = 4;
+            $servicio_ruta->servicio->save();
+
+
+            $ruta = Ruta::find($this->ruta_id);
+
+            $totalRuta = $ruta->total_ruta + $this->monto;
+            //calcular riesgo de la ruta:
+            $riesgo = $this->calculaRiesgo($totalRuta);
+            //guardo el monto de mi ruta.
+            $ruta->total_ruta = $totalRuta;
+            $ruta->ctg_rutas_riesgo_id = $riesgo;
+            $ruta->save();
+
+
+            DB::commit();
+            return 1;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
+            Log::info('Info: ' . $e);
+            return 0;
+        }
+    }
 }
