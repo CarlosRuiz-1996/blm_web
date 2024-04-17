@@ -52,7 +52,13 @@ class RutaList extends Component
     public function updating($property, $value)
     {
         if ($property === 'form.ctg_ruta_dia_id') {
-            $this->rutas_dia = Ruta::where('ctg_ruta_dia_id', '=', $value)->get();
+
+            if($value != ""){
+                $this->resetValidation('form.ctg_ruta_dia_id');
+                $this->rutas_dia = Ruta::where('ctg_ruta_dia_id', '=', $value)->get();
+            }else{
+                $this->addError('form.ctg_ruta_dia_id', 'La fecha de evaluación debe ser menor a la fecha de inicio de servicio.');
+            }
         }
     }
 }
