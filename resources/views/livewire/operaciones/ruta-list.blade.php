@@ -263,9 +263,11 @@
         size='lg' disable-animations>
 
         @if ($servicio)
-            <label for="">Dirección</label>
+
+        
+            <label for="">Servicio</label>
             <input class="form-control" disabled
-                value="Calle {{ $servicio->sucursal->sucursal->direccion . ' ' . $servicio->sucursal->sucursal->cp->cp . ' ' . $servicio->sucursal->sucursal->cp->estado->name . ' ' }}" />
+                value="Calle {{ $servicio->ctg_servicio->descripcion }}" />
 
             <x-select-validadolive label="Dia de la ruta:" placeholder="Selecciona un dia"
                 wire-model="form.ctg_ruta_dia_id" required>
@@ -309,7 +311,9 @@
             // detecto cuando cierra modal y limpio array
             $(document).ready(function() {
                 $('#modalPendientes').on('hidden.bs.modal', function(event) {
-                    if ($('#addServicioRuta').hasClass('show')) {
+                    
+                    if ($('#addServicioRuta').hasClass('show')) {                        
+                    }else{
                         @this.dispatch('clean-servicios');
                     }
                 });

@@ -15,40 +15,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card card-outline card-info">
-                    {{-- <div class="card-header">
-                        <form>
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="inputNumero">Número</label>
-                                        <input type="text" class="form-control" id="inputNumero"
-                                            placeholder="Ingresa el Numero">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="inputnombre">Nombre</label>
-                                        <input type="text" class="form-control" id="inputnombre"
-                                            placeholder="Ingresa el nombre">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="inputRazonSo">Razón social</label>
-                                        <input type="text" class="form-control" id="inputRazonSo"
-                                            placeholder="Ingresa Razón social">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-2 mt-2">
-                                    <div class="form-group mt-4">
-                                        <button type="submit" class="btn btn-info btn-block">Buscar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div> --}}
+                    
                   
                     <div class="card-body">
                         {{-- Setup data for datatables --}}
@@ -63,7 +30,7 @@
 
                         {{-- Minimal example / fill data using the component slot --}}
                         <x-adminlte-datatable id="table1" :heads="$heads" :config="$config"
-                        head-theme="dark" striped hoverable bordered compressed
+                        head-theme="info" striped hoverable bordered compressed
 
                         >
                             @foreach ($clientes as $cli)
