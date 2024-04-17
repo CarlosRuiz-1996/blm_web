@@ -13,7 +13,7 @@ class ClientesActivosController extends Controller
 {
     public function index()
     {
-        $clientes = Cliente::all();
+        $clientes = Cliente::where('status_cliente',1)->get();
         return view('clientesactivos.clientesactivosindex',compact('clientes'));
     }
     public function nuevousuario()

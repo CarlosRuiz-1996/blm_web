@@ -59,8 +59,28 @@ class RutaGestion extends Component
             'form.hora_inicio' => 'La hora de inicio es obligatorio',
             'form.ctg_ruta_dia_id' => 'El dia de la ruta es obligatorio'
         ]);
-        $this->form->ruta = 1;
-        // $this->form->store();
-        $this->dispatch('success', ['La ruta se creo con exito', 'Ahora vamos complementarla']);
+        // $this->form->ruta = 1;
+        $res =  $this->form->store();
+        if ($res == 1) {
+            $this->dispatch('success', ['La ruta se creo con exito', 'Ahora vamos complementarla',$this->form->ruta->id]);
+        } else {
+            $this->dispatch('error', 'Ocurrio un error, Intenta mas tarde');
+        }
+    }
+
+    #[On('update-ruta')]
+    public function update($accion)
+    {
+
+        if ($accion == 1) {
+
+            $res = $this->form->boveda();
+
+            if ($res == 1) {
+                $this->dispatch('success',  ['La ruta paso al proceso de gestión en boveda']);
+            } else {
+                $this->dispatch('error', 'Hubo un error, intenta mas tarde');
+            }
+        }
     }
 }

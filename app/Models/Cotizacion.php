@@ -16,4 +16,17 @@ class Cotizacion extends Model
     {
         return $this->hasMany(CotizacionServicio::class, 'cotizacion_id');
     }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
+    }
+
+    public function anexo()
+    {
+        return $this->hasOne(Anexo1::class, 'cotizacion_id');
+    }
+    public function tipo_pago(){
+        return $this->belongsTo(CtgTipoPago::class, 'ctg_tipo_pago_id');
+    }
 }

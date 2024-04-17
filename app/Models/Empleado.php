@@ -27,4 +27,12 @@ class Empleado extends Model
         return $this->belongsTo(Ctg_Area::class, 'ctg_area_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    public function rutas()
+    {
+        return $this->belongsToMany(Ruta::class, 'ruta_empleados', 'empleado_id', 'ruta_id');
+    }
 }
