@@ -15,6 +15,8 @@ class Servicios extends Model
     ];
 
 
+
+    
     
     public function ctg_servicio()
     {
