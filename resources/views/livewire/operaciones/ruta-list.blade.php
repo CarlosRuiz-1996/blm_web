@@ -264,10 +264,9 @@
 
         @if ($servicio)
 
-        
+
             <label for="">Servicio</label>
-            <input class="form-control" disabled
-                value="Calle {{ $servicio->ctg_servicio->descripcion }}" />
+            <input class="form-control" disabled value="Calle {{ $servicio->ctg_servicio->descripcion }}" />
 
             <x-select-validadolive label="Dia de la ruta:" placeholder="Selecciona un dia"
                 wire-model="form.ctg_ruta_dia_id" required>
@@ -299,6 +298,23 @@
                 </x-select-validadolive>
             @endif
 
+
+
+            @if ($form->ruta_id)
+                
+                <x-input-validado label="Monto:"
+                                placeholder="Ingrese cargo del contacto de la sucursal"
+                                wire-model="form.fecha_evaluacion" type="number" />
+                
+                                <x-input-validado label="Folio:"
+                                placeholder="Ingrese cargo del contacto de la sucursal"
+                                wire-model="form.fecha_evaluacion" type="text" />
+                                
+                <x-input-validado label="Envases:"
+                placeholder="Ingrese cargo del contacto de la sucursal"
+                wire-model="form.fecha_evaluacion" type="number" />
+            @endif
+
         @endif
 
 
@@ -310,13 +326,15 @@
         <script>
             // detecto cuando cierra modal y limpio array
             $(document).ready(function() {
-                $('#modalPendientes').on('hidden.bs.modal', function(event) {
-                    
-                    if ($('#addServicioRuta').hasClass('show')) {                        
-                    }else{
-                        @this.dispatch('clean-servicios');
-                    }
-                });
+                // $('#modalPendientes').on('hidden.bs.modal', function(event) {
+
+                //     if ($('#addServicioRuta').hasClass('show')) {                        
+                //     console.log('entra');
+                //         @this.dispatch('clean-servicios');
+                //     }else{
+                //         console.log('no entra'); 
+                //     }
+                // });
                 $('#addServicioRuta').on('hidden.bs.modal', function(event) {
                     @this.dispatch('clean-servicios');
                 });

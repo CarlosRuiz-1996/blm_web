@@ -29,7 +29,7 @@ class RutaList extends Component
     public $servicios = [];
     public function DetalleServicioCliente(Cliente $cliente)
     {
-
+        $this->reset('servicios');
         $this->servicios = $this->form->DetalleServicioCliente($cliente);
     }
 
