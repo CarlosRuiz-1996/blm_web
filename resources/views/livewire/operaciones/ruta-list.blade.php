@@ -304,15 +304,15 @@
                 
                 <x-input-validado label="Monto:"
                                 placeholder="Ingrese cargo del contacto de la sucursal"
-                                wire-model="form.fecha_evaluacion" type="number" />
+                                wire-model="form.monto" type="number" />
                 
                                 <x-input-validado label="Folio:"
                                 placeholder="Ingrese cargo del contacto de la sucursal"
-                                wire-model="form.fecha_evaluacion" type="text" />
+                                wire-model="form.folio" type="text" />
                                 
                 <x-input-validado label="Envases:"
                 placeholder="Ingrese cargo del contacto de la sucursal"
-                wire-model="form.fecha_evaluacion" type="number" />
+                wire-model="form.envases" type="number" />
             @endif
 
         @endif

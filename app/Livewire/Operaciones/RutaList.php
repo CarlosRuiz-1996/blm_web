@@ -37,7 +37,7 @@ class RutaList extends Component
     #[On('clean-servicios')]
     public function clean()
     {
-        $this->reset('servicios','rutas_dia','servicio','form.ctg_ruta_dia_id','form.ruta_id');
+        $this->reset('servicios', 'rutas_dia', 'servicio', 'form.ctg_ruta_dia_id', 'form.ruta_id');
     }
 
 
@@ -53,12 +53,22 @@ class RutaList extends Component
     {
         if ($property === 'form.ctg_ruta_dia_id') {
 
-            if($value != ""){
+            if ($value != "") {
                 $this->resetValidation('form.ctg_ruta_dia_id');
                 $this->rutas_dia = Ruta::where('ctg_ruta_dia_id', '=', $value)->get();
-            }else{
-                $this->reset('form.ruta_id');
+
+                $this->form->ruta_id = "";
+                $this->form->monto = "";
+                $this->form->folio = "";
+                $this->form->envases = "";
+            } else {
+
                 $this->addError('form.ctg_ruta_dia_id', 'La fecha de evaluación debe ser menor a la fecha de inicio de servicio.');
+
+                $this->form->ruta_id = "";
+                $this->form->monto = "";
+                $this->form->folio = "";
+                $this->form->envases = "";
             }
         }
     }
