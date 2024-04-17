@@ -18,6 +18,7 @@ class CotizacionesIndexTabla extends Component
     public $nombrecliente;
     
     protected $listeners = ['resetPagination'];
+    
 
     public function render()
     {

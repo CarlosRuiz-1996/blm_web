@@ -11,147 +11,243 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2">
-                <img src="{{ asset('/img/logospdf.png') }}" alt="Nombre alternativo" class="mb-3"
+            <div class="col-md-2 col-2">
+                <img src="{{ public_path() . '/img/logospdf.png' }}" alt="Nombre alternativo" class="mb-3"
                     style="max-width: 50px; float: left; margin-right: 10px;">
             </div>
-            <div class="col-md-10">
-                <h5 class="text-dark text-center" style="margin-top: 15px;">Servicios Integrados PRO-BLM de México
+            <div class="col-md-10 col-10">
+                <h5 class="text-primary text-center" style="margin-top: 15px;">Servicios Integrados PRO-BLM de México
                     S.A. de C.V.</h5>
+            </div>
+            <div class="col-md-12 col-12">
+                @php
+                $fecha_creacion = \Carbon\Carbon::parse($cotizacion->created_at);
+                $nombre_mes = Str::upper($fecha_creacion->translatedFormat('F'));
+                $dia = $fecha_creacion->format('d');
+                $anio = $fecha_creacion->format('Y');
+                @endphp
+                <h6 class="text-dark text-right" style="margin-top: 15px;margin-right: 8%">CIUDAD DE MÉXICO, A {{ $dia .
+                    ' DE ' . $nombre_mes . ' DEL ' . $anio }}.</h6>
             </div>
         </div>
 
         {{-- fecha --}}
-        <div>
-            @php
-                use Carbon\Carbon;
-                // Crear un objeto Carbon a partir de la fecha de creación
-                $fecha_creacion = Carbon::parse($cotizacion->created_at);
-                // Obtener el nombre del mes en español,  Obtener el día, mes y año
-                $nombre_mes = Str::upper($fecha_creacion->translatedFormat('F')); // Obtiene el nombre del mes
-                $dia = $fecha_creacion->format('d');
-                $anio = $fecha_creacion->format('Y');
-            @endphp
-            <h6 class=" text-right">
-                CIUDAD DE MÉXICO, A {{ $dia . ' DE ' . $nombre_mes . ' DEL ' . $anio }};
-            </h6>
-        </div>
+
 
         {{-- datos cliente --}}
-        <table class="text-center table table-bordered mt-4" width="100%" cellspacing="0" style="font-size:100%">
-            <tr>
-                <td style="background-color: #a9a9a9;">
-                    <h6 class="font-weight-bold">Razón social:</h6>
-                </td>
-                <td>{{ Str::upper($cotizacion->cliente->razon_social) }}</td>
-                <td style="background-color: #a9a9a9;">
-
-                    <h6 class="font-weight-bold">Contacto:</h6>
-
-                </td>
-                <td>{{ Str::upper($cotizacion->cliente->user->name . ' ' . $cotizacion->cliente->user->paterno . ' ' . $cotizacion->cliente->user->materno) }}
-                </td>
-
-            </tr>
-            <tr>
-                <td style="background-color: #a9a9a9;">
-                    <h6 class="font-weight-bold">RFC:</h6>
-                </td>
-                <td>{{ Str::upper($cotizacion->cliente->rfc_cliente) }}</td>
-                <td style="background-color: #a9a9a9;">
-
-                    <h6 class="font-weight-bold">TELÉFONO:</h6>
-
-                </td>
-                <td>{{ $cotizacion->cliente->phone }}
-                </td>
-
-            </tr>
-            <tr>
-                <td style="background-color: #a9a9a9;">
-                    <h6 class="font-weight-bold">CONDICIONES DE PAGO:</h6>
-                </td>
-                <td>{{ $cotizacion->tipo_pago->name }}</td>
-                <td style="background-color: #a9a9a9;">
-
-                    <h6 class="font-weight-bold">TIEMPO DE VALIDES DE LA COTIZACION:</h6>
-
-                </td>
-                <td>{{ $cotizacion->vigencia }}
-                </td>
-
-            </tr>
-        </table>
-        <div>
-            <p>PRESENTE</p>
-            <p>
-                {{ Str::upper($cotizacion->cliente->user->name) }}, buenos dias de acuerdo a nuestra platica me permito
-                enviar cotiazacion del servicio de traslado de valores, que a continuacion se detalla.
-            </p>
-        </div>
-        <table class="table table-bordered" width="100%" cellspacing="0" style="font-size:100%">
-            <thead>
-                <th class="font-weight-bold" style="background-color: gray; color: white; ">PDA</th>
-                <th class="font-weight-bold" style="background-color: gray; color: white; ">DESCRIPCIÓN</th>
-                <th class="font-weight-bold" style="background-color: gray; color: white; ">UNIDAD DE MEDIDA
-                </th>
-                <th class="font-weight-bold" style="background-color: gray; color: white; ">CANTIDAD SOLICITADA
-                </th>
-                <th class="font-weight-bold" style="background-color: gray; color: white; ">PRECIO UNITARIO</th>
-                <th class="font-weight-bold" style="background-color: gray; color: white; ">TOTAL</th>
-            </thead>
-            <tbody>
-                @php $total=0; @endphp
-                @foreach ($cotizacion->cotizacion_servicio as $servicio)
+        <div class="row">
+            <div class="col-md-11 col-11">
+                <table class="table table-bordered" style="margin-top: 15px; font-size: 8px;">
                     <tr>
-                        <td>{{ $servicio->servicio->id }}</td>
-                        <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
-                        <td>{{ $servicio->servicio->ctg_servicio->unidad }}</td>
-                        <td>{{ $servicio->servicio->cantidad }}</td>
-                        <td>${{ $servicio->servicio->precio_unitario }}</td>
-                        <td>${{ $servicio->servicio->subtotal }}</td>
-                        @php $total += $servicio->servicio->subtotal @endphp
+                        <td style="background-color: #a9a9a9;">
+                            <span class="font-weight-bold">RAZÓN SOCIAL:</span>
+                        </td>
+                        <td class="text-uppercase">{{ $cotizacion->cliente->razon_social }}</td>
+                        <td style="background-color: #a9a9a9;">
+
+                            <span class="font-weight-bold">CONTACTO:</span>
+
+                        </td>
+                        <td class="text-uppercase">
+                            {{ $cotizacion->cliente->user->name . ' ' . $cotizacion->cliente->user->paterno . ' ' .
+                            $cotizacion->cliente->user->materno}}
+                        </td>
+
                     </tr>
+                    <tr>
+                        <td style="background-color: #a9a9a9;">
+                            <span class="font-weight-bold">RFC:</span>
+                        </td>
+                        <td class="text-uppercase">{{ $cotizacion->cliente->rfc_cliente }}</td>
+                        <td style="background-color: #a9a9a9;">
+
+                            <span class="font-weight-bold">TELÉFONO:</span>
+
+                        </td>
+                        <td>{{ $cotizacion->cliente->phone }}
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td style="background-color: #a9a9a9;">
+                            <span class="font-weight-bold">CONDICIONES DE PAGO:</span>
+                        </td>
+                        <td class="text-uppercase">{{ $cotizacion->tipo_pago->name }}</td>
+                        <td style="background-color: #a9a9a9;">
+
+                            <span class="font-weight-bold">TIEMPO DE VALIDES DE LA COTIZACION:</span>
+
+                        </td>
+                        <td>{{ $cotizacion->vigencia }}
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-11 col-11" style="font-size: 10px;">
+                <p>PRESENTE</p>
+                <p>
+                    {{ Str::upper($cotizacion->cliente->user->name) }}, buenos dias de acuerdo a nuestra platica me
+                    permito
+                    enviar cotiazacion del servicio de traslado de valores, que a continuacion se detalla.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-11 col-11">
+                @php $valorcolspan = "4"; @endphp
+                @php $total = 0; @endphp
+                @php $mostrarTablaNormal = true; @endphp
+
+                <!-- Mostrar alerta si hay servicios foráneos -->
+                @foreach ($cotizacion->cotizacion_servicio as $servicio)
+                @if ($servicio->servicio->servicio_foraneo == 1)
+                @php $valorcolspan = "2"; @endphp
+                @php $mostrarTablaNormal = false; @endphp
+                <div class="alert alert-warning" role="alert">
+                    Este servicio es foráneo.
+                </div>
+                @break
+                <!-- Salir del bucle después de encontrar el primer servicio foráneo -->
+                @endif
                 @endforeach
-                <tr>
-                    <td colspan="4"></td>
-                    <td style="background-color: gray; color: white; " class="text-center font-weight-bold">
-                        Total:</td>
-                    <td style="background-color: gray; color: white; " class="text-center font-weight-bold">
-                        ${{ $total }}</td>
-                </tr>
-            </tbody>
 
-        </table>
+                <!-- Tabla para servicios foráneos -->
+                @if (!$mostrarTablaNormal)
+                @foreach ($cotizacion->cotizacion_servicio as $servicio)
+                @if ($servicio->servicio->servicio_foraneo == 1)
+                <table class="table table-bordered" style="margin-top: 15px; font-size: 8px;">
+                    <thead>
+                        <tr>
+                            <th colspan="4" class="text-center text-uppercase">Destino : {{ $servicio->servicio->foraneo_inicio }} A {{
+                                $servicio->servicio->foraneo_destino }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background-color: #a9a9a9;">
+                            <td colspan="2">CONCEPTO</td>
+                           
+                            <td>PRECIO UNITARIO</td>
+                            <td>TOTAL</td>
+                        </tr>
+                        <tr>
+                            <td>KILOMETROS</td>
+                            <td>{{$servicio->servicio->kilometros}}</td>
+                            <td>${{$servicio->servicio->kilometros_costo}}</td>
+                            <td>${{ ($servicio->servicio->kilometros_costo * $servicio->servicio->kilometros) }}</td>
+                            
+                        </tr>
+                        <tr>
+                            <td>MILES</td>
+                            <td>{{$servicio->servicio->miles}}</td>
+                            <td>${{$servicio->servicio->miles_costo}}</td>
+                            <td>${{ ($servicio->servicio->miles_costo * $servicio->servicio->miles) }}</td>
+                        </tr>
+                        <tr>
+                            <td>G/OPERACIÓN</td>
+                            <td></td>
+                            <td>${{ $servicio->servicio->gastos_operaciones }}</td>
+                            <td>${{ $servicio->servicio->gastos_operaciones }}</td>
+                        </tr>
+                        <tr>                            
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td style="background-color: #a9a9a9;">Subtotal</td>
+                            <td>{{($servicio->servicio->kilometros_costo * $servicio->servicio->kilometros)+ ($servicio->servicio->miles_costo * $servicio->servicio->miles)+ ($servicio->servicio->gastos_operaciones )}}</td>
+                        </tr>
+                        <tr>  
+                            <td colspan="2"></td>
+                            <td style="background-color: #a9a9a9;">I.V.A.</td>
+                            <td>${{ $servicio->servicio->iva }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td style="background-color: #a9a9a9;">TOTAL:</td>
+                            <td>{{$servicio->servicio->subtotal}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                @endif
+                @endforeach
+                @endif
+
+                <!-- Tabla para servicios normales -->
+                @if ($mostrarTablaNormal)
+                <table class="table table-bordered" style="margin-top: 15px; font-size: 8px;">
+                    <thead>
+                        <th class="font-weight-bold" style="background-color: gray; color: white; ">PDA</th>
+                        <th class="font-weight-bold" style="background-color: gray; color: white; ">DESCRIPCIÓN</th>
+                        <th class="font-weight-bold" style="background-color: gray; color: white; ">UNIDAD DE MEDIDA
+                        </th>
+                        <th class="font-weight-bold" style="background-color: gray; color: white; ">CANTIDAD SOLICITADA
+                        </th>
+                        <th class="font-weight-bold" style="background-color: gray; color: white; ">PRECIO UNITARIO</th>
+                        <th class="font-weight-bold" style="background-color: gray; color: white; ">TOTAL</th>
+                    </thead>
+                    <tbody>
+                        @foreach ($cotizacion->cotizacion_servicio as $servicio)
+                        @if ($servicio->servicio->servicio_foraneo != 1)
+                        <tr>
+                            <td>{{ $servicio->servicio->id }}</td>
+                            <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+                            <td>{{ $servicio->servicio->ctg_servicio->unidad }}</td>
+                            <td>{{ $servicio->servicio->cantidad }}</td>
+                            <td>${{ $servicio->servicio->precio_unitario }}</td>
+                            <td>${{ $servicio->servicio->subtotal }}</td>
+                            @php $total += $servicio->servicio->subtotal; @endphp
+                        </tr>
+                        @endif
+                        @endforeach
+                        <tr>
+                            <td colspan="{{$valorcolspan}}"></td>
+                            <td style="background-color: gray; color: white; " class="text-center font-weight-bold">
+                                Total:</td>
+                            <td style="background-color: gray; color: white; " class="text-center font-weight-bold">${{
+                                $total }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                @endif
+            </div>
+
+        </div>
 
 
-        <p class=" text-center mt-5"> ESTOS PRECIOS SON MAS DE 16% DE IVA</p>
+        <p class=" text-center mt-5" style="font-size: 10px;"> ESTOS PRECIOS SON MAS DE 16% DE IVA</p>
+        <div class="row">
+            <div class="col-md-11 col-11">
+                <table class="table table-bordered" style="margin-top: 15px; font-size: 8px;">
+                    <tr style="background-color: #a9a9a9;">
+                        <td>
+                            <span class="font-weight-bold">DOMICILIO FISCAL:</span>
+                        </td>
 
-        <table class="text-center table table-bordered mt-4 mb-5" width="100%" cellspacing="0" style="font-size:100%">
-            <tr style="background-color: #a9a9a9;">
-                <td>
-                    <h6 class="font-weight-bold">DOMICILIO FISCAL:</h6>
-                </td>
+                    </tr>
+                    <tr>
+                        <td>{{ Str::upper(
+                            $cotizacion->cliente->direccion . ' ' . $cotizacion->cliente->cp->cp . ' ' .
+                            $cotizacion->cliente->cp->estado->name,
+                            ) }}
+                        </td>
+                    </tr>
+                    <tr style="background-color: #a9a9a9;">
+                        <td>
+                            <span class="font-weight-bold">OBSERVACIONES:</span>
+                        </td>
 
-            </tr>
-            <tr>
-                <td>{{ Str::upper(
-                    $cotizacion->cliente->direccion . ' ' . $cotizacion->cliente->cp->cp . ' ' . $cotizacion->cliente->cp->estado->name,
-                ) }}
-                </td>
-            </tr>
-            <tr style="background-color: #a9a9a9;">
-                <td>
-                    <h6 class="font-weight-bold">OBSERVACIONES:</h6>
-                </td>
-
-            </tr>
-            <tr>
-                <td>S/N</td>
-            </tr>
-        </table>
+                    </tr>
+                    <tr>
+                        <td>S/N</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
 
 </body>

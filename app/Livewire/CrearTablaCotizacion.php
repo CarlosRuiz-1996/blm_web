@@ -11,7 +11,9 @@ use App\Models\Ctg_Municipio;
 use App\Models\ctg_precio_servicio;
 use App\Models\ctg_servicios;
 use App\Models\Ctg_Tipo_Cliente;
+use App\Models\CtgServicios;
 use App\Models\servicios;
+use App\Models\servicios_conceptos_foraneos;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -20,6 +22,8 @@ use Livewire\Attributes\On;
 class CrearTablaCotizacion extends Component
 {
     public $data = [];
+    public $dataforaneo = [];
+    public $dataServicioForaneo = [];
     public $servicioId;
     public $nombreServicio;
     public $tipoServicio;
@@ -61,7 +65,30 @@ class CrearTablaCotizacion extends Component
     public $cantidadcheck;
     public $cantidadhabilitado = false;
     public $editarPreciohabilitado = false;
-
+    public $foraneos = false;
+    public $checkforaneo ;
+    public $inicioruta;
+    public $destinoruta;
+    public $km;
+    public $costokm;
+    public $totalkmprecio;
+    public $miles;
+    public $milesprecio;
+    public $costomiles;
+    public $goperacion;
+    public $iva;
+    public $totaliva;
+    public $sumatotal;
+    
+    public $consepforaneo;
+    public $listaForaneos = [];
+    public $listaForaneosguarda = [];
+    
+    public $folioctg;
+    public $tipoctg;
+    public $descripcionctg;
+    public $unidadctg;
+    public $bloqser;
 
 
     public function mount()
@@ -75,9 +102,20 @@ class CrearTablaCotizacion extends Component
         $this->servicios = ctg_servicios::all();
         $this->precio_servicio = ctg_precio_servicio::all();
         $this->totalreal = 0;
-
+        $this->checkforaneo = false;
         $this->cantidadhabilitado = false;
         $this->editarPreciohabilitado = false;
+        $this->bloqser = false;
+        $this->km = 0.0;
+        $this->costokm=0.0;
+        $this->totalkmprecio = 0.0;
+        $this->miles = 0.0;
+        $this->milesprecio = 0.0;
+        $this->costomiles = 0.0;
+        $this->goperacion = 0.0;
+        $this->iva = 0.0;
+        $this->totaliva = 0.0;
+        $this->sumatotal = 0.0;
     }
 
     public function render()
@@ -112,6 +150,8 @@ class CrearTablaCotizacion extends Component
 
     public function llenartabla()
     {
+        $valorcheckforaneo= $this->checkforaneo ? true : false;
+        if(!$valorcheckforaneo){
         $this->validate([
             'servicioId' => 'required',
             'nombreServicio' => 'required',
@@ -156,9 +196,47 @@ class CrearTablaCotizacion extends Component
             'isAdmin' => $especial,
             'total' => $this->total,
         ];
+    }else{
+        $this->validate([
+            'inicioruta' => 'required',
+            'destinoruta' => 'required',
+            'km' => 'required',
+            'costokm' => 'required',
+            'totalkmprecio' => 'required',
+            'miles' => 'required',
+            'milesprecio' => 'required',
+            'costomiles' => 'required',
+            'goperacion' => 'required',
+            'iva' => 'required',
+            'totaliva' => 'required',
+            'sumatotal' => 'required',
+        ]);
+        if(count($this->listaForaneosguarda)>0){
+        $this->dataforaneo[] = [
+            'id' => count($this->dataforaneo) + 1,
+            'inicioruta' => $this->inicioruta,
+            'destinoruta' => $this->destinoruta,
+            'km' => $this->km,
+            'costokm'=> $this->costokm,
+            'totalkmprecio' => $this->totalkmprecio,
+            'miles' => $this->miles,
+            'milesprecio' => $this->milesprecio,
+            'costomiles' => $this->costomiles,
+            'goperacion' => $this->goperacion,
+            'iva' => $this->iva,
+            'totaliva' => $this->totaliva,
+            'sumatotal' => $this->sumatotal,
+        ];
+        $this->totalreal = $this->sumatotal;
+        $this->bloqser = true;
+        $this->limpiarCampos();
+        }else{
+        $this->dispatch('errorTabla', ['La cotización debe contener Servicios']);
+        }
+    }
 
         // Limpiar los campos después de agregar un nuevo elemento
-        $this->limpiarCampos();
+        
 
         return view('livewire.crear-tabla-cotizacion');
     }
@@ -175,6 +253,20 @@ class CrearTablaCotizacion extends Component
         $this->cantidad = 1;
         $this->isAdmin = '';
         $this->total = '';
+
+        $this->inicioruta = '';
+        $this->destinoruta = '';
+        $this->km = 0.0;
+        $this->costokm=0.0;
+        $this->totalkmprecio = 0.0;
+        $this->miles = 0.0;
+        $this->milesprecio = 0.0;
+        $this->costomiles = 0.0;
+        $this->goperacion = 0.0;
+        $this->iva = 0.0;
+        $this->totaliva = 0.0;
+        $this->sumatotal = 0.0;
+        $this->listaForaneos=[];
     }
     public $cot_id=0;
     #[On('save-cotizacion')]
@@ -220,7 +312,7 @@ class CrearTablaCotizacion extends Component
         ]);
         
         // Verificar si $this->data no está vacío
-        if (!empty($this->data)) {
+        if (!empty($this->data) || !empty($this->dataforaneo)) {
             try {
                 DB::transaction(function () {
                     // Ingreso en la tabla usuarios
@@ -260,6 +352,7 @@ class CrearTablaCotizacion extends Component
                     $this->cot_id = $this->valoridcoti->id;
 
                     // Realizar las inserciones en la base de datos
+                    if(empty($this->dataforaneo)){
                     foreach ($this->data as $datos) {
                         // Realizar la inserción en la base de datos
                         $this->valoriidser = servicios::create([
@@ -279,6 +372,44 @@ class CrearTablaCotizacion extends Component
                             'status_cotizacion_servicio' => '1'
                         ]);
                     }
+                }else{
+                    foreach ($this->dataforaneo as $datosf) {
+                        // Realizar la inserción en la base de datos
+                        $this->valoriidser = servicios::create([
+                            'precio_unitario' => $datosf['sumatotal'],
+                            'cantidad' => 1,
+                            'subtotal' => $datosf['sumatotal'],
+                            'servicio_especial' => 1,
+                            'status_servicio' => 1,      
+                            'kilometros' =>$datosf['km'],
+                            'kilometros_costo' =>$datosf['costokm'],
+                            'miles' =>$datosf['miles'],
+                            'miles_costo' =>$datosf['milesprecio'],
+                            'servicio_foraneo' =>1,
+                            'gastos_operaciones' =>$datosf['goperacion'],
+                            'iva' =>$datosf['totaliva'],
+                            'cliente_id' => $this->valoridcliente->id,
+                            'foraneo_destino' =>$datosf['destinoruta'],
+                            'foraneo_inicio'  =>$datosf['inicioruta'],                   
+                        ]);
+        
+                        // Obtener el ID del servicio recién creado
+                        $servicioIdreturn = $this->valoriidser->id;
+                        cotizacion_servicio::create([
+                            'cotizacion_id' => $cotizacionIdreturn,
+                            'servicio_id' => $servicioIdreturn,
+                            'status_cotizacion_servicio' => '1'
+                        ]);
+                    }
+                    foreach ($this->listaForaneosguarda as $concepto) {
+                        servicios_conceptos_foraneos::create([
+                            'concepto' => $concepto,
+                            'costo' => 0,
+                            'servicio_id' => $this->valoriidser->id,
+                        ]);
+                    }
+
+                }
                 });
 
                 $this->dispatch('success-cotizacion', ['La cotización se creó con éxito',$this->cot_id]);
@@ -351,5 +482,90 @@ class CrearTablaCotizacion extends Component
             $this->editarPrecio = "";
             $this->updatedPrecioUnitario();
         }
+    }
+    public function updatedCheckForaneo()
+    {
+        if($this->checkforaneo){
+            $this->foraneos = true;
+        }else{
+            $this->foraneos = false;
+        }
+       
+    }
+    public function updated($propertyName)
+    {
+        $this->propertyUpdated($propertyName);
+    }
+
+    public function propertyUpdated($propertyName)
+{
+    if($this->checkforaneo){
+    if ($propertyName === 'km' || $propertyName === 'costokm') {
+        $this->totalkmprecio = (float)$this->km * (float)$this->costokm;
+    }
+
+    if ($propertyName === 'miles' || $propertyName === 'milesprecio') {
+        $this->costomiles = (float)$this->miles * (float)$this->milesprecio;
+    }
+
+    if ($propertyName === 'iva' || $propertyName === 'costomiles' || $propertyName === 'totalkmprecio' || $propertyName === 'goperacion') {
+        $this->totaliva = ($this->iva / 100.0) * ($this->costomiles + $this->totalkmprecio + $this->goperacion);
+    }
+    
+    $this->sumatotal = $this->totaliva + $this->costomiles + $this->totalkmprecio + $this->goperacion;
+}
+}
+
+
+    public function agregarALista()
+    {
+        $this->validate([
+            'consepforaneo' => 'required',    
+        ], [
+            'consepforaneo.required' => 'El servivio es requerida.',  
+        ]);
+        if ($this->consepforaneo) {
+
+            $this->listaForaneos[] = $this->consepforaneo;
+            $this->listaForaneosguarda[] = $this->consepforaneo;
+            $this->consepforaneo = ''; // Limpiar el campo después de agregarlo a la lista
+        }
+    }
+    public function eliminarDeLista($index)
+    {
+        unset($this->listaForaneos[$index]);
+        unset($this->listaForaneosguarda[$index]);
+    }
+
+
+    public function crearServicioctg(){
+        $this->validate([
+            'folioctg' => 'required|unique:ctg_servicios,folio',
+            'tipoctg' => 'required',
+            'descripcionctg' => 'required',
+            'unidadctg' => 'required',
+        ], [
+            'folioctg.required' => 'El folio es requerido.',
+            'folioctg.unique' => 'El folio ya existe en la tabla de servicios.',
+            'tipoctg.required' => 'El tipo es requerido.',
+            'descripcionctg.required' => 'La descripción es requerida.',
+            'unidadctg.required' => 'La unidad es requerida.',
+        ]);
+        CtgServicios::create([
+            'folio' => $this->folioctg,
+            'tipo' => $this->tipoctg,
+            'descripcion' => $this->descripcionctg,
+            'unidad' => $this->unidadctg,
+            'status_servicio' => 1,
+        ]);
+        $this->folioctg = '';
+        $this->tipoctg = '';
+        $this->descripcionctg = '';
+        $this->unidadctg = '';
+        $this->servicios = ctg_servicios::all();
+        // Despachar el evento
+        $this->dispatch('successservicio', ['El servicio se creó con éxito']);
+        
+
     }
 }

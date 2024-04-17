@@ -60,6 +60,7 @@ class ClientesActivosController extends Controller
     
 
     public function detalle_cotizacion( Cotizacion $cotizacion){
+        //dd($cotizacion);
         return view('ventas.cotizacion-detalles', compact('cotizacion'));
     }
     

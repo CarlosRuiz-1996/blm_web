@@ -25,6 +25,12 @@
                         <li class="nav-item">
                             <a class="nav-link" id="custom-tabs-one-cotizacion-tab" data-toggle="pill" href="#custom-tabs-one-cotizacion" role="tab" aria-controls="custom-tabs-one-cotizacion" aria-selected="false">MEMORÁNDUM</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="custom-tabs-one-contratos-tab" data-toggle="pill" href="#custom-tabs-one-contratos" role="tab" aria-controls="custom-tabs-one-contratos" aria-selected="false">Generar Contrato</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="custom-tabs-one-consultacontrato-tab" data-toggle="pill" href="#custom-tabs-one-consultacontrato" role="tab" aria-controls="custom-tabs-one-consultacontrato" aria-selected="false">Consulta Contratos</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="card-body">
@@ -106,6 +112,10 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-one-contratos" role="tabpanel" aria-labelledby="custom-tabs-one-contratos-tab">
+                            <!--livewire tabla solicitudes-->
+                            @livewire('juridico.altacontratos')
                         </div>
                     </div>
                 </div>

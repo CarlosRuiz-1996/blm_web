@@ -10,5 +10,8 @@ class CtgServicios extends Model
     use HasFactory;
     protected $table = 'ctg_servicios';
 
-    
+    protected $fillable = [
+        'folio', 'tipo', 'descripcion', 'unidad',
+        // Agrega aquí cualquier otro campo que desees asignar masivamente
+    ];
 }

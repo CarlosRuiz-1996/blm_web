@@ -7,6 +7,6 @@ use Illuminate\Http\Request;
 class BovedaController extends Controller
 {
      public function index(){
-        return view('boveda.boveda-index');
+        return view('boveda.bovedaindex');
     }
 }
