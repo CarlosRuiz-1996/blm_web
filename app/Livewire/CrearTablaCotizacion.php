@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Cliente;
-use App\Models\cotizacion;
+use App\Models\Cotizacion;
 use App\Models\cotizacion_servicio;
 use App\Models\Ctg_Cp;
 use App\Models\Ctg_Estado;
@@ -339,7 +339,7 @@ class CrearTablaCotizacion extends Component
                         'status_cliente' => 0
                     ]);
 
-                    $this->valoridcoti = cotizacion::create([
+                    $this->valoridcoti = Cotizacion::create([
                         'total' => $this->totalreal,
                         'vigencia' => $this->vigencia,
                         'ctg_tipo_pago_id' => $this->condicionpago,

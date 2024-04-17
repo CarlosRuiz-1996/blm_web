@@ -34,7 +34,7 @@
 
         <div class="tab-content" wire:ignore.self id="custom-tabs-one-tabContent">
             <!-- Contenido de la pestaña "anexo1coti" -->
-            <div class="tab-pane fade " id="rutas-all" role="tabpanel" aria-labelledby="rutas-all-tab">
+            <div class="tab-pane fade show active" id="rutas-all" role="tabpanel" aria-labelledby="rutas-all-tab">
                 <div class="row">
 
                     <div class="col-md-12">
@@ -128,7 +128,7 @@
             </div>
 
             <!-- Contenido de la pestaña "anexo1coti" -->
-            <div class="tab-pane fade show active" id="servicios-new" role="tabpanel"
+            <div class="tab-pane fade " id="servicios-new" role="tabpanel"
                 aria-labelledby="servicios-new-tab">
                 <div class="row">
 
