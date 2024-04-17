@@ -301,23 +301,21 @@
 
 
             @if ($form->ruta_id && $form->ctg_ruta_dia_id)
-                
-                <x-input-validado label="Monto:"
-                                placeholder="Ingrese cargo del contacto de la sucursal"
-                                wire-model="form.monto" type="number" />
-                
-                                <x-input-validado label="Folio:"
-                                placeholder="Ingrese cargo del contacto de la sucursal"
-                                wire-model="form.folio" type="text" />
-                                
-                <x-input-validado label="Envases:"
-                placeholder="Ingrese cargo del contacto de la sucursal"
-                wire-model="form.envases" type="number" />
+                <x-input-validado label="Monto:" placeholder="Ingrese el monto." wire-model="form.monto"
+                    type="number" />
+
+                <x-input-validado label="Folio:" placeholder="Ingrese el folio." wire-model="form.folio"
+                    type="text" />
+
+                <x-input-validado label="Envases:" placeholder="Ingrese la cantidad de envases."
+                    wire-model="form.envases" type="number" />
             @endif
 
         @endif
 
-
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-info btn-block" wire:click="$dispatch('confirm',1)">Guardar</button>
+        </div>
     </x-adminlte-modal>
 
 
@@ -326,22 +324,29 @@
         <script>
             // detecto cuando cierra modal y limpio array
             $(document).ready(function() {
-                // $('#modalPendientes').on('hidden.bs.modal', function(event) {
-
-                //     if ($('#addServicioRuta').hasClass('show')) {                        
-                //     console.log('entra');
-                //         @this.dispatch('clean-servicios');
-                //     }else{
-                //         console.log('no entra'); 
-                //     }
-                // });
                 $('#addServicioRuta').on('hidden.bs.modal', function(event) {
                     @this.dispatch('clean-servicios');
                 });
             });
-
             document.addEventListener('livewire:initialized', () => {
+                @this.on('confirm', (opcion) => {
 
+                    Swal.fire({
+                        title: '¿Estas seguro?',
+                        text: opcion == 1 ? "El servicio se asignara a la ruta." :
+                            "",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, adelante!',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            @this.dispatch(opcion == 1 ? 'save-servicio-ruta' : 'save-servicios');
+                        }
+                    })
+                })
 
 
                 Livewire.on('agregar-ruta', function() {
@@ -349,9 +354,25 @@
                     $('#addServicioRuta').modal('show');
                 });
 
+                Livewire.on('success', function([message]) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: message[0],
+                        showConfirmButton: false,
+                        timer: 3000
 
+                    });
+                });
 
+                Livewire.on('error', function() {
 
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ha ocurrido un error, intenta nuevamente.',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
 
             });
         </script>
