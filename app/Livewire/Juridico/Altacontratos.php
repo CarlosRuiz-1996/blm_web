@@ -52,4 +52,25 @@ class Altacontratos extends Component
         
         return $busqueda;
     }
-}
+
+
+    public function generarpdf(){
+        try {
+            
+            $template = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('app/public/contratos/CONTRATO_BASE_COFRE.docx'));
+            $template->setValue('fecha_reg','priebas de fechas');
+            $tenpFile = tempnam(sys_get_temp_dir(),'PHPWord');
+            $template->saveAs($tenpFile);
+
+            $header = [
+                  "Content-Type: application/octet-stream",
+            ];
+
+            return response()->download($tenpFile, 'folio.docx', $header)->deleteFileAfterSend($shouldDelete = true);
+        
+        } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
+            //throw $th;
+            return back($e->getCode());
+        }
+    }
+    }

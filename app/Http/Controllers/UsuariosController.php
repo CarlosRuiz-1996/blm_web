@@ -28,9 +28,9 @@ class UsuariosController extends Controller
     public function store(Request $request)
     {
         $validate = $this->validate($request, [
-            'name' => ['required', 'string', 'max:255'],
-            'paterno' => ['required', 'string', 'max:255'],
-            'materno' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', 'trim', 'regex:/^[a-zA-Z\s]+$/'],
+            'paterno' => ['required', 'string', 'max:255', 'trim', 'regex:/^[a-zA-Z\s]+$/'],
+            'materno' => ['required', 'string', 'max:255', 'trim', 'regex:/^[a-zA-Z\s]+$/'],
             'email' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string', 'max:255'],
             'area' => ['required', 'string', 'max:255'],

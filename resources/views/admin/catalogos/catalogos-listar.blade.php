@@ -23,5 +23,7 @@
         <livewire:catalogos.rutas-riesgos />
     @elseif($op == 7)
         <livewire:catalogos.rutas-dias />
+    @elseif($op == 8)
+        <livewire:catalogos.contratos />
     @endif
 @stop

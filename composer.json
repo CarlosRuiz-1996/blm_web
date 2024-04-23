@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.8",
         "laravelcollective/html": "^6.4",
         "livewire/livewire": "^3.4",
+        "phpoffice/phpword": "^1.2",
         "spatie/laravel-permission": "^6.3",
         "wire-elements/modal": "^2.0"
     },

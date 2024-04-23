@@ -26,36 +26,51 @@
                                 <div class="col-md-4 mb-3">
                                     <div class="form-group">
                                         <label for="name">Nombre <label class="colorrojo">*</label></label>
-                                        <input type="text" class="form-control" name="name" required
+                                        <input type="text" class="form-control  @error('name') is-invalid @enderror" name="name" required
                                             placeholder="Ingrese su nombre">
+                                            @error('name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <div class="form-group">
                                         <label for="paterno">Apellido Paterno <label class="colorrojo">*</label></label>
-                                        <input type="text" class="form-control" name="paterno" required
+                                        <input type="text" class="form-control  @error('paterno') is-invalid @enderror" name="paterno" required
                                             placeholder="Ingrese su apellido paterno">
+                                            @error('paterno')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <div class="form-group">
                                         <label for="materno">Apellido Materno <label class="colorrojo">*</label></label>
-                                        <input type="text" class="form-control" name="materno" required
+                                        <input type="text" class="form-control @error('materno') is-invalid @enderror" name="materno" required
                                             placeholder="Ingrese su apellido materno">
-                                    </div>
+                                        @error('materno')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>                                    
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <div class="form-group">
                                         <label for="email">Correo Electrónico <label class="colorrojo">*</label></label>
-                                        <input type="email" class="form-control" name="email" required
+                                        <input type="email" class="form-control  @error('email') is-invalid @enderror" name="email" required
                                             placeholder="Ingrese su correo electrónico">
+                                            @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <div class="form-group">
                                         <label for="password">Contraseña <label class="colorrojo">*</label></label>
-                                        <input type="password" class="form-control" name="password" id="password" required
+                                        <input type="password" class="form-control  @error('password') is-invalid @enderror" name="password" id="password" required
                                             placeholder="Ingrese su contraseña">
+                                            @error('password')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
@@ -77,6 +92,9 @@
 
 
                                         </select>
+                                        @error('area')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                     </div>
                                 </div>
 
@@ -88,6 +106,9 @@
                                                 <option value="{{ $role->id }}">{{ $role->name }}</option>
                                             @endforeach
                                         </select>
+                                        @error('roles')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">

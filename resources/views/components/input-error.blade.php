@@ -12,5 +12,7 @@
 @props(['for'])
 
 @error($for)
-    <p {{ $attributes->merge(['class' => 'alert alert-danger custom-alert']) }}>{{ $message }}</p>
+    <div class="alert alert-danger custom-alert" role="alert">
+        {{ $message }}
+    </div>
 @enderror
