@@ -12,7 +12,7 @@ use App\Models\ctg_precio_servicio;
 use App\Models\ctg_servicios;
 use App\Models\Ctg_Tipo_Cliente;
 use App\Models\CtgServicios;
-use App\Models\servicios;
+use App\Models\Servicios;
 use App\Models\servicios_conceptos_foraneos;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -355,7 +355,7 @@ class CrearTablaCotizacion extends Component
                     if(empty($this->dataforaneo)){
                     foreach ($this->data as $datos) {
                         // Realizar la inserción en la base de datos
-                        $this->valoriidser = servicios::create([
+                        $this->valoriidser = Servicios::create([
                             'precio_unitario' => $datos['preciounitario'],
                             'cantidad' => $datos['cantidad'],
                             'subtotal' => $datos['total'],
@@ -375,7 +375,7 @@ class CrearTablaCotizacion extends Component
                 }else{
                     foreach ($this->dataforaneo as $datosf) {
                         // Realizar la inserción en la base de datos
-                        $this->valoriidser = servicios::create([
+                        $this->valoriidser = Servicios::create([
                             'precio_unitario' => $datosf['sumatotal'],
                             'cantidad' => 1,
                             'subtotal' => $datosf['sumatotal'],
