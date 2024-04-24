@@ -32,7 +32,8 @@ class RoleController extends Controller
     {
         
         Role::create(['name'=>$request->input('rol')]);
-        
+        app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
         return redirect()->back()->with('success', 'Rol se creo con exito!');
 
     }

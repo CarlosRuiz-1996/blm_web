@@ -18,12 +18,12 @@ class RutaList extends Component
     #[On('render-rutas')]
     public function render()
     {
-        $rutas = $this->form->getAllRutas();
         $clientes = $this->form->getAllServicios();
         $servicio_new = $this->form->getNewServicio();
         $dias = $this->form->getAllDias();
         $news = $this->form->countServiciosNews();
-        return view('livewire.operaciones.ruta-list', compact('rutas', 'clientes', 'servicio_new', 'news', 'dias'));
+        
+        return view('livewire.operaciones.ruta-list', compact( 'clientes', 'servicio_new', 'news', 'dias'));
     }
 
 
@@ -34,6 +34,7 @@ class RutaList extends Component
     {
         $this->reset('servicios');
         $this->servicios = $this->form->DetalleServicioCliente($cliente);
+        // dd($this->servicios);
     }
 
 
