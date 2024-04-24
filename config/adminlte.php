@@ -403,7 +403,7 @@ return [
             'text' => 'RH',
             'route'  => 'rh.index',
             'icon' => 'fas fa-fw fa-users',
-            'can'=>'menu-seguridad'
+            'can'=>'menu-rh'
         ],
         // [
         //     'text'    => 'Configuracion',

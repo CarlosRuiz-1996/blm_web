@@ -15,7 +15,7 @@
     @can('menu-juridico') permiso admin-juridico
     @endcan
 
-    @if(auth()->user()->can('menu-juridico') && $some_other_condition)
+    @if(auth()->user()->can('menu-juridico') )
   permiso admin-juridico2
 @endif
 @stop
