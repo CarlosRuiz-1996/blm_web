@@ -18,7 +18,6 @@ class RutaList extends Component
     #[On('render-rutas')]
     public function render()
     {
-        $rutas = $this->form->getAllRutas();
         $clientes = $this->form->getAllServicios();
         $servicio_new = $this->form->getNewServicio();
         $rutasdiasiguiente= $this->form->getIdDiaSiguiente();
@@ -40,6 +39,7 @@ class RutaList extends Component
     {
         $this->reset('servicios');
         $this->servicios = $this->form->DetalleServicioCliente($cliente);
+        // dd($this->servicios);
     }
 
 

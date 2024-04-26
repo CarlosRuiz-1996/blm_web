@@ -120,15 +120,10 @@ class RutaForm extends Form
     }
     public function DetalleServicioCliente(Cliente $cliente)
     {
-        // return Servicios::whereHas('ruta_servicios', function ($query) use ($cliente) {
-        //     $query->where('cliente_id', $cliente->id)
-        //         ->where('status_servicio', '>', 2);
-        // })
-        // ->get();
 
         return Servicios::with('ruta_servicios')
             ->where('cliente_id', $cliente->id)
-            ->where('status_servicio', '>', 2)
+            ->where('status_servicio', '=', 3)
             ->where(function ($query) {
                 $query->whereHas('ruta_servicios')
                     ->orWhereDoesntHave('ruta_servicios');
@@ -138,12 +133,23 @@ class RutaForm extends Form
 
     public function getNewServicio()
     {
-        // return Servicios::where('status_servicio','=',3)->get();
-        return Cliente::withCount('servicios')
-            ->whereHas('servicios', function ($query) {
-                $query->where('status_servicio', '=', 3);
-            })
-            ->get();
+        // return Cliente::withCount('servicios')
+        //     ->whereHas('servicios', function ($query) {
+        //         $query->where('status_servicio','=', 3);
+        //     })
+        //     ->get();
+
+        return  Cliente::whereHas('servicios', function ($query) {
+            $query->where('status_servicio', '=', 3);
+        })
+        ->with(['servicios' => function ($query) {
+            $query->where('status_servicio', '=', 3);
+        }])
+        ->withCount(['servicios' => function ($query) {
+            $query->where('status_servicio', '=', 3);
+        }])
+        ->get();
+        
     }
 
     public function countServiciosNews()
@@ -155,6 +161,10 @@ class RutaForm extends Form
     public function getAllDias()
     {
         return CtgRutaDias::all();
+    }
+
+    public function getNextRutas(){
+        // return Ruta::where()->get();
     }
 
     public function boveda()

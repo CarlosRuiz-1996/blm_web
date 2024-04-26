@@ -101,7 +101,7 @@
 
             <!-- Contenido de la pestaña "Otra Pestaña 2" -->
             <div class="tab-pane fade" id="rutas-dia" role="tabpanel" aria-labelledby="rutas-dia-tab">
-                <div class="row">
+                
 
                     <div class="col-md-12">
                         <div class="card card-outline card-info">
