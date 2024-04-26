@@ -21,10 +21,16 @@ class RutaList extends Component
         $rutas = $this->form->getAllRutas();
         $clientes = $this->form->getAllServicios();
         $servicio_new = $this->form->getNewServicio();
+        $rutasdiasiguiente= $this->form->getIdDiaSiguiente();
         $dias = $this->form->getAllDias();
         $news = $this->form->countServiciosNews();
-        return view('livewire.operaciones.ruta-list', compact('rutas', 'clientes', 'servicio_new', 'news', 'dias'));
+        return view('livewire.operaciones.ruta-list', compact('rutas', 'clientes', 'servicio_new', 'news', 'dias','rutasdiasiguiente'));
     }
+    public function filtrarRutas()
+{
+    $this->dispatch('render-rutas');
+}
+    
 
 
 

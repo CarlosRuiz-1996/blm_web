@@ -42,6 +42,7 @@ class CumplimientoAtendidas extends Component
         ->join('expediente_digital as exp', 'exp.id', '=', 'cmp.expediente_digital_id')
         ->join('clientes as cl', 'cl.id', '=', 'exp.cliente_id')
         ->where('cmp.status_cumplimiento', 3) // Agrega la condición WHERE
+        ->orderBy('cmp.fecha_dictamen', 'desc') // Ordena por fecha_dictamen de manera descendente
         ->get();
 }
 

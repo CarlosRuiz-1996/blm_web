@@ -20,7 +20,7 @@
                     <div class="form-group">
                         <label for="nombrecliente">Nombre Cliente:</label>
                         <input type="text" class="form-control" id="nombrecliente"
-                            placeholder="Ingrese nombre de cliente a buscar" wire:model.live="nombrecliente"
+                            placeholder="Ingrese nombre de cliente a buscar" wire:model.live.debounce.200ms="nombrecliente"
                             autocomplete="off" />
                         @if (count($sugerencias) > 0)
                             <div class="list-group mt-2">

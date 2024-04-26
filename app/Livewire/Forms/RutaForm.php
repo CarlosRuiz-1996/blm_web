@@ -27,6 +27,7 @@ class RutaForm extends Form
     public $ctg_ruta_dia_id;
     public $ctg_rutas_riesgo_id;
     public $ctg_rutas_estado_id;
+    public $diasfiltro;
 
     //para poder guardardar el model de la ruta
     public $ruta;
@@ -64,8 +65,49 @@ class RutaForm extends Form
 
     public function getAllRutas()
     {
-        return Ruta::all();
+        if ($this->diasfiltro != 0 && $this->diasfiltro != "") {
+            return Ruta::where('ctg_ruta_dia_id', $this->diasfiltro)->get();
+        } else {
+            return Ruta::all();
+        }
     }
+    public function getIdDiaSiguiente()
+        {
+            // Obtener el día actual en español
+            $nombreDiaActual = strtolower(date('l')); // 'l' devuelve el nombre completo del día en inglés
+
+            // Array con los nombres de los días en español
+            $diasSemana = [
+                'sunday' => 'domingo',
+                'monday' => 'lunes',
+                'tuesday' => 'martes',
+                'wednesday' => 'miércoles',
+                'thursday' => 'jueves',
+                'friday' => 'viernes',
+                'saturday' => 'sábado'
+            ];
+
+            // Obtén el nombre del día actual en español
+            $nombreDiaActual = $diasSemana[$nombreDiaActual];
+
+            // Encuentra el índice del día actual en el array
+            $indiceDiaActual = array_search($nombreDiaActual, array_values($diasSemana));
+
+            // Incrementa el índice en 1 para obtener el índice del día siguiente (teniendo en cuenta el ciclo circular)
+            $indiceDiaSiguiente = ($indiceDiaActual + 1) % 7;
+
+            // Obtiene el nombre del día siguiente
+            $nombreDiaSiguiente = array_keys($diasSemana)[$indiceDiaSiguiente];
+
+            // Busca en el array de nombres de días en inglés el nombre del día siguiente y obtén su traducción en español
+            $nombreDiaSiguienteEspañol = strtoupper($diasSemana[$nombreDiaSiguiente]);
+
+            // Busca en la tabla de días el registro que coincida con el nombre del día siguiente y obtén su ID
+            $diaSiguiente = CtgRutaDias::where('name', $nombreDiaSiguienteEspañol)->first();
+            $idDiaSiguiente = $diaSiguiente->id;
+
+            return Ruta::where('ctg_ruta_dia_id', $idDiaSiguiente)->get();
+        }
 
     //para todos los servicios listo los clientes y despues los servicios de cada cliente.
     public function getAllServicios()

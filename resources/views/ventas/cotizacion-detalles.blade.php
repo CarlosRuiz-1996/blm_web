@@ -39,9 +39,13 @@
                     @foreach ($cotizacion->cotizacion_servicio as $servicio)
                         @if ($servicio->servicio->servicio_foraneo == 1)
                              @php $valorcolspan = "6"; @endphp
+                             @php $totallleva = $servicio->servicio->montotransportar_foraneo; @endphp
                             @php $mostrarTablaNormal = false; @endphp
                             <div class="alert alert-warning" role="alert">
                                 Este servicio es foráneo.
+                            </div>
+                            <div class="alert alert-success text-center" role="alert">
+                                {{ number_format($totallleva, 2, '.', ',') }}
                             </div>
                             <!-- Aquí puedes mostrar tu otra tabla para servicios foráneos -->
                             <!-- Agrega el código para la tabla de servicios foráneos aquí -->
@@ -71,6 +75,15 @@
                                         <td>${{ $servicio->servicio->iva }}</td>
                                         @php $total += $servicio->servicio->subtotal; @endphp
                                     </tr>
+                                    @if($servicio->servicio->conceptosForaneos)
+                                    @foreach ($servicio->servicio->conceptosForaneos as $concepto)
+                    <tr>
+                        <td colspan="4" style="background-color: gray; color: white; ">Concepto</td>
+                        <td colspan="3">{{ $concepto->concepto }}</td>
+                        <td>{{ $concepto->costo }}</td>
+                    </tr>
+                @endforeach
+                                    @endif
                         @endif
                         @if ($mostrarTablaNormal)
                             <table class="table table-bordered" width="100%" cellspacing="0" style="font-size:100%">

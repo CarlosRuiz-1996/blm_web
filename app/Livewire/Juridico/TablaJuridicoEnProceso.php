@@ -34,6 +34,7 @@ class TablaJuridicoEnProceso extends Component
         ->join('expediente_digital as exp', 'exp.id', '=', 'cmp.expediente_digital_id')
         ->join('clientes as cl', 'cl.id', '=', 'exp.cliente_id')
         ->where('cmp.status_juridico', 2) // Agrega la condición WHERE
+        ->orderBy('exp.fecha_solicitud', 'desc') // Ordena por fecha_dictamen de manera descendente
         ->get();
 }
 

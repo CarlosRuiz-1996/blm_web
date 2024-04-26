@@ -39,9 +39,27 @@
 
                     <div class="col-md-12">
                         <div class="card card-outline card-info">
-
                             <div class="card-body">
                                 <div class="table-responsive">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <x-select-validado label="Dia:" placeholder="Seleccione el dia"
+                                                wire-model="form.diasfiltro" required>
+                                                @if ($dias)
+                                                @foreach ($dias as $dia)
+                                                    <option value="{{ $dia->id }}">{{ $dia->name }}
+                                                    </option>
+                                                @endforeach
+                                            @else
+                                                <option value="">Esperando...</option>
+                                            @endif
+                                            </x-select-validado>
+                                        </div>
+                                        <div class="col-md-4  mt-3">
+                                            <button class="btn btn-info btn-block  mt-3" wire:click='filtrarRutas()'>Filtrar</button>
+                                        </div>
+                                        
+                                    </div>
                                     <table class="table">
                                         <thead class="table-primary">
                                             <tr>
@@ -93,30 +111,31 @@
                                     <table class="table">
                                         <thead class="table-primary">
                                             <tr>
-                                                <th>Id</th>
-                                                <th>Razon Social</th>
-                                                <th>RFC</th>
-                                                <th>Contacto</th>
-                                                <th>Fecha de Solicitud</th>
+                                                <th>ID</th>
+                                                <th>Nombre</th>
+                                                <th>Dia</th>
+                                                <th>Riesgo</th>
+                                                <th>Estado</th>
+                                                <th>Hora Inicio</th>
+                                                <th>Hora Finalización</th>
                                                 <th>Opciones</th>
                                             </tr>
                                         </thead>
-                                        {{-- <tbody>
-                                            @foreach ($terminadas as $solicitud)
-                                            <td>{{ $solicitud->id }}</td>
-                                            <td>{{ $solicitud->cliente->razon_social }}</td>
-                                            <td>{{ $solicitud->cliente->rfc_cliente }}</td>
-                                            <td>{{ $solicitud->cliente->user->name .
-                                                ' ' .
-                                                $solicitud->cliente->user->paterno .
-                                                ' ' .
-                                                $solicitud->cliente->user->materno }}
-                                            </td>
-                                            <td>{{ $solicitud->updated_at }}</td>
-                                            <td>
-                                                pdf
-                                            </td>
-                                        @endforeach --}}
+                                        <tbody>
+                                            @foreach ($rutasdiasiguiente as $rutasigui)
+                                            <tr>
+                                                <td>{{ $rutasigui->id }}</td>
+                                                <td>{{ $rutasigui->nombre->name }}</td>
+                                                <td>{{ $rutasigui->dia->name }}</td>
+                                                <td>{{ $rutasigui->riesgo->name }}</td>
+                                                <td>{{ $rutasigui->estado->name }}</td>
+                                                <td>{{ $rutasigui->hora_inicio }}</td>
+                                                <td>{{ $rutasigui->hora_fin }}</td>
+                                                <td>
+                                                    <a href="{{ route('ruta.gestion', [2, $rutasigui]) }}">Detalles</a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                         </tbody>
                                     </table>
                                 </div>

@@ -360,28 +360,35 @@
                              </div>
                              
                                 <!--conceptos foraneos-->
-                                <div class="col-md-8 mb-3" {{ $foraneos ? '' : 'hidden' }}>
+                                <div class="col-md-5 mb-3" {{ $foraneos ? '' : 'hidden' }}>
                                     <x-input-validado label="Servicios:" :readonly="false"
                                         placeholder="Ingrese el servicio" wire-model="consepforaneo"
                                         wire-attribute="consepforaneo" type="text" />
                                 </div>
-                                <div class="col-md-4 mb-3 mt-2" {{ $foraneos ? '' : 'hidden' }}>
+                                <div class="col-md-5 mb-3" {{ $foraneos ? '' : 'hidden' }}>
+                                    <x-input-validado label="Costo:" :readonly="false"
+                                        placeholder="Ingrese el costo" wire-model="precioconsepforaneo"
+                                        wire-attribute="precioconsepforaneo" type="number" step="any" />
+                                </div>
+                                <div class="col-md-2 mb-3 mt-2" {{ $foraneos ? '' : 'hidden' }}>
                                     <button type="button" wire:click="agregarALista" class="btn btn-primary btn-block mt-4"><i class="fas fa-plus"></i></button>
                                 </div>
                                  <!-- Lista de elementos en formato de tabla -->
                                  @if (count($listaForaneos) > 0)
                                  <div class="col-md-12 mb-3 mt-2" {{ $foraneos ? '' : 'hidden' }}>
                                     <table class="table">
-                                        <thead class="table-info text-center">
+                                        <thead class="table-info">
                                             <tr>
-                                                <th class="col-md-10">Conceptos</th>
+                                                <th class="col-md-8">Conceptos</th>
+                                                <th class="col-md-2">Costo</th>
                                                 <th class="col-md-2">Eliminar</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($listaForaneos as $index => $item)
                                             <tr>
-                                                <td>{{ $item }}</td>
+                                                <td>{{ $item['consepforaneo'] }}</td>
+                                                <td>{{ $item['precioconsepforaneo'] }}</td>
                                                 <td>
                                                     <button wire:click="eliminarDeLista({{ $index }})" class="btn btn-danger btn-block">
                                                         <i class="fas fa-trash"></i>
@@ -389,10 +396,21 @@
                                                 </td>
                                             </tr>
                                             @endforeach
-                                        </tbody>
+                                        </tbody>                                        
                                     </table>                                    
                                 </div>
                                 @endif
+                                <div {{ $foraneos ? '' : 'hidden' }} class="col-md-12 mb-3">
+                                    <x-input-validado label="Costo total servicios:" :readonly="true"
+                                    placeholder="Calculando costo total de servicios" wire-model="costototalservicios"
+                                    wire-attribute="costototalservicios" type="number" step="any" />
+                                </div>
+                                <div {{ $foraneos ? '' : 'hidden' }} class="col-md-12 mb-3">
+                                    <x-input-validado label="Cantidad Servicio:" :readonly="false"
+                                    placeholder="Ingrese cantidad que llevara el servicio" wire-model="cantidadlleva"
+                                    wire-attribute="cantidadlleva" type="number" step="any" />
+                                </div>
+                                
                                 <!--fin concetos foraneos-->
                              <div {{ $foraneos ? '' : 'hidden' }} class="col-md-6 mb-3">
                                 <x-input-validado label="Inicio:" :readonly="false"
@@ -439,22 +457,26 @@
                                     placeholder="Ingrese la cantidad de G/Operacion" wire-model="goperacion"
                                     wire-attribute="goperacion" type="number" />
                             </div>
-                            <div {{ $foraneos ? '' : 'hidden' }} class="col-md-4 mb-3">
-                                <x-input-validadolive label="Iva:" :readonly="false"
+                            <div {{ $foraneos ? '' : 'hidden' }} class="col-md-2 mb-3">
+                                <x-input-validadolive label="IVA:" :readonly="false"
                                     placeholder="Ingrese la cantidad de Iva" wire-model="iva"
                                     wire-attribute="iva" type="number" />
                             </div>
-                            <div {{ $foraneos ? '' : 'hidden' }} class="col-md-4 mb-3">
-                                <x-input-validado label="Total Iva:" :readonly="true"
+                            <div {{ $foraneos ? '' : 'hidden' }} class="col-md-2 mb-3">
+                                <x-input-validado label="Total IVA:" :readonly="true"
                                     placeholder="Ingrese la cantidad de Iva" wire-model="totaliva"
                                     wire-attribute="totaliva" type="number" />
+                            </div>
+                            <div {{ $foraneos ? '' : 'hidden' }} class="col-md-4 mb-3">
+                                <x-input-validado label="Subtotal:" :readonly="true"
+                                    placeholder="calculando subtotal" wire-model="subtotalforaneo"
+                                    wire-attribute="subtotalforaneo" type="number" />
                             </div>
                             <div {{ $foraneos ? '' : 'hidden' }} class="col-md-12 mb-3">
                                 <x-input-validado label="Total:" :readonly="true"
                                 placeholder="Calculando total" wire-model="sumatotal"
                                 wire-attribute="sumatotal" type="number" />
                             </div>
-                            
                         </div>
                         </form>
                     </div>

@@ -2,27 +2,44 @@
 
 namespace App\Livewire\Boveda;
 
+use App\Livewire\Operaciones\RutaGestion;
+use App\Models\Ruta;
+use App\Models\RutaServicio;
 use App\Models\Servicios;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class Index extends Component
 {
-public $servicios;
-    public function mount()
-    {
-        $this->servicios = DB::table('ruta_servicios as rs')
-        ->join('servicios as ser', 'ser.id', '=', 'rs.servicio_id')
-        ->join('rutas as rut', 'rut.id', '=', 'rs.ruta_id')
-        ->join('ctg_servicios as ctgser', 'ctgser.id', '=', 'ser.ctg_servicios_id')
-        ->join('ctg_rutas as ctgrut', 'ctgrut.id', '=', 'rut.ctg_rutas_id')
-        ->select('rs.*', 'ser.*', 'rut.*', 'ctgser.*', 'ctgrut.*')
-        ->get();
-        
-        return view('livewire.boveda.index');
-    }
+    public $serviciosRuta;
     public function render()
     {
-        return view('livewire.boveda.index');
+        $servicios = Ruta::where('ctg_rutas_estado_id', 2)->paginate(10);
+        return view('livewire.boveda.index',compact('servicios'));
+    }
+
+    public function llenarmodalservicios($idruta){
+        $this->serviciosRuta=RutaServicio::where('ruta_id', $idruta)->get();
+    }
+    public function cargar($idservicio)
+    {
+        $servicioRuta = RutaServicio::where('servicio_id', $idservicio)->first();
+
+        if ($servicioRuta) {
+            $servicioRuta->update(['status_ruta_servicios' => 2]);
+            $this->llenarmodalservicios($servicioRuta->ruta_id); // Actualiza los datos
+        }
+    }
+
+    public function cancelarCargar($idservicio)
+    {
+        $servicioRuta = RutaServicio::where('servicio_id', $idservicio)->first();
+
+        if ($servicioRuta) {
+            $servicioRuta->update(['status_ruta_servicios' => 1]);
+            $this->llenarmodalservicios($servicioRuta->ruta_id); // Actualiza los datos
+        }
     }
 }
+
+

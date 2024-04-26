@@ -25,11 +25,9 @@
                                 <hr>
                             </div>
                             <div class="col-md-12 mb-3">
-                                <x-select-validado label="Tipo de cliente:" placeholder="Seleccione"
-                                    wire-model="ctg_tipo_cliente_id" required>
-                                    <!--@foreach ($tipoClientelist as $ctg)
-                                        <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
-                                    @endforeach-->
+                                <x-select-validado label="Tipo de contrato:" placeholder="Seleccione"
+                                    wire-model="ctg_tipocontrato" required>
+                                        <option value=""></option>
                                 </x-select-validado>
                             </div>
 

@@ -49,7 +49,7 @@
                 @foreach ($cumplimentovalidado as $resultado)
                     <tr>
                         <td class="text-justify">{{ $resultado->name }}</td>
-                        <td class="text-center"><b>{{ $resultado->status_cumplimiento_aceptado == 1 ? 'X' : '' }}</b>
+                        <td class="text-center"><b>{{ $resultado->status_cumplimiento_aceptado == 1 ? 'SI' : 'NO' }}</b>
                         </td>
                     </tr>
                 @endforeach

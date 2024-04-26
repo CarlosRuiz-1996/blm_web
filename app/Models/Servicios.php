@@ -11,7 +11,7 @@ class Servicios extends Model
     protected $table = 'servicios';
     protected $fillable = [
          'precio_unitario','cantidad','subtotal','ctg_precio_servicio_id','ctg_servicios_id',
-         'servicio_especial','status_servicio','kilometros','kilometros_costo', 'miles', 'miles_costo', 'servicio_foraneo', 'gastos_operaciones', 'iva', 'cliente_id','foraneo_inicio','foraneo_destino'
+         'servicio_especial','status_servicio','kilometros','kilometros_costo', 'miles', 'miles_costo', 'servicio_foraneo', 'gastos_operaciones', 'iva', 'cliente_id','foraneo_inicio','foraneo_destino','montotransportar_foraneo'
      ];
      
      public function ctg_servicio()
@@ -52,5 +52,9 @@ class Servicios extends Model
      public function ruta_servicio()
      {
          return $this->hasOne(RutaServicio::class, 'servicio_id');
+     }
+     public function conceptosForaneos()
+     {
+         return $this->hasMany(servicios_conceptos_foraneos::class, 'servicio_id');
      }
 }

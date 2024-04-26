@@ -19,52 +19,89 @@
                 <table class="table">
                     <thead class="table-info">
                         <tr>
-                            <th class="col-md-2">Servicios</th>
-                            <th class="col-md-1">Estatus</th>
-                            <th class="col-md-2 text-center">Entrega</th>
-                            <th class="col-md-2 text-center">Recoleccion</th>
-                            <th class="col-md-2">Cantidad Entrega</th>
-                            <th class="col-md-2">Cantidad Recoleccion</th>  
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Dia</th>
+                            <th>Riesgo</th>
+                            <th>Estado</th>
+                            <th>Hora Inicio</th>
+                            <th>Hora Finalización</th>
+                            <th>Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($servicios as $servicio)
+                        @foreach ($servicios as $ruta)
                             <tr>
-                                <td>{{ $servicio->descripcion }}</td>
+                                <td>{{ $ruta->id }}</td>
+                                <td>{{ $ruta->nombre->name }}</td>
+                                <td>{{ $ruta->dia->name }}</td>
+                                <td>{{ $ruta->riesgo->name }}</td>
+                                <td>{{ $ruta->estado->name }}</td>
+                                <td>{{ $ruta->hora_inicio }}</td>
+                                <td>{{ $ruta->hora_fin }}</td>
                                 <td>
-                                    @if ($servicio->status_ruta_servicios == 1)
-                                        <span class="text-primary">En proceso</span>
-                                    @elseif ($servicio->status_ruta_servicios == 2)
-                                        <span class="text-warning">En ruta</span>
-                                    @elseif ($servicio->status_ruta_servicios == 3)
-                                        <span class="text-success">Finalizado</span>
-                                    @endif
-                                </td>                                
-                                <td class="text-success text-center">
-                                    @if ($servicio->tipo_servicio == 1 || $servicio->tipo_servicio == 3)
-                                        <i class="fas fa-check"></i>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    @if ($servicio->tipo_servicio == 2 || $servicio->tipo_servicio == 3)
-                                        <i class="fas fa-check"></i>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($servicio->tipo_servicio == 1 || $servicio->tipo_servicio == 3)
-                                    {{ $servicio->monto }}
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($servicio->tipo_servicio == 2 || $servicio->tipo_servicio == 3)
-                                    {{ $servicio->monto }}
-                                    @endif
+                                    <a href="#" data-toggle="modal" data-target="#detalleModal" wire:click='llenarmodalservicios({{$ruta->id}})'>Detalles</a>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>                              
                 </table>
        </div> 
+       {{ $servicios->links() }}
     </div>  
     </div>
+    <div class="modal fade" id="detalleModal" tabindex="-1" role="dialog" aria-labelledby="detalleModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalleModalLabel">Detalles de la Ruta</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="table-info">
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>Dirección</th>
+                                    <th>Llaves</th>
+                                    <th>Servicio</th>
+                                    <th>Tipo Servicio</th>
+                                    <th>Monto</th>
+                                    <th>¿ Cargado ?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if($serviciosRuta)
+                                @foreach ($serviciosRuta as $rutaserv)
+                                    <tr>
+                                        <td>{{ $rutaserv->servicio->cliente->razon_social }}</td>
+                                        <td>Direccion</td>
+                                        <td></td>
+                                        <td>{{ $rutaserv->servicio->ctg_servicio->descripcion }}</td>
+                                        <td>{{ $rutaserv->tipo_servicio == 1 ? 'Entrega' : 'Recolección' }}</td>
+                                        <td>$ {{ number_format($rutaserv->monto, 2, '.', ',') }}</td>
+                                        <td> 
+                                            @if($rutaserv->status_ruta_servicios==1)
+                                            <button wire:click="cargar({{ $rutaserv->servicio_id }})" class="btn btn-primary">Si</button>
+                                           @else
+                                            <button wire:click="cancelarCargar({{ $rutaserv->servicio_id }})" class="btn btn-primary">descargar</button>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @endif
+                            </tbody>                              
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </div>

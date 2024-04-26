@@ -11,4 +11,9 @@ class servicios_conceptos_foraneos extends Model
     protected $fillable = [
         'concepto', 'costo', 'servicio_id'
     ];
+
+    public function servicio()
+    {
+        return $this->belongsTo(Servicios::class, 'servicio_id');
+    }
 }

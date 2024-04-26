@@ -101,15 +101,20 @@
             <div class="col-md-11 col-11">
                 @php $valorcolspan = "4"; @endphp
                 @php $total = 0; @endphp
+                @php $totalforaneosconcepto = 0; @endphp
                 @php $mostrarTablaNormal = true; @endphp
 
                 <!-- Mostrar alerta si hay servicios foráneos -->
                 @foreach ($cotizacion->cotizacion_servicio as $servicio)
                 @if ($servicio->servicio->servicio_foraneo == 1)
+                @php $totallleva = $servicio->servicio->montotransportar_foraneo; @endphp
                 @php $valorcolspan = "2"; @endphp
                 @php $mostrarTablaNormal = false; @endphp
                 <div class="alert alert-warning" role="alert">
                     Este servicio es foráneo.
+                </div>
+                <div class="alert alert-success text-center" role="alert">
+                    {{ number_format($totallleva, 2, '.', ',') }}
                 </div>
                 @break
                 <!-- Salir del bucle después de encontrar el primer servicio foráneo -->
@@ -123,14 +128,15 @@
                 <table class="table table-bordered" style="margin-top: 15px; font-size: 8px;">
                     <thead>
                         <tr>
-                            <th colspan="4" class="text-center text-uppercase">Destino : {{ $servicio->servicio->foraneo_inicio }} A {{
+                            <th colspan="4" class="text-center text-uppercase">Destino : {{
+                                $servicio->servicio->foraneo_inicio }} A {{
                                 $servicio->servicio->foraneo_destino }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr style="background-color: #a9a9a9;">
                             <td colspan="2">CONCEPTO</td>
-                           
+
                             <td>PRECIO UNITARIO</td>
                             <td>TOTAL</td>
                         </tr>
@@ -139,7 +145,7 @@
                             <td>{{$servicio->servicio->kilometros}}</td>
                             <td>${{$servicio->servicio->kilometros_costo}}</td>
                             <td>${{ ($servicio->servicio->kilometros_costo * $servicio->servicio->kilometros) }}</td>
-                            
+
                         </tr>
                         <tr>
                             <td>MILES</td>
@@ -153,15 +159,28 @@
                             <td>${{ $servicio->servicio->gastos_operaciones }}</td>
                             <td>${{ $servicio->servicio->gastos_operaciones }}</td>
                         </tr>
-                        <tr>                            
+
+                        @if($servicio->servicio->conceptosForaneos)
+                        @foreach ($servicio->servicio->conceptosForaneos as $concepto)
+                        <tr>
+                            <td colspan="2">{{ $concepto->concepto }}</td>
+                            <td>${{ $concepto->costo }}</td>
+                            <td>${{ $concepto->costo }}</td>
+                        </tr>
+                        @php $totalforaneosconcepto += $concepto->costo; @endphp
+                        @endforeach
+                        @endif
+                        <tr>
                             <td colspan="4"></td>
                         </tr>
                         <tr>
                             <td colspan="2"></td>
                             <td style="background-color: #a9a9a9;">Subtotal</td>
-                            <td>{{($servicio->servicio->kilometros_costo * $servicio->servicio->kilometros)+ ($servicio->servicio->miles_costo * $servicio->servicio->miles)+ ($servicio->servicio->gastos_operaciones )}}</td>
+                            <td>{{($servicio->servicio->kilometros_costo * $servicio->servicio->kilometros)+
+                                ($servicio->servicio->miles_costo * $servicio->servicio->miles)+
+                                ($servicio->servicio->gastos_operaciones+$totalforaneosconcepto )}}</td>
                         </tr>
-                        <tr>  
+                        <tr>
                             <td colspan="2"></td>
                             <td style="background-color: #a9a9a9;">I.V.A.</td>
                             <td>${{ $servicio->servicio->iva }}</td>
@@ -219,7 +238,7 @@
         </div>
 
 
-        <p class=" text-center mt-5" style="font-size: 10px;"> ESTOS PRECIOS SON MAS DE 16% DE IVA</p>
+        <p class=" text-center mt-1" style="font-size: 10px;"> ESTOS PRECIOS SON MAS DE 16% DE IVA</p>
         <div class="row">
             <div class="col-md-11 col-11">
                 <table class="table table-bordered" style="margin-top: 15px; font-size: 8px;">

@@ -18,6 +18,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\Attributes\On;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class CrearTablaCotizacion extends Component
 {
@@ -89,6 +90,10 @@ class CrearTablaCotizacion extends Component
     public $descripcionctg;
     public $unidadctg;
     public $bloqser;
+    public $precioconsepforaneo;
+    public $costototalservicios;
+    public $cantidadlleva;
+    public $subtotalforaneo;
 
 
     public function mount()
@@ -113,9 +118,12 @@ class CrearTablaCotizacion extends Component
         $this->milesprecio = 0.0;
         $this->costomiles = 0.0;
         $this->goperacion = 0.0;
-        $this->iva = 0.0;
+        $this->iva = 16;
         $this->totaliva = 0.0;
         $this->sumatotal = 0.0;
+        $this->costototalservicios=0.0;
+        $this->cantidadlleva=0.0;
+        $this->subtotalforaneo=0.0;
     }
 
     public function render()
@@ -210,6 +218,7 @@ class CrearTablaCotizacion extends Component
             'iva' => 'required',
             'totaliva' => 'required',
             'sumatotal' => 'required',
+            'cantidadlleva' => 'required',
         ]);
         if(count($this->listaForaneosguarda)>0){
         $this->dataforaneo[] = [
@@ -226,6 +235,7 @@ class CrearTablaCotizacion extends Component
             'iva' => $this->iva,
             'totaliva' => $this->totaliva,
             'sumatotal' => $this->sumatotal,
+            'cantidadlleva' =>$this->cantidadlleva,
         ];
         $this->totalreal = $this->sumatotal;
         $this->bloqser = true;
@@ -267,6 +277,7 @@ class CrearTablaCotizacion extends Component
         $this->totaliva = 0.0;
         $this->sumatotal = 0.0;
         $this->listaForaneos=[];
+        $this->cantidadlleva=0.0;
     }
     public $cot_id=0;
     #[On('save-cotizacion')]
@@ -390,7 +401,9 @@ class CrearTablaCotizacion extends Component
                             'iva' =>$datosf['totaliva'],
                             'cliente_id' => $this->valoridcliente->id,
                             'foraneo_destino' =>$datosf['destinoruta'],
-                            'foraneo_inicio'  =>$datosf['inicioruta'],                   
+                            'foraneo_inicio'  =>$datosf['inicioruta'],    
+                            'montotransportar_foraneo'  =>$datosf['cantidadlleva'],     
+                                         
                         ]);
         
                         // Obtener el ID del servicio recién creado
@@ -403,11 +416,11 @@ class CrearTablaCotizacion extends Component
                     }
                     foreach ($this->listaForaneosguarda as $concepto) {
                         servicios_conceptos_foraneos::create([
-                            'concepto' => $concepto,
-                            'costo' => 0,
+                            'concepto' => $concepto['consepforaneo'], // Aquí ajusta según la estructura de tu array
+                            'costo' => $concepto['precioconsepforaneo'], // Aquí ajusta según la estructura de tu array
                             'servicio_id' => $this->valoriidser->id,
                         ]);
-                    }
+                    }                    
 
                 }
                 });
@@ -508,11 +521,11 @@ class CrearTablaCotizacion extends Component
         $this->costomiles = (float)$this->miles * (float)$this->milesprecio;
     }
 
-    if ($propertyName === 'iva' || $propertyName === 'costomiles' || $propertyName === 'totalkmprecio' || $propertyName === 'goperacion') {
-        $this->totaliva = ($this->iva / 100.0) * ($this->costomiles + $this->totalkmprecio + $this->goperacion);
-    }
-    
-    $this->sumatotal = $this->totaliva + $this->costomiles + $this->totalkmprecio + $this->goperacion;
+    $this->subtotalforaneo=$this->costomiles + $this->totalkmprecio + (float)$this->goperacion + (float)$this->costototalservicios;
+
+    $this->totaliva = round(((float)$this->iva / 100.0) * ($this->costomiles + $this->totalkmprecio + (float)$this->goperacion + (float)$this->costototalservicios), 2);
+
+    $this->sumatotal = (float)$this->totaliva + (float)$this->costomiles + (float)$this->totalkmprecio + (float)$this->goperacion + (float)$this->costototalservicios;
 }
 }
 
@@ -520,21 +533,51 @@ class CrearTablaCotizacion extends Component
     public function agregarALista()
     {
         $this->validate([
-            'consepforaneo' => 'required',    
+            'consepforaneo' => 'required',   
+            'precioconsepforaneo' => 'required',
         ], [
-            'consepforaneo.required' => 'El servivio es requerida.',  
+            'consepforaneo.required' => 'El servivio es requerida.', 
+            'precioconsepforaneo.required' => 'El servivio es requerida.',  
         ]);
-        if ($this->consepforaneo) {
 
-            $this->listaForaneos[] = $this->consepforaneo;
-            $this->listaForaneosguarda[] = $this->consepforaneo;
-            $this->consepforaneo = ''; // Limpiar el campo después de agregarlo a la lista
-        }
+            if ($this->consepforaneo && $this->precioconsepforaneo) {
+                $this->listaForaneos[] = array(
+                    'consepforaneo' => $this->consepforaneo,
+                    'precioconsepforaneo' => $this->precioconsepforaneo
+                );
+                $this->listaForaneosguarda[] = array(
+                    'consepforaneo' => $this->consepforaneo,
+                    'precioconsepforaneo' => $this->precioconsepforaneo
+                );
+            }
+            $costoTotalServicios = 0;
+
+            // Iterar sobre $this->listaForaneos para sumar los precios
+            foreach ($this->listaForaneos as $item) {
+                // Agregar el precio de cada servicio al costo total
+                $costoTotalServicios += $item['precioconsepforaneo'];
+            }
+
+            // Asignar el costo total de servicios a la propiedad correspondiente
+            $this->costototalservicios = $costoTotalServicios;
+            $this->propertyUpdated('');
+            // Limpiar el campo después de agregarlo a la lista
+            $this->consepforaneo = ''; 
+            $this->precioconsepforaneo= ''; 
     }
     public function eliminarDeLista($index)
     {
+        $costoTotalServicios=0.0;
         unset($this->listaForaneos[$index]);
         unset($this->listaForaneosguarda[$index]);
+        foreach ($this->listaForaneos as $item) {
+            // Agregar el precio de cada servicio al costo total
+            $costoTotalServicios += $item['precioconsepforaneo'];
+        }
+
+        // Asignar el costo total de servicios a la propiedad correspondiente
+        $this->costototalservicios = $costoTotalServicios;
+        $this->propertyUpdated('');
     }
 
 
