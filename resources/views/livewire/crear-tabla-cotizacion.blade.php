@@ -329,8 +329,8 @@
                                             <label class="custom-control-label" for="editarPreciocheck">Editar
                                                 Precio:</label>
                                         </div>
-                                        <input type="number" class="form-control" wire:model.live="editarPrecio" @if
-                                            (!$editarPreciohabilitado) readonly @endif />
+                                        <input type="number" class="form-control" wire:model.live="editarPrecio" 
+                                        @if(!$editarPreciohabilitado) readonly @endif />
 
                                     </div>
                                 </div>
@@ -342,8 +342,8 @@
                                                 wire:model.live='cantidadcheck' id="cantidadcheck" name="cantidadcheck">
                                             <label class="custom-control-label" for="cantidadcheck">cantidad:</label>
                                         </div>
-                                        <input type="number" class="form-control" wire:model.live='cantidad' @if
-                                            (!$cantidadhabilitado) readonly @endif />
+                                        <input type="number" class="form-control" wire:model.live='cantidad'
+                                         @if (!$cantidadhabilitado) readonly @endif />
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3" {{ $foraneos ? 'hidden' : '' }}>
