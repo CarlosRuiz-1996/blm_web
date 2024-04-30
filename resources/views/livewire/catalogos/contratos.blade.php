@@ -57,14 +57,23 @@
                     <x-input-validado label="Nombre Contrato:" placeholder="nombre contrato" wire-model="nombredocumento" type="text" />
                 </div>
                 <div class="col-md-12 mb-3">
-                    <x-input-validado label="Documento:" placeholder="documento" wire-model="documentomodal" type="file" />
+                    <input type="file" class="form-control" wire:click="cargarImagen" wire:model="docword">
+ 
+                    <div wire:loading wire:target="docword">
+                        <div class="d-flex justify-content-center align-items-center" style="min-height: 50px;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
 
 
     </div>
-    <button type="button" class="btn btn-info btn-block"
+    <button type="button" class="btn btn-info btn-block" {{$cargado ? '' : 'disabled'}}
         wire:click="$dispatch('confirm',{{1}})">Guardar</button>
 </x-adminlte-modal>
 

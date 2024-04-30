@@ -67,7 +67,7 @@ class CrearTablaCotizacion extends Component
     public $cantidadhabilitado = false;
     public $editarPreciohabilitado = false;
     public $foraneos = false;
-    public $checkforaneo ;
+    public $checkforaneo;
     public $inicioruta;
     public $destinoruta;
     public $km;
@@ -80,11 +80,13 @@ class CrearTablaCotizacion extends Component
     public $iva;
     public $totaliva;
     public $sumatotal;
-    
+
     public $consepforaneo;
     public $listaForaneos = [];
     public $listaForaneosguarda = [];
-    
+    public $editIndex = null; // Índice de la fila que se está editando
+
+
     public $folioctg;
     public $tipoctg;
     public $descripcionctg;
@@ -94,6 +96,9 @@ class CrearTablaCotizacion extends Component
     public $costototalservicios;
     public $cantidadlleva;
     public $subtotalforaneo;
+    public $cantidadfora;
+    public $editar = true;
+    public $valoreditar = 0;
 
 
     public function mount()
@@ -112,7 +117,7 @@ class CrearTablaCotizacion extends Component
         $this->editarPreciohabilitado = false;
         $this->bloqser = false;
         $this->km = 0.0;
-        $this->costokm=0.0;
+        $this->costokm = 0.0;
         $this->totalkmprecio = 0.0;
         $this->miles = 0.0;
         $this->milesprecio = 0.0;
@@ -121,15 +126,44 @@ class CrearTablaCotizacion extends Component
         $this->iva = 16;
         $this->totaliva = 0.0;
         $this->sumatotal = 0.0;
-        $this->costototalservicios=0.0;
-        $this->cantidadlleva=0.0;
-        $this->subtotalforaneo=0.0;
+        $this->costototalservicios = 0.0;
+        $this->cantidadlleva = 0.0;
+        $this->subtotalforaneo = 0.0;
     }
 
     public function render()
     {
         return view('livewire.crear-tabla-cotizacion');
     }
+
+    public function editarDeListaForaneaConcepto($index)
+    {
+        $this->editIndex = $index;
+    }
+    
+    public function guardarEdicion($index)
+    {
+       
+        $this->editIndex = null;
+        
+        // Calcula el costo total de servicios
+        $costoTotalServicios = 0;
+        foreach ($this->listaForaneos as $key => $item) {
+            if ($key === $index) {
+                // Actualiza los datos de la fila editada
+                $this->listaForaneosguarda[$key]['consepforaneo'] = $item['consepforaneo'];
+                $this->listaForaneosguarda[$key]['precioconsepforaneo'] = $item['precioconsepforaneo'];
+                $this->listaForaneosguarda[$key]['cantidadfora'] = $item['cantidadfora'];
+            }
+            // Agregar el precio de cada servicio al costo total
+            $costoTotalServicios += $item['precioconsepforaneo'] * $item['cantidadfora'];
+        }
+    
+        // Asignar el costo total de servicios a la propiedad correspondiente
+        $this->costototalservicios = $costoTotalServicios;
+        $this->propertyUpdated('');
+    }
+
     public function validarCp()
     {
         $this->validate([
@@ -158,95 +192,95 @@ class CrearTablaCotizacion extends Component
 
     public function llenartabla()
     {
-        $valorcheckforaneo= $this->checkforaneo ? true : false;
-        if(!$valorcheckforaneo){
-        $this->validate([
-            'servicioId' => 'required',
-            'nombreServicio' => 'required',
-            'tipoServicio' => 'required',
-            'unidadMedida' => 'required',
-            'total' => 'required|numeric',
-        ]);
-
-        // Verificar si el check de editar precio está seleccionado
-        if ($this->editarPreciohabilitado) {
+        $valorcheckforaneo = $this->checkforaneo ? true : false;
+        if (!$valorcheckforaneo) {
             $this->validate([
-                'editarPrecio' => 'required|numeric',
+                'servicioId' => 'required',
+                'nombreServicio' => 'required',
+                'tipoServicio' => 'required',
+                'unidadMedida' => 'required',
+                'total' => 'required|numeric',
             ]);
-            $this->precioUnitario = $this->editarPrecio;
+
+            // Verificar si el check de editar precio está seleccionado
+            if ($this->editarPreciohabilitado) {
+                $this->validate([
+                    'editarPrecio' => 'required|numeric',
+                ]);
+                $this->precioUnitario = $this->editarPrecio;
+            } else {
+                $this->validate([
+                    'precioUnitario' => 'required|numeric',
+                ]);
+            }
+
+            // Verificar si el check de editar cantidad está seleccionado
+            if ($this->cantidadhabilitado) {
+                $this->validate([
+                    'cantidad' => 'required|numeric',
+                ]);
+            } else {
+                $this->validate([
+                    'cantidad' => 'required|numeric',
+                ]);
+            }
+            $this->totalreal = floatval($this->total) + floatval($this->totalreal);
+            $especial = $this->isAdmin ? 'Especial' : 'Normal';
+            $this->data[] = [
+                'id' => count($this->data) + 1,
+                'servicioId' => $this->servicioId,
+                'nombreservicio' => $this->nombreServicio,
+                'cantidad' => $this->cantidad,
+                'tiposervicio' => $this->tipoServicio,
+                'unidadmedida' => $this->unidadMedida,
+                'preciounitario' => $this->precioUnitario,
+                'editarPrecio' => $this->editarPrecio,
+                'isAdmin' => $especial,
+                'total' => $this->total,
+            ];
         } else {
             $this->validate([
-                'precioUnitario' => 'required|numeric',
+                'inicioruta' => 'required',
+                'destinoruta' => 'required',
+                'km' => 'required',
+                'costokm' => 'required',
+                'totalkmprecio' => 'required',
+                'miles' => 'required',
+                'milesprecio' => 'required',
+                'costomiles' => 'required',
+                'goperacion' => 'required',
+                'iva' => 'required',
+                'totaliva' => 'required',
+                'sumatotal' => 'required',
+                'cantidadlleva' => 'required',
             ]);
+            if (count($this->listaForaneosguarda) > 0) {
+                $this->dataforaneo[] = [
+                    'id' => count($this->dataforaneo) + 1,
+                    'inicioruta' => $this->inicioruta,
+                    'destinoruta' => $this->destinoruta,
+                    'km' => $this->km,
+                    'costokm' => $this->costokm,
+                    'totalkmprecio' => $this->totalkmprecio,
+                    'miles' => $this->miles,
+                    'milesprecio' => $this->milesprecio,
+                    'costomiles' => $this->costomiles,
+                    'goperacion' => $this->goperacion,
+                    'iva' => $this->iva,
+                    'totaliva' => $this->totaliva,
+                    'sumatotal' => $this->sumatotal,
+                    'cantidadlleva' => $this->cantidadlleva,
+                ];
+                $this->totalreal = $this->sumatotal;
+                $this->bloqser = true;
+                $this->limpiarCampos();
+            } else {
+                $this->dispatch('errorTabla', ['La cotización debe contener Servicios']);
+            }
         }
-
-        // Verificar si el check de editar cantidad está seleccionado
-        if ($this->cantidadhabilitado) {
-            $this->validate([
-                'cantidad' => 'required|numeric',
-            ]);
-        } else {
-            $this->validate([
-                'cantidad' => 'required|numeric',
-            ]);
-        }
-        $this->totalreal = floatval($this->total) + floatval($this->totalreal);
-        $especial = $this->isAdmin ? 'Especial' : 'Normal';
-        $this->data[] = [
-            'id' => count($this->data) + 1,
-            'servicioId' => $this->servicioId,
-            'nombreservicio' => $this->nombreServicio,
-            'cantidad' => $this->cantidad,
-            'tiposervicio' => $this->tipoServicio,
-            'unidadmedida' => $this->unidadMedida,
-            'preciounitario' => $this->precioUnitario,
-            'editarPrecio' => $this->editarPrecio,
-            'isAdmin' => $especial,
-            'total' => $this->total,
-        ];
-    }else{
-        $this->validate([
-            'inicioruta' => 'required',
-            'destinoruta' => 'required',
-            'km' => 'required',
-            'costokm' => 'required',
-            'totalkmprecio' => 'required',
-            'miles' => 'required',
-            'milesprecio' => 'required',
-            'costomiles' => 'required',
-            'goperacion' => 'required',
-            'iva' => 'required',
-            'totaliva' => 'required',
-            'sumatotal' => 'required',
-            'cantidadlleva' => 'required',
-        ]);
-        if(count($this->listaForaneosguarda)>0){
-        $this->dataforaneo[] = [
-            'id' => count($this->dataforaneo) + 1,
-            'inicioruta' => $this->inicioruta,
-            'destinoruta' => $this->destinoruta,
-            'km' => $this->km,
-            'costokm'=> $this->costokm,
-            'totalkmprecio' => $this->totalkmprecio,
-            'miles' => $this->miles,
-            'milesprecio' => $this->milesprecio,
-            'costomiles' => $this->costomiles,
-            'goperacion' => $this->goperacion,
-            'iva' => $this->iva,
-            'totaliva' => $this->totaliva,
-            'sumatotal' => $this->sumatotal,
-            'cantidadlleva' =>$this->cantidadlleva,
-        ];
-        $this->totalreal = $this->sumatotal;
-        $this->bloqser = true;
-        $this->limpiarCampos();
-        }else{
-        $this->dispatch('errorTabla', ['La cotización debe contener Servicios']);
-        }
-    }
 
         // Limpiar los campos después de agregar un nuevo elemento
-        
+
 
         return view('livewire.crear-tabla-cotizacion');
     }
@@ -267,7 +301,7 @@ class CrearTablaCotizacion extends Component
         $this->inicioruta = '';
         $this->destinoruta = '';
         $this->km = 0.0;
-        $this->costokm=0.0;
+        $this->costokm = 0.0;
         $this->totalkmprecio = 0.0;
         $this->miles = 0.0;
         $this->milesprecio = 0.0;
@@ -276,10 +310,11 @@ class CrearTablaCotizacion extends Component
         $this->iva = 0.0;
         $this->totaliva = 0.0;
         $this->sumatotal = 0.0;
-        $this->listaForaneos=[];
-        $this->cantidadlleva=0.0;
+        $this->listaForaneos = [];
+        $this->cantidadlleva = 0.0;
+        $this->cantidadfora = 1;
     }
-    public $cot_id=0;
+    public $cot_id = 0;
     #[On('save-cotizacion')]
     public function validaInfo()
     {
@@ -321,7 +356,7 @@ class CrearTablaCotizacion extends Component
 
 
         ]);
-        
+
         // Verificar si $this->data no está vacío
         if (!empty($this->data) || !empty($this->dataforaneo)) {
             try {
@@ -363,69 +398,69 @@ class CrearTablaCotizacion extends Component
                     $this->cot_id = $this->valoridcoti->id;
 
                     // Realizar las inserciones en la base de datos
-                    if(empty($this->dataforaneo)){
-                    foreach ($this->data as $datos) {
-                        // Realizar la inserción en la base de datos
-                        $this->valoriidser = Servicios::create([
-                            'precio_unitario' => $datos['preciounitario'],
-                            'cantidad' => $datos['cantidad'],
-                            'subtotal' => $datos['total'],
-                            'ctg_servicios_id' => $datos['servicioId'],
-                            'servicio_especial' => $datos['isAdmin'] ? 1 : 0,
-                            'status_servicio' => 1,
-                        ]);
+                    if (empty($this->dataforaneo)) {
+                        foreach ($this->data as $datos) {
+                            // Realizar la inserción en la base de datos
+                            $this->valoriidser = Servicios::create([
+                                'precio_unitario' => $datos['preciounitario'],
+                                'cantidad' => $datos['cantidad'],
+                                'subtotal' => $datos['total'],
+                                'ctg_servicios_id' => $datos['servicioId'],
+                                'servicio_especial' => $datos['isAdmin'] ? 1 : 0,
+                                'status_servicio' => 1,
+                            ]);
 
-                        // Obtener el ID del servicio recién creado
-                        $servicioIdreturn = $this->valoriidser->id;
-                        cotizacion_servicio::create([
-                            'cotizacion_id' => $cotizacionIdreturn,
-                            'servicio_id' => $servicioIdreturn,
-                            'status_cotizacion_servicio' => '1'
-                        ]);
-                    }
-                }else{
-                    foreach ($this->dataforaneo as $datosf) {
-                        // Realizar la inserción en la base de datos
-                        $this->valoriidser = Servicios::create([
-                            'precio_unitario' => $datosf['sumatotal'],
-                            'cantidad' => 1,
-                            'subtotal' => $datosf['sumatotal'],
-                            'servicio_especial' => 1,
-                            'status_servicio' => 1,      
-                            'kilometros' =>$datosf['km'],
-                            'kilometros_costo' =>$datosf['costokm'],
-                            'miles' =>$datosf['miles'],
-                            'miles_costo' =>$datosf['milesprecio'],
-                            'servicio_foraneo' =>1,
-                            'gastos_operaciones' =>$datosf['goperacion'],
-                            'iva' =>$datosf['totaliva'],
-                            'cliente_id' => $this->valoridcliente->id,
-                            'foraneo_destino' =>$datosf['destinoruta'],
-                            'foraneo_inicio'  =>$datosf['inicioruta'],    
-                            'montotransportar_foraneo'  =>$datosf['cantidadlleva'],     
-                                         
-                        ]);
-        
-                        // Obtener el ID del servicio recién creado
-                        $servicioIdreturn = $this->valoriidser->id;
-                        cotizacion_servicio::create([
-                            'cotizacion_id' => $cotizacionIdreturn,
-                            'servicio_id' => $servicioIdreturn,
-                            'status_cotizacion_servicio' => '1'
-                        ]);
-                    }
-                    foreach ($this->listaForaneosguarda as $concepto) {
-                        servicios_conceptos_foraneos::create([
-                            'concepto' => $concepto['consepforaneo'], // Aquí ajusta según la estructura de tu array
-                            'costo' => $concepto['precioconsepforaneo'], // Aquí ajusta según la estructura de tu array
-                            'servicio_id' => $this->valoriidser->id,
-                        ]);
-                    }                    
+                            // Obtener el ID del servicio recién creado
+                            $servicioIdreturn = $this->valoriidser->id;
+                            cotizacion_servicio::create([
+                                'cotizacion_id' => $cotizacionIdreturn,
+                                'servicio_id' => $servicioIdreturn,
+                                'status_cotizacion_servicio' => '1'
+                            ]);
+                        }
+                    } else {
+                        foreach ($this->dataforaneo as $datosf) {
+                            // Realizar la inserción en la base de datos
+                            $this->valoriidser = Servicios::create([
+                                'precio_unitario' => $datosf['sumatotal'],
+                                'cantidad' => 1,
+                                'subtotal' => $datosf['sumatotal'],
+                                'servicio_especial' => 1,
+                                'status_servicio' => 1,
+                                'kilometros' => $datosf['km'],
+                                'kilometros_costo' => $datosf['costokm'],
+                                'miles' => $datosf['miles'],
+                                'miles_costo' => $datosf['milesprecio'],
+                                'servicio_foraneo' => 1,
+                                'gastos_operaciones' => $datosf['goperacion'],
+                                'iva' => $datosf['totaliva'],
+                                'cliente_id' => $this->valoridcliente->id,
+                                'foraneo_destino' => $datosf['destinoruta'],
+                                'foraneo_inicio'  => $datosf['inicioruta'],
+                                'montotransportar_foraneo'  => $datosf['cantidadlleva'],
 
-                }
+                            ]);
+
+                            // Obtener el ID del servicio recién creado
+                            $servicioIdreturn = $this->valoriidser->id;
+                            cotizacion_servicio::create([
+                                'cotizacion_id' => $cotizacionIdreturn,
+                                'servicio_id' => $servicioIdreturn,
+                                'status_cotizacion_servicio' => '1'
+                            ]);
+                        }
+                        foreach ($this->listaForaneosguarda as $concepto) {
+                            servicios_conceptos_foraneos::create([
+                                'concepto' => $concepto['consepforaneo'], // Aquí ajusta según la estructura de tu array
+                                'costo' => $concepto['precioconsepforaneo'], // Aquí ajusta según la estructura de tu array
+                                'servicio_id' => $this->valoriidser->id,
+                                'cantidadfora' => $concepto['cantidadfora'],
+                            ]);
+                        }
+                    }
                 });
 
-                $this->dispatch('success-cotizacion', ['La cotización se creó con éxito',$this->cot_id]);
+                $this->dispatch('success-cotizacion', ['La cotización se creó con éxito', $this->cot_id]);
             } catch (\Exception $e) {
                 // Manejar la excepción si ocurre algún error durante la transacción
                 $this->dispatch('errorTabla', ['Ocurrió un error al procesar la cotización']);
@@ -498,12 +533,11 @@ class CrearTablaCotizacion extends Component
     }
     public function updatedCheckForaneo()
     {
-        if($this->checkforaneo){
+        if ($this->checkforaneo) {
             $this->foraneos = true;
-        }else{
+        } else {
             $this->foraneos = false;
         }
-       
     }
     public function updated($propertyName)
     {
@@ -511,68 +545,73 @@ class CrearTablaCotizacion extends Component
     }
 
     public function propertyUpdated($propertyName)
-{
-    if($this->checkforaneo){
-    if ($propertyName === 'km' || $propertyName === 'costokm') {
-        $this->totalkmprecio = (float)$this->km * (float)$this->costokm;
+    {
+        if ($this->checkforaneo) {
+            if ($propertyName === 'km' || $propertyName === 'costokm') {
+                $this->totalkmprecio = (float)$this->km * (float)$this->costokm;
+            }
+
+            if ($propertyName === 'miles' || $propertyName === 'milesprecio') {
+                $this->costomiles = (float)$this->miles * (float)$this->milesprecio;
+            }
+
+            $this->subtotalforaneo = $this->costomiles + $this->totalkmprecio + (float)$this->goperacion + (float)$this->costototalservicios;
+
+            $this->totaliva = round(((float)$this->iva / 100.0) * ($this->costomiles + $this->totalkmprecio + (float)$this->goperacion + (float)$this->costototalservicios), 2);
+
+            $this->sumatotal = (float)$this->totaliva + (float)$this->costomiles + (float)$this->totalkmprecio + (float)$this->goperacion + (float)$this->costototalservicios;
+        }
     }
-
-    if ($propertyName === 'miles' || $propertyName === 'milesprecio') {
-        $this->costomiles = (float)$this->miles * (float)$this->milesprecio;
-    }
-
-    $this->subtotalforaneo=$this->costomiles + $this->totalkmprecio + (float)$this->goperacion + (float)$this->costototalservicios;
-
-    $this->totaliva = round(((float)$this->iva / 100.0) * ($this->costomiles + $this->totalkmprecio + (float)$this->goperacion + (float)$this->costototalservicios), 2);
-
-    $this->sumatotal = (float)$this->totaliva + (float)$this->costomiles + (float)$this->totalkmprecio + (float)$this->goperacion + (float)$this->costototalservicios;
-}
-}
 
 
     public function agregarALista()
     {
         $this->validate([
-            'consepforaneo' => 'required',   
+            'consepforaneo' => 'required',
             'precioconsepforaneo' => 'required',
+            'cantidadfora' => 'required',
         ], [
-            'consepforaneo.required' => 'El servivio es requerida.', 
-            'precioconsepforaneo.required' => 'El servivio es requerida.',  
+            'consepforaneo.required' => 'El servivio es requerida.',
+            'precioconsepforaneo.required' => 'El servivio es requerida.',
+            'cantidadfora.required' => 'El servivio es requerida.',
         ]);
 
-            if ($this->consepforaneo && $this->precioconsepforaneo) {
-                $this->listaForaneos[] = array(
-                    'consepforaneo' => $this->consepforaneo,
-                    'precioconsepforaneo' => $this->precioconsepforaneo
-                );
-                $this->listaForaneosguarda[] = array(
-                    'consepforaneo' => $this->consepforaneo,
-                    'precioconsepforaneo' => $this->precioconsepforaneo
-                );
-            }
-            $costoTotalServicios = 0;
+        if ($this->consepforaneo && $this->precioconsepforaneo) {
+            $this->listaForaneos[] = array(
+                'consepforaneo' => $this->consepforaneo,
+                'precioconsepforaneo' => $this->precioconsepforaneo,
+                'cantidadfora' => $this->cantidadfora
+            );
+            $this->listaForaneosguarda[] = array(
+                'consepforaneo' => $this->consepforaneo,
+                'precioconsepforaneo' => $this->precioconsepforaneo,
+                'cantidadfora' => $this->cantidadfora
+            );
+        }
+        $costoTotalServicios = 0;
 
-            // Iterar sobre $this->listaForaneos para sumar los precios
-            foreach ($this->listaForaneos as $item) {
-                // Agregar el precio de cada servicio al costo total
-                $costoTotalServicios += $item['precioconsepforaneo'];
-            }
+        // Iterar sobre $this->listaForaneos para sumar los precios
+        foreach ($this->listaForaneos as $item) {
+            // Agregar el precio de cada servicio al costo total
+            $costoTotalServicios += $item['precioconsepforaneo'] * $item['cantidadfora'];
+        }
 
-            // Asignar el costo total de servicios a la propiedad correspondiente
-            $this->costototalservicios = $costoTotalServicios;
-            $this->propertyUpdated('');
-            // Limpiar el campo después de agregarlo a la lista
-            $this->consepforaneo = ''; 
-            $this->precioconsepforaneo= ''; 
+        // Asignar el costo total de servicios a la propiedad correspondiente
+        $this->costototalservicios = $costoTotalServicios;
+        $this->propertyUpdated('');
+        // Limpiar el campo después de agregarlo a la lista
+        $this->consepforaneo = '';
+        $this->cantidadfora = 1;
+        $this->precioconsepforaneo = '';
     }
     public function eliminarDeLista($index)
     {
-        $costoTotalServicios=0.0;
+        $costoTotalServicios = 0.0;
         unset($this->listaForaneos[$index]);
         unset($this->listaForaneosguarda[$index]);
         foreach ($this->listaForaneos as $item) {
             // Agregar el precio de cada servicio al costo total
-            $costoTotalServicios += $item['precioconsepforaneo'];
+            $costoTotalServicios += $item['precioconsepforaneo'] * $item['cantidadfora'];
         }
 
         // Asignar el costo total de servicios a la propiedad correspondiente
@@ -581,7 +620,8 @@ class CrearTablaCotizacion extends Component
     }
 
 
-    public function crearServicioctg(){
+    public function crearServicioctg()
+    {
         $this->validate([
             'folioctg' => 'required|unique:ctg_servicios,folio',
             'tipoctg' => 'required',
@@ -608,7 +648,175 @@ class CrearTablaCotizacion extends Component
         $this->servicios = ctg_servicios::all();
         // Despachar el evento
         $this->dispatch('successservicio', ['El servicio se creó con éxito']);
-        
+    }
 
+    public function eliminarDeListaNormal($id)
+    {
+        $totalEliminado = 0;
+
+        foreach ($this->data as $key => $item) {
+            if ($item['id'] == $id) {
+                $totalEliminado = floatval($item['total']);
+                unset($this->data[$key]);
+                break; // Terminamos el bucle una vez que encontramos y eliminamos el elemento
+            }
+        }
+
+        // Recalcular el total
+        $this->totalreal -= $totalEliminado;
+    }
+    public function eliminarDeListaForanea($id)
+    {
+        $this->dataforaneo = [];
+        $this->listaForaneos = [];
+        $this->listaForaneosguarda = [];
+        // Recalcular el total
+        $this->totalreal = 0;
+    }
+    public function editarDeListaNormal($id)
+    {
+        $this->editar = false;
+        $this->valoreditar = $id;
+        foreach ($this->data as $key => $item) {
+            if ($item['id'] == $id) {
+                $this->servicioId = $item['servicioId'];
+                $this->nombreServicio = $item['nombreservicio'];
+                $this->cantidad = $item['cantidad'];
+                $this->tipoServicio = $item['tiposervicio'];
+                $this->unidadMedida = $item['unidadmedida'];
+                $this->precioUnitario = $item['preciounitario'];
+                $this->editarPrecio = $item['editarPrecio'];
+                $this->total = $item['total'];
+                // Otros valores si es necesario
+                break; // Terminamos el bucle una vez que encontramos el elemento
+            }
+        }
+    }
+
+    public function  editarservicioNormal($id)
+    {
+        $valorcheckforaneo = $this->checkforaneo ? true : false;
+        if (!$valorcheckforaneo) {
+            $this->validate([
+                'servicioId' => 'required',
+                'nombreServicio' => 'required',
+                'tipoServicio' => 'required',
+                'unidadMedida' => 'required',
+                'total' => 'required|numeric',
+            ]);
+
+            // Verificar si el check de editar precio está seleccionado
+            if ($this->editarPreciohabilitado) {
+                $this->validate([
+                    'editarPrecio' => 'required|numeric',
+                ]);
+                $this->precioUnitario = $this->editarPrecio;
+            } else {
+                $this->validate([
+                    'precioUnitario' => 'required|numeric',
+                ]);
+            }
+
+            // Verificar si el check de editar cantidad está seleccionado
+            if ($this->cantidadhabilitado) {
+                $this->validate([
+                    'cantidad' => 'required|numeric',
+                ]);
+            } else {
+                $this->validate([
+                    'cantidad' => 'required|numeric',
+                ]);
+            }
+            $this->totalreal = 0;
+            foreach ($this->data as $key => $item) {
+
+                if ($item['id'] == $id) {
+                    $especial = $this->isAdmin ? 'Especial' : 'Normal';
+                    $this->data[$key]['servicioId'] = $this->servicioId;
+                    $this->data[$key]['nombreservicio'] = $this->nombreServicio;
+                    $this->data[$key]['cantidad'] = $this->cantidad;
+                    $this->data[$key]['tiposervicio'] = $this->tipoServicio;
+                    $this->data[$key]['unidadmedida'] = $this->unidadMedida;
+                    $this->data[$key]['preciounitario'] = $this->precioUnitario;
+                    $this->data[$key]['editarPrecio'] = $this->editarPrecio;
+                    $this->data[$key]['isAdmin'] = $especial;
+                    $this->data[$key]['total'] = $this->total;
+                    // Otros valores si es necesario
+                    break; // Terminamos el bucle una vez que encontramos el elemento
+                }
+            }
+            foreach ($this->data as $item) {
+                // Sumamos el valor de 'total' de cada elemento al total real
+                $this->totalreal += floatval($item['total']);
+            }
+        }else{
+            $this->validate([
+                'inicioruta' => 'required',
+                'destinoruta' => 'required',
+                'km' => 'required',
+                'costokm' => 'required',
+                'totalkmprecio' => 'required',
+                'miles' => 'required',
+                'milesprecio' => 'required',
+                'costomiles' => 'required',
+                'goperacion' => 'required',
+                'iva' => 'required',
+                'totaliva' => 'required',
+                'sumatotal' => 'required',
+                'cantidadlleva' => 'required',
+            ]);
+            $this->totalreal = 0;
+            foreach ($this->dataforaneo as $key => $item) {
+
+                if ($item['id'] == $id) {
+                    $especial = $this->isAdmin ? 'Especial' : 'Normal';
+                    $this->dataforaneo[$key]['inicioruta'] = $this->inicioruta;
+                    $this->dataforaneo[$key]['destinoruta'] = $this->destinoruta;
+                    $this->dataforaneo[$key]['km'] = $this->km;
+                    $this->dataforaneo[$key]['costokm'] = $this->costokm;
+                    $this->dataforaneo[$key]['totalkmprecio'] = $this->totalkmprecio;
+                    $this->dataforaneo[$key]['miles'] = $this->miles;
+                    $this->dataforaneo[$key]['milesprecio'] = $this->milesprecio;
+                    $this->dataforaneo[$key]['costomiles'] = $this->costomiles;
+                    $this->dataforaneo[$key]['goperacion'] = $this->goperacion;
+                    $this->dataforaneo[$key]['iva'] = $this->iva;
+                    $this->dataforaneo[$key]['totaliva'] = $this->totaliva;
+                    $this->dataforaneo[$key]['sumatotal'] = $this->sumatotal;
+                    $this->dataforaneo[$key]['cantidadlleva'] = $this->cantidadlleva;
+                    // Otros valores si es necesario
+                    break; // Terminamos el bucle una vez que encontramos el elemento
+                }
+            }
+            foreach ($this->dataforaneo as $item) {
+                // Sumamos el valor de 'total' de cada elemento al total real
+                $this->totalreal += floatval($item['sumatotal']);
+            }
+    }
+    }
+    public function  editarDeListaForanea($id)
+    {
+        $this->editar = false;
+        $this->valoreditar = $id;
+        foreach ($this->dataforaneo as $key => $item) {
+            if ($item['id'] == $id) {
+            $this->inicioruta = $item['inicioruta'];
+            $this->destinoruta = $item['destinoruta'];
+            $this->km = $item['km'];
+            $this->costokm = $item['costokm'];
+            $this->totalkmprecio = $item['totalkmprecio'];
+            $this->miles = $item['miles'];
+            $this->milesprecio = $item['milesprecio'];
+            $this->costomiles = $item['costomiles'];
+        
+            $this->goperacion = $item['goperacion'];
+            $this->iva = $item['iva'];
+            $this->totaliva = $item['totaliva'];
+            $this->sumatotal = $item['sumatotal'];
+            $this->cantidadlleva = $item['cantidadlleva'];
+            break;
+            }
+           
+        }
+        $this->listaForaneos=$this->listaForaneosguarda;
     }
 }

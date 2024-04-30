@@ -110,11 +110,8 @@
                 @php $totallleva = $servicio->servicio->montotransportar_foraneo; @endphp
                 @php $valorcolspan = "2"; @endphp
                 @php $mostrarTablaNormal = false; @endphp
-                <div class="alert alert-warning" role="alert">
-                    Este servicio es foráneo.
-                </div>
                 <div class="alert alert-success text-center" role="alert">
-                    {{ number_format($totallleva, 2, '.', ',') }}
+                    $ {{ number_format($totallleva, 2, '.', ',') }}
                 </div>
                 @break
                 <!-- Salir del bucle después de encontrar el primer servicio foráneo -->
@@ -143,52 +140,50 @@
                         <tr>
                             <td>KILOMETROS</td>
                             <td>{{$servicio->servicio->kilometros}}</td>
-                            <td>${{$servicio->servicio->kilometros_costo}}</td>
-                            <td>${{ ($servicio->servicio->kilometros_costo * $servicio->servicio->kilometros) }}</td>
+                            <td>${{number_format($servicio->servicio->kilometros_costo, 2, '.', ',')}}</td>
+                            <td>${{ ( number_format($servicio->servicio->kilometros_costo * $servicio->servicio->kilometros, 2, '.', ',')) }}</td>
 
                         </tr>
                         <tr>
                             <td>MILES</td>
                             <td>{{$servicio->servicio->miles}}</td>
-                            <td>${{$servicio->servicio->miles_costo}}</td>
-                            <td>${{ ($servicio->servicio->miles_costo * $servicio->servicio->miles) }}</td>
+                            <td>${{number_format($servicio->servicio->miles_costo, 2, '.', ',')}}</td>
+                            <td>${{ (number_format($servicio->servicio->miles_costo * $servicio->servicio->miles, 2, '.', ',')) }}</td>
                         </tr>
                         <tr>
                             <td>G/OPERACIÓN</td>
                             <td></td>
-                            <td>${{ $servicio->servicio->gastos_operaciones }}</td>
-                            <td>${{ $servicio->servicio->gastos_operaciones }}</td>
+                            <td>${{ number_format($servicio->servicio->gastos_operaciones, 2, '.', ',') }}</td>
+                            <td>${{ number_format($servicio->servicio->gastos_operaciones, 2, '.', ',') }}</td>
                         </tr>
 
                         @if($servicio->servicio->conceptosForaneos)
                         @foreach ($servicio->servicio->conceptosForaneos as $concepto)
                         <tr>
-                            <td colspan="2">{{ $concepto->concepto }}</td>
-                            <td>${{ $concepto->costo }}</td>
-                            <td>${{ $concepto->costo }}</td>
+                            <td>{{ $concepto->concepto }}</td>
+                            <td>{{ $concepto->cantidadfora }}</td>
+                            <td>${{ number_format($concepto->costo, 2, '.', ',') }}</td>
+                            <td>${{ number_format($concepto->costo * $concepto->cantidadfora , 2, '.', ',')}}</td>
                         </tr>
-                        @php $totalforaneosconcepto += $concepto->costo; @endphp
+                        @php $totalforaneosconcepto += $concepto->costo * $concepto->cantidadfora; @endphp
                         @endforeach
                         @endif
                         <tr>
-                            <td colspan="4"></td>
-                        </tr>
-                        <tr>
                             <td colspan="2"></td>
                             <td style="background-color: #a9a9a9;">Subtotal</td>
-                            <td>{{($servicio->servicio->kilometros_costo * $servicio->servicio->kilometros)+
+                            <td>${{ number_format(($servicio->servicio->kilometros_costo * $servicio->servicio->kilometros)+
                                 ($servicio->servicio->miles_costo * $servicio->servicio->miles)+
-                                ($servicio->servicio->gastos_operaciones+$totalforaneosconcepto )}}</td>
+                                ($servicio->servicio->gastos_operaciones+$totalforaneosconcepto), 2, '.', ',') }}</td>
                         </tr>
                         <tr>
                             <td colspan="2"></td>
                             <td style="background-color: #a9a9a9;">I.V.A.</td>
-                            <td>${{ $servicio->servicio->iva }}</td>
+                            <td>${{ number_format($servicio->servicio->iva, 2, '.', ',') }}</td>
                         </tr>
                         <tr>
                             <td colspan="2"></td>
                             <td style="background-color: #a9a9a9;">TOTAL:</td>
-                            <td>{{$servicio->servicio->subtotal}}</td>
+                            <td>${{ number_format($servicio->servicio->subtotal, 2, '.', ',')}}</td>
                         </tr>
                     </tbody>
                 </table>
