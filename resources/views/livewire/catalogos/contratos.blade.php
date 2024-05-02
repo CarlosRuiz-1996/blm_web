@@ -53,11 +53,16 @@
 
         <div class="card-body">
             <div class="row">
-                <div class="col-md-12 mb-3">
-                    <x-input-validado label="Nombre Contrato:" placeholder="nombre contrato" wire-model="nombredocumento" type="text" />
+                <div class="col-md-12">
+                    <div class="alert alert-warning" role="alert">
+                        This is a warning alert—check it out!
+                      </div>
                 </div>
                 <div class="col-md-12 mb-3">
-                    <input type="file" class="form-control" wire:click="cargarImagen" wire:model="docword">
+                    <x-input-validado label="Nombre Contrato:" placeholder="nombre contrato" wire-model="nombredocumento" type="text"  />
+                </div>
+                <div class="col-md-12 mb-3">
+                    <input type="file" class="form-control" wire:model="docword" wire:key='{{$imageKey}}'>
  
                     <div wire:loading wire:target="docword">
                         <div class="d-flex justify-content-center align-items-center" style="min-height: 50px;">
@@ -73,8 +78,8 @@
 
 
     </div>
-    <button type="button" class="btn btn-info btn-block" {{$cargado ? '' : 'disabled'}}
-        wire:click="$dispatch('confirm',{{1}})">Guardar</button>
+    <button type="button" class="btn btn-info btn-block" wire:loading.remove wire:target="docword" wire:click="$dispatch('confirm',{{1}})">Guardar</button>
+    <button type="button" class="btn btn-info btn-block" disabled wire:loading wire:target="docword">Guardar</button>
 </x-adminlte-modal>
 
 
@@ -193,6 +198,18 @@
 
                     restar_table();
                 });
+
+                Livewire.on('agregarArchivocre', function(params) {
+                        const nombreArchivo = params[0].nombreArchivo;
+                        const tipomensaje = params[1].tipomensaje;
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: tipomensaje,
+                            title: nombreArchivo,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    });
             });
         </script>
     @endpush

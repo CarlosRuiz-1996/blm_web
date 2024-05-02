@@ -144,7 +144,7 @@
                     </div>
                 </div>
                 <!-- Puedes copiar y pegar el contenido de la pestaña "Servicios" aquí y hacer las modificaciones necesarias -->
-            </div>
+           
 
             <!-- Contenido de la pestaña "anexo1coti" -->
             <div class="tab-pane fade " id="servicios-new" role="tabpanel"
