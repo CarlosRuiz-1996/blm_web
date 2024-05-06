@@ -37,7 +37,19 @@
                 <td>{{$datos->id}}</td>
                 <td>{{$datos->nombre}}</td>
                 <td>{{$datos->path}}</td>
-                <td>{{$datos->status_contrato}}</td>
+                <td>
+                    <!-- Botón de editar -->
+                    <button  wire:click="abrirModalEditar({{ $datos->id }})" data-toggle="modal" data-target="#ModalEditar" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></button>
+                
+                    <!-- Botones condicionales de eliminar/reactivar -->
+                    @if ($datos->status_contrato == 1)
+                        <!-- Botón de eliminar -->
+                        <button   class="btn btn-danger btn-sm" wire:click="eliminarContrato({{ $datos->id }})"><i class="fas fa-trash"></i></button>
+                    @else
+                        <!-- Botón de reactivar -->
+                        <button   class="btn btn-success btn-sm" wire:click="reactivarContrato({{ $datos->id }})"><i class="fas fa-check"></i></button>
+                    @endif
+                </td>                
             </tr>
             @endforeach
         </tbody>
@@ -48,14 +60,41 @@
         </div>
     </div>
     <x-adminlte-modal wire:ignore.self id="dias" title=""
-    theme="info" icon="fas fa-bolt" size='md' disable-animations>
+    theme="info" icon="fas fa-bolt" size='xl' disable-animations>
     <div class="col-md-12 card card-outline card-info">
 
         <div class="card-body">
             <div class="row">
                 <div class="col-md-12">
                     <div class="alert alert-warning" role="alert">
-                        This is a warning alert—check it out!
+                        <h6><span class="text-danger">*</span> El documento debe contar con los siguientes elementos para ser remplazados por los datos del cliente:</h6>
+                        <h6>Ejemplo</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><label for="razon_social">Razón Social:</label> INGRESE LA RAZÓN SOCIAL</li>
+                                    <li><label for="rfc">RFC:</label> INGRESE EL RFC</li>
+                                    <li><label for="tipo_cliente">Tipo Cliente:</label> INGRESE EL TIPO DE CLIENTE</li>
+                                    <li><label for="nombre_contacto">Nombre del contacto:</label> INGRESE EL NOMBRE DEL CONTACTO</li>
+                                    <li><label for="puesto">Puesto:</label> INGRESE EL PUESTO</li>
+                                    <li><label for="apoderado">Datos Fiscales - Apoderado/a:</label> INGRESE APODERADO/A</li>
+                                    <li><label for="escritura">Datos Fiscales - Escritura:</label> INGRESE ESCRITURA</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li><label for="licenciado">Datos Fiscales - Licenciado:</label> INGRESE LICENCIADO</li>
+                                    <li><label for="folio_mercantil">Datos Fiscales - Folio Mercantil:</label> INGRESE FOLIO MERCANTIL</li>
+                                    <li><label for="fecha_registro">Datos Fiscales - Fecha de Registro:</label> DD/MM/AAAA</li>
+                                    <li><label for="lugar_registro">Datos Fiscales - Lugar de registro:</label> INGRESE LUGAR DE REGISTRO</li>
+                                    <li><label for="notario">Poder notarial - Notario:</label> INGRESE NOTARIO</li>
+                                    <li><label for="licenciado_notaria">Poder notarial - No.Licenciado de la notaria:</label> INGRESE NO.LICENCIADO DE LA NOTARIA</li>
+                                    <li><label for="fecha_poder_notarial">Poder notarial - Fecha de poder notarial:</label> DD/MM/AAAA</li>
+                                    <li><label for="ciudad_notaria">Poder notarial - Ciudad de la notaria:</label> INGRESE CIUDAD DE LA NOTARIA</li>
+                                </ul>
+                            </div>
+                        </div>                       
+                          
                       </div>
                 </div>
                 <div class="col-md-12 mb-3">
@@ -75,11 +114,81 @@
                 </div>
             </div>
         </div>
-
-
     </div>
     <button type="button" class="btn btn-info btn-block" wire:loading.remove wire:target="docword" wire:click="$dispatch('confirm',{{1}})">Guardar</button>
     <button type="button" class="btn btn-info btn-block" disabled wire:loading wire:target="docword">Guardar</button>
+</x-adminlte-modal>
+<!--modal editar-->
+<x-adminlte-modal wire:ignore.self id="ModalEditar" title=""
+theme="info" icon="fas fa-bolt" size='xl' disable-animations>
+<div class="col-md-12 card card-outline card-info">
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-warning" role="alert">
+                    <h6><span class="text-danger">*</span> El documento debe contar con los siguientes elementos para ser remplazados por los datos del cliente:</h6>
+                    <h6>Ejemplo</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul>
+                                <li><label for="razon_social">Razón Social:</label> INGRESE LA RAZÓN SOCIAL</li>
+                                <li><label for="rfc">RFC:</label> INGRESE EL RFC</li>
+                                <li><label for="tipo_cliente">Tipo Cliente:</label> INGRESE EL TIPO DE CLIENTE</li>
+                                <li><label for="nombre_contacto">Nombre del contacto:</label> INGRESE EL NOMBRE DEL CONTACTO</li>
+                                <li><label for="puesto">Puesto:</label> INGRESE EL PUESTO</li>
+                                <li><label for="apoderado">Datos Fiscales - Apoderado/a:</label> INGRESE APODERADO/A</li>
+                                <li><label for="escritura">Datos Fiscales - Escritura:</label> INGRESE ESCRITURA</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul>
+                                <li><label for="licenciado">Datos Fiscales - Licenciado:</label> INGRESE LICENCIADO</li>
+                                <li><label for="folio_mercantil">Datos Fiscales - Folio Mercantil:</label> INGRESE FOLIO MERCANTIL</li>
+                                <li><label for="fecha_registro">Datos Fiscales - Fecha de Registro:</label> DD/MM/AAAA</li>
+                                <li><label for="lugar_registro">Datos Fiscales - Lugar de registro:</label> INGRESE LUGAR DE REGISTRO</li>
+                                <li><label for="notario">Poder notarial - Notario:</label> INGRESE NOTARIO</li>
+                                <li><label for="licenciado_notaria">Poder notarial - No.Licenciado de la notaria:</label> INGRESE NO.LICENCIADO DE LA NOTARIA</li>
+                                <li><label for="fecha_poder_notarial">Poder notarial - Fecha de poder notarial:</label> DD/MM/AAAA</li>
+                                <li><label for="ciudad_notaria">Poder notarial - Ciudad de la notaria:</label> INGRESE CIUDAD DE LA NOTARIA</li>
+                            </ul>
+                        </div>
+                    </div>                       
+                      
+                  </div>
+            </div>
+            <div class="col-md-12 mb-3" hidden>
+                <x-input-validado label="idEditar:" placeholder="idEditar" wire-model="idEditar" type="text"/>
+            </div>
+            <div class="col-md-12 mb-3">
+                <x-input-validado label="Nombre Contrato:" placeholder="nombre contrato" wire-model="nombredocumentoeditar" type="text"  />
+            </div>
+            <div class="col-md-12 mt-3 mb-2">
+                <div class="input-group">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="customFile"
+                            wire:model.live="docwordeditar" wire:key='{{$imageKey2}}'>
+                        <label class="custom-file-label" for="customFile">{{ $fileName ? $fileName
+                            :'Seleccione documento'}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 mt-3 mb-2 text-center">
+                <!-- Agregado text-center -->
+                <div wire:loading wire:target="docwordeditar">
+                    <div class="d-flex justify-content-center align-items-center" style="min-height: 50px;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Cargando archivo...</span>
+                        </div>
+                        <span class="ml-2">Cargando archivo...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<button type="button" class="btn btn-info btn-block" wire:loading.remove wire:target="docwordeditar" wire:click="$dispatch('confirm',{{2}})">Guardar</button>
+<button type="button" class="btn btn-info btn-block" disabled wire:loading wire:target="docwordeditar">Guardar</button>
 </x-adminlte-modal>
 
 
@@ -104,7 +213,7 @@
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            @this.dispatch(opcion == 1 ? 'save-dia' : 'update-dia');
+                            @this.dispatch(opcion == 1 ? 'save-contrato' : 'update-contrato');
                         }
                     })
                 })
@@ -203,7 +312,7 @@
                         const nombreArchivo = params[0].nombreArchivo;
                         const tipomensaje = params[1].tipomensaje;
                         Swal.fire({
-                            position: 'top-end',
+                            position: 'center',
                             icon: tipomensaje,
                             title: nombreArchivo,
                             showConfirmButton: false,

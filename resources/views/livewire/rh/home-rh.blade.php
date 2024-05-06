@@ -30,36 +30,6 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-info"><i class="fas fa-dollar-sign"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Puestos</span>
-                <span class="info-box-number">10 puestos</span>
-                <div class="progress">
-                    <div class="progress-bar bg-info" style="width: 70%"></div>
-                </div>
-                <span class="progress-description">
-                    Más información
-                </span>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-info"><i class="fas fa-dollar-sign"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Resguardo</span>
-                <span class="info-box-number">$41,410</span>
-                <div class="progress">
-                    <div class="progress-bar bg-info" style="width: 70%"></div>
-                </div>
-                <span class="progress-description">
-                    Aumento del 70% en 30 días
-                </span>
-            </div>
-        </div>
-    </div>
 </div>
 
 

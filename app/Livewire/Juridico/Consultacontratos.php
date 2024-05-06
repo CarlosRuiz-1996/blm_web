@@ -4,56 +4,26 @@ namespace App\Livewire\Juridico;
 
 use App\Models\Cliente;
 use App\Models\Contratos_cotizacion;
-use App\Models\Cotizacion;
-use App\Models\cotizacion_servicio;
-use App\Models\CotizacionServicio;
 use App\Models\Ctg_Contratos;
-use Livewire\Component;
-use Livewire\Features\SupportPagination\WithoutUrlPagination;
-use Livewire\WithPagination;
-use PhpOffice\PhpWord\Element\Table;
-use PhpOffice\PhpWord\TemplateProcessor;
-use PhpOffice\PhpWord\SimpleType\TblWidth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
+use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
+use Livewire\Features\SupportPagination\WithoutUrlPagination;
+use Livewire\WithPagination;
+use PhpOffice\PhpWord\Element\Table;
+use PhpOffice\PhpWord\SimpleType\TblWidth;
 
-class Altacontratos extends Component
+class Consultacontratos extends Component
 {
-
-
-
-    use WithPagination, WithoutUrlPagination;
-    public $clienteslis = [];
-    public $clientenombre;
-    protected $listeners = ['resetPagination'];
+    public $inputId;
+    public $cliente_id;
+    public $inputFechaInicio;
+    public $inputFechaFin;
     public $contratos;
-    public $cliente;
-    public $ctg_tipocontrato;
-    //formulario
-    public $razonSocial;
-    public $rfc;
-    public $tipocliente;
-    public $nombreContacto;
-    public $puesto;
-    public $apoderado;
-    public $escritura;
-    public $licenciado;
-    public $foliomercantil;
-    public $fecharegistro;
-    public $lugarregistro;
-    public $notario;
-    public $datosextra;
-    public $numnotario;
-    public $fechapodernotarial;
-    public $ciudadnotaria;
-    public $id;
-    public $camposextra;
-    public $cotizaciones;
-    public $seleccioncotiza;
-    public $contratosList;
+    public $tipocontrato;
     public $camposextraeditar;
     public $apoderadoEditar;
     public $escrituraEditar;
@@ -73,6 +43,9 @@ class Altacontratos extends Component
     public $idcontratoEditar;
     public $buscarRealizado=false;
     use WithFileUploads;
+
+    protected $listeners = ['resetPagination'];
+    use WithPagination, WithoutUrlPagination;
     public function updatedDocword()
     {
         // Aquí puedes acceder al nombre del archivo
@@ -84,294 +57,49 @@ class Altacontratos extends Component
     public function mount()
     {
         $this->camposextraeditar = false;
-        $this->camposextra = false;
         $this->contratos = Ctg_Contratos::all();
-        $this->clientenombre = "";
-        $this->cotizaciones = [];
-        $this->contratosList = [];
-        $this->buscarRealizado=false;
     }
-
-    public function render()
-    {
-        $data = $this->BuscarCliente();
-        return view('livewire.juridico.altacontratos', compact('data'));
-    }
-
     public function resetPagination()
     {
         // Reiniciar la paginación cuando sea necesario desde fuera del componente
         $this->resetPage();
     }
-    
-
-    public function BuscarCliente()
+    public function buscar()
     {
-        $this->buscarRealizado=false;
-        $valorbuscado = $this->clientenombre;
+        // Filtrar los resultados según los valores del formulario
+        $query = Contratos_cotizacion::query();
 
-        if ($valorbuscado == "" || $valorbuscado == null) {
-            $this->buscarRealizado=false;
-            $busqueda = []; // Paginar antes de obtener los resultados
-        } else {
-            $this->buscarRealizado=false;
-            $busqueda = Cliente::select('clientes.id','clientes.rfc_cliente','clientes.user_id', 'clientes.razon_social', 'users.name', 'users.paterno', 'users.materno')
-                ->join('users', 'users.id', '=', 'clientes.user_id')
-                ->where('clientes.status_cliente', 1)
-                ->where(function ($query) use ($valorbuscado) {
-                    $query->where('users.name', 'LIKE', '%' . $valorbuscado . '%')
-                        ->orWhere('users.paterno', 'LIKE', '%' . $valorbuscado . '%')
-                        ->orWhere('users.materno', 'LIKE', '%' . $valorbuscado . '%');
-                })
-                ->paginate(2); // Paginar antes de obtener los resultados
-                $this->buscarRealizado=true;
+        if ($this->inputId) {
+            $query->where('id', $this->inputId);
         }
+
+        if ($this->cliente_id) {
+            $query->where('cliente_id', $this->cliente_id);
+        }
+
+        if ($this->inputFechaInicio) {
+            $query->where('created_at', '>=', $this->inputFechaInicio);
+        }
+
+        if ($this->inputFechaFin) {
+            $query->where('created_at', '<=', $this->inputFechaFin);
+        }
+
+        if ($this->tipocontrato) {
+            $query->where('ctg_contratos_id', $this->tipocontrato);
+        }
+
+        // Ejecutar la consulta
+        $valor=$query->paginate(2);
+
+        return $valor;
         
-        return $busqueda;
     }
 
-
-    public function generarpdf()
+    public function render()
     {
-        
-        $this->validate([
-            'razonSocial' => 'required',
-            'rfc' => 'required',
-            'tipocliente' => 'required',
-            'nombreContacto' => 'required',
-            'seleccioncotiza' => 'required',
-            'puesto' => 'required',
-            'apoderado' => 'required',
-            'escritura' => 'required',
-            'licenciado' => 'required',
-            'foliomercantil' => 'required',
-            'fecharegistro' => 'required',
-            'lugarregistro' => 'required',
-            'ctg_tipocontrato' => 'required',
-            'notario' => 'required',
-            'numnotario' => 'required_if:datosextra,true',
-            'fechapodernotarial' => 'required_if:datosextra,true',
-            'ciudadnotaria' => 'required_if:datosextra,true',
-        ]);
-        DB::beginTransaction();
-        try {
-            $contratoBusqueda = Ctg_Contratos::find($this->ctg_tipocontrato);
-            $cotizacionser = CotizacionServicio::where('cotizacion_id', $this->seleccioncotiza)->get();
-            $contratosCotizacion = Contratos_cotizacion::where('cotizacion_id', $this->seleccioncotiza)->where('ctg_contratos_id', $this->ctg_tipocontrato)->where('cliente_id', $this->id)->get();
-            $cliente = Cliente::find($this->id);
-            try {
-                if ($contratoBusqueda) {
-                    $nombre_doc = $contratoBusqueda->path;
-                } else {
-                    throw new \Exception('No se encontró ningún contrato para la búsqueda especificada.');
-                }
-            } catch (\Exception $e) {
-                $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'No se encontró ningún contrato para la búsqueda especificada'], ['tipomensaje' => 'warning']);
-            }
-            if ($contratosCotizacion->isNotEmpty()) {
-                $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Ya existe un contrato de este tipo para esta cotizacion'], ['tipomensaje' => 'warning']);
-            } else {
-                Contratos_cotizacion::create([
-                    'cotizacion_id' => $this->seleccioncotiza,
-                    'status_contrato' => 1,
-                    'ctg_contratos_id' => $this->ctg_tipocontrato,
-                    'apoderado' => $this->apoderado,
-                    'escritura' => $this->escritura,
-                    'licenciado' => $this->licenciado,
-                    'foliomercantil' => $this->foliomercantil,
-                    'fecharegistro' => $this->fecharegistro,
-                    'lugarregistro' => $this->lugarregistro,
-                    'notario' => $this->notario,
-                    'numnotario' => $this->numnotario,
-                    'fechapodernotarial' => $this->fechapodernotarial,
-                    'ciudadnotaria' => $this->ciudadnotaria,
-                    'cliente_id' => $this->id,
-                    'status_editado' => 0,
-                ]);
-            $this->contratosList = Contratos_cotizacion::where('cliente_id',  $this->id)->get();
-            $template = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('app/public/contratos/' . $nombre_doc));
-            //table1
-            $table = new Table(array('borderSize' => 12, 'borderColor' => '#080808', 'width' => 10100, 'unit' => TblWidth::TWIP));
-            $cellRowSpan = array('vMerge' => 'restart');
-            $cellRowContinue = array('vMerge' => 'continue');
-            $cellColSpan = array('gridSpan' => 3);
-            $cellColSpan3 = array('gridSpan' => 4);
-            $cellColSpan2 = array('gridSpan' => 4, 'bgColor' => '#808080');
-            $estiloCelda = array('bgColor' => '#DCDCDC', 'bold' => true, 'size' => '20');
-            $table->addRow();
-            $table->addCell(2000, $cellColSpan2)->addText('ANEXO 1', null, array('align' => 'center', 'bold' => true));
-            $table->addRow();
-            $table->addCell(2000, $cellColSpan2)->addText('');
-            $table->addRow();
-            $table->addCell(2000, $cellColSpan3)->addText('');
-            $table->addRow();
-            $table->addCell(150)->addText('CLIENTE', null, $estiloCelda);
-            $table->addCell(150)->addText($cliente->razon_social);
-            $table->addCell(150)->addText('CLAVE CLIENTE', null, $estiloCelda);
-            $table->addCell(150)->addText($cliente->id);
-            $table->addRow();
-            $table->addCell(150)->addText('RFC', null, $estiloCelda);
-            $table->addCell(150)->addText($cliente->rfc_cliente);
-            $table->addCell(150)->addText('FECHA', null, $estiloCelda);
-            $table->addCell(150)->addText(date('d-m-y'));
-            $table->addRow();
-            $table->addCell(150)->addText('DIRECCIÓN', null, $estiloCelda);
-            $table->addCell(2000, $cellColSpan)->addText($cliente->direccion . ' ' . $cliente->cp->colonia . ' ' . $cliente->cp->cp . ' ' . $cliente->cp->municipio->municipio . ' ');
-            $table->addRow();
-            $table->addCell(150)->addText('FACTURADO A', null, $estiloCelda);
-            $table->addCell(2000, $cellColSpan)->addText($cliente->razon_social);
-
-            //table2
-            //tabla anexo parte 2
-
-            $table2 = new Table(array('borderSize' => 12, 'borderColor' => '#080808', 'width' => 10100, 'unit' => TblWidth::TWIP));
-            $cellRowSpan1 = array('vMerge' => 'restart');
-            $cellRowContinue2 = array('vMerge' => 'continue');
-            $cellColSpan1 = array('gridSpan' => 3);
-            $cellColSpan31 = array('gridSpan' => 4);
-            $cellColSpan21 = array('gridSpan' => 4, 'bgColor' => '#808080');
-            $estiloCelda1 = array('bgColor' => '#DCDCDC', 'bold' => true, 'size' => '20');
-            $table2->addRow();
-            $table2->addCell(2000, $cellColSpan21)->addText('CONTACTO', null, array('align' => 'center', 'bold' => true));
-            $table2->addCell(2000, $cellColSpan21)->addText('CARGO', null, array('align' => 'center', 'bold' => true));
-            $table2->addCell(2000, $cellColSpan21)->addText('TELEFONO', null, array('align' => 'center', 'bold' => true));
-            $table2->addRow();
-            $table2->addCell(2000, $cellColSpan31)->addText($cliente->user->name . ' ' . $cliente->user->paterno . ' ' . $cliente->user->materno);
-            $table2->addCell(2000, $cellColSpan31)->addText($cliente->puesto);
-            $table2->addCell(2000, $cellColSpan31)->addText($cliente->phone);
-
-            //tabla3
-            $table3 = new Table(array('borderSize' => 12, 'borderColor' => '#080808', 'width' => 10100, 'unit' => TblWidth::TWIP));
-            $cellRowSpan12 = array('vMerge' => 'restart');
-            $cellRowContinue3 = array('vMerge' => 'continue');
-            $cellColSpan122 = array('gridSpan' => 2);
-            $cellColSpan12 = array('gridSpan' => 3);
-            $cellColSpan312 = array('gridSpan' => 4);
-            $cellColSpan212 = array('gridSpan' => 4, 'bgColor' => '#808080');
-            $estiloCelda12 = array('bgColor' => '#DCDCDC', 'bold' => true, 'size' => '20');
-            $total=0;
-            if ($cotizacionser) {
-                foreach ($cotizacionser as $cotizacion) {
-                    $table3->addRow();
-                    $table3->addCell(2000, $cellColSpan212)->addText('CANTIDAD', null, array('align' => 'center', 'bold' => true));
-                    $table3->addCell(2000, $cellColSpan212)->addText('CONCEPTO', null, array('align' => 'center', 'bold' => true));
-                    $table3->addCell(2000, $cellColSpan212)->addText('PRECIO POR SEVICIO', null, array('align' => 'center', 'bold' => true));
-                    $table3->addCell(2000, $cellColSpan212)->addText('IMPORTE', null, array('align' => 'center', 'bold' => true));
-                    $table3->addRow();
-                    $table3->addCell(2000, $cellColSpan312)->addText($cotizacion->servicio->cantidad);
-                    $table3->addCell(2000, $cellColSpan312)->addText(strtoupper($cotizacion->servicio->ctg_servicio->descripcion));
-                    $table3->addCell(2000, $cellColSpan312)->addText($cotizacion->servicio->precio_unitario);
-                    $table3->addCell(2000, $cellColSpan312)->addText($cotizacion->servicio->subtotal);
-                    $total+=$cotizacion->servicio->subtotal;
-                }
-            }
-            $table3->addRow();
-            $table3->addCell(2000, $cellColSpan312)->addText('');
-            $table3->addCell(2000, $cellColSpan312)->addText('');
-            $table3->addCell(2000, $cellColSpan312)->addText('');
-            $table3->addCell(2000, $cellColSpan312)->addText('');
-            $table3->addRow();
-            $table3->addCell(2000, $cellColSpan312)->addText('');
-            $table3->addCell(2000, $cellColSpan312)->addText('PRECIOS MAS 16 % DE I V A');
-            $table3->addCell(2000, $cellColSpan312)->addText('');
-            $table3->addCell(2000, $cellColSpan312)->addText('$' . '' . number_format($total, 2, '.', ','));
-            //table4
-            $table4 = new Table(array('borderSize' => 12, 'borderColor' => '#080808', 'width' => 10100, 'unit' => TblWidth::TWIP));
-            $cellRowSpan1212 = array('vMerge' => 'restart');
-            $cellRowContinue312 = array('vMerge' => 'continue');
-            $cellColSpan1212 = array('gridSpan' => 3);
-            $cellColSpan3122 = array('gridSpan' => 4);
-            $cellColSpan21212 = array('gridSpan' => 4, 'bgColor' => '#808080');
-            $estiloCelda1212 = array('bgColor' => '#DCDCDC', 'bold' => true, 'size' => '20');
-            $table4->addRow();
-            $table4->addCell(2000, $cellColSpan21212)->addText('OBSERVACIONES', null, array('align' => 'center', 'bold' => true));
-            $table4->addRow();
-            $table4->addCell(2000, $cellColSpan3122)->addText('', null, array('align' => 'center'));
-            $table4->addRow();
-            $table4->addCell(2000, $cellColSpan3122)->addText('');
-            $table4->addRow();
-            $table4->addCell(2000, $cellColSpan3122)->addText('LOS SERVICIOS NO ESPECIFICADOS EN ESTA COTIZACIÓN SE COBRARAN A PRECIOS DE LISTA', null, array('align' => 'center', 'bold' => true));
-            //tabla5
-            $table5 = new Table(array('borderSize' => 12, 'borderColor' => '#080808', 'width' => 10100, 'unit' => TblWidth::TWIP));
-            $cellRowSpan1212 = array('vMerge' => 'restart');
-            $cellRowContinue312 = array('vMerge' => 'continue');
-            $cellColSpan1212 = array('gridSpan' => 3);
-            $cellColSpan3122 = array('gridSpan' => 4);
-            $cellColSpan21212 = array('gridSpan' => 4, 'bgColor' => '#808080');
-            $estiloCelda1212 = array('bgColor' => '#DCDCDC', 'bold' => true, 'size' => '20');
-            $table5->addRow();
-            $table5->addCell(2000, $cellColSpan21212)->addText('POR LA COMPAÑIA', null, array('align' => 'center', 'bold' => true));
-            $table5->addCell(2000, $cellColSpan21212)->addText('POR EL CLIENTE', null, array('align' => 'center', 'bold' => true));
-            $table5->addRow();
-            $table5->addCell(2000, $cellColSpan3122)->addText('SILVESTRE OCTAVIANO GARCIA CARRILLO');
-            $table5->addCell(2000, $cellColSpan3122)->addText($cliente->user->name . ' ' . $cliente->user->paterno . ' ' . $cliente->user->materno);
-            $table5->addRow();
-            $table5->addCell(2000, $cellColSpan3122)->addText('SERVICIOS INTEGRADOS PRO-BLM DE MEXICO, S.A. DE C.V.');
-            $table5->addCell(2000, $cellColSpan3122)->addText($cliente->razon_social);
-            $template->setComplexBlock('table', $table);
-            $template->setComplexBlock('table2', $table2);
-            $template->setComplexBlock('table4', $table4);
-            $template->setComplexBlock('table3', $table3);
-            $template->setComplexBlock('table5', $table5);
-            $template->setValue('razonsocial', $this->razonSocial);
-            $template->setValue('nombre', $this->nombreContacto);
-            $template->setValue('apoderada', $this->apoderado);
-            $template->setValue('escritura', $this->escritura);
-            $template->setValue('notario', $this->notario);
-            $template->setValue('licenciado', $this->licenciado);
-            $template->setValue('folio_mercantil', $this->foliomercantil);
-            $template->setValue('fecha_reg', $this->fecharegistro);
-            $template->setValue('lugar_registro', $this->lugarregistro);
-            $template->setValue('calle', $cliente->direccion);
-            $template->setValue('noInterior', $cliente->direccion);
-            $template->setValue('noExterior', $cliente->direccion);
-            $template->setValue('colonia', $cliente->cp->colonia);
-            $template->setValue('municipio', $cliente->cp->municipio->municipio);
-            $template->setValue('cp', $cliente->cp->cp);
-            $template->setValue('rfccliente', $this->rfc);
-            $template->setValue('fecha_reg_formt', $this->fecharegistro);
-            $tenpFile = tempnam(sys_get_temp_dir(), 'PHPWord');
-            $template->saveAs($tenpFile);
-
-            $header = [
-                "Content-Type: application/octet-stream",
-            ];
-            DB::commit();
-            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Se creo contrato y se ha descargo'], ['tipomensaje' => 'success']);
-            return response()->download($tenpFile, $this->rfc . '_' . $nombre_doc, $header)->deleteFileAfterSend($shouldDelete = true);
-            } 
-        } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
-            DB::rollBack();
-            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Se produjo un error al procesar el archivo'], ['tipomensaje' => 'danger']);
-            return back()->with('error', 'Se produjo un error al procesar el archivo: ' . $e->getMessage());
-        }
-    }
-
-
-    public function mostrarCliente($clienteId)
-    {
-        $this->cliente = Cliente::find($clienteId);
-        $this->id = $this->cliente->id;
-        $this->razonSocial = $this->cliente->razon_social;
-        $this->rfc = $this->cliente->rfc_cliente;
-        $this->tipocliente = $this->cliente->tipo_cliente->name;
-        $this->nombreContacto = $this->cliente->user->name . ' ' . $this->cliente->user->paterno . ' ' . $this->cliente->user->materno;
-        $this->puesto = $this->cliente->puesto;
-        $this->cotizaciones = $this->cotizaciones = Cotizacion::where('status_cotizacion', 5)
-            ->where('cliente_id', $this->id)
-            ->get();
-        $this->contratosList = Contratos_cotizacion::where('cliente_id', $this->id)->get();
-        $this->dispatch('cerrarModal');
-        $this->dispatch('cerrarModal', [$this->nombreContacto]);
-    }
-
-    public function updatedDatosextra()
-    {
-        if (!$this->datosextra) {
-            $this->camposextra = false;
-        } else {
-            $this->camposextra = true;
-        }
+        $contratoslist=$this->buscar();
+        return view('livewire.juridico.consultacontratos',compact('contratoslist'));
     }
     public function editarContrato($id)
     {
@@ -456,7 +184,7 @@ class Altacontratos extends Component
                 $contratoCotizacion->ciudadnotaria = $this->ciudadnotariaEditar;
                 $contratoCotizacion->save();
                 DB::commit();
-                $this->contratosList = Contratos_cotizacion::where('cliente_id', $contratoCotizacion->cliente_id)->get();
+        
             }
         } catch (\Exception $e) {
             DB::rollBack();
@@ -467,14 +195,14 @@ class Altacontratos extends Component
         $contratoCotizacion = Contratos_cotizacion::find($id);
         $contratoCotizacion->status_contrato = 1;
         $contratoCotizacion->save();
-        $this->contratosList = Contratos_cotizacion::where('cliente_id', $contratoCotizacion->cliente_id)->get();
+
     }
     public function CancelarContrato($id)
     {
         $contratoCotizacion = Contratos_cotizacion::find($id);
         $contratoCotizacion->status_contrato = 0;
         $contratoCotizacion->save();
-        $this->contratosList = Contratos_cotizacion::where('cliente_id', $contratoCotizacion->cliente_id)->get();
+
     }
     
     public function resubirContrato($id){
@@ -500,7 +228,6 @@ class Altacontratos extends Component
 
             DB::commit();
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Se ha agregado el archivo: ' . $nombreLimpio], ['tipomensaje' => 'success']);
-            $this->contratosList = Contratos_cotizacion::where('cliente_id',  $contratoCotizacion->cliente->id)->get();
         } catch (\Exception $e) {
             DB::rollBack();
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Fallo al subir archivo'], ['tipomensaje' => 'error']);
@@ -683,11 +410,10 @@ class Altacontratos extends Component
                     "Content-Type: application/octet-stream",
                 ];
     
-                return response()->download($tenpFile, $this->rfc . '_' . $contratosCotizacion->ctg_contratos->path, $header)->deleteFileAfterSend($shouldDelete = true);
+                return response()->download($tenpFile, $contratosCotizacion->cliente->rfc_cliente . '_' . $contratosCotizacion->ctg_contratos->path, $header)->deleteFileAfterSend($shouldDelete = true);
             } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
                 //throw $th;
                 return back($e->getCode());
             }
         }
-
 }

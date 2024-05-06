@@ -15,4 +15,8 @@ class RhController extends Controller
        
         return view('rh.altaempleado');
     }
+    public function indexVacaciones(){
+       
+        return view('rh.vacaciones');
+    }
 }

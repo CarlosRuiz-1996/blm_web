@@ -114,6 +114,7 @@ Route::get('ventas/memorandum/validacion/{memorandum}',[MemorandumController::cl
 //rh
 Route::get('rh/',[RhController::class,'index'])->name('rh.index');
 Route::get('rh/altaempleado',[RhController::class,'altaempleado'])->name('rh.altaempleado');
+Route::get('rh/vacaciones',[RhController::class,'indexVacaciones'])->name('rh.indexVacaciones');
 
 Route::get('validacion/memorandum/{memorandum}/{area}',[ValidacionMemorandumController::class,'validar'])->name('memorandum.validar');
 Route::get('validacion/listar/{area}/{name?}',[ValidacionMemorandumController::class,'listar'])->name('memorandum.validar.listar');

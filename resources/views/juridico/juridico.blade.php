@@ -29,7 +29,7 @@
                             <a class="nav-link" id="custom-tabs-one-contratos-tab" data-toggle="pill" href="#custom-tabs-one-contratos" role="tab" aria-controls="custom-tabs-one-contratos" aria-selected="false">Generar Contrato</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="custom-tabs-one-consultacontrato-tab" data-toggle="pill" href="#custom-tabs-one-consultacontrato" role="tab" aria-controls="custom-tabs-one-consultacontrato" aria-selected="false">Consulta Contratos</a>
+                            <a class="nav-link" id="custom-tabs-one-contratosconsulta-tab" data-toggle="pill" href="#custom-tabs-one-contratosconsulta" role="tab" aria-controls="custom-tabs-one-contratosconsulta" aria-selected="false">Consulta Contratos</a>
                         </li>
                     </ul>
                 </div>
@@ -116,6 +116,10 @@
                         <div class="tab-pane fade" id="custom-tabs-one-contratos" role="tabpanel" aria-labelledby="custom-tabs-one-contratos-tab">
                             <!--livewire tabla solicitudes-->
                             @livewire('juridico.altacontratos')
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-one-contratosconsulta" role="tabpanel" aria-labelledby="custom-tabs-one-contratosconsulta-tab">
+                            <!--livewire tabla solicitudes-->
+                            @livewire('juridico.consultacontratos')
                         </div>
                     </div>
                 </div>
