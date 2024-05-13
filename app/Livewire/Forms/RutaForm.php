@@ -78,13 +78,13 @@ class RutaForm extends Form
 
             // Array con los nombres de los días en español
             $diasSemana = [
-                'sunday' => 'domingo',
-                'monday' => 'lunes',
-                'tuesday' => 'martes',
-                'wednesday' => 'miércoles',
-                'thursday' => 'jueves',
-                'friday' => 'viernes',
-                'saturday' => 'sábado'
+                'sunday' => 'DOMINGO',
+                'monday' => 'LUNES',
+                'tuesday' => 'MARTES',
+                'wednesday' => 'MIÉRCOLES',
+                'thursday' => 'JUEVES',
+                'friday' => 'VIERNES',
+                'saturday' => 'SÁBADO'
             ];
 
             // Obtén el nombre del día actual en español
@@ -103,7 +103,7 @@ class RutaForm extends Form
             $nombreDiaSiguienteEspañol = strtoupper($diasSemana[$nombreDiaSiguiente]);
 
             // Busca en la tabla de días el registro que coincida con el nombre del día siguiente y obtén su ID
-            $diaSiguiente = CtgRutaDias::where('name', $nombreDiaSiguienteEspañol)->first();
+            $diaSiguiente = CtgRutaDias::where('name', 'LIKE', '%' . $nombreDiaSiguienteEspañol . '%')->first();
             $idDiaSiguiente = $diaSiguiente->id;
 
             return Ruta::where('ctg_ruta_dia_id', $idDiaSiguiente)->get();
@@ -430,17 +430,19 @@ class RutaForm extends Form
 
 
         return RutaEmpleados::where('ruta_id', $this->ruta->id)
-            ->WhereHas('empleado', function ($query) {
-                $query->where('sexo', 'ilike', '%' . $this->searchPersonal . '%')
-                    ->orWhere('phone', 'ilike', '%' . $this->searchPersonal . '%')
-
-                    ->orWhereHas('user', function ($subquery) {
-                        $subquery->where('name', 'ilike', '%' . $this->searchPersonal . '%')
-                            ->where('paterno', 'ilike', '%' . $this->searchPersonal . '%')
-                            ->where('materno', 'ilike', '%' . $this->searchPersonal . '%');
-                    });
-            })
-            ->get();
+                ->whereHas('empleado', function ($query) {
+                    $query->where('ctg_area_id', 16)
+                        ->where(function ($subquery) {
+                            $subquery->where('sexo', 'ilike', '%' . $this->searchPersonalCajero . '%')
+                                ->orWhere('phone', 'ilike', '%' . $this->searchPersonalCajero . '%')
+                                ->orWhereHas('user', function ($userQuery) {
+                                    $userQuery->where('name', 'ilike', '%' . $this->searchPersonalCajero . '%')
+                                        ->where('paterno', 'ilike', '%' . $this->searchPersonalCajero . '%')
+                                        ->where('materno', 'ilike', '%' . $this->searchPersonalCajero . '%');
+                                });
+                        });
+                })
+                ->get();
     }
 
     public function storePersonal($empleado_id)
@@ -498,4 +500,94 @@ class RutaForm extends Form
             return 0;
         }
     }
+
+         //personal cajero
+        //personal
+        public $searchPersonalCajeroModal;
+        public function getPersonalCajero()
+        {
+    
+            return Empleado::where('ctg_area_id',17)
+                ->where(function ($query) {
+                    $query->where('sexo', 'ilike', '%' . $this->searchPersonalCajeroModal . '%')
+                        ->orWhere('phone', 'ilike', '%' . $this->searchPersonalCajeroModal . '%')
+                        ->orWhereHas('user', function ($subquery) {
+                            $subquery->where('name', 'ilike', '%' . $this->searchPersonalCajeroModal . '%')
+                                ->where('paterno', 'ilike', '%' . $this->searchPersonalCajeroModal . '%')
+                                ->where('materno', 'ilike', '%' . $this->searchPersonalCajeroModal . '%');
+                        });
+                })
+                ->whereDoesntHave('rutas', function ($query) {
+                    // Obtener el día de la semana de la ruta
+                    $dia_semana_ruta = $this->ruta->ctg_ruta_dia_id;
+    
+                    $query->whereHas('dia', function ($subquery) use ($dia_semana_ruta) {
+                        $subquery->where('id', $dia_semana_ruta);
+                    });
+                })
+                ->paginate(10);
+        }
+    
+        public $searchPersonalCajero;
+        public function getRutaPersonalCajero()
+        {
+            return RutaEmpleados::where('ruta_id', $this->ruta->id)
+                ->whereHas('empleado', function ($query) {
+                    $query->where('ctg_area_id', 17)
+                        ->where(function ($subquery) {
+                            $subquery->where('sexo', 'ilike', '%' . $this->searchPersonalCajero . '%')
+                                ->orWhere('phone', 'ilike', '%' . $this->searchPersonalCajero . '%')
+                                ->orWhereHas('user', function ($userQuery) {
+                                    $userQuery->where('name', 'ilike', '%' . $this->searchPersonalCajero . '%')
+                                        ->where('paterno', 'ilike', '%' . $this->searchPersonalCajero . '%')
+                                        ->where('materno', 'ilike', '%' . $this->searchPersonalCajero . '%');
+                                });
+                        });
+                })
+                ->get();
+        }
+//presonal operador
+public $searchPersonalOperadorModal;
+        public function getPersonalOperador()
+        {
+    
+            return Empleado::where('ctg_area_id',18)
+                ->where(function ($query) {
+                    $query->where('sexo', 'ilike', '%' . $this->searchPersonalOperadorModal . '%')
+                        ->orWhere('phone', 'ilike', '%' . $this->searchPersonalOperadorModal . '%')
+                        ->orWhereHas('user', function ($subquery) {
+                            $subquery->where('name', 'ilike', '%' . $this->searchPersonalOperadorModal . '%')
+                                ->where('paterno', 'ilike', '%' . $this->searchPersonalOperadorModal . '%')
+                                ->where('materno', 'ilike', '%' . $this->searchPersonalOperadorModal . '%');
+                        });
+                })
+                ->whereDoesntHave('rutas', function ($query) {
+                    // Obtener el día de la semana de la ruta
+                    $dia_semana_ruta = $this->ruta->ctg_ruta_dia_id;
+    
+                    $query->whereHas('dia', function ($subquery) use ($dia_semana_ruta) {
+                        $subquery->where('id', $dia_semana_ruta);
+                    });
+                })
+                ->paginate(10);
+        }
+    
+        public $searchPersonalOperador;
+        public function getRutaPersonalOperador()
+        {
+            return RutaEmpleados::where('ruta_id', $this->ruta->id)
+                ->whereHas('empleado', function ($query) {
+                    $query->where('ctg_area_id', 18)
+                        ->where(function ($subquery) {
+                            $subquery->where('sexo', 'ilike', '%' . $this->searchPersonalOperador . '%')
+                                ->orWhere('phone', 'ilike', '%' . $this->searchPersonalOperador . '%')
+                                ->orWhereHas('user', function ($userQuery) {
+                                    $userQuery->where('name', 'ilike', '%' . $this->searchPersonalOperador . '%')
+                                        ->where('paterno', 'ilike', '%' . $this->searchPersonalOperador . '%')
+                                        ->where('materno', 'ilike', '%' . $this->searchPersonalOperador . '%');
+                                });
+                        });
+                })
+                ->get();
+        }
 }

@@ -19,4 +19,8 @@ class RhController extends Controller
        
         return view('rh.vacaciones');
     }
+    public function solicitudVacaciones(){
+       
+        return view('rh.solicitud-vacaciones');
+    }
 }

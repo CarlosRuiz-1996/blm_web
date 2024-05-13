@@ -12,6 +12,7 @@ use App\Http\Controllers\Factibilidad;
 use App\Http\Controllers\juridicoController;
 use App\Http\Controllers\MemorandumController;
 use App\Http\Controllers\OperacionesController;
+use App\Http\Controllers\Operadores;
 use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\RhController;
 use App\Http\Controllers\RoleController;
@@ -115,6 +116,7 @@ Route::get('ventas/memorandum/validacion/{memorandum}',[MemorandumController::cl
 Route::get('rh/',[RhController::class,'index'])->name('rh.index');
 Route::get('rh/altaempleado',[RhController::class,'altaempleado'])->name('rh.altaempleado');
 Route::get('rh/vacaciones',[RhController::class,'indexVacaciones'])->name('rh.indexVacaciones');
+Route::get('rh/solicitudVacaciones',[RhController::class,'solicitudVacaciones'])->name('rh.solicitudVacaciones');
 
 Route::get('validacion/memorandum/{memorandum}/{area}',[ValidacionMemorandumController::class,'validar'])->name('memorandum.validar');
 Route::get('validacion/listar/{area}/{name?}',[ValidacionMemorandumController::class,'listar'])->name('memorandum.validar.listar');
@@ -124,6 +126,8 @@ Route::get('validacion/listar/{area}/{name?}',[ValidacionMemorandumController::c
 Route::get('/operaciones', [OperacionesController::class, 'index'])->name('operaciones');
 Route::get('/ruta/gestion/{op}/{ruta?}', [OperacionesController::class, 'ruta_gestion'])->name('ruta.gestion');
 
+//operadores
+Route::get('/operadores', [Operadores::class, 'index'])->name('index');
 //rutas para livewire
 use Livewire\Livewire;
 

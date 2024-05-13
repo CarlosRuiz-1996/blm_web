@@ -38,4 +38,8 @@ class Ruta extends Model
     {
         return $this->belongsTo(CtgRutasEstado::class, 'ctg_rutas_estado_id');
     }
+    public function rutaServicios()
+    {
+        return $this->hasMany(RutaServicio::class, 'ruta_id');
+    }
 }

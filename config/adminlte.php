@@ -355,6 +355,12 @@ return [
             'can' =>  'menu-clientes'
         ],
         [
+            'text' => 'Operador',
+            'url'  => '/operadores',
+            'icon' => 'fas fa-fw fa-route',
+            'can' =>  'menu-clientes'
+        ],
+        [
             'text' => 'Ventas',
             'url'  => '/ventas',
             'icon' => 'fas fa-fw fa-dollar-sign',

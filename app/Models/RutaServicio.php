@@ -12,7 +12,7 @@ class RutaServicio extends Model
     protected $fillable = ['servicio_id', 'ruta_id', 'monto', 'folio', 'envases', 'tipo_servicio', 'status_ruta_servicios'];
 
 
-    public function servicio (){
+    public function servicio(){
         return $this->belongsTo(Servicios::class, 'servicio_id');
     }
 
