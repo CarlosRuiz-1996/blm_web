@@ -9,7 +9,7 @@
 
 @section('content')
     <input type="text" class="form-control">
-    @role('Juridico') el rol debe de escribirse como en la bd
+    {{-- @role('Juridico') el rol debe de escribirse como en la bd
     @endrole
 
     @can('menu-juridico') permiso admin-juridico
@@ -17,6 +17,6 @@
 
     @if(auth()->user()->can('menu-juridico') )
   permiso admin-juridico2
-@endif
+@endif --}}
 @stop
 
