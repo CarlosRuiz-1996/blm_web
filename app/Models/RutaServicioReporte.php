@@ -13,6 +13,6 @@ class RutaServicioReporte extends Model
 
      // Atributos asignables en masa
      protected $fillable = [
-         'servicio_id', 'ruta_id', 'monto', 'folio', 'envases', 'tipo_servicio', 'status_ruta_servicio_reportes','motivocancelacion'
+         'servicio_id', 'ruta_id', 'monto', 'folio', 'envases', 'tipo_servicio', 'status_ruta_servicio_reportes','motivocancelacion','area'
      ];
 }

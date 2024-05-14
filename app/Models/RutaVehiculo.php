@@ -10,7 +10,7 @@ class RutaVehiculo extends Model
     use HasFactory;
 
     protected $table = "ruta_vehiculos";
-    protected $fillable = ['ruta_id', 'ctg_vehiculo_id'];
+    protected $fillable = ['ruta_id', 'ctg_vehiculo_id','status_ruta_vehiculos'];
 
 
     public function ruta(){

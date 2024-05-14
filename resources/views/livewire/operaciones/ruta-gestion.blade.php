@@ -74,9 +74,7 @@
             {{-- vehiculos --}}
 
             <livewire:operaciones.rutas.agregar-vehiculo :ruta="$form->ruta" />
-            {{-- elementos de seguridad --}}
-            <livewire:operaciones.rutas.agregar-cajero :ruta="$form->ruta" />
-            {{-- elementos de seguridad --}}
+            {{-- elementos de operaciones --}}
             <livewire:operaciones.rutas.agregar-operador :ruta="$form->ruta" />
             {{-- elementos de seguridad --}}
             <livewire:operaciones.rutas.agregar-personal :ruta="$form->ruta" />

@@ -4,6 +4,7 @@
         <h3 class="ml-2">Operador-<span class="text-info">{{$nombreUsuario}}</span></h3>
         <div class="card">
             <div class="card-body">
+                @if(count($rutaEmpleados)>0)
                 <div class="table-responsive">
                     <table class="table">
                         <thead class="table-info">
@@ -48,6 +49,7 @@
                                 <th>Tipo de Servicio</th>
                                 <th>Acción</th>
                             </tr>
+                            @if($rutaServicio->status_ruta != 1)
                             @foreach ($rutaServicio->rutaServicios as $servicio)
 
                             <tr>
@@ -67,21 +69,42 @@
                                         {{ $servicio->tipo_servicio == 1 ? 'Entregar' : ($servicio->tipo_servicio == 2 ?
                                         'Recolectar' : 'Otro') }}
                                     </button>
-                                    <button type="button" class="btn btn-danger"><i class="fas fa-stop mr-1"></i>
+                                    <button type="button" class="btn btn-danger"  wire:click="ModalReprogramarServicio('{{$servicio->id}}')"
+                                        data-toggle="modal" data-target="#ModalReprogramarServicio"><i class="fas fa-clock mr-1"></i>
                                         Reprogramar</button>
-                                    @else($servicio->status_ruta_servicios == 3)
-                                    <button type="button" class="btn btn-danger"><i class="fas fa-stop mr-1"></i>
-                                        Entregado</button>
+                                    @else
+                                    <span class="badge {{ $servicio->status_ruta_servicios == 3 ? 'bg-success' : 'bg-warning' }}">
+                                        {{ $servicio->status_ruta_servicios == 3 ? 'Terminado' : 'Reprogramado'}}
+                                    </span>
                                     @endif
                                 </td>
                             </tr>
                             @endforeach
+                            @else
+                            <tr>
+                                <td colspan="7">
+                            <div class="card bg-warning">
+                                <div class="card-body text-center">
+                                    <h5 class="card-text text-center">Sin iniciar ruta</h5>
+                                    <p class="card-text text-center">Iniciar Ruta para ver Servicios</p>
+                                </div>
+                            </div>
+                        </td>
+                         </tr>
+                            @endif
                             @endforeach
                         </tbody>
                     </table>
                 </div>
 
             </div>
+            @else
+            <div class="card bg-info">
+                <div class="card-body text-center">
+                    <h5 class="card-text text-center">Sin Rutas Asignadas</h5>
+                </div>
+            </div>
+            @endif
         </div>
         @else
         <div class="card bg-danger">
@@ -111,6 +134,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
+                        <div class="col-md-12 mb-3" hidden>
+                            <x-input-validado :readonly="true" label="idrecolecta:" placeholder="idrecolecta"
+                                wire-model="idrecolecta" wire-attribute="idrecolecta" type="text" />
+                        </div>
                         <div class="col-md-12 mb-3" hidden>
                             <x-input-validado :readonly="true" label="Monto:" placeholder="Ingrese Monto"
                                 wire-model="MontoEntrega" wire-attribute="MontoEntrega" type="text" />
@@ -165,6 +192,68 @@
             </div>
         </div>
     </div>
+{{--modal reprogramar--}}
+    <div class="modal fade" id="ModalReprogramarServicio" wire:ignore.self tabindex="-1" role="dialog"
+    aria-labelledby="ModalReprogramarServicioLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title" id="ModalReprogramarServicioLabel">
+                    <i class="fas fa-clock mr-1"></i>Reprogramar
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3" hidden>
+                        <x-input-validado :readonly="true" label="Id servicio" placeholder="Idservicio"
+                            wire-model="IdservicioReprogramar" wire-attribute="IdservicioReprogramar" type="text" />
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <x-input-validado :readonly="false" label="Motivo Reprogramación:"
+                            placeholder="Ingrese el motivo para reprogramar" wire-model="motivoReprogramarConcepto"
+                            wire-attribute="motivoReprogramarConcepto" type="text" />
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <!-- Input file que abre la cámara -->
+
+                        @error('photorepro')
+                        <div class="text-danger text-xs">{{ $message }}</div>
+                        @enderror
+                        <input type="file" accept="image/*" capture="camera" id="photorepro" wire:model.live="photorepro"
+                            style="display: none;">
+                        <button type="button" class="btn btn-primary btn-block"
+                            onclick="document.getElementById('photorepro').click();"><i
+                                class="fas fa-camera"></i></button>
+                    </div>
+                    <div class="col-md-12 d-flex justify-content-center align-items-center">
+                        <!-- Vista previa de la foto tomada -->
+                        @if ($photorepro)
+                        <img src="{{ $photorepro->temporaryUrl() }}" alt="Foto Tomada" class="img-fluid"
+                            style="max-width: 25%; height: auto;">
+                        @endif
+                    </div>
+                    <div class="col-md-12 mt-3 mb-2 text-center">
+                        <div wire:loading wire:target="photorepro">
+                            <div class="d-flex justify-content-center align-items-center" style="min-height: 50px;">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="sr-only">Cargando archivo...</span>
+                                </div>
+                                <span class="ml-2">Cargando archivo...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" @if(!$photorepro) disabled @endif wire:loading.remove wire:click='ModalAceptarReprogramar'>Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
     @push('js')
     <script>
         document.addEventListener('livewire:initialized', () => {
@@ -266,10 +355,37 @@
             }
         });
     });
+
+
+
+     //reprogramacion        
+     document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('photorepro').addEventListener('change', function(event) {
+            var file = event.target.files[0];
+            if (file) {
+                // Mostrar la vista previa de la foto tomada
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.width = '100%';
+                    document.getElementById('photoreproPreview').appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
         });
-        $('#ModalEntregarRecolectar').on('hidden.bs.modal', function () {
+             });
+             $('#ModalEntregarRecolectar').on('hidden.bs.modal', function () {
             Livewire.dispatch('modalCerrado');
         });
+        $('#ModalReprogramarServicio').on('hidden.bs.modal', function () {
+            Livewire.dispatch('modalCerradoReprogramar');
+        });
+        });
+
+
+
+       
     
     </script>
     @endpush
