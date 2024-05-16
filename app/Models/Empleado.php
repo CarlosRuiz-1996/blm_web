@@ -18,7 +18,8 @@ class Empleado extends Model
        'phone',
        'ctg_area_id',
        'status_empleado',
-       'fecha_nacimiento'
+       'fecha_nacimiento',
+       'cve_empleado'
     ];
     
     //relaciones de usuario/cliente/revisor area

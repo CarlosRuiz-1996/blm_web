@@ -4,13 +4,28 @@
         <div class="info-box">
             <span class="info-box-icon bg-info"><i class="fas fa-user-tie"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">Empleados</span>
-                <span class="info-box-number">10 Empleados</span>
+                <span class="info-box-text">Empleados Activos</span>
+                <span class="info-box-number">{{$conteoEmpleados}} Empleados</span>
                 <div class="progress">
                     <div class="progress-bar bg-info" style="width: 70%"></div>
                 </div>
                 <span class="progress-description">
-                    Más información 
+                    <a href="{{ route('rh.EmpleadosActivos')}}">Más información</a>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="info-box">
+            <span class="info-box-icon bg-info"><i class="fas fa-user-tie"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Empleados Inactivos</span>
+                <span class="info-box-number">{{$conteoEmpleadosInactivos}} Empleados</span>
+                <div class="progress">
+                    <div class="progress-bar bg-info" style="width: 70%"></div>
+                </div>
+                <span class="progress-description">
+                    <a href="{{ route('rh.EmpleadosInactivos')}}">Más información</a>
                 </span>
             </div>
         </div>
@@ -30,40 +45,5 @@
             </div>
         </div>
     </div>
-</div>
-
-
-
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales-all.global.js'></script>
-    <link src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css' rel="stylesheet"></link>
-    <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var initialLocaleCode = 'es';
-  var calendarEl = document.getElementById('calendar');
-
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-    },
-    locale: initialLocaleCode,
-    buttonIcons: false, // show the prev/next text
-    weekNumbers: true,
-    navLinks: true, // can click day/week names to navigate views
-    editable: true,
-    dayMaxEvents: true, // allow "more" link when too many events
-    events: 'https://fullcalendar.io/api/demo-feeds/events.json?overload-day'
-  });
-
-  calendar.render();
-});
-    </script>
-    <div class="row">
-        <div class="col-md-4">
-            <div id='calendar'></div>
-        </div>
-    </div>
-  
+</div> 
 </div>

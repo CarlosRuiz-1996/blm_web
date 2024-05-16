@@ -23,4 +23,16 @@ class RhController extends Controller
        
         return view('rh.solicitud-vacaciones');
     }
+    public function EmpleadosActivos(){
+       
+        return view('rh.empleados-activos');
+    }
+    public function EmpleadosInactivos(){
+       
+        return view('rh.empleados-inactivos');
+    }
+    public function EmpleadosPerfil($id){
+       
+        return view('rh.empleados-perfil')->with('id', $id);
+    }
 }
