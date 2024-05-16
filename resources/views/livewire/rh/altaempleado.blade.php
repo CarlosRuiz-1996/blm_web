@@ -46,8 +46,8 @@
                                 wire-model="apematerno" wire-attribute="apematerno" type="text" />
                         </div>
                         <div class="col-md-4 mb-3">
-                            <x-input-validado label="Puesto:" placeholder="Ingrese el Puesto" wire-model="puesto"
-                                wire-attribute="puesto" type="text" />
+                            <x-input-validado label="clave:" placeholder="Ingrese la clave" wire-model="cve_empleado"
+                                wire-attribute="cve_empleado" type="text" />
                         </div>
                         <div class="col-md-4 mb-3">
                             <x-input-validado-telefono label="Telefono:" placeholder="Ingrese telefono"

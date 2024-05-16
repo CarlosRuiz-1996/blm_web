@@ -59,6 +59,7 @@ class Altaempleado extends Component
     public $area;
     public $image;
     public $fechaNacimiento;
+    public $cve_empleado;
     
    use WithFileUploads;
 
@@ -104,7 +105,6 @@ class Altaempleado extends Component
             'nombreContacto' => 'required|string|max:255',
             'apepaterno' => 'required|string|max:255',
             'apematerno' => 'nullable|string|max:255',
-            'puesto' => 'required|string|max:255',
             'telefono' => 'required|string|max:20',
             'correoElectronico' => 'required|email|max:255|unique:users,email',
             'fechaNacimiento' => 'required|date',
@@ -115,6 +115,7 @@ class Altaempleado extends Component
             'municipios' => 'required|string|max:255',
             'ctg_cp_id' => 'required',
             'calleNumero' => 'required|string|max:255',
+            'cve_empleado' => 'required|string|max:255|unique:empleados,cve_empleado',
         ]);
         try {
             DB::transaction(function () {
@@ -125,7 +126,7 @@ class Altaempleado extends Component
             'email' => $this->correoElectronico,
             'password' => bcrypt(123456789),
         ]);
-        Empleado::create([
+        $idempleado=Empleado::create([
             'user_id' => $id->id,
             'direccion' => $this->calleNumero,
             'ctg_cp_id' => $this->ctg_cp_id,
@@ -134,8 +135,12 @@ class Altaempleado extends Component
             'ctg_area_id' => $this->area,
             'status_empleado' => 1,
             'fecha_nacimiento' => $this->fechaNacimiento,
+            'cve_empleado' => $this->cve_empleado,
         ]);
-    });
+        if($this->image){
+            $this->image->storeAs(path: 'fotosEmpleados/', name: $idempleado->id.'.png');
+        }
+    });      
         $this->dispatch('success', ['El empleado se creó con éxito']);
     } catch (\Exception $e) {
         dd($e->getMessage()); 
