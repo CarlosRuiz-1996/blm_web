@@ -206,7 +206,7 @@
                                                 <th>Cliente</th>
                                                 <th>RFC</th>
                                                 <th>Cantidad</th>
-                                                <th>Detalles</th>
+                                                {{-- <th>Detalles</th> --}}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -215,7 +215,7 @@
                                                     <td>{{ $cliente->razon_social }}</td>
                                                     <td>{{ $cliente->rfc_cliente }}</td>
                                                     <td>{{ $cliente->servicios_count }}</td>
-                                                    <td>
+                                                    {{-- <td>
                                                         <button class="btn btn-xs btn-default text-primary mx-1 shadow"
                                                             title="Detalles de la sucursal" data-toggle="modal"
                                                             wire:click='DetalleServicioCliente({{ $cliente->id }})'
@@ -223,7 +223,7 @@
                                                             <i class="fa fa-lg fa-fw fa-info-circle"></i>
                                                         </button>
 
-                                                    </td>
+                                                    </td> --}}
                                                 </tr>
                                             @endforeach
                                         </tbody>

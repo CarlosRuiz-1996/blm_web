@@ -20,6 +20,8 @@ class RutaList extends Component
     {
         $clientes = $this->form->getAllServicios();
         $servicio_new = $this->form->getNewServicio();
+
+        // dd($servicio_new);
         $rutas=$this->form->getAllRutas();
         $rutasdiasiguiente= $this->form->getIdDiaSiguiente();
         $dias = $this->form->getAllDias();
