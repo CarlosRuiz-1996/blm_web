@@ -46,19 +46,20 @@
                                             <x-select-validado label="Dia:" placeholder="Seleccione el dia"
                                                 wire-model="form.diasfiltro" required>
                                                 @if ($dias)
-                                                @foreach ($dias as $dia)
-                                                    <option value="{{ $dia->id }}">{{ $dia->name }}
-                                                    </option>
-                                                @endforeach
-                                            @else
-                                                <option value="">Esperando...</option>
-                                            @endif
+                                                    @foreach ($dias as $dia)
+                                                        <option value="{{ $dia->id }}">{{ $dia->name }}
+                                                        </option>
+                                                    @endforeach
+                                                @else
+                                                    <option value="">Esperando...</option>
+                                                @endif
                                             </x-select-validado>
                                         </div>
                                         <div class="col-md-4  mt-3">
-                                            <button class="btn btn-info btn-block  mt-3" wire:click='filtrarRutas()'>Filtrar</button>
+                                            <button class="btn btn-info btn-block  mt-3"
+                                                wire:click='filtrarRutas()'>Filtrar</button>
                                         </div>
-                                        
+
                                     </div>
                                     <table class="table">
                                         <thead class="table-primary">
@@ -101,28 +102,28 @@
 
             <!-- Contenido de la pestaña "Otra Pestaña 2" -->
             <div class="tab-pane fade" id="rutas-dia" role="tabpanel" aria-labelledby="rutas-dia-tab">
-                
 
-                    <div class="col-md-12">
-                        <div class="card card-outline card-info">
 
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead class="table-primary">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Nombre</th>
-                                                <th>Dia</th>
-                                                <th>Riesgo</th>
-                                                <th>Estado</th>
-                                                <th>Hora Inicio</th>
-                                                <th>Hora Finalización</th>
-                                                <th>Opciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($rutasdiasiguiente as $rutasigui)
+                <div class="col-md-12">
+                    <div class="card card-outline card-info">
+
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="table-primary">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Dia</th>
+                                            <th>Riesgo</th>
+                                            <th>Estado</th>
+                                            <th>Hora Inicio</th>
+                                            <th>Hora Finalización</th>
+                                            <th>Opciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($rutasdiasiguiente as $rutasigui)
                                             <tr>
                                                 <td>{{ $rutasigui->id }}</td>
                                                 <td>{{ $rutasigui->nombre->name }}</td>
@@ -136,19 +137,18 @@
                                                 </td>
                                             </tr>
                                         @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Puedes copiar y pegar el contenido de la pestaña "Servicios" aquí y hacer las modificaciones necesarias -->
-           
+            </div>
+            <!-- Puedes copiar y pegar el contenido de la pestaña "Servicios" aquí y hacer las modificaciones necesarias -->
+
 
             <!-- Contenido de la pestaña "anexo1coti" -->
-            <div class="tab-pane fade " id="servicios-new" role="tabpanel"
-                aria-labelledby="servicios-new-tab">
+            <div class="tab-pane fade " id="servicios-new" role="tabpanel" aria-labelledby="servicios-new-tab">
                 <div class="row">
 
                     <div class="col-md-12">
@@ -240,8 +240,8 @@
 
 
     {{-- servicios pendientes --}}
-    <x-adminlte-modal wire:ignore.self id="modalPendientes" title="Servicios Nuevos" theme="info" icon="fas fa-bolt"
-        size='lg' disable-animations>
+    <x-adminlte-modal wire:ignore.self id="modalPendientes" title="Servicios Nuevos" theme="info"
+        icon="fas fa-bolt" size='lg' disable-animations>
         @if ($servicios)
             <table class="table table-striped table-bordered">
                 <thead class="table-info">
@@ -302,19 +302,17 @@
             </x-select-validadolive>
 
             @if ($form->ctg_ruta_dia_id)
-                <x-select-validadolive label="Ruta:" placeholder="Selecciona una ruta" wire-model="form.ruta_id"
-                    required>
-
-                    @if ($rutas_dia)
+                @if (count($rutas_dia))
+                    <x-select-validadolive label="Ruta:" placeholder="Selecciona una ruta" wire-model="form.ruta_id"
+                        required>
                         @foreach ($rutas_dia as $ruta)
                             <option value="{{ $ruta->id }}">{{ $ruta->nombre->name }}
                             </option>
                         @endforeach
-                    @else
-                        <option value="">Esperando...</option>
-                    @endif
-
-                </x-select-validadolive>
+                    </x-select-validadolive>
+                @else
+                    <p>No hay rutas disponibles para este dia. <a href="{{ route('ruta.gestion',1) }}">Agregar Ruta</a></p> 
+                @endif
             @endif
 
 
@@ -333,7 +331,8 @@
         @endif
 
         <div class="col-md-3">
-            <button type="submit" class="btn btn-info btn-block" wire:click="$dispatch('confirm',1)">Guardar</button>
+            <button type="submit" class="btn btn-info btn-block"
+                wire:click="$dispatch('confirm',1)">Guardar</button>
         </div>
     </x-adminlte-modal>
 
@@ -346,14 +345,17 @@
                 $('#addServicioRuta').on('hidden.bs.modal', function(event) {
                     @this.dispatch('clean-servicios');
                 });
+
+
             });
+
+
             document.addEventListener('livewire:initialized', () => {
                 @this.on('confirm', (opcion) => {
 
                     Swal.fire({
                         title: '¿Estas seguro?',
-                        text: opcion == 1 ? "El servicio se asignara a la ruta." :
-                            "",
+                        text: opcion == 1 ? "El servicio se asignara a la ruta." : "",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
