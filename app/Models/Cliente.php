@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Cliente extends Model
 {
     use HasFactory;
-
+    protected $table = 'clientes';
     protected $fillable = [
-      
+
         'puesto',
         'direccion',
         'ctg_cp_id',

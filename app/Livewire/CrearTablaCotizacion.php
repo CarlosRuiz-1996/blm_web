@@ -408,6 +408,7 @@ class CrearTablaCotizacion extends Component
                                 'ctg_servicios_id' => $datos['servicioId'],
                                 'servicio_especial' => $datos['isAdmin'] ? 1 : 0,
                                 'status_servicio' => 1,
+                                'cliente_id' => $this->valoridcliente->id,
                             ]);
 
                             // Obtener el ID del servicio recién creado
