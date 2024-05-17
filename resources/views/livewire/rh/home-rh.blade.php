@@ -7,7 +7,7 @@
                 <span class="info-box-text">Empleados Activos</span>
                 <span class="info-box-number">{{$conteoEmpleados}} Empleados</span>
                 <div class="progress">
-                    <div class="progress-bar bg-info" style="width: 70%"></div>
+                    <div class="progress-bar bg-info" style="width:{{ $percentajeActivos }}%"></div>
                 </div>
                 <span class="progress-description">
                     <a href="{{ route('rh.EmpleadosActivos')}}">Más información</a>
@@ -22,7 +22,7 @@
                 <span class="info-box-text">Empleados Inactivos</span>
                 <span class="info-box-number">{{$conteoEmpleadosInactivos}} Empleados</span>
                 <div class="progress">
-                    <div class="progress-bar bg-info" style="width: 70%"></div>
+                    <div class="progress-bar bg-info" style="width:{{ $percentajeInactivos }}%"></div>
                 </div>
                 <span class="progress-description">
                     <a href="{{ route('rh.EmpleadosInactivos')}}">Más información</a>

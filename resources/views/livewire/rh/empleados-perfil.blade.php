@@ -33,6 +33,32 @@
                 </div>
             </div>
         </div>
-    </div>
 
+    <div class="col-md-12">
+        <div class="card card-outline card-info">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#documentos">Documentos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#vacaciones">Vacaciones</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#herramientas">Herramientas de Trabajo</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="documentos" class="tab-pane fade show active">
+                    @livewire('rh.empleados-expediente-digital', ['empleadoId' => $empleado->id])
+                </div>
+                <div id="vacaciones" class="tab-pane fade">
+                    @livewire('rh.empleados-vacaciones-perfil', ['empleadoId' => $empleado->id])
+                </div>
+                <div id="herramientas" class="tab-pane fade">
+                    @livewire('rh.empleadosherramientas', ['empleadoId' => $empleado->id])
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
