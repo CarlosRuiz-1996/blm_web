@@ -399,7 +399,7 @@ return [
             'can'=>'menu-seguridad'
         ],
         [
-            'text' => 'Boveda',
+            'text' => 'Boveda/Proceso',
             'route'  => 'boveda.inicio',
             'icon' => 'fa fa-fw fa-lock',
             'can'=>'menu-seguridad'
