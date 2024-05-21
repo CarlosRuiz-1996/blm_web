@@ -98,9 +98,9 @@ class AgregarServicio extends Component
     public function messages()
     {
         return [
-            'montoArray.*.required' => 'El campo monto es obligatorio para el servicio seleccionado',
-            'folioArray.*.required' => 'El campo papeleta es obligatorio para el servicio seleccionado',
-            'envaseArray.*.required' => 'El campo envases es obligatorio para el servicio seleccionado',
+            'montoArray.*.required' => 'El campo monto es obligatorio',
+            'folioArray.*.required' => 'El campo papeleta es obligatorio',
+            'envaseArray.*.required' => 'El campo envases es obligatorio',
         ];
     }
 

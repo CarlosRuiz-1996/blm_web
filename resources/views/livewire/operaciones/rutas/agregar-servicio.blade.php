@@ -2,12 +2,15 @@
     <div class="d-sm-flex align-items-center justify-content-between">
 
         <h1 class="ml-3">Servicios</h1>
+        @if($this->form->ruta->ctg_rutas_estado_id==1)
+
         <button title="Agrega una nueva ruta al catalogo" class="btn btn-primary m-2" data-toggle="modal"
             data-target="#servicios" wire:click='getServicios()'>
             Agregar Servicio
             <i class="fa fa-plus" aria-hidden="true"></i>
 
         </button>
+        @endif
     </div>
     <div class="row">
 
@@ -36,8 +39,10 @@
                                         <th>Folio</th>
                                         <th>Envases</th>
                                         <th>Tipo servicio</th>
-                                        <th>Acciones</th>
+                                        @if($this->form->ruta->ctg_rutas_estado_id==1)
 
+                                        <th>Acciones</th>
+@endif
                                     </thead>
                                     <tbody>
                                         @foreach ($ruta_servicios as $servicio)
@@ -51,6 +56,8 @@
                                                 <td>{{ $servicio->folio }}</td>
                                                 <td>{{ $servicio->envases }}</td>
                                                 <td>{{ $servicio->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECCIÓN' }}</td>
+                                                @if($this->form->ruta->ctg_rutas_estado_id==1)
+
                                                 <td>
                                                     <button class="btn text-danger" title="Eliminar"
                                                         wire:click="$dispatch('confirm-delete-servicio',{{ $servicio }})">
@@ -64,6 +71,7 @@
                                                         <i class="fa fa-lg fa-fw fa-pen" aria-hidden="true"></i>
                                                     </button>
                                                 </td>
+                                                @endif
 
                                             </tr>
                                         @endforeach

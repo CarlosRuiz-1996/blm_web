@@ -125,11 +125,14 @@
             {{-- servicios --}}
             <livewire:operaciones.rutas.agregar-servicio :ruta="$form->ruta" />
 
+            @if($this->form->ruta->ctg_rutas_estado_id==1)
+
 
             <div class="col-md-12 ">
                 <button wire:click="$dispatch('confirm',2)" class="btn btn-info btn-block">Enviar a boveda</button>
 
             </div>
+            @endif
         @endif
     </div>
 

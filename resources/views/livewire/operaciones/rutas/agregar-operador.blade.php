@@ -2,12 +2,14 @@
     <div class="d-sm-flex align-items-center justify-content-between">
 
         <h1 class="ml-3">Personal Operador</h1>
-        <button title="Agrega una nueva ruta al catalogo" class="btn btn-primary m-2" data-toggle="modal"
-            data-target="#personalOperador" wire:click='getPersonalOperador()'>
-            Agregar Elementos
-            <i class="fa fa-plus" aria-hidden="true"></i>
+        @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+            <button title="Agrega una nueva ruta al catalogo" class="btn btn-primary m-2" data-toggle="modal"
+                data-target="#personalOperador" wire:click='getPersonalOperador()'>
+                Agregar Elementos
+                <i class="fa fa-plus" aria-hidden="true"></i>
 
-        </button>
+            </button>
+        @endif
     </div>
     <div class="row">
 
@@ -36,24 +38,28 @@
                                         <th>Puesto</th>
                                         <th>Sexo</th>
                                         <th>Teléfono</th>
-                                        <th>Eliminar</th>
+                                        @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+                                            <th>Eliminar</th>
+                                        @endif
                                     </thead>
                                     <tbody>
                                         @foreach ($ruta_empleadosOperadores as $empleadoOperadorRuta)
                                             <tr>
 
                                                 <td>{{ $empleadoOperadorRuta->empleado->id }}</td>
-                                                <td>{{ $empleadoOperadorRuta->empleado->user->name.' '.$empleadoOperadorRuta->empleado->user->paterno.' '.$empleadoOperadorRuta->empleado->user->materno }}</td>
+                                                <td>{{ $empleadoOperadorRuta->empleado->user->name . ' ' . $empleadoOperadorRuta->empleado->user->paterno . ' ' . $empleadoOperadorRuta->empleado->user->materno }}
+                                                </td>
                                                 <td>Guardia</td>
                                                 <td>{{ $empleadoOperadorRuta->empleado->sexo }}</td>
                                                 <td>{{ $empleadoOperadorRuta->empleado->phone }}</td>
-                                                <td>
-                                                    <button class="btn text-danger" title="Eliminar"
-                                                        wire:click="$dispatch('confirm-delete-personal',{{ $empleadoOperadorRuta }})">
-                                                        <i class="fa fa-lg fa-fw fa-trash"></i>
-                                                    </button>
-                                                </td>
-
+                                                @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+                                                    <td>
+                                                        <button class="btn text-danger" title="Eliminar"
+                                                            wire:click="$dispatch('confirm-delete-personal',{{ $empleadoOperadorRuta }})">
+                                                            <i class="fa fa-lg fa-fw fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                @endif
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -83,7 +89,7 @@
 
         <div class="py-6 px-4 bg-gray-200 d-flex mb-3">
 
-           
+
 
             <input type="text" class="form-control w-full ml-4" placeholder="Buscar Operador"
                 wire:model.live='form.searchPersonalOperadorModal'>
@@ -91,56 +97,59 @@
         </div>
 
         @if ($empleadosOperadores && count($empleadosOperadores))
-        <table class="table table-hover table-striped">
-            <thead class="table-info">
-                <th></th>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Puesto</th>
-                <th>Sexo</th>
-                <th>Teléfono</th>
-            </thead>
-            <tbody>
-                @foreach ($empleadosOperadores as $empleadoOperador)
-                    <tr>
-                        <td>
-                            <input type="checkbox" wire:model.live="selectPersonalOperador.{{ $empleadoOperador->id }}" />
-                        </td>
-                        <td>{{ $empleadoOperador->id }}</td>
-                        <td>{{ $empleadoOperador->user->name.' '.$empleadoOperador->user->paterno.' '.$empleadoOperador->user->materno }}</td>
-                        <td>Operador</td>
-                        <td>{{ $empleadoOperador->sexo }}</td>
-                        <td>{{ $empleadoOperador->phone }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        @if ($empleadosOperadores->hasPages())
-            <div class="d-flex justify-content-center">
-                {{ $empleadosOperadores->links() }}
-            </div>
-        @endif
-
-
-
-        <div class="col-md-12 mb-3">
-            <button type="submit" class="btn btn-info btn-block" wire:click="$dispatch('confirm-personal-Operador')">Agregar
-                personal a ruta</button>
-        </div>
-    @else
-        @if ($readyToLoadOperador)
-            <div class="alert alert-secondary" role="alert">
-                No hay datos disponibles </div>
-        @else
-            <div class="text-center">
-                <div class="spinner-border" role="status">
-                    {{-- <span class="visually-hidden">Loading...</span> --}}
+            <table class="table table-hover table-striped">
+                <thead class="table-info">
+                    <th></th>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Puesto</th>
+                    <th>Sexo</th>
+                    <th>Teléfono</th>
+                </thead>
+                <tbody>
+                    @foreach ($empleadosOperadores as $empleadoOperador)
+                        <tr>
+                            <td>
+                                <input type="checkbox"
+                                    wire:model.live="selectPersonalOperador.{{ $empleadoOperador->id }}" />
+                            </td>
+                            <td>{{ $empleadoOperador->id }}</td>
+                            <td>{{ $empleadoOperador->user->name . ' ' . $empleadoOperador->user->paterno . ' ' . $empleadoOperador->user->materno }}
+                            </td>
+                            <td>Operador</td>
+                            <td>{{ $empleadoOperador->sexo }}</td>
+                            <td>{{ $empleadoOperador->phone }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @if ($empleadosOperadores->hasPages())
+                <div class="d-flex justify-content-center">
+                    {{ $empleadosOperadores->links() }}
                 </div>
-            </div>
-        @endif
-    @endif
+            @endif
 
-      
+
+
+            <div class="col-md-12 mb-3">
+                <button type="submit" class="btn btn-info btn-block"
+                    wire:click="$dispatch('confirm-personal-Operador')">Agregar
+                    personal a ruta</button>
+            </div>
+        @else
+            @if ($readyToLoadOperador)
+                <div class="alert alert-secondary" role="alert">
+                    No hay datos disponibles </div>
+            @else
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        {{-- <span class="visually-hidden">Loading...</span> --}}
+                    </div>
+                </div>
+            @endif
+        @endif
+
+
 
 
     </x-adminlte-modal>
