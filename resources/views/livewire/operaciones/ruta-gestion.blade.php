@@ -89,7 +89,7 @@
 
                                     <div class="col-md-3 mb-3">
                                         <button type="submit" class="btn btn-info btn-block"
-                                            wire:click="$dispatch('confirm',1)">Guardar</button>
+                                            wire:click="$dispatch('confirm',[1])">Guardar</button>
                                     </div>
 
                                 @endif
@@ -149,8 +149,9 @@
             document.addEventListener('livewire:initialized', () => {
 
                 @this.on('confirm', ([op, boveda_pase, total_ruta]) => {
+
                     if (op == 1 || boveda_pase == 1) {
-                        if (total_ruta <= 10000000) {
+                        if (!total_ruta || total_ruta <= 10000000) {
                             Swal.fire({
                                 title: '¿Estas seguro?',
                                 text: op == 1 ? "La ruta sera guardada en la base de datos" :
