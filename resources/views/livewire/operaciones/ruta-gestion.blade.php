@@ -51,7 +51,7 @@
     </div>
 
     {{-- cuerpo --}}
-    <div class="container-fluid">
+    <div class="container-fluid mb-5">
         <div class="row">
 
             <div class="col-md-12">
@@ -135,7 +135,7 @@
 
             @if ($this->form->ruta->ctg_rutas_estado_id == 1)
                 <div class="col-md-12 ">
-                    <button wire:click="$dispatch('confirm',[2,{{ $boveda_pase }}])"
+                    <button wire:click="$dispatch('confirm',[2,{{ $boveda_pase }},{{ $total_ruta }}])"
                         class="btn btn-info btn-block">Enviar a boveda</button>
 
                 </div>
@@ -148,25 +148,43 @@
         <script>
             document.addEventListener('livewire:initialized', () => {
 
-                @this.on('confirm', ([op, boveda_pase]) => {
+                @this.on('confirm', ([op, boveda_pase, total_ruta]) => {
                     if (op == 1 || boveda_pase == 1) {
-                        Swal.fire({
-                            title: '¿Estas seguro?',
-                            text: op == 1 ? "La ruta sera guardada en la base de datos" :
-                                "La ruta pasara a boveda.",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Si, adelante!',
-                            cancelButtonText: 'Cancelar'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta', {
-                                    accion: 1
-                                });
-                            }
-                        })
+                        if (total_ruta <= 10000000) {
+                            Swal.fire({
+                                title: '¿Estas seguro?',
+                                text: op == 1 ? "La ruta sera guardada en la base de datos" :
+                                    "La ruta pasara a boveda.",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Si, adelante!',
+                                cancelButtonText: 'Cancelar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta', {
+                                        accion: 1
+                                    });
+                                }
+                            })
+                        }else{
+                            Swal.fire({
+                                title: '¡Supera los 10 Millones!',
+                                text: "Para poder llevar más de 10 millones debe de pedir autorización "+
+                                "a boveda y operaciones, ¿Quiere proceder?",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Si, adelante!',
+                                cancelButtonText: 'Cancelar'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    @this.dispatch('valida-firmas');
+                                }
+                            })
+                        }
                     } else {
                         Swal.fire({
                             icon: 'error',

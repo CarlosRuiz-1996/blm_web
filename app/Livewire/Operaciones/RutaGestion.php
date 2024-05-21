@@ -120,4 +120,10 @@ class RutaGestion extends Component
             }
         }
     }
+
+
+    #[On('valida-firmas')]
+    public function validar10m(){
+        dd('entra a validar firmas');
+    }
 }
