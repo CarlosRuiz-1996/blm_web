@@ -32,7 +32,7 @@
                 <div style="width: 100%;">
                     Total: {{ number_format($total_ruta, 2) }}
                 </div>
-                <div class="progress" style="width: 100%;">
+                <div class="progress" style="width: 120%;">
                     <div class="progress-bar {{ $progressClass }} progress-bar-striped progress-bar-animated"
                         role="progressbar" style="width: {{ $progressPercentage }}%;" aria-label="Basic example"
                         aria-valuenow="{{ $progressPercentage }}" aria-valuemin="0" aria-valuemax="100">
