@@ -5,7 +5,9 @@ namespace App\Livewire\Operaciones;
 use Livewire\Component;
 use App\Livewire\Forms\RutaForm;
 use App\Models\Ruta;
+use App\Models\RutaEmpleados;
 use App\Models\RutaServicio;
+use App\Models\RutaVehiculo;
 use Livewire\Attributes\On;
 
 class RutaGestion extends Component
@@ -34,13 +36,41 @@ class RutaGestion extends Component
     public function render()
     {
         $dias = $this->form->getCtgDias();
-        $this->total();
-        return view('livewire.operaciones.ruta-gestion', compact('dias'));
+        $boveda_pase = 0;
+
+        if ($this->form->ruta) {
+            $vehiculos = RutaVehiculo::where('ruta_id', $this->form->ruta->id)->count();
+            $personal = RutaEmpleados::where('ruta_id', $this->form->ruta->id)
+                ->whereHas('empleado', function ($query) {
+                    $query->where('ctg_area_id', 16);
+                })
+                ->count();
+            $operador = RutaEmpleados::where('ruta_id', $this->form->ruta->id)
+                ->whereHas(
+                    'empleado',
+                    function ($query) {
+                        $query->where('ctg_area_id', 18);
+                    }
+                )
+                ->count();
+            $servicios = RutaServicio::where('ruta_id', $this->form->ruta->id)->count();
+
+            if ($vehiculos > 0 && $personal > 0 && $operador > 0 && $servicios > 0) {
+                $boveda_pase = 1;
+            }
+
+            $this->total();
+        }
+        
+
+       
+        return view('livewire.operaciones.ruta-gestion', compact('dias', 'boveda_pase'));
     }
 
     #[On('total-ruta')]
-    public function total(){
-       $this->total_ruta= RutaServicio::where('ruta_id',$this->form->ruta->id )->sum('monto');    
+    public function total()
+    {
+        $this->total_ruta = RutaServicio::where('ruta_id', $this->form->ruta->id)->sum('monto');
     }
     public function updated($property)
     {
@@ -69,7 +99,7 @@ class RutaGestion extends Component
         // $this->form->ruta = 1;
         $res =  $this->form->store();
         if ($res == 1) {
-            $this->dispatch('success', ['La ruta se creo con exito', 'Ahora vamos complementarla',$this->form->ruta->id]);
+            $this->dispatch('success', ['La ruta se creo con exito', 'Ahora vamos complementarla', $this->form->ruta->id]);
         } else {
             $this->dispatch('error', 'Ocurrio un error, Intenta mas tarde');
         }
@@ -85,7 +115,6 @@ class RutaGestion extends Component
 
             if ($res == 1) {
                 $this->dispatch('success',  ['La ruta paso al proceso de gestión en boveda']);
-                
             } else {
                 $this->dispatch('error', 'Hubo un error, intenta mas tarde');
             }

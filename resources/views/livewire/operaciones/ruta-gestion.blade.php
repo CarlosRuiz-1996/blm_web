@@ -11,9 +11,7 @@
                 {{ $op == 1 ? 'Nueva Ruta' : 'Gestión de Ruta' }}
             </h1>
 
-            @if ($op == 1)
-                <livewire:operaciones.rutas.ruta-ctg-ruta class="me-4" />
-            @endif
+
         </div>
         @if ($op != 1)
             @php
@@ -30,16 +28,26 @@
                     $progressClass = 'bg-success'; // Verde para menos de 7 millones
                 }
             @endphp
-
-            <div class="progress" style="width: 100%; max-width: 500px;">
-                <div class="progress-bar {{$progressClass}} progress-bar-striped progress-bar-animated" role="progressbar"
-                    style="width: {{ $progressPercentage }}%;" aria-label="Basic example"
-                    aria-valuenow="{{ $progressPercentage }}" aria-valuemin="0" aria-valuemax="100">
-                    {{ number_format($total_ruta, 2) }}
+            <div class="w-50">
+                <div style="width: 100%;">
+                    Total: {{ number_format($total_ruta, 2) }}
                 </div>
-
+                <div class="progress" style="width: 100%;">
+                    <div class="progress-bar {{ $progressClass }} progress-bar-striped progress-bar-animated mr-5"
+                        role="progressbar" style="width: {{ $progressPercentage }}%;" aria-label="Basic example"
+                        aria-valuenow="{{ $progressPercentage }}" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
             </div>
         @endif
+
+        <div class="w-80">
+            <div style="width: 100%;">
+                @if ($op == 1)
+                    <livewire:operaciones.rutas.ruta-ctg-ruta class="me-4" />
+                @endif
+            </div>
+        </div>
     </div>
 
     {{-- cuerpo --}}
@@ -125,13 +133,12 @@
             {{-- servicios --}}
             <livewire:operaciones.rutas.agregar-servicio :ruta="$form->ruta" />
 
-            @if($this->form->ruta->ctg_rutas_estado_id==1)
+            @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+                <div class="col-md-12 ">
+                    <button wire:click="$dispatch('confirm',[2,{{ $boveda_pase }}])"
+                        class="btn btn-info btn-block">Enviar a boveda</button>
 
-
-            <div class="col-md-12 ">
-                <button wire:click="$dispatch('confirm',2)" class="btn btn-info btn-block">Enviar a boveda</button>
-
-            </div>
+                </div>
             @endif
         @endif
     </div>
@@ -141,25 +148,34 @@
         <script>
             document.addEventListener('livewire:initialized', () => {
 
-                @this.on('confirm', (op) => {
-
-                    Swal.fire({
-                        title: '¿Estas seguro?',
-                        text: op == 1 ? "La ruta sera guardada en la base de datos" :
-                            "La ruta pasara a boveda.",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Si, adelante!',
-                        cancelButtonText: 'Cancelar'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta', {
-                                accion: 1
-                            });
-                        }
-                    })
+                @this.on('confirm', ([op, boveda_pase]) => {
+                    if (op == 1 || boveda_pase == 1) {
+                        Swal.fire({
+                            title: '¿Estas seguro?',
+                            text: op == 1 ? "La ruta sera guardada en la base de datos" :
+                                "La ruta pasara a boveda.",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Si, adelante!',
+                            cancelButtonText: 'Cancelar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta', {
+                                    accion: 1
+                                });
+                            }
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ruta Incompleta.',
+                            text: 'Debe de completar la ruta para poder pasar a boveda.',
+                            showConfirmButton: false,
+                            timer: 5000
+                        });
+                    }
                 })
 
                 Livewire.on('success', function([message]) {
