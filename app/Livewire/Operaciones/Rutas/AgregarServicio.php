@@ -88,6 +88,10 @@ class AgregarServicio extends Component
                         $rules["montoArray.$id"] = 'required';
                         $rules["folioArray.$id"] = 'required';
                         $rules["envaseArray.$id"] = 'required';
+                    }else{
+                        $rules["montoArray.$id"] = '';
+                        $rules["folioArray.$id"] = '';
+                        $rules["envaseArray.$id"] = '';
                     }
                 }
             }
