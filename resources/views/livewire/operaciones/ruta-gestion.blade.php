@@ -1,4 +1,48 @@
 <div>
+
+    {{-- cabecera --}}
+    <div class="d-sm-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <h1 class="me-4">
+                <a href="/operaciones" title="ATRAS" class="me-2">
+                    <i class="fa fa-arrow-left"></i>
+                </a>
+
+                {{ $op == 1 ? 'Nueva Ruta' : 'Gestión de Ruta' }}
+            </h1>
+
+            @if ($op == 1)
+                <livewire:operaciones.rutas.ruta-ctg-ruta class="me-4" />
+            @endif
+        </div>
+        @if ($op != 1)
+            @php
+                $maxValue = 10000000; // 10 millones
+                $progressPercentage = min(($total_ruta / $maxValue) * 100, 100); // Asegurarse de no exceder 100%
+
+                $progressClass = '';
+
+                if ($total_ruta >= 10000000) {
+                    $progressClass = 'bg-danger'; // Rojo para >= 10 millones
+                } elseif ($total_ruta >= 7000000) {
+                    $progressClass = 'bg-warning'; // Amarillo para >= 7 millones
+                } else {
+                    $progressClass = 'bg-success'; // Verde para menos de 7 millones
+                }
+            @endphp
+
+            <div class="progress" style="width: 100%; max-width: 500px;">
+                <div class="progress-bar {{$progressClass}} progress-bar-striped progress-bar-animated" role="progressbar"
+                    style="width: {{ $progressPercentage }}%;" aria-label="Basic example"
+                    aria-valuenow="{{ $progressPercentage }}" aria-valuemin="0" aria-valuemax="100">
+                    {{ number_format($total_ruta, 2) }}
+                </div>
+
+            </div>
+        @endif
+    </div>
+
+    {{-- cuerpo --}}
     <div class="container-fluid">
         <div class="row">
 
@@ -126,9 +170,9 @@
                         timer: 4000
                     });
                     if (ruta) {
-                        window.location.href = 
-                        '{{ route('ruta.gestion', [':op', ':ruta']) }}'
-                        .replace(':ruta', ruta)
+                        window.location.href =
+                            '{{ route('ruta.gestion', [':op', ':ruta']) }}'
+                            .replace(':ruta', ruta)
                             .replace(':op', 2);
                     }
 

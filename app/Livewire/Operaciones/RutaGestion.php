@@ -5,6 +5,7 @@ namespace App\Livewire\Operaciones;
 use Livewire\Component;
 use App\Livewire\Forms\RutaForm;
 use App\Models\Ruta;
+use App\Models\RutaServicio;
 use Livewire\Attributes\On;
 
 class RutaGestion extends Component
@@ -14,9 +15,10 @@ class RutaGestion extends Component
     public $rutas;
     public RutaForm $form;
     public $dia_select = false;
-
-    public function mount($ruta = null)
+    public $total_ruta;
+    public function mount($ruta = null, $op)
     {
+        $this->op = $op;
         if ($ruta) {
             $ruta = Ruta::find($ruta);
             $this->form->ruta = $ruta;
@@ -32,9 +34,14 @@ class RutaGestion extends Component
     public function render()
     {
         $dias = $this->form->getCtgDias();
+        $this->total();
         return view('livewire.operaciones.ruta-gestion', compact('dias'));
     }
 
+    #[On('total-ruta')]
+    public function total(){
+       $this->total_ruta= RutaServicio::where('ruta_id',$this->form->ruta->id )->sum('monto');    
+    }
     public function updated($property)
     {
         if ($property === 'form.ctg_ruta_dia_id') {
@@ -78,6 +85,7 @@ class RutaGestion extends Component
 
             if ($res == 1) {
                 $this->dispatch('success',  ['La ruta paso al proceso de gestión en boveda']);
+                
             } else {
                 $this->dispatch('error', 'Hubo un error, intenta mas tarde');
             }

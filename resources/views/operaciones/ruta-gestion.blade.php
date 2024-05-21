@@ -1,23 +1,18 @@
 @extends('adminlte::page')
 
 
-@section('title', 'Dashboard')
+@section('title', 'Gestion Rutas')
+{{-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
+    integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous">
+</script> --}}
 
-@section('content_header')
-    <div class="d-sm-flex align-items-center justify-content-between">
-        <h1>
-            <a href="/operaciones" title="ATRAS">
-                <i class="fa fa-arrow-left"></i>
-            </a>
-            {{ $op == 1 ? 'Nueva Ruta' : 'Gestión de Ruta' }}
-        </h1>
 
-        @if($op == 1)
-        <livewire:operaciones.rutas.ruta-ctg-ruta />
-        @endif
-    </div>
-@stop
 @section('content')
-    <livewire:operaciones.ruta-gestion :ruta="$ruta" />
+    <livewire:operaciones.ruta-gestion :ruta="$ruta" :op="$op" />
 
 @stop
+
+

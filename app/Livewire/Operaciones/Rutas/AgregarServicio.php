@@ -14,6 +14,8 @@ class AgregarServicio extends Component
     use WithPagination;
     public RutaForm $form;
     public $selectServicios = [];
+    public $selectServiciosRecolecta = [];
+
     public $montoArray = [];
     public $folioArray = [];
     public $envaseArray = [];
@@ -82,10 +84,11 @@ class AgregarServicio extends Component
 
 
                 if ($selected) {
-
-                    $rules["montoArray.$id"] = 'required';
-                    $rules["folioArray.$id"] = 'required';
-                    $rules["envaseArray.$id"] = 'required';
+                    if (!array_key_exists($id, $this->selectServiciosRecolecta)) {
+                        $rules["montoArray.$id"] = 'required';
+                        $rules["folioArray.$id"] = 'required';
+                        $rules["envaseArray.$id"] = 'required';
+                    }
                 }
             }
         }
@@ -112,6 +115,7 @@ class AgregarServicio extends Component
     #[On('add-servicio-ruta')]
     public function addServicios()
     {
+
         $this->selectServicios = array_filter($this->selectServicios);
         if (empty($this->selectServicios)) {
             $this->dispatch('error-servicio', 'Falta seleccionar servicios');
@@ -127,6 +131,7 @@ class AgregarServicio extends Component
                     "monto" => "",
                     "folio" => "",
                     "envases" => "",
+                    "tipo" => "",
                 ];
 
                 if (array_key_exists($servicio_id, $this->montoArray)) {
@@ -138,6 +143,11 @@ class AgregarServicio extends Component
                 if (array_key_exists($servicio_id, $this->envaseArray)) {
                     $seleccionados[$bandera]['envases'] = $this->envaseArray[$servicio_id];
                 }
+                if (array_key_exists($servicio_id, $this->selectServiciosRecolecta)) {
+                    $seleccionados[$bandera]['tipo'] = 2;
+                } else {
+                    $seleccionados[$bandera]['tipo'] = 1;
+                }
                 $bandera++;
             }
             // dd($seleccionados);
@@ -146,6 +156,7 @@ class AgregarServicio extends Component
             if ($res == 1) {
                 $this->dispatch('clean-servicios');
                 $seleccionados = [];
+                $this->dispatch('total-ruta');
                 $this->dispatch('success-servicio', 'Servicios agregados con exito a la ruta');
                 $this->dispatch('render-modal-vehiculos');
             } else {
@@ -190,6 +201,7 @@ class AgregarServicio extends Component
         $res = $this->form->updateServicio();
         if ($res == 1) {
             $this->dispatch('clean-servicios');
+            $this->dispatch('total-ruta');
             $this->dispatch('success-servicio', 'Servicio actualizado con exito');
         } else {
             $this->dispatch('error-servicio');
@@ -208,7 +220,8 @@ class AgregarServicio extends Component
             'selectServicios',
             'montoArray',
             'folioArray',
-            'envaseArray'
+            'envaseArray',
+            'selectServiciosRecolecta'
         );
 
         $this->resetValidation();
