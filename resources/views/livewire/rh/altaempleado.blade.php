@@ -76,10 +76,14 @@
                              @endforeach
                         </x-select-validado>
                         </div>
-
-
-                        
-
+                        <div class="col-md-4 mb-3">
+                            <x-input-validado label="Fecha Ingreso:" placeholder="Ingrese fecha que ingresa"
+                                wire-model="fechaIngreso" wire-attribute="fechaIngreso" type="date" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <x-input-validado label="Sueldo Mensual:" placeholder="Ingrese sueldo Mensual"
+                                wire-model="SueldoMensual" wire-attribute="SueldoMensual" type="text" />
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">

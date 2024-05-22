@@ -13,7 +13,7 @@
                             <div class="progress-bar bg-info" style="width: 70%"></div>
                         </div>
                         <span class="progress-description">
-                            Más información 
+                            <a href="{{ route('rh.solicitudVacaciones')}}">Más información</a>
                         </span>
                     </div>
                 </div>

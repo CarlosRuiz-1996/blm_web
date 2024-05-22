@@ -60,7 +60,8 @@ class Altaempleado extends Component
     public $image;
     public $fechaNacimiento;
     public $cve_empleado;
-    
+    public $fechaIngreso;
+    public $SueldoMensual;
    use WithFileUploads;
 
 

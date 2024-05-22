@@ -4,6 +4,11 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                <button type="button" class="btn btn-primary float-right mb-2"  data-toggle="modal" data-target="#ModalHerramientas">
+                    Nuevo <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="col-md-12">
                 <div class="card card-outline card-info">
                     <div class="card-header">
                         <div class="row">

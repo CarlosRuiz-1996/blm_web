@@ -45,5 +45,20 @@
             </div>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="info-box">
+            <span class="info-box-icon bg-info "><i class="fas fa-plain"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Vacaciones</span>
+                <span class="info-box-number">2 vacaciones en curso</span>
+                <div class="progress">
+                    <div class="progress-bar bg-info" style="width: 70%"></div>
+                </div>
+                <span class="progress-description">
+                    <a href="{{ route('rh.indexVacaciones')}}">Más información</a>
+                </span>
+            </div>
+        </div>
+    </div>
 </div> 
 </div>
