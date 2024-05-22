@@ -2,12 +2,14 @@
     <div class="d-sm-flex align-items-center justify-content-between">
 
         <h1 class="ml-3">Vehículos</h1>
-        <button title="Agrega una nueva ruta al catalogo" class="btn btn-primary m-2" data-toggle="modal"
-            data-target="#vehiculos" wire:click='getVehiculos()'>
-            Agregar Vehículos
-            <i class="fa fa-plus" aria-hidden="true"></i>
+        @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+            <button title="Agrega una nueva ruta al catalogo" class="btn btn-primary m-2" data-toggle="modal"
+                data-target="#vehiculos" wire:click='getVehiculos()'>
+                Agregar Vehículos
+                <i class="fa fa-plus" aria-hidden="true"></i>
 
-        </button>
+            </button>
+        @endif
     </div>
 
     <div class="row">
@@ -39,7 +41,9 @@
                                         <th>Modelo</th>
                                         <th>Serie</th>
                                         <th>Descripcion</th>
-                                        <th>Eliminar</th>
+                                        @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+                                            <th>Eliminar</th>
+                                        @endif
                                     </thead>
                                     <tbody>
                                         @foreach ($ruta_vehiculos as $vehiculo)
@@ -52,13 +56,14 @@
                                                 <td>{{ $vehiculo->vehiculo->modelo->name }}</td>
                                                 <td>{{ $vehiculo->vehiculo->serie }}</td>
                                                 <td>{{ $vehiculo->vehiculo->descripcion }}</td>
-                                                <td>
-                                                    <button class="btn text-danger" title="Eliminar"
-                                                        wire:click="$dispatch('confirm-delete-vehiculo',{{ $vehiculo }})">
-                                                        <i class="fa fa-lg fa-fw fa-trash"></i>
-                                                    </button>
-                                                </td>
-
+                                                @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+                                                    <td>
+                                                        <button class="btn text-danger" title="Eliminar"
+                                                            wire:click="$dispatch('confirm-delete-vehiculo',{{ $vehiculo }})">
+                                                            <i class="fa fa-lg fa-fw fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                @endif
                                             </tr>
                                         @endforeach
                                     </tbody>

@@ -318,6 +318,7 @@ class RutaForm extends Form
                     'monto' => $data['monto'],
                     'folio' => $data['folio'],
                     'envases' => $data['envases'],
+                    'tipo_servicio' => $data['tipo'],
                 ]);
 
                 $servicio_ruta->servicio->status_servicio = 4;

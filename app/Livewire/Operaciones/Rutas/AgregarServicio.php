@@ -14,6 +14,8 @@ class AgregarServicio extends Component
     use WithPagination;
     public RutaForm $form;
     public $selectServicios = [];
+    public $selectServiciosRecolecta = [];
+
     public $montoArray = [];
     public $folioArray = [];
     public $envaseArray = [];
@@ -82,10 +84,11 @@ class AgregarServicio extends Component
 
 
                 if ($selected) {
-
-                    $rules["montoArray.$id"] = 'required';
+                    if (!array_key_exists($id, $this->selectServiciosRecolecta)) {
+                        $rules["montoArray.$id"] = 'required';
+                        $rules["envaseArray.$id"] = 'required';
+                    }
                     $rules["folioArray.$id"] = 'required';
-                    $rules["envaseArray.$id"] = 'required';
                 }
             }
         }
@@ -95,9 +98,9 @@ class AgregarServicio extends Component
     public function messages()
     {
         return [
-            'montoArray.*.required' => 'El campo monto es obligatorio para el servicio seleccionado',
-            'folioArray.*.required' => 'El campo papeleta es obligatorio para el servicio seleccionado',
-            'envaseArray.*.required' => 'El campo envases es obligatorio para el servicio seleccionado',
+            'montoArray.*.required' => 'El campo monto es obligatorio',
+            'folioArray.*.required' => 'El campo papeleta es obligatorio',
+            'envaseArray.*.required' => 'El campo envases es obligatorio',
         ];
     }
 
@@ -112,11 +115,13 @@ class AgregarServicio extends Component
     #[On('add-servicio-ruta')]
     public function addServicios()
     {
+
         $this->selectServicios = array_filter($this->selectServicios);
         if (empty($this->selectServicios)) {
             $this->dispatch('error-servicio', 'Falta seleccionar servicios');
         } else {
             $this->validate();
+            $this->resetValidation();
             $bandera = 0;
             $seleccionados = [];
             foreach ($this->selectServicios as $servicio_id => $item) {
@@ -127,25 +132,35 @@ class AgregarServicio extends Component
                     "monto" => "",
                     "folio" => "",
                     "envases" => "",
+                    "tipo" => "",
                 ];
 
                 if (array_key_exists($servicio_id, $this->montoArray)) {
                     $seleccionados[$bandera]['monto'] = $this->montoArray[$servicio_id];
+                }else{
+                    $seleccionados[$bandera]['monto'] = 0;
                 }
                 if (array_key_exists($servicio_id, $this->folioArray)) {
                     $seleccionados[$bandera]['folio'] = $this->folioArray[$servicio_id];
                 }
                 if (array_key_exists($servicio_id, $this->envaseArray)) {
                     $seleccionados[$bandera]['envases'] = $this->envaseArray[$servicio_id];
+                }else{
+                    $seleccionados[$bandera]['envases'] = 0;
+                }
+                if (array_key_exists($servicio_id, $this->selectServiciosRecolecta)) {
+                    $seleccionados[$bandera]['tipo'] = 2;
+                } else {
+                    $seleccionados[$bandera]['tipo'] = 1;
                 }
                 $bandera++;
             }
-            // dd($seleccionados);
             $res = $this->form->storeRutaServicio($seleccionados);
 
             if ($res == 1) {
                 $this->dispatch('clean-servicios');
                 $seleccionados = [];
+                $this->dispatch('total-ruta');
                 $this->dispatch('success-servicio', 'Servicios agregados con exito a la ruta');
                 $this->dispatch('render-modal-vehiculos');
             } else {
@@ -190,6 +205,7 @@ class AgregarServicio extends Component
         $res = $this->form->updateServicio();
         if ($res == 1) {
             $this->dispatch('clean-servicios');
+            $this->dispatch('total-ruta');
             $this->dispatch('success-servicio', 'Servicio actualizado con exito');
         } else {
             $this->dispatch('error-servicio');
@@ -208,7 +224,8 @@ class AgregarServicio extends Component
             'selectServicios',
             'montoArray',
             'folioArray',
-            'envaseArray'
+            'envaseArray',
+            'selectServiciosRecolecta'
         );
 
         $this->resetValidation();

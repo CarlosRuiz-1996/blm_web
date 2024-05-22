@@ -2,12 +2,15 @@
     <div class="d-sm-flex align-items-center justify-content-between">
 
         <h1 class="ml-3">Servicios</h1>
+        @if($this->form->ruta->ctg_rutas_estado_id==1)
+
         <button title="Agrega una nueva ruta al catalogo" class="btn btn-primary m-2" data-toggle="modal"
             data-target="#servicios" wire:click='getServicios()'>
             Agregar Servicio
             <i class="fa fa-plus" aria-hidden="true"></i>
 
         </button>
+        @endif
     </div>
     <div class="row">
 
@@ -36,7 +39,10 @@
                                         <th>Folio</th>
                                         <th>Envases</th>
                                         <th>Tipo servicio</th>
+                                        @if($this->form->ruta->ctg_rutas_estado_id==1)
+
                                         <th>Acciones</th>
+@endif
                                     </thead>
                                     <tbody>
                                         @foreach ($ruta_servicios as $servicio)
@@ -50,6 +56,8 @@
                                                 <td>{{ $servicio->folio }}</td>
                                                 <td>{{ $servicio->envases }}</td>
                                                 <td>{{ $servicio->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECCIÓN' }}</td>
+                                                @if($this->form->ruta->ctg_rutas_estado_id==1)
+
                                                 <td>
                                                     <button class="btn text-danger" title="Eliminar"
                                                         wire:click="$dispatch('confirm-delete-servicio',{{ $servicio }})">
@@ -63,6 +71,7 @@
                                                         <i class="fa fa-lg fa-fw fa-pen" aria-hidden="true"></i>
                                                     </button>
                                                 </td>
+                                                @endif
 
                                             </tr>
                                         @endforeach
@@ -123,13 +132,14 @@
                         <th>Monto</th>
                         <th>Papeleta</th>
                         <th>Contenedor</th>
+                        <th>Recolección</th>
 
                     </thead>
                     <tbody>
 
 
                         @foreach ($servicios as $servicio)
-                            <tr x-data="{ checkServicio: false, monto: '', folio: '', contenedor: '' }">
+                            <tr x-data="{ checkServicio: false, monto: '', folio: '', contenedor: '', tipo:'0' }">
                                 <td>
                                     <input type="checkbox" wire:model='selectServicios.{{ $servicio->id }}'
                                         x-model="checkServicio" wire:click="resetError('{{ $servicio->id }}')" />
@@ -158,6 +168,11 @@
                                     <x-input-validado x-bind:value="checkServicio ? contenedor : ''"
                                         style="margin-top: -20%" x-bind:disabled="!checkServicio" placeholder="Envases"
                                         wire-model='envaseArray.{{ $servicio->id }}' type="number" />
+                                </td>
+                                <td>
+                                    <input type="checkbox"  x-bind:value="checkServicio ? tipo : '1'"  x-bind:disabled="!checkServicio"
+                                    wire:model='selectServiciosRecolecta.{{ $servicio->id }}'
+                                     wire:click="resetError('{{ $servicio->id }}')" />
                                 </td>
                             </tr>
                         @endforeach
