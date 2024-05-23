@@ -3,6 +3,7 @@
 namespace App\Livewire\Boveda;
 
 use App\Livewire\Operaciones\RutaGestion;
+use App\Models\Cliente;
 use App\Models\Ruta;
 use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
@@ -19,9 +20,10 @@ class Index extends Component
 
     public function render()
     {
+        $resguardototal = Cliente::where('status_cliente',1)->sum('resguardo');
         $Movimientos =  RutaServicioReporte::paginate(10);
         $servicios = Ruta::where('ctg_rutas_estado_id', 2)->paginate(10);
-        return view('livewire.boveda.index', compact('servicios','Movimientos'));
+        return view('livewire.boveda.index', compact('servicios','Movimientos','resguardototal'));
     }
 
     public function llenarmodalservicios($idruta)

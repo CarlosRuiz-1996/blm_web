@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+Broadcast::channel('App.Models.Empleado.{empleado_id}', function ($user, $empleado_id) {
+    // Lógica para verificar si el usuario está autorizado a acceder al canal privado
+    return (int) true;
+});

@@ -7,9 +7,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Broadcast;
 
-class newNotification extends Notification
+class newNotification extends Notification 
 {
     use Queueable;
 
@@ -54,6 +53,7 @@ class newNotification extends Notification
             //
         ];
     }
+
 
 
     public function toBroadCast($notifiable)

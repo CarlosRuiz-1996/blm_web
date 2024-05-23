@@ -144,8 +144,7 @@
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-boveda" role="tabpanel"
                                 aria-labelledby="custom-tabs-one-boveda-tab">
-                                <h3 class="text-center">Resguardo total</h3>
-                                <canvas id="myChart" style="width:100%;"></canvas>
+                                <livewire:clientes.resguardo-cliente :cliente="$cliente->id"/> 
                             </div>
                             <!-- Puedes agregar más contenidos según sea necesario -->
                         </div>
@@ -157,41 +156,3 @@
     </div>
 @stop
 
-
-
-@section('js')
-    <script>
-        // Obtener el contexto del lienzo (canvas)
-        var ctx = document.getElementById('myChart').getContext('2d');
-
-        // Datos del gráfico
-        var data = {
-            labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo'],
-            datasets: [{
-                label: 'Ventas Mensuales',
-                data: [12, 19, 3, 5, 2],
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        };
-
-        // Opciones del gráfico
-        var options = {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            responsive: true // Mantén la responsividad activada
-        };
-
-        // Crear el gráfico
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: data,
-            options: options
-        });
-    </script>
-
-@stop

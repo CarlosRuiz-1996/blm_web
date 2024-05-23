@@ -4,7 +4,7 @@
             <span class="info-box-icon bg-info"><i class="fas fa-dollar-sign"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Resguardo</span>
-                <span class="info-box-number">$41,410</span>
+                <span class="info-box-number">{{ number_format($resguardototal, 2, '.', ',') }} MXN</span>
                 <div class="progress">
                     <div class="progress-bar bg-info" style="width: 70%"></div>
                 </div>

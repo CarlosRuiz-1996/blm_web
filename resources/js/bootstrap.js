@@ -3,7 +3,6 @@
  * to our Laravel back-end. This library automatically handles sending the
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
-import * as bootstrap from 'bootstrap';
 import axios from 'axios';
 window.axios = axios;
 
@@ -20,13 +19,18 @@ import Pusher from 'pusher-js';
  
 window.Pusher = Pusher;
  
-window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-    
-    forceTLS: true
-});
+try {
+    window.Echo = new Echo({
+        broadcaster: 'pusher',
+        key: import.meta.env.VITE_PUSHER_APP_KEY,
+        cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+        forceTLS: true
+    });
+    console.log("Echo configurado correctamente:", window.Echo);
+} catch (error) {
+    console.error("Error al configurar Echo:", error);
+}
+
 // window.Echo = new Echo({
 //     broadcaster: 'pusher',
 //     key: import.meta.env.VITE_PUSHER_APP_KEY,

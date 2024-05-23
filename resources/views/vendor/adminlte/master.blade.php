@@ -104,7 +104,7 @@
 
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
-
+    @vite(['resources/js/app.js'])
 </body>
 
 </html>
