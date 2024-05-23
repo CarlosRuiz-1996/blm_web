@@ -305,6 +305,36 @@ return [
             'type'         => 'fullscreen-widget',
             'topnav_right' => false,
         ],
+        // [
+        //     'type' => 'navbar-notification',
+        //     'icon' => 'fas fa-bell',
+        //     'text' => 'Notificaciones',
+        //     'route' => 'cliente.index',
+        //     // Define tu ruta aquí
+        //     'topnav_right' => true,
+        //     // Para que aparezca en la parte derecha del navbar
+        //     'label' => 5,
+        //     // Número de notificaciones
+        //     'label_color' => 'danger',
+        //     // Color del label
+        //     'dropdown_mode' => true,
+        //     'dropdown_items' => [
+        //         // Estas notificaciones pueden ser dinámicas
+        //         [
+        //             'text' => 'Nueva orden recibida',
+        //             'url' => '#'
+        //         ],
+
+        //     ],
+
+        // ],
+    
+
+
+
+        // Para que aparezca en la parte derecha del navbar
+
+
 
         // Sidebar items:
         [
@@ -317,7 +347,7 @@ return [
             'can'  => 'manage-blog',
         ],
         ['header' => 'Menu'],
-          
+
         [
             'text'    => 'Administrador',
             'icon'    => 'fas fa-fw fa-cogs',
@@ -348,11 +378,11 @@ return [
                     'text' => 'Permisos',
                     'route'  => 'permisos.index',
                     'icon'    => 'fa fa-lock',
-                    
+
                 ],
             ],
         ],
-        
+
         [
             'text' => 'Clientes',
             'route'  => 'cliente.index',
@@ -369,52 +399,52 @@ return [
             'text' => 'Ventas',
             'url'  => '/ventas',
             'icon' => 'fas fa-fw fa-dollar-sign',
-            'can'=>'menu-ventas'
+            'can' => 'menu-ventas'
         ],
         [
             'text' => 'Operaciones',
             'url'  => '/operaciones',
             'icon' => 'fa fa-fw fa-car',
-            'can'=>'menu-operaciones'
+            'can' => 'menu-operaciones'
 
         ],
         [
             'text' => 'cumplimiento',
             'url'  => '/cumplimiento',
             'icon' => 'fas fa-fw fa-check-square',
-            'can'=>'menu-cumplimiento'
+            'can' => 'menu-cumplimiento'
 
         ],
         [
             'text' => 'juridico',
             'url'  => '/juridico',
             'icon' => 'fas fa-fw fa-gavel',
-            'can'=>'menu-juridico'
+            'can' => 'menu-juridico'
         ],
         [
             'text' => 'Bancos',
             'url'  => '/Bancos',
             'icon' => 'fas fa-fw fa-university',
-            'can'=>'menu-bancos'
+            'can' => 'menu-bancos'
         ],
         [
             'text' => 'Seguridad',
             'route'  => 'seguridad.index',
             'icon' => 'fas fa-fw fa-lock',
-            'can'=>'menu-seguridad'
+            'can' => 'menu-seguridad'
         ],
         [
             'text' => 'Boveda/Proceso',
             'route'  => 'boveda.inicio',
             'icon' => 'fa fa-fw fa-lock',
-            'can'=>'menu-seguridad'
+            'can' => 'menu-seguridad'
         ],
-       
+
         [
             'text' => 'RH',
             'route'  => 'rh.index',
             'icon' => 'fas fa-fw fa-users',
-            'can'=>'menu-rh'
+            'can' => 'menu-rh'
         ],
         // [
         //     'text'    => 'Configuracion',
@@ -436,49 +466,49 @@ return [
                     'text' => 'Valida Ventas',
                     'url'  => 'validacion/listar/1/Ventas',
                     'icon'    => 'fas fa-fw fa-sticky-note',
-                    
+
                 ],
                 [
                     'text' => 'Valida Operaciones',
                     'url'  => 'validacion/listar/2/Operaciones',
                     'icon'    => 'fas fa-fw fa-sticky-note',
-                    
+
                 ],
                 [
                     'text' => 'Valida Boveda',
                     'url'  => 'validacion/listar/3/Boveda',
                     'icon'    => 'fas fa-fw fa-sticky-note',
-                    
+
                 ],
                 [
                     'text' => 'Valida Proceso',
                     'url'  => 'validacion/listar/4/Proceso',
                     'icon'    => 'fas fa-fw fa-sticky-note',
-                    
+
                 ],
                 [
                     'text' => 'Valida Contabilidad',
                     'url'  => 'validacion/listar/5/Contabilidad',
                     'icon'    => 'fas fa-fw fa-sticky-note',
-                    
+
                 ],
                 [
                     'text' => 'Valida Facturación',
                     'url'  => 'validacion/listar/6/Facturación',
                     'icon'    => 'fas fa-fw fa-sticky-note',
-                    
+
                 ],
                 [
                     'text' => 'Valida Cobranza',
                     'url'  => 'validacion/listar/7/Cobranza',
                     'icon'    => 'fas fa-fw fa-sticky-note',
-                    
+
                 ],
                 [
                     'text' => 'Valida Gerencia',
                     'url'  => 'validacion/listar/8/Gerencia',
                     'icon'    => 'fas fa-fw fa-sticky-note',
-                    
+
                 ],
             ],
         ],

@@ -135,7 +135,8 @@
 
             @if ($this->form->ruta->ctg_rutas_estado_id == 1)
                 <div class="col-md-12 ">
-                    <button wire:click="$dispatch('confirm',[2,{{ $boveda_pase }},{{ $total_ruta }}])"
+                    <button
+                        wire:click="$dispatch('confirm',[2,{{ $boveda_pase }},{{ $total_ruta }}, {{ $firma }}])"
                         class="btn btn-info btn-block">Enviar a boveda</button>
 
                 </div>
@@ -148,10 +149,13 @@
         <script>
             document.addEventListener('livewire:initialized', () => {
 
-                @this.on('confirm', ([op, boveda_pase, total_ruta]) => {
+                @this.on('confirm', ([op, boveda_pase, total_ruta, firma]) => {
 
                     if (op == 1 || boveda_pase == 1) {
-                        if (!total_ruta || total_ruta <= 10000000) {
+                        //!total_ruta || 
+                        if (total_ruta > 10000000 && !firma) {
+                            valida10m();
+                        } else {
                             Swal.fire({
                                 title: '¿Estas seguro?',
                                 text: op == 1 ? "La ruta sera guardada en la base de datos" :
@@ -168,23 +172,7 @@
                                         accion: 1
                                     });
                                 }
-                            })
-                        }else{
-                            Swal.fire({
-                                title: '¡Supera los 10 Millones!',
-                                text: "Para poder llevar más de 10 millones debe de pedir autorización "+
-                                "a boveda y operaciones, ¿Quiere proceder?",
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Si, adelante!',
-                                cancelButtonText: 'Cancelar'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    @this.dispatch('valida-firmas');
-                                }
-                            })
+                            });
                         }
                     } else {
                         Swal.fire({
@@ -229,6 +217,24 @@
 
 
             });
+
+            function valida10m() {
+                Swal.fire({
+                    title: '¡Supera los 10 Millones!',
+                    text: "Para poder llevar más de 10 millones debe de pedir autorización " +
+                        "a boveda y operaciones, ¿Quiere proceder?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, adelante!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        @this.dispatch('insert-firmas');
+                    }
+                })
+            }
         </script>
     @endpush
 </div>
