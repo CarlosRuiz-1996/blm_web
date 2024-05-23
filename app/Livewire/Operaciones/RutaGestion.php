@@ -4,11 +4,17 @@ namespace App\Livewire\Operaciones;
 
 use Livewire\Component;
 use App\Livewire\Forms\RutaForm;
+use App\Models\Empleado;
+use App\Models\Notification as ModelsNotification;
 use App\Models\Ruta;
 use App\Models\RutaEmpleados;
+use App\Models\RutaFirma10M;
 use App\Models\RutaServicio;
 use App\Models\RutaVehiculo;
 use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
+
 
 class RutaGestion extends Component
 {
@@ -61,9 +67,9 @@ class RutaGestion extends Component
 
             $this->total();
         }
-        
 
-       
+
+
         return view('livewire.operaciones.ruta-gestion', compact('dias', 'boveda_pase'));
     }
 
@@ -71,6 +77,9 @@ class RutaGestion extends Component
     public function total()
     {
         $this->total_ruta = RutaServicio::where('ruta_id', $this->form->ruta->id)->sum('monto');
+        if ($this->total_ruta > 10000000) {
+            $this->validar10m();
+        }
     }
     public function updated($property)
     {
@@ -121,9 +130,38 @@ class RutaGestion extends Component
         }
     }
 
+    public $firma;
 
-    #[On('valida-firmas')]
-    public function validar10m(){
-        dd('entra a validar firmas');
+    public function validar10m()
+    {
+        $this->firma = $this->form->validafirma10m();
+    }
+
+    #[On('insert-firmas')]
+    public function insertFirma10m()
+    {
+        $this->form->insertfirma10m();
+
+
+        //obtener los usuarios con el area de boveda y operaciones.
+        $users = Empleado::whereIn('ctg_area_id', [2, 3])->get();
+        //genera el mensaje
+        $msg = 'Ser requiere validacion para que la ruta ' . $this->form->ruta->nombre->name . ' lleve mas de 10 millones';
+
+
+        //Insertar en notificaciones de boveda
+        ModelsNotification::create([
+            'user_id_send' => Auth::user()->id,
+            'ctg_area_id' => 3,
+            'message' => $msg
+        ]);
+        ModelsNotification::create([
+            'user_id_send' => Auth::user()->id,
+            'ctg_area_id' => 2,
+            'message' => $msg
+        ]);
+
+        Notification::send($users, new \App\Notifications\newNotification($msg));
+        
     }
 }
