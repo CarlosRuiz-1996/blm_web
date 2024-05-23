@@ -94,6 +94,7 @@ class CotizacionNuevo extends Component
     public $iva;
     public $totaliva;
     public $sumatotal;
+    public $resguardo;
 
     public $consepforaneo;
     public $listaForaneos = [];
@@ -129,6 +130,7 @@ class CotizacionNuevo extends Component
         $this->listcp = Ctg_Cp::where('id', $this->idcodpostal)->get();
         $this->colonia = $this->listcp[0]->colonia;
         $this->cp = $this->listcp[0]->cp;
+        $this->resguardo=$this->datoscliente[0]->resguardo;
 
         $this->listestado = Ctg_Estado::where('id', $this->listcp[0]->ctg_estado_id)->get();
         $this->listmunicipio = Ctg_Municipio::where('id', $this->listcp[0]->ctg_municipio_id)->get();
@@ -360,16 +362,26 @@ class CotizacionNuevo extends Component
         $this->validate([
             'vigencia' => 'required',
             'condicionpago' => 'required',
+            'resguardo' => 'required|numeric|min:0', // Añadir la regla min:0 para validar que resguardo no sea negativo
         ], [
-            'vigencia.required' => 'La vigencia es requerido.',
-            'condicionpago.required' => 'Condicion de pago es requerido.',
+            'vigencia.required' => 'La vigencia es requerida.',
+            'condicionpago.required' => 'La condición de pago es requerida.',
+            'resguardo.required' => 'El resguardo es requerido.',
+            'resguardo.numeric' => 'El resguardo debe ser un número.',
+            'resguardo.min' => 'El resguardo no puede ser menor que 0.', // Mensaje de error para resguardo no negativo
         ]);
-
         // Verificar si $this->data no está vacío
         if (!empty($this->data) || !empty($this->dataforaneo)) {
             try {
                 DB::transaction(function () {
                     // Ingreso en la tabla usuarios
+                    $clienteres=Cliente::find($this->id);
+                    $valorResguardo=$clienteres->resguardo;
+                    if($valorResguardo==-1){
+                        $clienteres->resguardo=$this->resguardo;
+                        $clienteres->save();
+                    }
+
                     $exp = expediente_digital::where('cliente_id', $this->id)->first();
                     $sts = 1;
 
@@ -382,6 +394,8 @@ class CotizacionNuevo extends Component
                             $sts = 3;
                         }
                     }
+
+
                     $this->valoridcoti = Cotizacion::create([
                         'total' => $this->totalreal,
                         'vigencia' => $this->vigencia,

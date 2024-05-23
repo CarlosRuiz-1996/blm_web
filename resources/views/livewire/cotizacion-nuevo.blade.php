@@ -218,17 +218,21 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <x-input-validado label="Vigencia:" placeholder="Ingrese Vigencia" wire-model="vigencia"
                                     wire-attribute="vigencia" type="text" />
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <x-select-validado label="Condiciones de pago:" placeholder="Seleccione"
                                     wire-model="condicionpago" required>
                                     @foreach ($condicionpagolist as $condicionpag)
                                     <option value="{{ $condicionpag->id }}">{{ $condicionpag->nombre }}</option>
                                     @endforeach
                                 </x-select-validado>
+                            </div>
+                            <div class="col-md-4 mb-3" >
+                                <x-input-validado label="Resguardo:" :readonly="$resguardo >= 0"  placeholder="Ingrese cantidad en Resguardo" wire-model="resguardo"
+                                    wire-attribute="resguardo" type="text" />
                             </div>
                             <div class="col-md-12">
                                 <button wire:click="$dispatch('confirm')" class="btn btn-secondary btn-block ">Guardar

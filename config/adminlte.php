@@ -297,6 +297,11 @@ return [
             'topnav_right' => false,
         ],
         [
+            'type'         => 'navbar-search',
+            'text'         => 'Buscar',
+            'topnav_right' => false,
+        ],
+        [
             'type'         => 'fullscreen-widget',
             'topnav_right' => false,
         ],
