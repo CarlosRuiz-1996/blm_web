@@ -24,9 +24,12 @@ try {
         broadcaster: 'pusher',
         key: import.meta.env.VITE_PUSHER_APP_KEY,
         cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-        forceTLS: true
+        wsHost: window.location.hostname,
+        wsPort: 6001,
+        forceTLS: false,
+        disableStats: true,
     });
-    console.log("Echo configurado correctamente:", window.Echo);
+    // console.log("Echo configurado correctamente:", window.Echo);
 } catch (error) {
     console.error("Error al configurar Echo:", error);
 }
