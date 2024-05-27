@@ -8,6 +8,7 @@ use App\Models\CtgRutaDias;
 use App\Models\CtgRutas;
 use App\Models\CtgVehiculos;
 use App\Models\Empleado;
+use App\Models\Notification as ModelsNotification;
 use App\Models\Ruta;
 use App\Models\RutaEmpleados;
 use App\Models\RutaFirma10M;
@@ -19,6 +20,8 @@ use Livewire\Attributes\Validate;
 use Livewire\Form;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 class RutaForm extends Form
 {
@@ -606,11 +609,30 @@ class RutaForm extends Form
 
             
 
-            RutaFirma10M::create([
+           $firma =  RutaFirma10M::create([
                 'ruta_id' => $this->ruta->id
             ]);
 
-            
+            $users = Empleado::whereIn('ctg_area_id', [2, 3])->get();
+            //genera el mensaje
+            $msg = 'Ser requiere validacion para que la ruta ' . $this->ruta->nombre->name . ' lleve mas de 10 millones';
+    
+    
+            //Insertar en notificaciones de boveda
+            ModelsNotification::create([
+                'empleado_id_send' => Auth::user()->empleado->id,
+                'ctg_area_id' => 3,
+                'message' => $msg,
+                'ruta_firma_id'=> $firma->id
+            ]);
+            ModelsNotification::create([
+                'empleado_id_send' => Auth::user()->empleado->id,
+                'ctg_area_id' => 2,
+                'message' => $msg,
+                'ruta_firma_id'=> $firma->id
+            ]);
+    
+            Notification::send($users, new \App\Notifications\newNotification($msg));
 
 
             DB::commit();

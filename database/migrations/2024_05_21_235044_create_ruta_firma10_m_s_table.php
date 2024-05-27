@@ -17,17 +17,17 @@ return new class extends Migration
             $table->unsignedBigInteger('ruta_id');
             $table->foreign('ruta_id')->references('id')->on('rutas')->onDelete('cascade');
             //boveda
-            $table->unsignedBigInteger('user_id_boveda')->nullable();//usuario
-            $table->foreign('user_id_boveda')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('empleado_id_boveda')->nullable();//usuario
+            $table->foreign('empleado_id_boveda')->references('id')->on('empleados')->onDelete('cascade');
             $table->integer('confirm_boveda')->nullable();
             //operaciones
-            $table->unsignedBigInteger('user_id_operaciones')->nullable();//usuario
-            $table->foreign('user_id_operaciones')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('empleado_id_operaciones')->nullable();//usuario
+            $table->foreign('empleado_id_operaciones')->references('id')->on('empleados')->onDelete('cascade');
             $table->integer('confirm_operaciones')->nullable();
 
             //direccion
-            $table->unsignedBigInteger('user_id_direccion')->nullable();//usuario
-            $table->foreign('user_id_direccion')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('empleado_id_direccion')->nullable();//usuario
+            $table->foreign('empleado_id_direccion')->references('id')->on('empleados')->onDelete('cascade');
             $table->integer('confirm_direccion')->nullable();
 
             $table->integer('status_ruta_firma10_m_s')->default(0);//0-en espera/negada 1-aceptada  2-finalizada
