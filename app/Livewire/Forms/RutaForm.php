@@ -623,13 +623,15 @@ class RutaForm extends Form
                 'empleado_id_send' => Auth::user()->empleado->id,
                 'ctg_area_id' => 3,
                 'message' => $msg,
-                'ruta_firma_id'=> $firma->id
+                'ruta_firma_id'=> $firma->id,
+                'tipo'=>2
             ]);
             ModelsNotification::create([
                 'empleado_id_send' => Auth::user()->empleado->id,
                 'ctg_area_id' => 2,
                 'message' => $msg,
-                'ruta_firma_id'=> $firma->id
+                'ruta_firma_id'=> $firma->id,
+                'tipo'=>2
             ]);
     
             Notification::send($users, new \App\Notifications\newNotification($msg));

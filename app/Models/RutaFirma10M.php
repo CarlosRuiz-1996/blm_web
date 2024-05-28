@@ -14,4 +14,9 @@ class RutaFirma10M extends Model
         'ruta_id', 'empleado_id_boveda', 'confirm_boveda', 'empleado_id_operaciones', 'confirm_operaciones',
         'empleado_id_direccion', 'confirm_direccion', 'status_ruta_firma10_m_s'
     ];
+
+
+    public function ruta(){
+        return $this->belongsTo(Ruta::class, 'ruta_id');
+    }
 }

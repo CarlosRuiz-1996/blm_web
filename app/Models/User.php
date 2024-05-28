@@ -33,7 +33,7 @@ class User extends Authenticatable
         'email',
         'password',
         'image_path',
-        'ctg_area_id',
+        // 'ctg_area_id',
     ];
 
     /**

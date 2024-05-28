@@ -1,5 +1,5 @@
 <div>
-    <div class="nav-item dropdown" >
+    <div class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
 
             @if ($totalNotifications)
@@ -19,15 +19,22 @@
                 <div class="dropdown-header bg-info"> Sin notificaciones</div>
             @endif
             @foreach ($notificationes as $notification)
-           
-                  <a href="javascript:void(0);" wire:click="$dispatch('confirm', ['{{ $notification }}'])" class="dropdown-item">
+                <a href="javascript:void(0);"
+                    @if ($notification->tipo == 2) 
+                        wire:click="$dispatch('confirm', ['{{ $notification }}'])"
+                    @elseif ($notification->tipo == 1)
+                        wire:click="deleteNotification({{ $notification->id }})"
+                    @endif
+                    class="dropdown-item">
                     <div class="media">
                         <div class="media-body">
                             <p class="text-xs"><strong>{{ $notification->message }}</strong></p>
-                            <p class="text-muted text-xs text-right">{{ $notification->created_at->diffForHumans() }}</p>
+                            <p class="text-muted text-xs text-right">{{ $notification->created_at->diffForHumans() }}
+                            </p>
                         </div>
                     </div>
                 </a>
+
                 <hr class="p-0 m-0">
             @endforeach
             {{-- <div class="dropdown-divider"></div>
@@ -43,7 +50,7 @@
     @push('js')
         <script>
             document.addEventListener('livewire:initialized', () => {
-                var notif=null;
+                var notif = null;
                 @this.on('confirm', ([notification]) => {
                     var notif = JSON.parse(notification);
                     Swal.fire({
@@ -69,9 +76,9 @@
                         }
                     });
                 });
-    
+
                 Livewire.on('success-firma10', function([res]) {
-    
+
                     Swal.fire({
                         icon: res[1],
                         title: res[0],
@@ -82,6 +89,6 @@
             });
         </script>
     @endpush
-    
+
 
 </div>
