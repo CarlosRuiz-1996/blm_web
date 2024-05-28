@@ -116,6 +116,17 @@ class NotificationNavBar extends Component
                     if ($firma->confirm_direccion === 1) {
                         //genera el mensaje
                         $this->notificaciones($notificacion, $firma);
+                    } else if ($firma->confirm_direccion === 0) {
+                        $msg = $notificacion->message . "..Rechazada.";
+                        Notification::create([
+                            'empleado_id_send' => Auth::user()->empleado->id,
+                            'ctg_area_id' => 2,
+                            'message' => $msg,
+                            'ruta_firma_id' => $firma->id,
+                            'tipo' => 1
+                        ]);
+                        $users = Empleado::whereIn('ctg_area_id', [2])->get();
+                        NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
                     }
                 } else if (($firma->confirm_boveda == 1 && $firma->confirm_operaciones == 1) ||  $firma->confirm_direccion === 1) {
                     //genera el mensaje
@@ -123,7 +134,7 @@ class NotificationNavBar extends Component
                     $this->notificaciones($notificacion, $firma);
                 }
 
-                
+
 
                 $notificacion->delete(); // Eliminar la notificación después de actualizar la firma
 
@@ -138,30 +149,31 @@ class NotificationNavBar extends Component
         }
     }
 
-    function notificaciones($notificacion, $firma){
-             //genera el mensaje
-             $msg = $notificacion->message . "..Aceptada.";
-             Notification::create([
-                 'empleado_id_send' => Auth::user()->empleado->id,
-                 'ctg_area_id' => 2,
-                 'message' => $msg,
-                 'ruta_firma_id' => $firma->id,
-                 'tipo' => 1
-             ]);
-             $users = Empleado::whereIn('ctg_area_id', [2])->get();
-             NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
+    function notificaciones($notificacion, $firma)
+    {
+        //genera el mensaje
+        $msg = $notificacion->message . "..Aceptada.";
+        Notification::create([
+            'empleado_id_send' => Auth::user()->empleado->id,
+            'ctg_area_id' => 2,
+            'message' => $msg,
+            'ruta_firma_id' => $firma->id,
+            'tipo' => 1
+        ]);
+        $users = Empleado::whereIn('ctg_area_id', [2])->get();
+        NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
 
-             //avisar a direccion que saldra la ruta.
-             $msg = "La ruta" . $notificacion->firma->ruta->nombre->name . " saldra con mas de 10 millones.";
-             Notification::create([
-                 'empleado_id_send' => Auth::user()->empleado->id,
-                 'ctg_area_id' => 8,
-                 'message' => $msg,
-                 'ruta_firma_id' => $firma->id,
-                 'tipo' => 1
-             ]);
-             $users = Empleado::whereIn('ctg_area_id', [8])->get();
-             NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));       
+        //avisar a direccion que saldra la ruta.
+        $msg = "La ruta" . $notificacion->firma->ruta->nombre->name . " saldra con mas de 10 millones.";
+        Notification::create([
+            'empleado_id_send' => Auth::user()->empleado->id,
+            'ctg_area_id' => 8,
+            'message' => $msg,
+            'ruta_firma_id' => $firma->id,
+            'tipo' => 1
+        ]);
+        $users = Empleado::whereIn('ctg_area_id', [8])->get();
+        NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
     }
     public function deleteNotification($id)
     {
