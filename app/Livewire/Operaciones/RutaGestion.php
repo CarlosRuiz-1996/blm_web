@@ -12,8 +12,6 @@ use App\Models\RutaFirma10M;
 use App\Models\RutaServicio;
 use App\Models\RutaVehiculo;
 use Livewire\Attributes\On;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Notification;
 
 
 class RutaGestion extends Component
@@ -144,24 +142,6 @@ class RutaGestion extends Component
 
 
         //obtener los usuarios con el area de boveda y operaciones.
-        $users = Empleado::whereIn('ctg_area_id', [2, 3])->get();
-        //genera el mensaje
-        $msg = 'Ser requiere validacion para que la ruta ' . $this->form->ruta->nombre->name . ' lleve mas de 10 millones';
-
-
-        //Insertar en notificaciones de boveda
-        ModelsNotification::create([
-            'user_id_send' => Auth::user()->id,
-            'ctg_area_id' => 3,
-            'message' => $msg
-        ]);
-        ModelsNotification::create([
-            'user_id_send' => Auth::user()->id,
-            'ctg_area_id' => 2,
-            'message' => $msg
-        ]);
-
-        Notification::send($users, new \App\Notifications\newNotification($msg));
-        
+      
     }
 }
