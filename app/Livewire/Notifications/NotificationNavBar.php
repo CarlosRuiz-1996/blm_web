@@ -3,25 +3,26 @@
 namespace App\Livewire\Notifications;
 
 use App\Livewire\Forms\NotificationsForm;
+use App\Models\Empleado;
 use App\Models\Notification;
+use App\Models\RutaFirma10M;
+use Illuminate\Support\Facades\Notification as NotificationsNotification;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 
 
 class NotificationNavBar extends Component
 {
-    public $notifications;
+   
     public NotificationsForm $form;
-
-    public function mount()
-    {
-        $this->notifications = [];
-    }
-
+    public $notificationes;
+    public $totalNotifications;
+    public $notificacionaelimi;
     public function getListeners()
     {
-
         $empleado_id = Auth::user()->empleado->id;
         return [
             // Private Channel
@@ -29,46 +30,107 @@ class NotificationNavBar extends Component
             "echo-notification:App.Models.Empleado.{$empleado_id},notification" => 'render',
         ];
     }
-    public $showNewOrderNotification = false;
 
 
     public function render()
     {
-        // dd(Auth::user()->empleado->ctg_area_id);
-        $notificationes = Notification::where('ctg_area_id', Auth::user()->empleado->ctg_area_id)
+        $this->notificationes = Notification::where('ctg_area_id', Auth::user()->empleado->ctg_area_id)
             ->where('status_notificacion', 1)
             ->latest()
             ->take(5)
             ->get();
 
         // Obtener el conteo total de notificaciones para el área específica
-        $totalNotifications = Notification::where('ctg_area_id', Auth::user()->empleado->ctg_area_id)
+        $this->totalNotifications = Notification::where('ctg_area_id', Auth::user()->empleado->ctg_area_id)
             ->where('status_notificacion', 1)
             ->count();
-
         // dd($notification);
-        return view('livewire.notifications.notification-nav-bar', compact('notificationes', 'totalNotifications'));
+        return view('livewire.notifications.notification-nav-bar');
     }
 
 
     #[On('validar-10m')]
-    public function validation($respuesta, Notification $notification)
+    public function validation($respuesta, $notification)
     {
+        $notificacion = Notification::find($notification);
+    
+            if (!$notificacion) {
+                
+            }else{
 
-        $this->form->notification = $notification;
+        try {
+            DB::beginTransaction();
+            
+            $usuario = Auth::user();
+            $empleado = $usuario->empleado ?? null;
 
-        $res = $this->form->validar10m($respuesta);
+            if (!$empleado) {
+                throw new \Exception('Empleado no encontrado para el usuario.');
+            }
 
+            $area_id = $empleado->ctg_area_id;
+            $firma = RutaFirma10M::find($notificacion->ruta_firma_id);
 
-        if ($res == 1) {
-            // $notification->delete();
-            // $this->reset('form.notification');
+            if (!$firma) {
+                throw new \Exception('Firma no encontrada.');
+            }
 
-            $this->dispatch('success-firma10', ['La validacion se hizo correctamente', 'success']);
-        } else {
-            $this->dispatch('success-firma10', ['Ha ocurrido un error, intenta más tarde', 'error']);
+            $empleado_id = $empleado->id;
+
+            switch ($area_id) {
+                case 2:
+                    $firma->empleado_id_operaciones = $empleado_id;
+                    $firma->confirm_operaciones = $respuesta;
+                    break;
+                case 3:
+                    $firma->empleado_id_boveda = $empleado_id;
+                    $firma->confirm_boveda = $respuesta;
+                    break;
+                case 8:
+                    $firma->empleado_id_direccion = $empleado_id;
+                    $firma->confirm_direccion = $respuesta;
+                    break;
+                default:
+                    throw new \Exception('ID de área no válido.');
+            }
+
+            $firma->save();
+            if( $firma->confirm_boveda ==0 || $firma->confirm_direccion ==0 ){
+                //genera el mensaje
+                $msg = $notificacion->message;
+                Notification::create([
+                    'empleado_id_send' => Auth::user()->empleado->id,
+                    'ctg_area_id' => 8,
+                    'message' => $msg,
+                    'ruta_firma_id'=> $firma->id
+                ]);
+                $users = Empleado::whereIn('ctg_area_id', [8])->get();
+                NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
+            }else if($firma->confirm_boveda ==1 && $firma->confirm_direccion ==1){
+                //genera el mensaje
+                
+                //genera el mensaje
+                $msg = $notificacion->message."..Aceptada.";
+                Notification::create([
+                    'empleado_id_send' => Auth::user()->empleado->id,
+                    'ctg_area_id' => 2,
+                    'message' => $msg,
+                    'ruta_firma_id'=> $firma->id
+                ]);
+                $users = Empleado::whereIn('ctg_area_id', [2])->get();
+                NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
+            }
+
+            $notificacion->delete(); // Eliminar la notificación después de actualizar la firma
+            
+            
+    
+            DB::commit();
+            $this->dispatch('success-firma10', ['Se notificara la decision a el area correspondiente', 'success']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('success-firma10', ['Ha ocurrido un error, intenta más tarde'.$e, 'error']);
         }
-
-        $this->render();
+    }
     }
 }

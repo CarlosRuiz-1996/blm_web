@@ -11,22 +11,24 @@
                 {{ $totalNotifications }}
             </span>
         </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" wire:key="myUniqueKey">
 
             @if ($totalNotifications)
-                <div class="dropdown-header">{{ $totalNotifications }} nuevas notificaciones</div>
+                <div class="dropdown-header bg-info">{{ $totalNotifications }} nuevas notificaciones</div>
             @else
-                <div class="dropdown-header"> Sin notificaciones</div>
+                <div class="dropdown-header bg-info"> Sin notificaciones</div>
             @endif
             @foreach ($notificationes as $notification)
-                <a wire:click="$dispatch('confirm', ['{{ $notification }}'])" class="dropdown-item">
+           
+                  <a href="javascript:void(0);" wire:click="$dispatch('confirm', ['{{ $notification }}'])" class="dropdown-item">
                     <div class="media">
                         <div class="media-body">
-                            <p class="text-sm">{{ $notification->message }}</p>
-                            <p class="text-muted text-sm">{{ $notification->created_at->diffForHumans() }}</p>
+                            <p class="text-xs"><strong>{{ $notification->message }}</strong></p>
+                            <p class="text-muted text-xs text-right">{{ $notification->created_at->diffForHumans() }}</p>
                         </div>
                     </div>
                 </a>
+                <hr class="p-0 m-0">
             @endforeach
             {{-- <div class="dropdown-divider"></div>
         <a href="#" class="dropdown-item dropdown-footer">Ver todas las notificaciones</a> --}}
@@ -41,10 +43,9 @@
     @push('js')
         <script>
             document.addEventListener('livewire:initialized', () => {
-
+                var notif=null;
                 @this.on('confirm', ([notification]) => {
-                    const notif = JSON.parse(notification);
-
+                    var notif = JSON.parse(notification);
                     Swal.fire({
                         title: '¡Confirmación!',
                         text: notif.message,
@@ -53,7 +54,7 @@
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
                         confirmButtonText: 'Si, adelante!',
-                        cancelButtonText: 'Cancelar'
+                        cancelButtonText: 'Negar'
                     }).then((result) => {
                         if (result.isConfirmed) {
                             @this.dispatch('validar-10m', {
@@ -68,9 +69,9 @@
                         }
                     });
                 });
-
+    
                 Livewire.on('success-firma10', function([res]) {
-
+    
                     Swal.fire({
                         icon: res[1],
                         title: res[0],
@@ -81,5 +82,6 @@
             });
         </script>
     @endpush
+    
 
 </div>
