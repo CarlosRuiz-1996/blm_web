@@ -41,7 +41,6 @@ class RutaGestion extends Component
     {
         $dias = $this->form->getCtgDias();
         $boveda_pase = 0;
-
         if ($this->form->ruta) {
             $vehiculos = RutaVehiculo::where('ruta_id', $this->form->ruta->id)->count();
             $personal = RutaEmpleados::where('ruta_id', $this->form->ruta->id)
@@ -94,6 +93,8 @@ class RutaGestion extends Component
     #[On('save-ruta')]
     public function save()
     {
+
+        // dd('save');
         $this->validate([
             'form.ctg_rutas_id' => 'required',
             'form.hora_inicio' => 'required',
@@ -115,7 +116,7 @@ class RutaGestion extends Component
     #[On('update-ruta')]
     public function update($accion)
     {
-
+        dd('update');
         if ($accion == 1) {
 
             $res = $this->form->boveda();
@@ -133,14 +134,13 @@ class RutaGestion extends Component
     public function validar10m()
     {
         $this->firma = $this->form->validafirma10m();
+
     }
 
     #[On('insert-firmas')]
     public function insertFirma10m()
     {
         $this->form->insertfirma10m();
-
-
         //obtener los usuarios con el area de boveda y operaciones.
       
     }
