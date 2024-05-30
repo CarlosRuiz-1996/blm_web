@@ -53,10 +53,12 @@ class MemoValidacionForm extends Form
                 for ($i = 1; $i <= $limit; $i++) {
                     $revisor = RevisorArea::where('empleado_id', $empleado_id)
                         ->where('ctg_area_id', $i)->first();
-                    // // dd($revisor);
-                        $existe = MemorandumValidacion::where('memoranda_id', $memorandum_id)->where('revisor_areas_id', $i)->exists();
-
-
+                
+                    if ($revisor) {
+                        $existe = MemorandumValidacion::where('memoranda_id', $memorandum_id)
+                            ->where('revisor_areas_id', $revisor->id)
+                            ->exists();
+                
                         if (!$existe) {
                             MemorandumValidacion::create([
                                 'memoranda_id' => $memorandum_id,
@@ -65,9 +67,8 @@ class MemoValidacionForm extends Form
                             ]);
                             $bandera .= $revisor->id . '-/';
                         }
-                   
-                }
-                dd($limit . '*' . $bandera);
+                    }
+                }                
             } else {
                 dd('muere');
                 die();
