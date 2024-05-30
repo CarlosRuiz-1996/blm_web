@@ -101,6 +101,7 @@ Route::get('ventas/anexo1-pdf/{anexo}',[Anexo1::class, 'anexo_pdf'])->name('anex
 // boveda
 Route::get('boveda/',[boveda::class, 'index'])->name('boveda.index');
 Route::get('/boveda/inicio',[BovedaController::class, 'index'])->name('boveda.inicio');
+Route::get('/boveda/reporte',[BovedaController::class, 'bovedaresguardo'])->name('boveda.bovedaresguardo');
 
 //factibilidad
 Route::get('seguridad/',[Factibilidad::class, 'index'])->name('seguridad.index');

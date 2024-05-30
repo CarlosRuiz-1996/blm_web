@@ -9,15 +9,21 @@
                     <div class="progress-bar bg-info" style="width: 70%"></div>
                 </div>
                 <span class="progress-description">
-                    Aumento del 70% en 30 días
+                    <a href="{{ route('boveda.bovedaresguardo')}}">Más información</a>
                 </span>
             </div>
         </div>  
+
+
+        
         <div class="card-outline card-info info-box">
             <div class="info-box-content">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="tab1-tab" data-toggle="tab" href="#tab1" role="tab" aria-controls="tab1" aria-selected="true">Cargar Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="rutaRecoleccion-tab" data-toggle="tab" href="#rutaRecoleccion" role="tab" aria-controls="rutaRecoleccion" aria-selected="false">Ruta Terminada</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="tab2-tab" data-toggle="tab" href="#tab2" role="tab" aria-controls="tab2" aria-selected="false">Reporte de Movimiento</a>
@@ -69,25 +75,35 @@
                                 <!-- Encabezados de la tabla -->
                                 <thead class="table-info">
                                     <tr>
-                                        <th>Ruta</th>
-                                        <th>Servicio</th>
-                                        <th>Tipo de servicio</th>
-                                        <th>Estatus</th>
-                                        <th>Fecha</th>
+                                        <th class="text-xs">Ruta</th>
+                                        <th class="text-xs">Servicio</th>
+                                        <th class="text-xs">RFC Cliente</th>
+                                        <th class="text-xs">Tipo de servicio</th>
+                                        <th class="text-xs">Estatus</th>
+                                        <th class="text-xs">Fecha</th>
                                     </tr>
                                 </thead>
                                 <!-- Cuerpo de la tabla -->
                                 <tbody>
                                     @foreach ($Movimientos as $movimiento)
                                         <tr>
-                                            <td>{{ $movimiento->ruta_id }}</td>
-                                            <td>{{ $movimiento->servicio_id }}</td>
-                                            <td>{{ $movimiento->tipo_servicio }}</td>
-                                            <td><span class="badge {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'bg-success' : 'bg-danger' }}">
-                                                {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'Servicio cargado' : 'Servicio eliminado (reprogramar)' }}
+                                            <td class="text-xs">{{ $movimiento->ruta->nombre->name }}</td>
+                                            <td class="text-xs">{{ $movimiento->servicio->ctg_servicio->descripcion }}</td>
+                                            <td class="text-xs">{{ $movimiento->servicio->cliente->rfc_cliente }}</td>
+                                            
+                                            <td class="text-xs">{{ $movimiento->tipo_servicio  == 1 ? 'Entrega' : 'Recolección' }}</td>
+                                            <td class="text-xs">
+                                            @if ($movimiento->tipo_servicio == 1)
+                                            <span class="badge {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'bg-success' : 'bg-danger' }}">
+                                                {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'Servicio cargado' : 'Servicio eliminado para esta ruta (reprogramar)' }}
                                             </span>
+                                            @else
+                                            <span class="badge {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'bg-success' : 'bg-danger' }}">
+                                                {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'Servicio Autorizado para recolectar' : 'Servicio no autorizado para esta ruta (reprogramar)' }}
+                                            </span>
+                                            @endif
                                             </td>
-                                            <td>{{ $movimiento->created_at }}</td>
+                                            <td class="text-xs">{{ $movimiento->created_at }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -95,6 +111,9 @@
                         </div>
                         <!-- Paginación -->
                         {{ $Movimientos->links() }}
+                    </div>
+                    <div class="tab-pane fade" id="rutaRecoleccion" role="tabpanel" aria-labelledby="rutaRecoleccion-tab">
+                       @livewire('boveda.ruta-recolecta')
                     </div>
                     </div>
                 </div>
@@ -133,17 +152,41 @@
                                         <td></td>
                                         <td>{{ $rutaserv->servicio->ctg_servicio->descripcion }}</td>
                                         <td>{{ $rutaserv->tipo_servicio == 1 ? 'Entrega' : 'Recolección' }}</td>
+                                        @if($rutaserv->tipo_servicio == 1)   
                                         <td>$ {{ number_format($rutaserv->monto, 2, '.', ',') }}</td>
+                                        @else
+                                        <td>
+                                            @if($rutaserv->monto !=null && $rutaserv->monto != 0)
+                                                $ {{ number_format($rutaserv->monto, 2, '.', ',') }}
+                                            @else
+                                                Sin especificar
+                                            @endif
+                                        </td>
+                                        @endif
                                         <td> 
+                                         @if($rutaserv->tipo_servicio == 1)   
                                             @if($rutaserv->status_ruta_servicios==1)
                                             <button wire:click="cargar({{ $rutaserv->servicio_id }}, {{ $rutaserv->ruta_id }})" class="btn btn-primary">Si</button>
-                                            <button type="button" data-target="#exampleModalToggle2" data-toggle="modal"  wire:click="cargarNoObtenerdatos({{ $rutaserv->servicio_id }}, {{ $rutaserv->ruta_id }})" class="btn btn-danger">No</button>
+                                            <button type="button" data-target="#exampleModalCerrar" data-toggle="modal"  wire:click="cargarNoObtenerdatos({{ $rutaserv->servicio_id }}, {{ $rutaserv->ruta_id }})" class="btn btn-danger">No</button>
                                            @else
                                                 <span
                                                     class="badge {{ $rutaserv->status_ruta_servicios ==2 ? 'bg-success' : 'bg-danger' }}">
                                                     {{ $rutaserv->status_ruta_servicios ==2 ? 'Servicio cargado' : 'Error en el servicio'
                                                     }}
                                                 </span>
+                                            @endif
+                                            @else
+                                             @if($rutaserv->status_ruta_servicios==1)
+                                            <button wire:click="cargarRecoleccion({{ $rutaserv->servicio_id }}, {{ $rutaserv->ruta_id }})" class="btn btn-primary">Aceptar Recolección</button>
+                                            <button type="button" data-target="#exampleModalCerrar" data-toggle="modal"  wire:click="cargarNoObtenerdatos({{ $rutaserv->servicio_id }}, {{ $rutaserv->ruta_id }})" class="btn btn-danger">No Aceptar</button>
+                                           @else
+                                                <span
+                                                    class="badge {{ $rutaserv->status_ruta_servicios ==2 ? 'bg-success' : 'bg-danger' }}">
+                                                    {{ $rutaserv->status_ruta_servicios ==2 ? 'Servicio Autorizado para recolecta' : 'Error en el servicio'
+                                                    }}
+                                                </span>
+                                            @endif
+
                                             @endif
                                         </td>
                                     </tr>
@@ -159,8 +202,9 @@
             </div>
         </div>
     </div>
+    
     <!--modal motivo no cargar-->
-    <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+    <div class="modal fade" id="exampleModalCerrar" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
     tabindex="-1" wire:ignore.self>
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -184,14 +228,14 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" data-target="#detalleModal" data-toggle="modal">Cerrar</button>
+                <button class="btn btn-primary" data-dismiss="modal">Cerrar</button>
                 <button class="btn btn-primary" wire:click="Nocargar">Aceptar</button>
             </div>
         </div>
     </div>
 </div>
 @push('js')
-    <script>
+<script>
         document.addEventListener('livewire:initialized', () => {
 
                 @this.on('confirm', () => {
@@ -237,6 +281,15 @@
                         timer: 3000
                     });
                 });
+                Livewire.on('ServicioResguardo', function([res]) {
+
+                    Swal.fire({
+                        icon: res[1],
+                        title: res[0],
+                        showConfirmButton: false,
+                        timer: 5000
+                    });
+                    });
 
                 Livewire.on('errorTablaDatos', function([message]) {
                     Swal.fire({
@@ -262,7 +315,8 @@
                         timer: 3000
                     }).then(() => {
                         // Cerrar el modal después de que se muestra el mensaje de éxito
-                        $('#exampleModalToggle2').modal('hide');
+                        $('#exampleModalCerrar').modal('hide');
+                        $('#detalleModal').modal('hide');
                     });
                 });
                 
@@ -270,25 +324,61 @@
             });
 
               // Ocultar el primer modal cuando se muestra el segundo modal
-                $('#exampleModalToggle2').on('show.bs.modal', function () {
+                $('#exampleModalCerrar').on('show.bs.modal', function () {
                     $('#detalleModal').modal('hide');
+                    $('#detalleModal').removeClass('show');
                 });
 
                 // Mostrar el primer modal cuando se cierra el segundo modal
-                $('#exampleModalToggle2').on('hidden.bs.modal', function () {
+                $('#exampleModalCerrar').on('hidden.bs.modal', function () {
                     $('#detalleModal').modal('show');
                 });
 
                 // Ocultar el segundo modal cuando se muestra el primer modal
                 $('#detalleModal').on('show.bs.modal', function () {
-                    $('#exampleModalToggle2').modal('hide');
+                    $('#exampleModalCerrar').modal('hide');
                 });
+
+                $('#detalleModal').on('hidden.bs.modal', function () {
+                    $('#exampleModalCerrar').modal('show');
+                });
+                $(document).ready(function() {
+    // Ocultar el primer modal cuando se muestra el segundo modal
+    $('#exampleModalCerrar').on('show.bs.modal', function () {
+        if ($('#detalleModal').hasClass('show')) {
+            $('#detalleModal').modal('hide');
+            console.log("Ocultando detalleModal al mostrar exampleModalCerrar");
+        }
+    });
+
+    // Mostrar el primer modal cuando se cierra el segundo modal
+    $('#exampleModalCerrar').on('hidden.bs.modal', function () {
+        if (!$('#detalleModal').hasClass('show')) {
+            $('#detalleModal').modal('show');
+            console.log("Mostrando detalleModal al cerrar exampleModalCerrar");
+        }
+    });
+
+    // Ocultar el segundo modal cuando se muestra el primer modal
+    $('#detalleModal').on('show.bs.modal', function () {
+        if ($('#exampleModalCerrar').hasClass('show')) {
+            $('#exampleModalCerrar').modal('hide');
+            console.log("Ocultando exampleModalCerrar al mostrar detalleModal");
+        }
+    });
+
+    // Mostrar el segundo modal cuando se cierra el primer modal
+    $('#detalleModal').on('hidden.bs.modal', function () {
+        if (!$('#exampleModalCerrar').hasClass('show')) {
+            $('#exampleModalCerrar').modal('show');
+            console.log("Mostrando exampleModalCerrar al cerrar detalleModal");
+        }
+    });
+});
+
 
         
             
     </script>
-
-
     @endpush
-    
 </div>

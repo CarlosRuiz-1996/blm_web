@@ -6,11 +6,13 @@ use App\Models\Ctg_Area;
 use App\Models\Empleado;
 use App\Models\RevisorArea;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+
+
 
 class Altaempleado extends Component
 {
@@ -64,15 +66,15 @@ class Altaempleado extends Component
     public $cve_empleado;
     public $fechaIngreso;
     public $SueldoMensual;
-    use WithFileUploads;
     public $roles;
+     use WithFileUploads;
     public $roles_user = [];
     public $revisor;
     public function mount()
     {
+        $this->roles=Role::all();
         $this->colonias = collect();
         $this->areas = Ctg_Area::all();
-        $this->roles = Role::all();
     }
     public function render()
     {
