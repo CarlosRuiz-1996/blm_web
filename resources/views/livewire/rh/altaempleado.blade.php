@@ -84,6 +84,23 @@
                             <x-input-validado label="Sueldo Mensual:" placeholder="Ingrese sueldo Mensual"
                                 wire-model="SueldoMensual" wire-attribute="SueldoMensual" type="text" />
                         </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="form-group">
+                                <label for="roles">Roles<label class="colorrojo">*</label></label>
+                                <select class="form-control" id="roles_user" name="roles_user[]" multiple required
+                                wire:model="roles_user"
+                                >
+                                
+
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('roles_user')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">

@@ -55,13 +55,13 @@
 
                                 <div class="col-md-4 mb-3">
                                     <div class="form-group">
-                                        <label for="area">Área {{ $user->ctg_area_id }}<label
+                                        <label for="area">Área<label
                                                 class="colorrojo">*</label></label>
                                         <select class="form-control" id="area" name="area" required>
                                             <option value="0" selected disabled>Seleccionar</option>
                                             @foreach ($areas as $area)
                                                 <option value="{{ $area->id }}"
-                                                    @if ($user->ctg_area_id == $area->id) selected @endif>{{ $area->name }}
+                                                    @if ($user->empleado->ctg_area_id == $area->id) selected @endif>{{ $area->name }}
                                                 </option>
                                             @endforeach
 

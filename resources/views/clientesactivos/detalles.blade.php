@@ -105,32 +105,7 @@
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-servicios" role="tabpanel"
                                 aria-labelledby="custom-tabs-one-servicios-tab">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <h3 for="">Servicios</h3>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3 d-flex justify-content-end">
-                                            <button class="btn btn-primary">Agregar Servicios</button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="table-responsive">
-                                            <table class="table">
-                                                <thead class="table-primary">
-                                                    <tr>
-                                                        <th>Servicio</th>
-                                                        <th>Total</th>
-                                                        <th>Eliminar</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
+                              <livewire:clientes.servicios-clientes :cliente="$cliente->id" />
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-facturacion" role="tabpanel"
                                 aria-labelledby="custom-tabs-one-facturacion-tab">
