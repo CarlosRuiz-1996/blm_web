@@ -58,11 +58,11 @@ class MemoValidacionForm extends Form
 
 
                         if (!$existe) {
-                            // MemorandumValidacion::create([
-                            //     'memoranda_id' => $memorandum_id,
-                            //     'revisor_areas_id' => $revisor->id,
-                            //     'status_validacion_memoranda' => $this->cumple
-                            // ]);
+                            MemorandumValidacion::create([
+                                'memoranda_id' => $memorandum_id,
+                                'revisor_areas_id' => $revisor->id,
+                                'status_validacion_memoranda' => $this->cumple
+                            ]);
                             $bandera .= $revisor->id . '-/';
                         }
                    
