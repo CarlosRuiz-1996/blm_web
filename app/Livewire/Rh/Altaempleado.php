@@ -123,8 +123,6 @@ class Altaempleado extends Component
             'ctg_cp_id' => 'required',
             'calleNumero' => 'required|string|max:255',
             'cve_empleado' => 'required|string|max:255|unique:empleados,cve_empleado',
-            'roles' => ['array'],
-
             'roles_user' => 'array',
 
         ]);
