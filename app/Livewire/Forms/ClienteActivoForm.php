@@ -6,6 +6,7 @@ use App\Models\Cliente;
 use App\Models\Cotizacion;
 use App\Models\Ctg_Cp;
 use App\Models\Ctg_Tipo_Cliente;
+use App\Models\Servicios;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -25,7 +26,7 @@ class ClienteActivoForm extends Form
     public $direccion;
     public $razon_social;
     public $rfc_cliente;
-    public $ctg_tipo_cliente_id=0;
+    public $ctg_tipo_cliente_id = 0;
     public $phone;
     public $puesto;
     public $email;
@@ -60,7 +61,7 @@ class ClienteActivoForm extends Form
         'name.required' => 'El campo nombre es obligatorio.',
         'paterno.required' => 'El campo apellido paterno es obligatorio.',
         'materno.required' => 'El campo apellido materno es obligatorio.',
-        'ctg_cp_id'=>'El campo colonia es obligatorio.'
+        'ctg_cp_id' => 'El campo colonia es obligatorio.'
     ];
     public function ctg_tipo_cliente()
     {
@@ -69,12 +70,12 @@ class ClienteActivoForm extends Form
 
     public function validarCp()
     {
-            $codigo = DB::select("
+        $codigo = DB::select("
                 SELECT DISTINCT cp.id, cp.colonia, m.municipio, e.name 
                 FROM ctg_cp cp 
                 LEFT JOIN ctg_estados e ON e.id = cp.ctg_estado_id
                 LEFT JOIN ctg_municipios m ON m.id = cp.ctg_municipio_id AND m.ctg_estado_id = e.id 
-                WHERE cp LIKE CONCAT('%', ".$this->cp." , '%')
+                WHERE cp LIKE CONCAT('%', " . $this->cp . " , '%')
             ");
         if ($codigo) {
             $this->municipio = $codigo[0]->municipio;
@@ -85,22 +86,25 @@ class ClienteActivoForm extends Form
             $this->cp_invalido = "Codigo postal no valido";
         }
     }
-    public function store(){
+    public function store()
+    {
 
 
-        $this->validate();//validacion
+        $this->validate(); //validacion
 
-        
-        $this->password =  bcrypt(strtolower($this->rfc_cliente));//contraseña sera el rfc en minusculas
+
+        $this->password =  bcrypt(strtolower($this->rfc_cliente)); //contraseña sera el rfc en minusculas
 
         // ingreso en la tabla usuarios
-        $user = User::create($this->only(['name','paterno','materno' ,'email', 'password']));
+        $user = User::create($this->only(['name', 'paterno', 'materno', 'email', 'password']));
         $user->roles()->sync(4); //asigno rol 4 que sera de cliente.
 
-        $this->user_id = $user->id;//usuario_id para relacionar con la tabla cliente
+        $this->user_id = $user->id; //usuario_id para relacionar con la tabla cliente
         //creo cliente
-        Cliente::create($this->only([ 'user_id','puesto', 'direccion', 'ctg_cp_id', 'razon_social', 'rfc_cliente', 
-        'phone', 'ctg_tipo_cliente_id']));
+        Cliente::create($this->only([
+            'user_id', 'puesto', 'direccion', 'ctg_cp_id', 'razon_social', 'rfc_cliente',
+            'phone', 'ctg_tipo_cliente_id'
+        ]));
 
 
         $this->reset();
@@ -120,7 +124,7 @@ class ClienteActivoForm extends Form
         $this->materno = $cliente->user->materno;
         $this->puesto = $cliente->puesto;
 
-        
+
 
         $this->cp = $cliente->cp->cp;
         $this->ctg_cp_id = $cliente->cp->id;
@@ -129,28 +133,53 @@ class ClienteActivoForm extends Form
         $this->direccion = $cliente->direccion;
         // 
         $this->cp_invalido = "";
-        $codigo = Ctg_Cp::where('cp','like','%'.$this->cp.'%')->get();
+        $codigo = Ctg_Cp::where('cp', 'like', '%' . $this->cp . '%')->get();
 
         $this->colonias = $codigo;
-
     }
 
-    public function updated(){
+    public function updated()
+    {
 
 
-        $this->validate();//validacion
-        $this->password =  bcrypt(strtolower($this->rfc_cliente));//contraseña sera el rfc en minusculas
-        $this->cliente->user->update($this->only(['name','paterno','materno' ,'email', 'password']));
-        
-        $this->cliente->update($this->only([ 'puesto', 'direccion', 'ctg_cp_id', 'razon_social', 'rfc_cliente', 
-        'phone', 'ctg_tipo_cliente_id']));
+        $this->validate(); //validacion
+        $this->password =  bcrypt(strtolower($this->rfc_cliente)); //contraseña sera el rfc en minusculas
+        $this->cliente->user->update($this->only(['name', 'paterno', 'materno', 'email', 'password']));
+
+        $this->cliente->update($this->only([
+            'puesto', 'direccion', 'ctg_cp_id', 'razon_social', 'rfc_cliente',
+            'phone', 'ctg_tipo_cliente_id'
+        ]));
 
 
         // $this->reset();
     }
 
-    public function getCotizaciones($cliente_id){
-            return Cotizacion::where('cliente_id',$cliente_id)->orderBy('id','DESC')->paginate(10);
+    public function getCotizaciones($cliente_id)
+    {
+        return Cotizacion::where('cliente_id', $cliente_id)->orderBy('id', 'DESC')->paginate(10);
     }
 
+    public function getServicios()
+    {
+        return Servicios::where('cliente_id', $this->cliente->id)
+        ->where(function ($query) {
+            $query->where('status_servicio', '>=', 3)
+                  ->orWhere('status_servicio', 0);
+        })
+        ->get();
+}
+
+    public function updateServicio(Servicios $servicio, $accion)
+    {
+        if ($accion == 1) {
+            //para darlo de baja se cambia el status a 1.
+            $servicio->status_servicio = 1;
+            $servicio->save();
+        } else {
+            //para reactivarlo se cambia status a 3.
+            $servicio->status_servicio = 3;
+            $servicio->save();
+        }
+    }
 }

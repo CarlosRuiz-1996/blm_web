@@ -19,12 +19,14 @@ class ValidacionCreate extends Component
     public $memo_servicio;
     public $sucursales;
     public $area;
-    public function mount(Memorandum $memorandum, $area)
+    public $admin;
+    public function mount(Memorandum $memorandum, $area, $admin=null)
     {
         $this->memo_servicio = $memorandum->memo_servicio;
 
         $this->memorandum = $memorandum;
         $this->area = $area;
+        $this->admin = $admin;
 
         //seteo los datos de mi vista.
         $this->sucursales = $this->form->setMemoDetalles($memorandum);
@@ -42,7 +44,7 @@ class ValidacionCreate extends Component
     #[On('save-validacion')]
     public function save()
     {
-        $res =  $this->form_validacion->store($this->area, $this->memorandum->id);
+        $res =  $this->form_validacion->store($this->area, $this->memorandum->id, $this->admin);
         if ($res == 1) {
             $this->dispatch('success', ["Memorandum completado con exito.",$this->area]);
 

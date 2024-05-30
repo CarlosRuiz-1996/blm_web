@@ -122,8 +122,8 @@ Route::get('rh/vacaciones',[RhController::class,'indexVacaciones'])->name('rh.in
 Route::get('rh/{id}/perfil', [RhController::class, 'EmpleadosPerfil'])->name('rh.perfil');
 Route::get('rh/solicitudVacaciones',[RhController::class,'solicitudVacaciones'])->name('rh.solicitudVacaciones');
 
-Route::get('validacion/memorandum/{memorandum}/{area}',[ValidacionMemorandumController::class,'validar'])->name('memorandum.validar');
-Route::get('validacion/listar/{area}/{name?}',[ValidacionMemorandumController::class,'listar'])->name('memorandum.validar.listar');
+Route::get('validacion/memorandum/{memorandum}/{area}/{admin?}',[ValidacionMemorandumController::class,'validar'])->name('memorandum.validar');
+Route::get('validacion/listar/{area}/{name?}/{admin?}',[ValidacionMemorandumController::class,'listar'])->name('memorandum.validar.listar');
 
 
 //operaciones.-rutas

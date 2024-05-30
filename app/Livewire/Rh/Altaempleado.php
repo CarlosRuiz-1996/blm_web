@@ -6,6 +6,7 @@ use App\Models\Ctg_Area;
 use App\Models\Empleado;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -64,14 +65,16 @@ class Altaempleado extends Component
     public $fechaIngreso;
     public $SueldoMensual;
     public $roles;
-    use WithFileUploads;
-
+     use WithFileUploads;
+    public $roles;
+    public $roles_user = [];
 
     public function mount()
     {
         $this->roles=Role::all();
         $this->colonias = collect();
-        $this->areas= Ctg_Area::all();
+        $this->areas = Ctg_Area::all();
+        $this->roles = Role::all();
     }
     public function render()
     {
@@ -102,10 +105,11 @@ class Altaempleado extends Component
         } else {
             $this->cp_invalido = "Codigo postal no valido";
         }
-    }        
+    }
     #[On('save-empleado')]
-    public function guaradaempleado(){
-            $this->validate([
+    public function guaradaempleado()
+    {
+        $this->validate([
             'nombreContacto' => 'required|string|max:255',
             'apepaterno' => 'required|string|max:255',
             'apematerno' => 'nullable|string|max:255',
@@ -122,40 +126,48 @@ class Altaempleado extends Component
             'cve_empleado' => 'required|string|max:255|unique:empleados,cve_empleado',
             'roles' => ['array'],
 
+            'roles_user' => 'array',
+
         ]);
+
+
         try {
             DB::transaction(function () {
-        $user= User::create([
-            'name' => $this->nombreContacto,
-            'paterno' => $this->apepaterno,
-            'materno' => $this->apematerno,
-            'email' => $this->correoElectronico,
-            'password' => bcrypt(123456789),
-        ]);
+                $user = User::create([
+                    'name' => $this->nombreContacto,
+                    'paterno' => $this->apepaterno,
+                    'materno' => $this->apematerno,
+                    'email' => $this->correoElectronico,
+                    'password' => bcrypt(123456789),
+                ]);
         if ($this->roles) {
             // $user->assignRole($request->input('roles'));
             $user->roles()->sync($this->roles);
         }
-        $idempleado=Empleado::create([
-            'user_id' => $user->id,
-            'direccion' => $this->calleNumero,
-            'ctg_cp_id' => $this->ctg_cp_id,
-            'sexo' => $this->sexo,
-            'phone' => $this->telefono,
-            'ctg_area_id' => $this->area,
-            'status_empleado' => 1,
-            'fecha_nacimiento' => $this->fechaNacimiento,
-            'cve_empleado' => $this->cve_empleado,
-        ]);
-        if($this->image){
-            $this->image->storeAs(path: 'fotosEmpleados/', name: $idempleado->id.'.png');
-        }
-    });      
-        $this->dispatch('success', ['El empleado se creó con éxito']);
-    } catch (\Exception $e) {
-        dd($e->getMessage()); 
-        $this->dispatch('error', ['Ocurrió un error al registrar el empleado']);
-    }
 
+                if ($this->roles_user) {
+                    // $user->assignRole($request->input('roles'));
+                    $id->roles()->sync($this->roles_user);
+                }
+                $idempleado = Empleado::create([
+                    'user_id' => $user->id,
+                    'direccion' => $this->calleNumero,
+                    'ctg_cp_id' => $this->ctg_cp_id,
+                    'sexo' => $this->sexo,
+                    'phone' => $this->telefono,
+                    'ctg_area_id' => $this->area,
+                    'status_empleado' => 1,
+                    'fecha_nacimiento' => $this->fechaNacimiento,
+                    'cve_empleado' => $this->cve_empleado,
+                ]);
+                if ($this->image) {
+                    $this->image->storeAs(path: 'fotosEmpleados/', name: $idempleado->id . '.png');
+                }
+            });
+            $this->dispatch('success', ['El empleado se creó con éxito']);
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            $this->dispatch('error', ['Ocurrió un error al registrar el empleado']);
+        }
     }
 }

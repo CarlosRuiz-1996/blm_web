@@ -7,10 +7,10 @@
     <h1 class="ml-2">Listado de usuarios</h1>
 @stop
 @section('content')
-<x-alert />
+    <x-alert />
     <div class="container-fluid">
         <div class="form-group mt-0 text-right">
-            <a href="{{ route('user.create') }}" class="btn btn-info">Nuevo</a>
+            {{-- <a href="{{ route('user.create') }}" class="btn btn-info">Nuevo</a> --}}
         </div>
         <div class="row">
             <div class="col-md-12">
@@ -20,7 +20,15 @@
                     <div class="card-body">
                         {{-- Setup data for datatables --}}
                         @php
-                            $heads = ['ID', 'Nombre', 'Cuenta', 'Area', 'Fecha de alta', 'Estatus', ['label' => 'Actions', 'no-export' => true, 'width' => 20]];
+                            $heads = [
+                                'ID',
+                                'Nombre',
+                                'Cuenta',
+                                'Area',
+                                'Fecha de alta',
+                                'Estatus',
+                                ['label' => 'Actions', 'no-export' => true, 'width' => 20],
+                            ];
 
                             $config = [
                                 'language' => ['url' => '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'],
@@ -50,8 +58,8 @@
 
                                     </td>
                                     <td>
-                                        @if ($user->area)
-                                            {{ $user->area->name }}
+                                        @if ($user->empleado)
+                                            {{ $user->empleado->area->name }}
                                         @else
                                             Sin área asignada
                                         @endif
@@ -67,14 +75,20 @@
 
                                     </td>
                                     <td>
-                                        <a href="{{ route('user.edit', $user) }}"
-                                            class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit">
-                                            <i class="fa fa-lg fa-fw fa-pen"></i>
-                                        </a>
+
                                         @if ($user->status_user != 0)
+                                            <a href="{{ route('user.edit', $user) }}"
+                                                class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit">
+                                                <i class="fa fa-lg fa-fw fa-pen"></i>
+                                            </a>
                                             <a href="{{ route('user.delete', $user) }}"
                                                 class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete">
                                                 <i class="fa fa-lg fa-fw fa-trash"></i>
+                                            </a>
+                                            <a href="{{ route('user.password', $user) }}"
+                                                class="btn btn-xs btn-default text-warning mx-1 shadow"
+                                                title="Cambiar contraseña">
+                                                <i class="fa fa-lg fa-fw fa-key"></i>
                                             </a>
                                         @else
                                             <a href="{{ route('user.reactivar', $user) }}"
@@ -82,11 +96,8 @@
                                                 <i class="fa fa-lg fa-fw fa-arrow-up"></i>
                                             </a>
                                         @endif
-                                        <a href="{{ route('user.password', $user) }}"
-                                            class="btn btn-xs btn-default text-warning mx-1 shadow" title="Cambiar contraseña">
-                                            <i class="fa fa-lg fa-fw fa-key"></i>
-                                        </a>
-                                        
+
+
                                     </td>
                                 </tr>
                             @endforeach

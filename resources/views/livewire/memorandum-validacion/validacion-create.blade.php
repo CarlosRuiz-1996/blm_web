@@ -169,9 +169,10 @@
 
                 @this.on('confirm', () => {
 
+                    
                     Swal.fire({
                         title: '¿Estas seguro?',
-                        text: "El memorandum se evaluado con su dictamen",
+                        text: "El memorandum sera evaluado con su dictamen",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',

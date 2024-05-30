@@ -58,7 +58,7 @@
                                         <td class="col-md-2 text-center">
                                             @if(($item->status_juridico == 1 && $item->documentos_count == $item->ctg_doc_total) && ($item->ctg_docbene_total==$item->documentosbene_count || $item->documentosbene_count==0 ))
                                         
-                                        <a wire:click="$dispatch('crearvalidacion',{{$item->cliente_id}})">Iniciar</a>
+                                        <a wire:click="$dispatch('crearvalidacion',{{$item->cliente_id}})" class="btn btn-primary">Iniciar</a>
                                             @else
                                             <h6 class="text-warning">Faltan documentos</h6>
                                         @endif

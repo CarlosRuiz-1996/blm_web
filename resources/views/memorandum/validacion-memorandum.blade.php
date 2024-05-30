@@ -10,6 +10,6 @@
 </a>Validacion de Memorándum de servicio en validacion</h1>
 @stop
 @section('content')
-  <livewire:memorandum-validacion.validacion-create :memorandum="$memorandum" :area="$area" />
+  <livewire:memorandum-validacion.validacion-create :memorandum="$memorandum" :area="$area" :admin="$admin" />
 
 @stop

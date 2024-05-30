@@ -599,7 +599,8 @@ class RutaForm extends Form
 
     public function validafirma10m()
     {
-        return RutaFirma10M::where('ruta_id', $this->ruta->id)->where('status_ruta_firma10_m_s', '=', 1)->exists();
+        return RutaFirma10M::where('ruta_id', $this->ruta->id)->get();
+        // ->where('status_ruta_firma10_m_s', '=', 1)
     }
 
     public function insertfirma10m()

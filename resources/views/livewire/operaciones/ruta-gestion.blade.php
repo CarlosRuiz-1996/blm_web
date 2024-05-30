@@ -138,7 +138,6 @@
                     <button
                         wire:click="$dispatch('confirm',[2,{{ $boveda_pase }},{{ $total_ruta }}, {{ $firma }}])"
                         class="btn btn-info btn-block">Enviar a boveda</button>
-
                 </div>
             @endif
         @endif
@@ -151,28 +150,78 @@
 
                 @this.on('confirm', ([op, boveda_pase, total_ruta, firma]) => {
 
+                    console.log('firma'+firma);
+
                     if (op == 1 || boveda_pase == 1) {
                         //!total_ruta || 
-                        if (total_ruta > 10000000 && !firma) {
+                        if (total_ruta > 10000000 && (firma == undefined || firma.length === 0)) {
+
                             valida10m();
                         } else {
-                            Swal.fire({
-                                title: '¿Estas seguro?',
-                                text: op == 1 ? "La ruta sera guardada en la base de datos" :
-                                    "La ruta pasara a boveda.",
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Si, adelante!',
-                                cancelButtonText: 'Cancelar'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta', {
-                                        accion: 1
+
+                            if (firma && firma[0].status_ruta_firma10_m_s == 0) {
+                                //en espera de validaciones
+                                Swal.fire({
+                                    title: '¡Atencion!',
+                                    text: "Se espera la confirmación para poder llevar más de 10 Millones",
+                                    icon: 'warning',
+                                    showCancelButton: false,
+                                    timer: 4000
+                                })
+                            } else if ((firma && firma[0].status_ruta_firma10_m_s == 1) || op == 1) {
+                                //aprobada
+                                Swal.fire({
+                                    title: '¿Estas seguro?',
+                                    text: op == 1 ? "La ruta sera guardada en la base de datos" :
+                                        "La ruta pasara a boveda.",
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Si, adelante!',
+                                    cancelButtonText: 'Cancelar'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta', {
+                                            accion: 1
+                                        });
+                                    }
+                                });
+                            } else if (firma && firma[0].status_ruta_firma10_m_s == 2) {
+                                //rechazada
+                                //validar si ya es menor a 10
+                                if (total_ruta < 10000000) {
+                                    Swal.fire({
+                                        title: '¿Estas seguro?',
+                                        text: op == 1 ? "La ruta sera guardada en la base de datos" :
+                                            "La ruta pasara a boveda.",
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'Si, adelante!',
+                                        cancelButtonText: 'Cancelar'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta', {
+                                                accion: 1
+                                            });
+                                        }
                                     });
+                                } else {
+                                    Swal.fire({
+                                        title: '¡Atencion!',
+                                        text: "La ruta no puede llevar más de 10 Millones",
+                                        icon: 'warning',
+                                        showCancelButton: false,
+                                        timer: 4000
+                                    })
                                 }
-                            });
+                            }else{
+                                //no hay firma
+                                console.log('no hay firma')
+                            }
+
                         }
                     } else {
                         Swal.fire({

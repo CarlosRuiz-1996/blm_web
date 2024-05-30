@@ -64,7 +64,7 @@
                                                 <td>{{ $solicitud->created_at }}</td>
                                                 <td>
                                                     <a class="btn btn-primary"
-                                                        href="{{ route('memorandum.validar', ['memorandum' => $solicitud, 'area' => $area]) }}">Validar</a>
+                                                        href="{{ route('memorandum.validar', ['memorandum' => $solicitud, 'area' => $area, 'admin'=>$admin]) }}">Validar</a>
                                                 </td>
                                             </tr>
                                             @endforeach
