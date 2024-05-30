@@ -5,12 +5,13 @@ namespace App\Livewire\Rh;
 use App\Models\Ctg_Area;
 use App\Models\Empleado;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Spatie\Permission\Models\Role;
+
+
 
 class Altaempleado extends Component
 {
@@ -66,7 +67,6 @@ class Altaempleado extends Component
     public $SueldoMensual;
     public $roles;
      use WithFileUploads;
-    public $roles;
     public $roles_user = [];
 
     public function mount()
@@ -74,7 +74,6 @@ class Altaempleado extends Component
         $this->roles=Role::all();
         $this->colonias = collect();
         $this->areas = Ctg_Area::all();
-        $this->roles = Role::all();
     }
     public function render()
     {
@@ -133,24 +132,20 @@ class Altaempleado extends Component
 
         try {
             DB::transaction(function () {
-                $user = User::create([
+                $id = User::create([
                     'name' => $this->nombreContacto,
                     'paterno' => $this->apepaterno,
                     'materno' => $this->apematerno,
                     'email' => $this->correoElectronico,
                     'password' => bcrypt(123456789),
                 ]);
-        if ($this->roles) {
-            // $user->assignRole($request->input('roles'));
-            $user->roles()->sync($this->roles);
-        }
 
                 if ($this->roles_user) {
                     // $user->assignRole($request->input('roles'));
                     $id->roles()->sync($this->roles_user);
                 }
                 $idempleado = Empleado::create([
-                    'user_id' => $user->id,
+                    'user_id' => $id->id,
                     'direccion' => $this->calleNumero,
                     'ctg_cp_id' => $this->ctg_cp_id,
                     'sexo' => $this->sexo,
