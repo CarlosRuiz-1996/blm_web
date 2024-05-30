@@ -51,14 +51,14 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <x-input-validado-telefono label="Telefono:" placeholder="Ingrese telefono"
-                                wire-model="telefono" wire-attribute="telefono" type="text" />
+                                wire-model="telefono" wire-attribute="telefono" type="number" />
                         </div>
                         <div class="col-md-4 mb-3">
                             <x-input-validado label="Correo Electrónico:" placeholder="Ingrese Correo Electronico"
                                 wire-model="correoElectronico" wire-attribute="correoElectronico" type="text" />
                         </div>
                         <div class="col-md-4 mb-3">
-                            <x-input-validado-date label="Fecha Nacimiento:" placeholder="Ingrese fecha de nacimiento"
+                            <x-input-validado label="Fecha Nacimiento:" placeholder="Ingrese fecha de nacimiento"
                                 wire-model="fechaNacimiento" wire-attribute="fechaNacimiento" type="date" />
                         </div>
                         <div class="col-md-4 mb-3">
@@ -75,6 +75,16 @@
                             <option value="{{ $area->id }}">{{ $area->name }}</option>
                              @endforeach
                         </x-select-validado>
+                        </div>
+                        <div class="form-group col-md-4 mb-3">
+                            <label for="roles">Roles<label class="colorrojo">*</label></label>
+                            <select class="form-control" id="roles" name="roles[]" multiple required>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}">
+                                        {{ $role->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-md-4 mb-3">
                             <x-input-validado label="Fecha Ingreso:" placeholder="Ingrese fecha que ingresa"

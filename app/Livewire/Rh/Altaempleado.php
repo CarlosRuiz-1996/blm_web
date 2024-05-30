@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Spatie\Permission\Models\Role;
 
 class Altaempleado extends Component
 {
@@ -62,11 +63,13 @@ class Altaempleado extends Component
     public $cve_empleado;
     public $fechaIngreso;
     public $SueldoMensual;
-   use WithFileUploads;
+    public $roles;
+    use WithFileUploads;
 
 
     public function mount()
     {
+        $this->roles=Role::all();
         $this->colonias = collect();
         $this->areas= Ctg_Area::all();
     }
@@ -117,18 +120,24 @@ class Altaempleado extends Component
             'ctg_cp_id' => 'required',
             'calleNumero' => 'required|string|max:255',
             'cve_empleado' => 'required|string|max:255|unique:empleados,cve_empleado',
+            'roles' => ['array'],
+
         ]);
         try {
             DB::transaction(function () {
-        $id= User::create([
+        $user= User::create([
             'name' => $this->nombreContacto,
             'paterno' => $this->apepaterno,
             'materno' => $this->apematerno,
             'email' => $this->correoElectronico,
             'password' => bcrypt(123456789),
         ]);
+        if ($this->roles) {
+            // $user->assignRole($request->input('roles'));
+            $user->roles()->sync($this->roles);
+        }
         $idempleado=Empleado::create([
-            'user_id' => $id->id,
+            'user_id' => $user->id,
             'direccion' => $this->calleNumero,
             'ctg_cp_id' => $this->ctg_cp_id,
             'sexo' => $this->sexo,

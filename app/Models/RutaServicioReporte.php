@@ -15,4 +15,12 @@ class RutaServicioReporte extends Model
      protected $fillable = [
          'servicio_id', 'ruta_id', 'monto', 'folio', 'envases', 'tipo_servicio', 'status_ruta_servicio_reportes','motivocancelacion','area'
      ];
+     public function servicio(){
+        return $this->belongsTo(Servicios::class, 'servicio_id');
+    }
+
+
+    public function ruta(){
+        return $this->belongsTo(Ruta::class, 'ruta_id');
+    }
 }
