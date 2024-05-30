@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class RevisorArea extends Model
 {
     use HasFactory;
-
+                        
     protected $table = 'revisor_areas';
     protected $fillable = [
-        'user_id',
+        'empleado_id',
         'ctg_area_id',
         'status_revisor_areas',
     ];

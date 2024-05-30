@@ -165,13 +165,13 @@ class Altaempleado extends Component
                     foreach ($this->roles_user as $r) {
                         if ($r != 1 && $r != 3) {
                             RevisorArea::create([
-                                'user_id' => $id->id,
+                                'empleado_id' => $idempleado->id,
                                 'ctg_area_id' => $this->area,
                             ]);
                         } else {
                             for ($i = 1; $i <= 8; $i++) {
                                 RevisorArea::create([
-                                    'user_id' => $id->id,
+                                    'empleado_id' => $idempleado->id,
                                     'ctg_area_id' => $i,
                                 ]);
                             }

@@ -36,33 +36,44 @@ class MemoValidacionForm extends Form
 
     public function store($area, $memorandum_id, $admin)
     {
-        
+
         try {
             DB::beginTransaction();
             $this->validate();
 
-            // if ($area == 8) {
-            //     $area = 9;
-            // }
+
             $empleado_id = auth()->user()->empleado->id;
 
-            $revisor = RevisorArea::where('empleado_id', $empleado_id)
-                ->where('ctg_area_id', $area)->first();
-
             if ($admin == 1) {
+
+
                 $limit = MemorandumValidacion::where('memoranda_id', $memorandum_id)->count();
                 $limit = 8 - $limit;
+                $bandera = "";
                 for ($i = 1; $i <= $limit; $i++) {
-                    $existe = MemorandumValidacion::where('memoranda_id', $memorandum_id)->where('revisor_areas_id', $i)->exists();
-                    if (!$existe) {
-                        MemorandumValidacion::create([
-                            'memoranda_id' => $memorandum_id,
-                            'revisor_areas_id' => $revisor->id,
-                            'status_validacion_memoranda' => $this->cumple
-                        ]);
-                    }
+                    $revisor = RevisorArea::where('empleado_id', $empleado_id)
+                        ->where('ctg_area_id', $i)->first();
+                    // // dd($revisor);
+                        $existe = MemorandumValidacion::where('memoranda_id', $memorandum_id)->where('revisor_areas_id', $i)->exists();
+
+
+                        if (!$existe) {
+                            // MemorandumValidacion::create([
+                            //     'memoranda_id' => $memorandum_id,
+                            //     'revisor_areas_id' => $revisor->id,
+                            //     'status_validacion_memoranda' => $this->cumple
+                            // ]);
+                            $bandera .= $revisor->id . '-/';
+                        }
+                   
                 }
+                dd($limit . '*' . $bandera);
             } else {
+                dd('muere');
+                die();
+                $revisor = RevisorArea::where('empleado_id', $empleado_id)
+                    ->where('ctg_area_id', $area)->first();
+
                 MemorandumValidacion::create([
                     'memoranda_id' => $memorandum_id,
                     'revisor_areas_id' => $revisor->id,
