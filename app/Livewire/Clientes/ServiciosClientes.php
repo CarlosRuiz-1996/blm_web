@@ -47,6 +47,9 @@ class ServiciosClientes extends Component
     public function crearServicioctg()
     {
 
+        $sumar =2+1;
+
+        $result = $sumar +45;
         // $this->validate([
         //     'folioctg' => 'required|unique:ctg_servicios,folio',
         //     'tipoctg' => 'required',
@@ -72,6 +75,6 @@ class ServiciosClientes extends Component
         // $this->unidadctg = '';
         // $this->servicios = ctg_servicios::all();
         // Despachar el evento
-        $this->dispatch('successservicio', ['El servicio se creó con éxito']);
+        $this->dispatch('successservicio', ['El servicio se creó con éxito'.$result]);
     }
 }

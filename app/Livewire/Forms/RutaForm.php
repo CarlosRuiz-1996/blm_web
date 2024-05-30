@@ -308,11 +308,12 @@ class RutaForm extends Form
             return 2;
         }
     }
-    public function storeRutaServicio($seleccionados)
+    public function storeRutaServicio($seleccionados, $seleccionadosRecolecta)
     {
         try {
             DB::beginTransaction();
             $totalRuta = 0;
+            
 
             foreach ($seleccionados as $data) {
 
@@ -322,7 +323,7 @@ class RutaForm extends Form
                     'monto' => $data['monto'],
                     'folio' => $data['folio'],
                     'envases' => $data['envases'],
-                    'tipo_servicio' => $data['tipo'],
+                    'tipo_servicio' => 1,
                 ]);
 
                 $servicio_ruta->servicio->status_servicio = 4;
@@ -331,6 +332,21 @@ class RutaForm extends Form
                 $totalRuta += $data['monto'];
             }
 
+            foreach ($seleccionadosRecolecta as $data) {
+
+                $servicio_ruta = RutaServicio::create([
+                    'servicio_id' => $data['servicio_id'],
+                    'ruta_id' => $this->ruta->id,
+                    'monto' => $data['monto'],
+                    'folio' => $data['folio'],
+                    'envases' => $data['envases'],
+                    'tipo_servicio' => 2,
+                ]);
+
+                $servicio_ruta->servicio->status_servicio = 4;
+                $servicio_ruta->servicio->save();
+
+            }
 
             //calcular riesgo de la ruta:
             $riesgo = $this->calculaRiesgo($totalRuta);
