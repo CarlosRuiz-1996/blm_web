@@ -15,6 +15,7 @@ class AgregarServicio extends Component
     public RutaForm $form;
     public $selectServicios = [];
     public $selectServiciosRecolecta = [];
+    public $selectServiciosEntrega = [];
 
     public $montoArray = [];
     public $folioArray = [];
