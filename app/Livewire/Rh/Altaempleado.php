@@ -4,6 +4,7 @@ namespace App\Livewire\Rh;
 
 use App\Models\Ctg_Area;
 use App\Models\Empleado;
+use App\Models\RevisorArea;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -66,7 +67,7 @@ class Altaempleado extends Component
     use WithFileUploads;
     public $roles;
     public $roles_user = [];
-
+    public $revisor;
     public function mount()
     {
         $this->colonias = collect();
@@ -106,6 +107,9 @@ class Altaempleado extends Component
     #[On('save-empleado')]
     public function guaradaempleado()
     {
+        
+
+
         $this->validate([
             'nombreContacto' => 'required|string|max:255',
             'apepaterno' => 'required|string|max:255',
@@ -153,6 +157,24 @@ class Altaempleado extends Component
                 ]);
                 if ($this->image) {
                     $this->image->storeAs(path: 'fotosEmpleados/', name: $idempleado->id . '.png');
+                }
+
+                if ($this->revisor) {
+                    foreach ($this->roles_user as $r) {
+                        if ($r != 1 && $r != 3) {
+                            RevisorArea::create([
+                                'user_id' => $id->id,
+                                'ctg_area_id' => $this->area,
+                            ]);
+                        } else {
+                            for ($i = 1; $i <= 8; $i++) {
+                                RevisorArea::create([
+                                    'user_id' => $id->id,
+                                    'ctg_area_id' => $i,
+                                ]);
+                            }
+                        }
+                    }
                 }
             });
             $this->dispatch('success', ['El empleado se creó con éxito']);
