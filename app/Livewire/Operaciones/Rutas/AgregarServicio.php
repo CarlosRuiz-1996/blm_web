@@ -184,7 +184,9 @@ class AgregarServicio extends Component
                     } else {
                         $seleccionados[$bandera]['envases'] = 0;
                     }
-                } else if (array_key_exists($servicio_id, $this->selectServiciosRecolecta)) {
+                } 
+                if (array_key_exists($servicio_id, $this->selectServiciosRecolecta)) {
+
                     if (array_key_exists($servicio_id, $this->montoArrayRecolecta)) {
                         $seleccionadosRecolecta[$bandera]['monto'] = $this->montoArrayRecolecta[$servicio_id];
                     } else {
