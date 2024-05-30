@@ -380,6 +380,12 @@ return [
                     'icon'    => 'fa fa-lock',
 
                 ],
+                [
+                    'text' => 'Validar Memorandum',
+                    'url'  => 'validacion/listar/0/Administrador/1',
+                    'icon'    => 'fas fa-fw fa-sticky-note',
+
+                ],
             ],
         ],
 
@@ -506,7 +512,7 @@ return [
                 ],
                 [
                     'text' => 'Valida Gerencia',
-                    'url'  => 'validacion/listar/8/Gerencia',
+                    'url'  => 'validacion/listar/9/Gerencia',
                     'icon'    => 'fas fa-fw fa-sticky-note',
 
                 ],

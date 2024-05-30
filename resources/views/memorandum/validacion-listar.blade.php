@@ -8,6 +8,6 @@
   
 @stop
 @section('content')
-  <livewire:memorandum-validacion.validacion-listados :area="$area" :name="$name"/>
+  <livewire:memorandum-validacion.validacion-listados :area="$area" :name="$name" :admin="$admin"/>
 
 @stop
