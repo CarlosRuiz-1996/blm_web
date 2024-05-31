@@ -116,7 +116,6 @@ class RutaGestion extends Component
     #[On('update-ruta')]
     public function update($accion)
     {
-        dd('update');
         if ($accion == 1) {
 
             $res = $this->form->boveda();
