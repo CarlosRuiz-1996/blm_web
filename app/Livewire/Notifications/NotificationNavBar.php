@@ -84,7 +84,7 @@ class NotificationNavBar extends Component
                         $firma->empleado_id_boveda = $empleado_id;
                         $firma->confirm_boveda = $respuesta;
                         break;
-                    case 8:
+                    case 9:
                         $firma->empleado_id_direccion = $empleado_id;
                         $firma->confirm_direccion = $respuesta;
                         break;
@@ -96,19 +96,19 @@ class NotificationNavBar extends Component
                 if (($firma->confirm_boveda === 0) || ($firma->confirm_operaciones === 0)) {
 
                     //revisa si ya se envio una notificacion a direccion...
-                    $existe_notif = Notification::where('ruta_firma_id', $firma->id)->where('ctg_area_id', 8)->first();
+                    $existe_notif = Notification::where('ruta_firma_id', $firma->id)->where('ctg_area_id', 9)->first();
 
                     if (!$existe_notif) {
                         //genera el mensaje
                         $msg = $notificacion->message;
                         Notification::create([
                             'empleado_id_send' => Auth::user()->empleado->id,
-                            'ctg_area_id' => 8,
+                            'ctg_area_id' => 9,
                             'message' => $msg,
                             'ruta_firma_id' => $firma->id,
                             'tipo' => 2
                         ]);
-                        $users = Empleado::whereIn('ctg_area_id', [8])->get();
+                        $users = Empleado::whereIn('ctg_area_id', [9])->get();
                         NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
                     }
 
@@ -167,12 +167,12 @@ class NotificationNavBar extends Component
         $msg = "La ruta" . $notificacion->firma->ruta->nombre->name . " saldra con mas de 10 millones.";
         Notification::create([
             'empleado_id_send' => Auth::user()->empleado->id,
-            'ctg_area_id' => 8,
+            'ctg_area_id' => 9,
             'message' => $msg,
             'ruta_firma_id' => $firma->id,
             'tipo' => 1
         ]);
-        $users = Empleado::whereIn('ctg_area_id', [8])->get();
+        $users = Empleado::whereIn('ctg_area_id', [9])->get();
         NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
     }
     public function deleteNotification($id)

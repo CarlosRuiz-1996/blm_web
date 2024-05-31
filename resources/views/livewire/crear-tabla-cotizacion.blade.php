@@ -595,7 +595,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-target="#exampleModal" data-toggle="modal">Cerrar</button>
+                    <button class="btn btn-primary" data-target="#exampleModalToggle2" data-toggle="modal" >Cerrar</button>
                     <button class="btn btn-primary" wire:click="crearServicioctg">Crear Servicio</button>
                 </div>
             </div>

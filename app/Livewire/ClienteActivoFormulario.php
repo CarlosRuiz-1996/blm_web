@@ -49,7 +49,7 @@ class ClienteActivoFormulario extends Component
     }
 
     #[On('edit-cliente')]
-    public function updated()
+    public function updatedCliente()
     {
         $this->form->updated();
         $this->dispatch('alert', ["La informacion de cliente se actualizo exitosamente.", $this->form->cliente]);
