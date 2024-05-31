@@ -166,8 +166,8 @@
                                         <td> 
                                          @if($rutaserv->tipo_servicio == 1)   
                                             @if($rutaserv->status_ruta_servicios==1)
-                                            <button wire:click="cargar({{ $rutaserv->servicio_id }}, {{ $rutaserv->ruta_id }})" class="btn btn-primary">Si</button>
-                                            <button type="button" data-target="#exampleModalCerrar" data-toggle="modal"  wire:click="cargarNoObtenerdatos({{ $rutaserv->servicio_id }}, {{ $rutaserv->ruta_id }})" class="btn btn-danger">No</button>
+                                            <button wire:click="cargar({{  $rutaserv->id }}, {{ $rutaserv->ruta_id }})" class="btn btn-primary">Si</button>
+                                            <button type="button" data-target="#exampleModalCerrar" data-toggle="modal"  wire:click="cargarNoObtenerdatos({{  $rutaserv->id }})" class="btn btn-danger">No</button>
                                            @else
                                                 <span
                                                     class="badge {{ $rutaserv->status_ruta_servicios ==2 ? 'bg-success' : 'bg-danger' }}">
@@ -177,8 +177,8 @@
                                             @endif
                                             @else
                                              @if($rutaserv->status_ruta_servicios==1)
-                                            <button wire:click="cargarRecoleccion({{ $rutaserv->servicio_id }}, {{ $rutaserv->ruta_id }})" class="btn btn-primary">Aceptar Recolección</button>
-                                            <button type="button" data-target="#exampleModalCerrar" data-toggle="modal"  wire:click="cargarNoObtenerdatos({{ $rutaserv->servicio_id }}, {{ $rutaserv->ruta_id }})" class="btn btn-danger">No Aceptar</button>
+                                            <button wire:click="cargarRecoleccion({{  $rutaserv->id }}, {{ $rutaserv->ruta_id }})" class="btn btn-primary">Aceptar</button>
+                                            <button type="button" data-target="#exampleModalCerrar" data-toggle="modal"  wire:click="cargarNoObtenerdatos({{  $rutaserv->id }})" class="btn btn-danger">No Aceptar</button>
                                            @else
                                                 <span
                                                     class="badge {{ $rutaserv->status_ruta_servicios ==2 ? 'bg-success' : 'bg-danger' }}">
@@ -209,7 +209,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-info">
-                <h5 class="modal-title" id="exampleModalLabel">Motivo de no cargar</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Motivo de no cargar  o recolectar servicios</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -326,7 +326,6 @@
               // Ocultar el primer modal cuando se muestra el segundo modal
                 $('#exampleModalCerrar').on('show.bs.modal', function () {
                     $('#detalleModal').modal('hide');
-                    $('#detalleModal').removeClass('show');
                 });
 
                 // Mostrar el primer modal cuando se cierra el segundo modal
@@ -337,47 +336,7 @@
                 // Ocultar el segundo modal cuando se muestra el primer modal
                 $('#detalleModal').on('show.bs.modal', function () {
                     $('#exampleModalCerrar').modal('hide');
-                });
-
-                $('#detalleModal').on('hidden.bs.modal', function () {
-                    $('#exampleModalCerrar').modal('show');
-                });
-                $(document).ready(function() {
-    // Ocultar el primer modal cuando se muestra el segundo modal
-    $('#exampleModalCerrar').on('show.bs.modal', function () {
-        if ($('#detalleModal').hasClass('show')) {
-            $('#detalleModal').modal('hide');
-            console.log("Ocultando detalleModal al mostrar exampleModalCerrar");
-        }
-    });
-
-    // Mostrar el primer modal cuando se cierra el segundo modal
-    $('#exampleModalCerrar').on('hidden.bs.modal', function () {
-        if (!$('#detalleModal').hasClass('show')) {
-            $('#detalleModal').modal('show');
-            console.log("Mostrando detalleModal al cerrar exampleModalCerrar");
-        }
-    });
-
-    // Ocultar el segundo modal cuando se muestra el primer modal
-    $('#detalleModal').on('show.bs.modal', function () {
-        if ($('#exampleModalCerrar').hasClass('show')) {
-            $('#exampleModalCerrar').modal('hide');
-            console.log("Ocultando exampleModalCerrar al mostrar detalleModal");
-        }
-    });
-
-    // Mostrar el segundo modal cuando se cierra el primer modal
-    $('#detalleModal').on('hidden.bs.modal', function () {
-        if (!$('#exampleModalCerrar').hasClass('show')) {
-            $('#exampleModalCerrar').modal('show');
-            console.log("Mostrando exampleModalCerrar al cerrar detalleModal");
-        }
-    });
-});
-
-
-        
+                });     
             
     </script>
     @endpush

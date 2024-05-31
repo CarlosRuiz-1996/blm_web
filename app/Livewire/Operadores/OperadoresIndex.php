@@ -21,6 +21,7 @@ class OperadoresIndex extends Component
     public $tiposervicio;
     public $MontoEntregado;
     public $MontoEntrega;
+    public $envasescantidad;
     public $IdservicioReprogramar;
     public $motivoReprogramarConcepto;
     #[Validate(['photo.*' => 'image|max:1024'])]
@@ -126,11 +127,24 @@ class OperadoresIndex extends Component
     public function ModalAceptarRecolecta()
     {
         $this->validate([
+            'idrecolecta' => 'required',
             'MontoEntregado' => 'required',
+            'envasescantidad' => 'required',
             'photo' => 'required',
         ]);
-        $this->photo->storeAs(path: 'evidencias/', name: 'avatar.png');
-        $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La cantidad Ingresada es correcta'], ['tipomensaje' => 'success']);
+
+        $servicioruta=RutaServicio::find($this->idrecolecta);
+        $servicioruta->monto=$this->MontoEntregado;
+        $servicioruta->envases=$this->envasescantidad;
+        $servicioruta->status_ruta_servicios=3;
+        $servicioruta->save();
+
+        $ruta=Ruta::find($servicioruta->ruta_id);
+        $ruta->total_ruta=$ruta->total_ruta+$this->MontoEntregado;
+        $ruta->save();
+        $nombreRutaGuardaImg='Servicio_'.$servicioruta->id.'_evidencia.png';
+        $this->photo->storeAs(path: 'evidencias/EntregasRecolectas/', name: $nombreRutaGuardaImg);
+        $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La recolecta se completo correctamente'], ['tipomensaje' => 'success']);
     }
 
     public function empezarRuta($id)
