@@ -397,7 +397,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-target="#exampleModal" data-toggle="modal">Cerrar</button>
+                    <button class="btn btn-primary" data-target="#exampleModalToggle2"
+                        data-toggle="modal">Cerrar</button>
                     <button class="btn btn-primary" wire:click="crearServicioctg">Crear Servicio</button>
                 </div>
             </div>
@@ -408,18 +409,15 @@
     @push('js')
         <script>
             document.addEventListener('livewire:initialized', () => {
+                Livewire.on('success-servicio', function([message]) {
 
-                Livewire.on('successservicio', function(message) {
-                    console.log('emtra');
+
                     Swal.fire({
                         icon: 'success',
-                        title: message,
+                        title: message[0],
                         showConfirmButton: false,
-                        timer: 3000,
-                        didClose: () => {
-                            // Cerrar el modal después de que se muestra el mensaje de éxito
-                            $('#exampleModalToggle2').modal('hide');
-                        };
+                        timer: 3000
+                        
                     });
                 });
             });
