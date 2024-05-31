@@ -219,7 +219,23 @@
                                 }
                             }else{
                                 //no hay firma
-                                console.log('no hay firma')
+                                Swal.fire({
+                                        title: '¿Estas seguro?',
+                                        text: op == 1 ? "La ruta sera guardada en la base de datos" :
+                                            "La ruta pasara a boveda.",
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'Si, adelante!',
+                                        cancelButtonText: 'Cancelar'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta', {
+                                                accion: 1
+                                            });
+                                        }
+                                    });
                             }
 
                         }
