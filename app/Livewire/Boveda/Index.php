@@ -35,12 +35,12 @@ class Index extends Component
     {
         $this->serviciosRuta = RutaServicio::where('ruta_id', $idruta)->get();
     }
-    public function cargar($idservicio, $rutaId)
+    public function cargar($idservicioruta,$rutaId)
     {
-        $servicioRuta = RutaServicio::where('servicio_id', $idservicio)->where('ruta_id', $rutaId)->first();
+        $servicioRuta = RutaServicio::find($idservicioruta);
         $serviciosRutaAll = RutaServicio::where('ruta_id', $rutaId)->get();
         if ($servicioRuta) {
-
+           
             $ClienteResguardo=$servicioRuta->servicio->cliente->resguardo;
             if($ClienteResguardo>=$servicioRuta->monto){
             $servicioRuta->update(['status_ruta_servicios' => 2]);
@@ -84,7 +84,7 @@ class Index extends Component
             }
         }else{
             $rfc = $servicioRuta->servicio->cliente->rfc_cliente;
-            $msg = "El Servicio con id: $idservicio para el cliente con rfc $rfc no cuenta con saldo suficiente";
+            $msg = "El Servicio con id: $servicioRuta->servicio_id para el cliente con rfc $rfc no cuenta con saldo suficiente";
                         Notification::create([
                             'empleado_id_send' => Auth::user()->empleado->id,
                             'ctg_area_id' => 2,
@@ -138,10 +138,6 @@ class Index extends Component
         $ruta = Ruta::findOrFail($servicioRuta->ruta_id);
         $ruta->total_ruta -= $servicioRuta->monto;
         $ruta->save();
-        $servicio = Servicios::findOrFail($servicioRuta->servicio_id);
-        $servicio->status_servicio = 3;
-        $servicio->save();
-
         // Eliminar el registro de RutaServicio
         $servicioRuta->delete();
         $serviciosRutaAll = RutaServicio::where('ruta_id', $rutaId)->get();
@@ -155,21 +151,20 @@ class Index extends Component
         }
     }
 
-    public function cargarNoObtenerdatos($idservicio, $rutaId)
+    public function cargarNoObtenerdatos($idservicio)
     {
-        $servicioRuta = RutaServicio::where('servicio_id', $idservicio)->where('ruta_id', $rutaId)->first();
+        $servicioRuta = RutaServicio::find($idservicio);
         $this->idserviorutacancelado = $servicioRuta->id;
     }
 
 
     //recolecciones aceptar 
-    public function cargarRecoleccion($idservicio, $rutaId)
+    public function cargarRecoleccion($idservicioruta, $rutaId)
     {
-        $servicioRuta = RutaServicio::where('servicio_id', $idservicio)->where('ruta_id', $rutaId)->first();
+        $servicioRuta = RutaServicio::find($idservicioruta);
         $serviciosRutaAll = RutaServicio::where('ruta_id', $rutaId)->get();
         if ($servicioRuta) {
 
-            $ClienteResguardo=$servicioRuta->servicio->cliente->resguardo;
             $servicioRuta->update(['status_ruta_servicios' => 2]);
             $this->llenarmodalservicios($servicioRuta->ruta_id); // Actualiza los datos
             $servicioRutastatus2 = RutaServicio::where('ruta_id', $rutaId)->where('status_ruta_servicios', 2)->get();

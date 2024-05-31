@@ -142,6 +142,10 @@
                             <x-input-validado :readonly="true" label="Monto:" placeholder="Ingrese Monto"
                                 wire-model="MontoEntrega" wire-attribute="MontoEntrega" type="text" />
                         </div>
+                        <div class="col-md-12 mb-1" {{$tiposervicio == 'Entrega'? 'hidden':''}}>
+                            <x-input-validado :readonly="false" label="Envases:" placeholder="Ingrese cantidad de envases"
+                                wire-model="envasescantidad" wire-attribute="envasescantidad" type="text" />
+                        </div>
                         <div class="col-md-12 mb-3">
                             <x-input-validado :readonly="false" label="Monto:"
                                 placeholder="Ingrese Monto a entregar" wire-model="MontoEntregado"
