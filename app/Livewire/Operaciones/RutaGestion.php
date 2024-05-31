@@ -121,7 +121,7 @@ class RutaGestion extends Component
             $res = $this->form->boveda();
 
             if ($res == 1) {
-                $this->dispatch('success',  ['La ruta paso al proceso de gestión en boveda']);
+                $this->dispatch('success',  ['La ruta paso al proceso de gestión en boveda', '',$this->form->ruta->id]);
             } else {
                 $this->dispatch('error', 'Hubo un error, intenta mas tarde');
             }
