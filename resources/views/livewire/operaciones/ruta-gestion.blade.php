@@ -154,7 +154,7 @@
 
                     if (op == 1 || boveda_pase == 1) {
                         //!total_ruta || 
-                        if (total_ruta > 10000000 && (firma == undefined || firma.length === 0)) {
+                        if (total_ruta > 10000000 && (firma === undefined || firma.length === 0)) {
 
                             valida10m();
                         } else {

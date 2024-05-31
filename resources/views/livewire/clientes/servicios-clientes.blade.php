@@ -406,6 +406,7 @@
         </div>
     </div>
 
+    <livewire:clientes.modals.anexo-servicios :client="$from->cliente"/>
 
     @push('js')
         <script>
@@ -417,10 +418,19 @@
                         icon: 'success',
                         title: message[0],
                         showConfirmButton: false,
-                        timer: 3000
-                        
+                        timer: 3000,
+                        didClose: () => {
+                            // Cerrar el modal después de que se muestra el mensaje de éxito
+                            $('#exampleModalToggle2').modal('hide');
+                        }
                     });
                 });
+
+                @this.on('sucursal-servico-clienteActivo', () => {
+                    $('#exampleModal').modal('hide');
+                    @this.dispatch('open-sucursal-servico-clienteActivo');
+
+                })
             });
         </script>
     @endpush

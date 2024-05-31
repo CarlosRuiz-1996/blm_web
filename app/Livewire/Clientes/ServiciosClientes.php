@@ -331,7 +331,7 @@ class ServiciosClientes extends Component
 
         // Limpiar los campos después de agregar un nuevo elemento
 
-
+        $this->dispatch('sucursal-servico-clienteActivo');
         // return view('livewire.crear-tabla-cotizacion');
     }
 }
