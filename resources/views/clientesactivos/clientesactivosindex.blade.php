@@ -20,7 +20,7 @@
                     <div class="card-body">
                         {{-- Setup data for datatables --}}
                         @php
-                            $heads = ['No.Cliente', 'RFC', 'Razón social', 'Contacto', 'Teléfono', ['label' => 'Acciones', 'no-export' => true, 'width' => 20]];
+                            $heads = ['No.Cliente', 'RFC', 'Razón social', 'Contacto', 'Teléfono', ['label' => 'Detalles', 'no-export' => true, 'width' => 20]];
 
                             $config = [
                                 'language' => ['url' => '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'],
@@ -53,10 +53,10 @@
                                   
                                    
                                     <td>
-                                        <a href=""
+                                        {{-- <a href=""
                                             class="btn btn-xs btn-default text-primary mx-1 shadow" title="Nueva cotizacion">
                                             <i class="fa fa-lg fa-fw fa-plus"></i>
-                                        </a>
+                                        </a> --}}
                                         <a href="{{ route('cliente.detalles', [$cli, 1]) }}"
                                         class="btn btn-xs btn-default text-primary mx-1 shadow" title="Detalles del cliente">
                                         <i class="fa fa-lg fa-fw fa-info-circle"></i>

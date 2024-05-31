@@ -8,6 +8,8 @@
                 <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Agregar Servicios</button>
             </div>
         </div>
+
+        {{-- tabla mostrada --}}
         <div class="col-md-12">
             <div class="table-responsive">
                 <table class="table">
@@ -31,7 +33,6 @@
                                         {{ $servicio->sucursal->sucursal->sucursal }}
                                     </td>
                                     <td>
-                                        {{ $servicio->status_servicio != 0 ? `<i class="fa fa-circle"></i>` : 'INACTIVO' }}
                                         @if ($servicio->status_servicio != 0)
                                             <i class="fa fa-circle" style="color: green"></i>
                                         @else

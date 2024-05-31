@@ -174,7 +174,7 @@ class ClienteActivoForm extends Form
     {
         if ($accion == 1) {
             //para darlo de baja se cambia el status a 1.
-            $servicio->status_servicio = 1;
+            $servicio->status_servicio = 0;
             $servicio->save();
         } else {
             //para reactivarlo se cambia status a 3.
