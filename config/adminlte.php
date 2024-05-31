@@ -399,7 +399,7 @@ return [
             'text' => 'Operador',
             'url'  => '/operadores',
             'icon' => 'fas fa-fw fa-route',
-            'can' =>  'menu-clientes'
+            'can' =>  'menu-operadores'
         ],
         [
             'text' => 'Ventas',
