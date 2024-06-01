@@ -406,7 +406,8 @@
         </div>
     </div>
 
-    <livewire:clientes.modals.anexo-servicios :client="$from->cliente"/>
+    <livewire:clientes.modals.anexo-servicios />
+    {{-- :client="$from->cliente" --}}
 
     @push('js')
         <script>

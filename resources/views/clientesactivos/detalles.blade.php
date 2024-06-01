@@ -105,7 +105,7 @@
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-servicios" role="tabpanel"
                                 aria-labelledby="custom-tabs-one-servicios-tab">
-                              <livewire:clientes.servicios-clientes :cliente="$cliente->id" />
+                              {{-- <livewire:clientes.servicios-clientes :cliente="$cliente->id" /> --}}
                             </div>
                             <div class="tab-pane fade" id="custom-tabs-one-facturacion" role="tabpanel"
                                 aria-labelledby="custom-tabs-one-facturacion-tab">
