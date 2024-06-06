@@ -10,11 +10,15 @@ use App\Models\ctg_servicios;
 use App\Models\CtgServicios;
 use App\Models\Servicios;
 use Livewire\Attributes\On;
+use Livewire\WithPagination;
+use Illuminate\Support\Facades\Session;
 
 class ServiciosClientes extends Component
 {
     public ClienteActivoForm $form;
-    
+    use WithPagination;
+    public $readyToLoad = false;
+
     public $data = [];
     public $dataforaneo = [];
     public $dataServicioForaneo = [];
@@ -100,9 +104,17 @@ class ServiciosClientes extends Component
     }
     public function render()
     {
+        if ($this->readyToLoad) {
         $servicios_cliente = $this->form->getServicios();
-
+        }else{
+            $servicios_cliente=[];
+        }
         return view('livewire.clientes.servicios-clientes', compact('servicios_cliente'));
+    }
+
+    public function loadServicios()
+    {
+        $this->readyToLoad = true;
     }
 
     public function updateServicio(Servicios $servicio,$accion){
@@ -333,5 +345,10 @@ class ServiciosClientes extends Component
 
         $this->dispatch('sucursal-servico-clienteActivo');
         // return view('livewire.crear-tabla-cotizacion');
+    }
+
+    #[On('cliente-servicio-fin')]
+    public function finalizar(){
+        // dd();
     }
 }

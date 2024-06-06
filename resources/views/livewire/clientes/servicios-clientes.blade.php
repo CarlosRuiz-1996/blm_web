@@ -9,21 +9,22 @@
             </div>
         </div>
 
-        {{-- tabla mostrada --}}
-        <div class="col-md-12">
+        {{-- tabla mostrada <div wire:init='loadProducts'> --}}
+        <div class="col-md-12" wire:init='loadServicios'>
             <div class="table-responsive">
-                <table class="table">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>Servicio</th>
-                            <th>Monto del servicio</th>
-                            <th>Sucursal</th>
-                            <th>Estatus</th>
-                            <th>Eliminar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if ($servicios_cliente)
+                @if (count($servicios_cliente))
+
+                    <table class="table">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Servicio</th>
+                                <th>Monto del servicio</th>
+                                <th>Sucursal</th>
+                                <th>Estatus</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             @foreach ($servicios_cliente as $servicio)
                                 <tr>
                                     <td>{{ $servicio->ctg_servicio->descripcion }}</td>
@@ -55,9 +56,27 @@
                                     </td>
                                 </tr>
                             @endforeach
-                        @endif
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+
+                    @if ($servicios_cliente->hasPages())
+                        <div class="px-6 py-3 text-gray-500">
+                            {{ $servicios_cliente->links() }}
+                        </div>
+                    @endif
+                @else
+                    @if ($readyToLoad)
+                        <div class="alert alert-secondary" role="alert">
+                            No hay datos disponibles!
+                        </div>
+                    @else
+                        <!-- Muestra un spinner mientras los datos se cargan -->
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden"></span>
+                        </div>
+                    @endif
+                @endif
+
             </div>
         </div>
     </div>
@@ -139,7 +158,8 @@
                                     <div class="form-group">
                                         <div class="custom-control custom-switch custom-switch-xl mt-2">
                                             <input type="checkbox" class="custom-control-input"
-                                                wire:model.live='cantidadcheck' id="cantidadcheck" name="cantidadcheck">
+                                                wire:model.live='cantidadcheck' id="cantidadcheck"
+                                                name="cantidadcheck">
                                             <label class="custom-control-label" for="cantidadcheck">cantidad:</label>
                                         </div>
                                         <input type="number" class="form-control" wire:model.live='cantidad'
@@ -406,7 +426,8 @@
         </div>
     </div>
 
-    <livewire:clientes.modals.anexo-servicios :client="$from->cliente"/>
+    <livewire:clientes.modals.anexo-servicios :cliente="$form->cliente"/>
+    {{-- :client="$from->cliente" --}}
 
     @push('js')
         <script>
