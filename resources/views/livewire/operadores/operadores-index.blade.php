@@ -117,7 +117,7 @@
     </div>
     <div class="modal fade" id="ModalEntregarRecolectar" wire:ignore.self tabindex="-1" role="dialog"
         aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title" id="exampleModalLabel">
@@ -151,35 +151,31 @@
                                 placeholder="Ingrese Monto a entregar" wire-model="MontoEntregado"
                                 wire-attribute="MontoEntregado" type="text" />
                         </div>
-                        <div class="col-md-12 mb-3">
-                            <!-- Input file que abre la cámara -->
-
-                            @error('photo')
-                            <div class="text-danger text-xs">{{ $message }}</div>
-                            @enderror
-                            <input type="file" accept="image/*" capture="camera" id="photo" wire:model.live="photo"
-                                style="display: none;">
-                            <button type="button" class="btn btn-primary btn-block"
-                                onclick="document.getElementById('photo').click();"><i
-                                    class="fas fa-camera"></i></button>
+                        @foreach($inputs as $index => $input)
+                        <div class="col-md-3 mb-3">
+                            <x-input-validado label="Cantidad:" :readonly="false"
+                                placeholder="Envase {{ $index + 1 }}" wire-model="inputs.{{ $index }}"
+                                wire-attribute="inputs.{{ $index }}" type="text" />
                         </div>
-                        <div class="col-md-12 d-flex justify-content-center align-items-center">
-                            <!-- Vista previa de la foto tomada -->
-                            @if ($photo)
-                            <img src="{{ $photo->temporaryUrl() }}" alt="Foto Tomada" class="img-fluid"
-                                style="max-width: 25%; height: auto;">
-                            @endif
+                        <div class="col-md-3 mb-3">
+                            <x-input-validado label="Folio:" :readonly="false"
+                                placeholder="Folio {{ $index + 1 }}" wire-model="folios.{{ $index }}"
+                                wire-attribute="folios.{{ $index }}" type="text" />
                         </div>
-                        <div class="col-md-12 mt-3 mb-2 text-center">
-                            <div wire:loading wire:target="photo">
-                                <div class="d-flex justify-content-center align-items-center" style="min-height: 50px;">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="sr-only">Cargando archivo...</span>
-                                    </div>
-                                    <span class="ml-2">Cargando archivo...</span>
-                                </div>
+                            <div class="col-md-3 mb-3">
+                                <x-input-validado label="Evidencia:" :readonly="false"
+                                    placeholder="Evidencia {{ $index + 1 }}" wire:model="photo.{{ $index }}"
+                                    type="file"/>
                             </div>
-                        </div>
+                            <div class="col-md-3 d-flex justify-content-center align-items-center">
+                                <!-- Muestra la imagen cargada si existe -->
+                                @if (isset($photo[$index]) && $photo[$index])
+                                    <img src="{{ $photo[$index]->temporaryUrl() }}" alt="Foto Tomada" class="img-fluid"
+                                        style="max-width: 100px; height: auto;">
+                                @endif
+                            </div>
+                        @endforeach
+                        
                     </div>
                 </div>
                 <div class="modal-footer">

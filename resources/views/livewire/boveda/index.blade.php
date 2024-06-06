@@ -139,6 +139,7 @@
                                     <th>Llaves</th>
                                     <th>Servicio</th>
                                     <th>Tipo Servicio</th>
+                                    <th>Envases</th>
                                     <th>Monto</th>
                                     <th>Cargado</th>
                                 </tr>
@@ -153,8 +154,10 @@
                                         <td>{{ $rutaserv->servicio->ctg_servicio->descripcion }}</td>
                                         <td>{{ $rutaserv->tipo_servicio == 1 ? 'Entrega' : 'Recolección' }}</td>
                                         @if($rutaserv->tipo_servicio == 1)   
+                                        <td><a href="#" data-toggle="modal" data-target="#detalleModalEnvases" wire:click='llenarmodalEnvases({{  $rutaserv->id }}, {{ $rutaserv->ruta_id }})'>Envases</a></td>
                                         <td>$ {{ number_format($rutaserv->monto, 2, '.', ',') }}</td>
                                         @else
+                                        <td>N/A</td>
                                         <td>
                                             @if($rutaserv->monto !=null && $rutaserv->monto != 0)
                                                 $ {{ number_format($rutaserv->monto, 2, '.', ',') }}
@@ -230,6 +233,46 @@
             <div class="modal-footer">
                 <button class="btn btn-primary" data-dismiss="modal">Cerrar</button>
                 <button class="btn btn-primary" wire:click="Nocargar">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!--modal envases de cargar-->
+    <div class="modal fade" id="detalleModalEnvases" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+    tabindex="-1" wire:ignore.self>
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title" id="exampleModalLabel">Envases para Servicio</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    @foreach($inputs as $index => $input)
+                    <div class="col-md-6 mb-3">
+                        <x-input-validado label="Cantidad:" :readonly="false"
+                            placeholder="Envase {{ $index + 1 }}" wire-model="inputs.{{ $index }}"
+                            wire-attribute="inputs.{{ $index }}" type="text" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <x-input-validado label="Folio:" :readonly="false"
+                            placeholder="Folio {{ $index + 1 }}" wire-model="folios.{{ $index }}"
+                            wire-attribute="folios.{{ $index }}" type="text" />
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-dark" data-dismiss="modal">Cerrar</button>
+                @if($statusEnvases==2)
+                <button class="btn btn-primary" wire:click="GuardarEnvases">Guardar</button>
+                @else
+                <button class="btn btn-primary" wire:click="EditarEnvases">Editar</button>
+                @endif
+               
             </div>
         </div>
     </div>
@@ -317,6 +360,18 @@
                         // Cerrar el modal después de que se muestra el mensaje de éxito
                         $('#exampleModalCerrar').modal('hide');
                         $('#detalleModal').modal('hide');
+                    });
+                });
+
+                Livewire.on('successservicioEnvases', function(message) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: message,
+                        showConfirmButton: false,
+                        timer: 3000
+                    }).then(() => {
+                        // Cerrar el modal después de que se muestra el mensaje de éxito
+                        $('#detalleModalEnvases').modal('hide');
                     });
                 });
                 
