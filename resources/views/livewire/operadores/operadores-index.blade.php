@@ -169,7 +169,7 @@
                             </div>
                             <div class="col-md-3 d-flex justify-content-center align-items-center">
                                 <!-- Muestra la imagen cargada si existe -->
-                                @if (isset($photo[$index+1]) && $photo[$index])
+                                @if (isset($photo[$index]) && $photo[$index])
                                     <img src="{{ $photo[$index]->temporaryUrl() }}" alt="Foto Tomada" class="img-fluid"
                                         style="max-width: 100px; height: auto;">
                                 @endif

@@ -99,7 +99,7 @@ class OperadoresIndex extends Component
             'idrecolecta' => 'required',
             'MontoEntrega' => 'required',
             'MontoEntregado' => 'required',
-            'photo' => 'required',
+            'photo.*' => 'required',
         ]);
         if ($this->MontoEntrega == $this->MontoEntregado) {
             $servicioRuta = RutaServicio::find($this->idrecolecta);
@@ -119,6 +119,12 @@ class OperadoresIndex extends Component
             $rutaServicioReporte->area = 3;
             // Guardar el nuevo registro en la base de datos
             $rutaServicioReporte->save();
+            foreach ($this->photo as $index => $file) {
+                // Almacenar el archivo con un nombre personalizado y en una ubicación específica
+                $path = $file->storeAs(path: 'evidencias/', name: 'avatar.png');
+        
+                // Aquí puedes hacer cualquier otra cosa que necesites con la ruta donde se almacenó el archivo
+            }
             //$this->photo->storeAs(path: 'evidencias/', name: 'avatar.png');
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La cantidad Ingresada es correcta'], ['tipomensaje' => 'success']);
         } else {
