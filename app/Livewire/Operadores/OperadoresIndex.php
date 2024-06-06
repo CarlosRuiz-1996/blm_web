@@ -125,11 +125,17 @@ class OperadoresIndex extends Component
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La cantidad Ingresada no es la cantidad a entregar'], ['tipomensaje' => 'error']);
         }
     }
-    public function updatedPhoto()
+    public function updatedEvidencias()
     {
-
-        foreach ($this->photo as $photo) {
-            $photo->storeAs(path: 'evidencias', name: 'avatar.png');
+        // Iterar sobre cada archivo cargado y almacenarlo
+        foreach ($this->photo as $index => $evidencia) {
+            // Verificar si el archivo se ha cargado correctamente
+            if ($evidencia) {
+                // Almacenar el archivo
+                $path = $evidencia->store('public/evidencias');
+                // Actualizar el array con la ruta del archivo almacenado
+                $this->photo[$index] = $path;
+            }
         }
     }
     public function updatedPhotorepro()
