@@ -10,6 +10,7 @@ use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
 use App\Models\RutaVehiculo;
 use App\Models\RutaVehiculoReporte;
+use App\Models\ServicioRutaEnvases;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -18,14 +19,21 @@ use Livewire\WithFileUploads;
 class OperadoresIndex extends Component
 {
     public $idrecolecta;
+    public $cantidadEnvases;
+    public $idserviorutaEnvases;
     public $tiposervicio;
+    public $statusEnvases;
+    public $inputs = [];
+    public $folios = [];
+    public $originalFolios = [];
     public $MontoEntregado;
     public $MontoEntrega;
     public $envasescantidad;
     public $IdservicioReprogramar;
+    public $evidencias = [];
     public $motivoReprogramarConcepto;
     #[Validate(['photo.*' => 'image|max:1024'])]
-    public $photo;
+    public $photo = [];
     #[Validate(['photo.*' => 'image|max:1024'])]
     public $photorepro;
     protected $listeners = ['modalCerrado', 'modalCerradoReprogramar'];
@@ -59,10 +67,30 @@ class OperadoresIndex extends Component
     }
     public function ModalEntregaRecolecta($id, $tiposervicio)
     {
+       
         $this->tiposervicio = $tiposervicio == 1 ? 'Entrega' : ($tiposervicio == 2 ? 'Recolección' : 'Otro');
         $servicioRuta = RutaServicio::find($id);
         $this->MontoEntrega = $servicioRuta->monto;
         $this->idrecolecta = $id;
+        $this->cantidadEnvases = $servicioRuta->envases;    
+        // Consultar los registros de servicios_envases_rutas para esta ruta
+        $serviciosEnvases = ServicioRutaEnvases::where('ruta_servicios_id', $id)->get();
+    
+        // Si hay registros, llenar los arreglos con los valores recuperados
+        if ($serviciosEnvases->isNotEmpty() && $tiposervicio==1) {
+            $this->inputs = $serviciosEnvases->pluck('cantidad')->toArray();
+            $this->folios = $serviciosEnvases->pluck('folio')->toArray();
+            $this->originalFolios = $serviciosEnvases->pluck('folio')->toArray();
+            $this->photo = array_fill(0, $this->cantidadEnvases, '');
+            $this->statusEnvases = 1;
+        } else {
+            // Si no hay registros, inicializar los arreglos con valores vacíos
+            $this->inputs = array_fill(0, $this->cantidadEnvases, '');
+            $this->folios = array_fill(0, $this->cantidadEnvases, '');
+            $this->originalFolios = array_fill(0, $this->cantidadEnvases, '');
+            $this->photo =array_fill(0, $this->cantidadEnvases, '');
+            $this->statusEnvases = 2;
+        }
     }
 
     public function ModalAceptar()
@@ -71,7 +99,7 @@ class OperadoresIndex extends Component
             'idrecolecta' => 'required',
             'MontoEntrega' => 'required',
             'MontoEntregado' => 'required',
-            'photo' => 'required',
+            'photo.*' => 'required',
         ]);
         if ($this->MontoEntrega == $this->MontoEntregado) {
             $servicioRuta = RutaServicio::find($this->idrecolecta);
@@ -91,16 +119,29 @@ class OperadoresIndex extends Component
             $rutaServicioReporte->area = 3;
             // Guardar el nuevo registro en la base de datos
             $rutaServicioReporte->save();
-            $this->photo->storeAs(path: 'evidencias/', name: 'avatar.png');
+            foreach ($this->photo as $index => $file) {
+                // Almacenar el archivo con un nombre personalizado y en una ubicación específica
+                $path = $file->storeAs(path: 'evidencias/', name: 'avatar.png');
+        
+                // Aquí puedes hacer cualquier otra cosa que necesites con la ruta donde se almacenó el archivo
+            }
+            //$this->photo->storeAs(path: 'evidencias/', name: 'avatar.png');
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La cantidad Ingresada es correcta'], ['tipomensaje' => 'success']);
         } else {
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La cantidad Ingresada no es la cantidad a entregar'], ['tipomensaje' => 'error']);
         }
     }
-    public function updatedPhoto()
+    public function updatedEvidencias()
     {
-        foreach ($this->photo as $photo) {
-            $photo->store(path: 'photo');
+        // Iterar sobre cada archivo cargado y almacenarlo
+        foreach ($this->photo as $index => $evidencia) {
+            // Verificar si el archivo se ha cargado correctamente
+            if ($evidencia) {
+                // Almacenar el archivo
+                $path = $evidencia->store('public/evidencias');
+                // Actualizar el array con la ruta del archivo almacenado
+                $this->photo[$index] = $path;
+            }
         }
     }
     public function updatedPhotorepro()

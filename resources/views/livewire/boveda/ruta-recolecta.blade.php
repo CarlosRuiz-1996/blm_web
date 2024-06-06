@@ -4,26 +4,28 @@
             <!-- Encabezados de la tabla -->
             <thead class="table-info">
                 <tr>
-                    <th>Ruta</th>
-                    <th>Servicio</th>
-                    <th>Tipo de servicio</th>
-                    <th>Estatus</th>
-                    <th>Fecha</th>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Dia</th>
+                    <th>Riesgo</th>
+                    <th>Estado</th>
+                    <th>Hora Inicio</th>
+                    <th>Hora Finalización</th>
+                    <th>Opciones</th>
                 </tr>
             </thead>
             <!-- Cuerpo de la tabla -->
             <tbody>
                 @foreach ($serviciosTerinados as $serviciosTerinado)
                     <tr>
-                        <td>{{ $serviciosTerinado->ruta_id }}</td>
-                        <td>{{ $serviciosTerinado->servicio_id }}</td>
-                        <td>{{ $serviciosTerinado->tipo_servicio == 1 ? 'Entrega' : 'Recolección'}}</td>
-                        <td>
-                        <span class="badge {{ $serviciosTerinado->status_ruta_servicio_reportes == 2 ? 'bg-success' : 'bg-danger' }}">
-                            {{ $serviciosTerinado->status_ruta_servicio_reportes == 2 ? 'Servicio Autorizado para reprogramar' : 'Servicio no autorizado para esta ruta (reprogramar)' }}
-                        </span>
-                        </td>
-                        <td>{{ $serviciosTerinado->created_at }}</td>
+                        <td>{{ $serviciosTerinado->id }}</td>
+                        <td>{{ $serviciosTerinado->nombre->name }}</td>
+                        <td>{{ $serviciosTerinado->dia->name }}</td>
+                        <td>{{ $serviciosTerinado->riesgo->name }}</td>
+                        <td>{{ $serviciosTerinado->estado->name }}</td>
+                        <td>{{ $serviciosTerinado->hora_inicio }}</td>
+                        <td>{{ $serviciosTerinado->hora_fin }}</td>
+                        <td>opciones</td>
                     </tr>
                 @endforeach
             </tbody>

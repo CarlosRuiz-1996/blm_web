@@ -10,6 +10,7 @@ use App\Models\ResguardoResporte;
 use App\Models\Ruta;
 use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
+use App\Models\ServicioRutaEnvases;
 use App\Models\Servicios;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -21,8 +22,13 @@ class Index extends Component
     public $serviciosRuta;
     public $motivoNo;
     public $idservioruta;
+    public $idserviorutaEnvases;
     public $idserviorutacancelado;
-
+    public $cantidadEnvases;
+    public $statusEnvases;
+    public $inputs = [];
+    public $folios = [];
+    public $originalFolios = [];
     public function render()
     {
         $resguardototal = Cliente::where('status_cliente',1)->sum('resguardo');
@@ -192,4 +198,146 @@ class Index extends Component
             }
         }
     }
+
+
+
+
+    public function GuardarEnvases(){
+               // Verificar duplicados en el conjunto proporcionado
+               $this->resetValidation();
+        
+
+       
+        $this->validate([
+            'inputs.*' => 'required|numeric',
+            'folios.*' => 'required|unique:servicios_envases_rutas,folio',
+        ], [
+            'inputs.*.required' => 'La cantidad es requerida',
+            'inputs.*.numeric' => 'La cantidad debe ser numérico',
+            'folios.*.required' => 'El campo de folios es requerido',
+            'folios.*.unique' => 'Este folio ya ha sido regristrado',
+        ]);
+        $duplicatedFolios = array_diff_assoc($this->folios, array_unique($this->folios));
+        if (!empty($duplicatedFolios)) {
+            // Marcar cada folio duplicado individualmente
+            foreach ($duplicatedFolios as $index => $folio) {
+                $this->addError('folios.' . $index, 'Este folio es duplicado.');
+            }
+            return;
+        }
+        $servicioRuta = RutaServicio::find($this->idserviorutaEnvases);
+        $ClienteResguardo=$servicioRuta->servicio->cliente->resguardo;
+        $totalinputs = array_sum($this->inputs);
+        if($ClienteResguardo>=$servicioRuta->monto){
+            if($servicioRuta->monto==$totalinputs){
+                foreach ($this->inputs as $index => $input) {
+                    ServicioRutaEnvases::create([
+                        'ruta_servicios_id' => $this->idserviorutaEnvases,
+                        'tipo_servicio' => 1,
+                        'cantidad' => $this->inputs[$index],
+                        'folio' => $this->folios[$index],
+                        'status_envases' => 1,
+                    ]);
+                    $this->dispatch('successservicioEnvases', ['Los envases han sido almacenados correctamente', 'success']); 
+                }
+            }else{
+                $this->dispatch('successservicioEnvases', ['Las Cantidades no coinciden con el monto total de entrega', 'error']); 
+            }
+        }else{
+            $this->dispatch('successservicioEnvases', ['No cuenta con dinero en resguardo,Se notificara a las areas Correspondientes', 'error']); 
+        }
+
+    }
+    public function llenarmodalEnvases($rutaserid, $rutaid)
+    {
+        $this->resetValidation();
+        $ServicioRuta = RutaServicio::find($rutaserid);
+        $this->cantidadEnvases = $ServicioRuta->envases;
+        $this->idserviorutaEnvases = $rutaserid;
+    
+        // Consultar los registros de servicios_envases_rutas para esta ruta
+        $serviciosEnvases = ServicioRutaEnvases::where('ruta_servicios_id', $rutaserid)->get();
+    
+        // Si hay registros, llenar los arreglos con los valores recuperados
+        if ($serviciosEnvases->isNotEmpty()) {
+            $this->inputs = $serviciosEnvases->pluck('cantidad')->toArray();
+            $this->folios = $serviciosEnvases->pluck('folio')->toArray();
+            $this->originalFolios = $serviciosEnvases->pluck('folio')->toArray();
+            $this->statusEnvases = 1;
+        } else {
+            // Si no hay registros, inicializar los arreglos con valores vacíos
+            $this->inputs = array_fill(0, $this->cantidadEnvases, '');
+            $this->folios = array_fill(0, $this->cantidadEnvases, '');
+            $this->originalFolios = array_fill(0, $this->cantidadEnvases, '');
+            $this->statusEnvases = 2;
+        }
+    }
+    
+    public function EditarEnvases()
+    {
+        // Verificar duplicados en el conjunto proporcionado
+        $this->resetValidation();
+        $duplicatedFolios = array_diff_assoc($this->folios, array_unique($this->folios));
+        if (!empty($duplicatedFolios)) {
+            // Marcar cada folio duplicado individualmente
+            foreach ($duplicatedFolios as $index => $folio) {
+                $this->addError('folios.' . $index, 'Este folio es duplicado.');
+            }
+            return;
+        }
+    
+        // Validar datos de entrada
+        $this->validate([
+            'inputs.*' => 'required|numeric',
+            'folios.*' => 'required',
+        ], [
+            'inputs.*.required' => 'La cantidad es requerida',
+            'inputs.*.numeric' => 'La cantidad debe ser numérica',
+            'folios.*.required' => 'El campo de folios es requerido',
+        ]);
+        $servicioRuta = RutaServicio::find($this->idserviorutaEnvases);
+        $ClienteResguardo=$servicioRuta->servicio->cliente->resguardo;
+        $totalinputs = array_sum($this->inputs);
+        if($ClienteResguardo>=$servicioRuta->monto){
+           if($servicioRuta->monto==$totalinputs){
+    
+        foreach ($this->inputs as $index => $input) {
+            // Buscar el registro existente por su índice y ruta_servicios_id utilizando el folio original
+            $registro = ServicioRutaEnvases::where('ruta_servicios_id', $this->idserviorutaEnvases)
+                ->where('folio', $this->originalFolios[$index])
+                ->first();
+    
+            // Si se encontró el registro, actualizar sus valores
+            if ($registro) {
+                $registro->cantidad = $input;
+    
+                // Actualizar el folio solo si es diferente
+                if ($registro->folio != $this->folios[$index]) {
+                    // Validar unicidad solo si el folio ha cambiado
+                    $this->validate([
+                        'folios.' . $index => 'required|unique:servicios_envases_rutas,folio',
+                    ], [
+                        'folios.' . $index . '.unique' => 'El folio ya está siendo utilizado por otro registro',
+                    ]);
+    
+                    // Si pasa la validación, actualizar el folio
+                    $registro->folio = $this->folios[$index];
+                }
+    
+                // Guardar el registro actualizado
+                $registro->save();
+            }
+        }
+        $this->dispatch('successservicioEnvases', ['Los envases han sido editados correctamente', 'success']); 
+    }else{
+        $this->dispatch('successservicioEnvases', ['Las Cantidades no coinciden con el monto total de entrega', 'error']); 
+    }
+}else{
+    $this->dispatch('successservicioEnvases', ['No cuenta con dinero en resguardo', 'error']); 
+}
+        
+        $this->llenarmodalEnvases($this->idserviorutaEnvases, 0);
+    }
+    
+    
 }
