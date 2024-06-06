@@ -49,7 +49,7 @@ class AnexoServicios extends Component
             'servicio_id' => $this->form->servicio_id,
             'nombre' => $sucursal->sucursal
         ]);
-        $this->dispatch('sucursal-servico-memorandum');
+        $this->dispatch('sucursal-servico-memorandum', [1]);
 
     }
 

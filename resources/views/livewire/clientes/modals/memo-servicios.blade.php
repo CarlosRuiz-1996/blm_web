@@ -11,67 +11,10 @@ aria-hidden="true">
                     aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-            <div class="row">
-                
-                <div class="col-md-3 mb-3">
-                    <x-select-validadolive label="HORARIO DE ENTREGA:"
-                        placeholder="Selecciona"
-                        wire-model="form.horarioEntrega" required>
-                        
-                        @foreach ($ctg_horario_entrega as $ctg)
-                            <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
-                        @endforeach
-
-                    </x-select-validadolive>
-
-                </div>
-                <div class="col-md-4 mb-3">
-                    <x-select-validadolive label="DIA DE ENTREGA:" placeholder="Selecciona"
-                        wire-model="form.diaEntrega" required>
-                        @foreach ($ctg_dia_entrega as $ctg)
-                            <option value="{{ $ctg->id }}">{{ $ctg->name }}
-                            </option>
-                        @endforeach
-
-                    </x-select-validadolive>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <x-select-validadolive label="HORARIO DE SERVICIO:"
-                        placeholder="Selecciona"
-                        wire-model="form.horarioServicio" required>
-                        @foreach ($ctg_horario_servicio as $ctg)
-                            <option value="{{ $ctg->id }}">{{ $ctg->name }}
-                            </option>
-                        @endforeach
-
-                    </x-select-validadolive>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <x-select-validadolive label="DIA DE SERVICIO:" placeholder="Selecciona"
-                        wire-model="form.diaServicio" required>
-                        @foreach ($ctg_dia_servicio as $ctg)
-                            <option value="{{ $ctg->id }}">{{ $ctg->name }}
-                            </option>
-                        @endforeach
-
-                    </x-select-validadolive>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <x-select-validadolive label="CONSIGNATARIO:" placeholder="Selecciona"
-                        wire-model="form.consignatorio" required>
-                        @foreach ($ctg_consignatario as $ctg)
-                            <option value="{{ $ctg->id }}">{{ $ctg->name }}
-                            </option>
-                        @endforeach
-
-                    </x-select-validadolive>
-                </div>
-
-
-            </div>
+            
         </div>
         <div class="modal-footer">
-            <button type="button"  class="btn btn-primary" wire:click='terminar()'
+            <button type="button"  class="btn btn-primary" 
                 >Terminar</button>
             <button type="button"  class="btn btn-secondary"
                 data-dismiss="modal">Cerrar</button>
@@ -86,7 +29,7 @@ aria-hidden="true">
             document.addEventListener('livewire:initialized', () => {
 
                 @this.on('open-memo', () => {
-
+                    console.log('entra en memo')
                     $('#modalMemo').modal('show');
                 })
 

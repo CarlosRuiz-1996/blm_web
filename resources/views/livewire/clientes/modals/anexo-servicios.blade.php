@@ -237,12 +237,15 @@
                 });
             });
 
-            @this.on('sucursal-servico-memorandum', () => {
+            @this.on('sucursal-servico-memorandum', (a) => {
+                console.log('entra a sucursal-servico-memorandum'+a);
+                if(a==1){
                 @this.dispatch('open-memorandum-clienteActivo');
-                $('#modalElegir').modal('hide');
-                // @this.dispatch('open-sucursal-servico-clienteActivo');
+                Livewire.emit('mi-evento', { mensaje: 'Hola desde Blade' });
 
-            })
+                }
+                $('#modalElegir').modal('hide');
+            });
 
         });
 

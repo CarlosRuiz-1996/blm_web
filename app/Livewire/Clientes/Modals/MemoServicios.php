@@ -27,13 +27,19 @@ class MemoServicios extends Component
 
         
     }
+    protected $listeners = ['mi-evento' => 'manejarEvento'];
 
-    protected $listeners = ['open-memorandum-clienteActivo' => 'handleOpen2'];
-    public function handleOpen2()
+    public function manejarEvento($data)
     {
-        dd('entra a memo');
-        $this->dispatch('open-memo');
+        // Lógica para manejar el evento
+        // $data contiene los datos enviados desde el componente Blade
     }
+    // protected $listeners = ['open-memorandum-clienteActivo' => 'handleOpen'];
+    // public function handleOpen()
+    // {
+    //     dd('entra a memo');
+    //     $this->dispatch('open-memo');
+    // }
 
     public function terminar (){
         Session::push('servicio-memo', [
