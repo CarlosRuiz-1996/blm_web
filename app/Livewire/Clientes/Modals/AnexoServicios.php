@@ -70,10 +70,10 @@ class AnexoServicios extends Component
 
         if ($res == 1) {
             $this->dispatch('success', ["La sucursal creo exitosamente.", 1]);
+            
         } else {
             $this->dispatch('error', ["Ha ocurrido un error, intente más tarde.", 1]);
         }
-        $this->reset('sucursales');
     }
 
 
@@ -114,7 +114,6 @@ class AnexoServicios extends Component
         ]);
 
         $this->form->validarCp();
-        $this->sucursales =  $this->form->getAllSucursal();
 
     }
 }
