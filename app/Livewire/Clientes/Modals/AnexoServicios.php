@@ -70,7 +70,8 @@ class AnexoServicios extends Component
 
         if ($res == 1) {
             $this->dispatch('success', ["La sucursal creo exitosamente.", 1]);
-            
+            $this->sucursales =  $this->form->getAllSucursal();
+
         } else {
             $this->dispatch('error', ["Ha ocurrido un error, intente más tarde.", 1]);
         }
