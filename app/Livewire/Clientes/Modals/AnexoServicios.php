@@ -114,5 +114,7 @@ class AnexoServicios extends Component
         ]);
 
         $this->form->validarCp();
+        $this->sucursales =  $this->form->getAllSucursal();
+
     }
 }
