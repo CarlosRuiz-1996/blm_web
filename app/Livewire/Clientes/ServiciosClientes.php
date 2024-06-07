@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Clientes;
 
+use App\Livewire\Forms\AnexoForm;
 use Livewire\Component;
 use App\Livewire\Forms\ClienteActivoForm;
 use App\Models\Cliente;
@@ -71,6 +72,7 @@ class ServiciosClientes extends Component
     public $cantidadfora;
     public $editar = true;
     public $valoreditar = 0;
+    public AnexoForm $form_anexo;
 
     public function mount(Cliente $cliente)
     {
@@ -79,6 +81,8 @@ class ServiciosClientes extends Component
         $this->servicios = ctg_servicios::all();
         // session()->forget('servicio-sucursal');
         // session()->forget('servicio-memo');
+        $this->form_anexo->direcconFiscal();
+
     }
     public function render()
     {
@@ -373,6 +377,6 @@ class ServiciosClientes extends Component
 
         ]);
 
-        $this->form->validarCp();
+        $this->form_anexo->validarCp();
     }
 }
