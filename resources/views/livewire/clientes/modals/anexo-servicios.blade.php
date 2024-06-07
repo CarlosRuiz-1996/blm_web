@@ -131,7 +131,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="cancelarNuevaSucursal()" class="btn btn-secondary"
+                <button type="button" onclick="cancelarNuevaSucursal()" class="btn btn-danger"
                     data-dismiss="modal">Cerrar</button>
             </div>
         </div>
@@ -167,13 +167,17 @@
                         @endif
                     </x-select-validado>
                 </div>
-                @if ($sucursales && count($sucursales))
-                    <x-adminlte-button class="btn-flat ml-2" type="submit" wire:click='sucursal_servicio'
-                        label="Asignar" theme="info" icon="fas fa-lg fa-save" />
-                @endif
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" wire:click='cancelar()' data-dismiss="modal">Cerrar</button>
+                @if ($sucursales && count($sucursales))
+                    {{-- <x-adminlte-button class="btn-flat ml-2" type="submit" wire:click='sucursal_servicio'
+                        label="Asignar" theme="primary" icon="fas fa-lg fa-save" /> --}}
+                        <button type="button" class="btn btn-primary" wire:click='sucursal_servicio'
+                    >Siguente</button>
+                @endif
+                <button type="button" class="btn btn-danger" wire:click='cancelar()'
+                    data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -276,7 +280,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" wire:click='terminar()'>Terminar</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click='cancelar()'>Cerrar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"
+                    wire:click='cancelar()'>Cerrar</button>
             </div>
         </div>
     </div>

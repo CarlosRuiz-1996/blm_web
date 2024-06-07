@@ -374,9 +374,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-primary" {{ $bloqser ? 'disabled' : '' }}
-                        wire:click='llenartabla'>Siguiente</button>
+                    wire:click='llenartabla'>Siguiente</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                   
 
                 </div>
             </div>
@@ -418,9 +419,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" data-target="#exampleModalToggle2"
-                        data-toggle="modal" wire:click='cancelar()'>Cerrar</button>
+                  
                     <button class="btn btn-primary" wire:click="crearServicioctg">Crear Servicio</button>
+                    <button class="btn btn-danger" data-target="#exampleModalToggle2"
+                    data-toggle="modal" wire:click='cancelar()'>Cerrar</button>
                 </div>
             </div>
         </div>
