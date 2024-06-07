@@ -9,9 +9,9 @@ use App\Models\ctg_precio_servicio;
 use App\Models\ctg_servicios;
 use App\Models\CtgServicios;
 use App\Models\Servicios;
+use App\Models\servicios_conceptos_foraneos;
 use Livewire\Attributes\On;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\Session;
 
 class ServiciosClientes extends Component
 {
@@ -30,35 +30,10 @@ class ServiciosClientes extends Component
     public $editarPrecio;
     public $cantidad = 1;
     public $isAdmin;
-    public $total;
-    public $estados;
-    public $municipios;
-    public $cp;
-    public $colonias;
-    public $cp_invalido;
-    public $ctg_cp_id = "";
-    public $puesto = "";
-    public $nombreContacto = "";
-    public $razonSocial;
-    public $rfc;
-    public $ctg_tipo_cliente_id;
     public $tipoClientelist;
-    public $calleNumero;
-    public $telefono;
-    public $correoElectronico;
-    public $vigencia;
-    public $condicionpago;
-    public $condicionpagolist;
     public $servicios;
     public $precio_servicio;
     public $totalreal;
-    public $valoridcoti;
-    public $valoriidser;
-    public $valoridcliente;
-    public $valoridusuario;
-    public $password;
-    public $apepaterno;
-    public $apematerno;
     public $editarPreciocheck;
     public $cantidadcheck;
     public $cantidadhabilitado = false;
@@ -83,7 +58,7 @@ class ServiciosClientes extends Component
     public $listaForaneosguarda = [];
     public $editIndex = null; // Índice de la fila que se está editando
 
-
+    public $total;
     public $folioctg;
     public $tipoctg;
     public $descripcionctg;
@@ -97,17 +72,20 @@ class ServiciosClientes extends Component
     public $editar = true;
     public $valoreditar = 0;
 
-    public function mount(Cliente $cliente){
+    public function mount(Cliente $cliente)
+    {
         $this->form->cliente = $cliente;
         $this->precio_servicio = ctg_precio_servicio::all();
         $this->servicios = ctg_servicios::all();
+        // session()->forget('servicio-sucursal');
+        // session()->forget('servicio-memo');
     }
     public function render()
     {
         if ($this->readyToLoad) {
-        $servicios_cliente = $this->form->getServicios();
-        }else{
-            $servicios_cliente=[];
+            $servicios_cliente = $this->form->getServicios();
+        } else {
+            $servicios_cliente = [];
         }
         return view('livewire.clientes.servicios-clientes', compact('servicios_cliente'));
     }
@@ -117,8 +95,9 @@ class ServiciosClientes extends Component
         $this->readyToLoad = true;
     }
 
-    public function updateServicio(Servicios $servicio,$accion){
-        $this->form->updateServicio($servicio,$accion);
+    public function updateServicio(Servicios $servicio, $accion)
+    {
+        $this->form->updateServicio($servicio, $accion);
         $this->render();
     }
 
@@ -126,7 +105,7 @@ class ServiciosClientes extends Component
     public function crearServicioctg()
     {
 
-        
+
         $this->validate([
             'folioctg' => 'required|unique:ctg_servicios,folio',
             'tipoctg' => 'required',
@@ -153,7 +132,6 @@ class ServiciosClientes extends Component
         $this->servicios = ctg_servicios::all();
         // Despachar el evento
         $this->dispatch('success-servicio', ['El servicio se creó con éxito']);
-
     }
 
 
@@ -348,7 +326,37 @@ class ServiciosClientes extends Component
     }
 
     #[On('cliente-servicio-fin')]
-    public function finalizar(){
-        // dd();
+    public function finalizar()
+    {
+
+        // session()->forget('servicio-sucursal');
+
+
+
+        $res = $this->form->saveComplementarios($this->dataforaneo, $this->data, $this->listaForaneosguarda);
+
+        if ($res == 1) {
+            $this->dispatch('success-terminado');
+            session()->forget('servicio-sucursal');
+            session()->forget('servicio-memo');
+            $this->render();
+        } else {
+            $this->dispatch('error-terminado');
+        }
+    }
+
+    #[On('cancelar-servicio')]
+    public function cancelar()
+    {
+        session()->forget('servicio-sucursal');
+        session()->forget('servicio-memo');
+        $this->listaForaneosguarda = [];
+        $this->dataforaneo = [];
+        $this->editarPreciohabilitado = 0;
+        $this->precioUnitario = 0;
+        $this->cantidadhabilitado = 0;
+        $this->totalreal = 0;
+        $this->data = [];
+        $this->isAdmin = "";
     }
 }

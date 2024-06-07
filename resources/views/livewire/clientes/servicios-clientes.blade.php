@@ -376,7 +376,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-primary" {{ $bloqser ? 'disabled' : '' }}
-                        wire:click='llenartabla'>Agregar</button>
+                        wire:click='llenartabla'>Siguiente</button>
 
                 </div>
             </div>
@@ -419,14 +419,14 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" data-target="#exampleModalToggle2"
-                        data-toggle="modal">Cerrar</button>
+                        data-toggle="modal" wire:click='cancelar()'>Cerrar</button>
                     <button class="btn btn-primary" wire:click="crearServicioctg">Crear Servicio</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <livewire:clientes.modals.anexo-servicios :cliente="$form->cliente"/>
+    <livewire:clientes.modals.anexo-servicios :cliente="$form->cliente" />
     {{-- :client="$from->cliente" --}}
 
     @push('js')
@@ -452,6 +452,24 @@
                     @this.dispatch('open-sucursal-servico-clienteActivo');
 
                 })
+
+
+                Livewire.on('success-terminado', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'El servicio se agrego con exito.',
+                        timer: 4000,
+                    });
+                });
+
+                Livewire.on('error-terminado', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ha ocurrido un error, intenta más tarde.',
+                        showConfirmButton: true,
+                        timer: 4000,
+                    });
+                });
             });
         </script>
     @endpush

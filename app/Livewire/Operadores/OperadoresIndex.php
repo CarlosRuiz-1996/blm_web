@@ -10,8 +10,11 @@ use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
 use App\Models\RutaVehiculo;
 use App\Models\RutaVehiculoReporte;
+use App\Models\ServicioEvidenciaEntrega;
 use App\Models\ServicioRutaEnvases;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -67,30 +70,51 @@ class OperadoresIndex extends Component
     }
     public function ModalEntregaRecolecta($id, $tiposervicio)
     {
-       
+
         $this->tiposervicio = $tiposervicio == 1 ? 'Entrega' : ($tiposervicio == 2 ? 'Recolección' : 'Otro');
         $servicioRuta = RutaServicio::find($id);
         $this->MontoEntrega = $servicioRuta->monto;
         $this->idrecolecta = $id;
-        $this->cantidadEnvases = $servicioRuta->envases;    
+        $this->cantidadEnvases = $servicioRuta->envases;
         // Consultar los registros de servicios_envases_rutas para esta ruta
         $serviciosEnvases = ServicioRutaEnvases::where('ruta_servicios_id', $id)->get();
-    
+
         // Si hay registros, llenar los arreglos con los valores recuperados
-        if ($serviciosEnvases->isNotEmpty() && $tiposervicio==1) {
-            $this->inputs = $serviciosEnvases->pluck('cantidad')->toArray();
-            $this->folios = $serviciosEnvases->pluck('folio')->toArray();
-            $this->originalFolios = $serviciosEnvases->pluck('folio')->toArray();
-            $this->photo = array_fill(0, $this->cantidadEnvases, '');
-            $this->statusEnvases = 1;
+        if ($serviciosEnvases->isNotEmpty() && $tiposervicio == 1) {
+            // $this->inputs['id'] = $serviciosEnvases->pluck('id')->toArray();
+            // $this->inputs['cantidad'] = $serviciosEnvases->pluck('cantidad')->toArray();
+
+            $this->inputs = $serviciosEnvases->mapWithKeys(function ($item) {
+                return [$item->id => [
+                    'cantidad' => $item->cantidad,
+                    'folio' => $item->folio,
+                    'photo' => '',
+                    'violado' => false,
+                ]];
+            })->toArray();
+
+            // $this->folios = $serviciosEnvases->pluck('folio')->toArray();
+            // $this->originalFolios = $serviciosEnvases->pluck('folio')->toArray();
+            // $this->photo = array_fill(0, $this->cantidadEnvases, '');
+            // $this->statusEnvases = 1;
         } else {
             // Si no hay registros, inicializar los arreglos con valores vacíos
-            $this->inputs = array_fill(0, $this->cantidadEnvases, '');
-            $this->folios = array_fill(0, $this->cantidadEnvases, '');
-            $this->originalFolios = array_fill(0, $this->cantidadEnvases, '');
-            $this->photo =array_fill(0, $this->cantidadEnvases, '');
-            $this->statusEnvases = 2;
+            // $this->inputs = array_fill(0, $this->cantidadEnvases, '');
+            // $this->folios = array_fill(0, $this->cantidadEnvases, '');
+            // $this->originalFolios = array_fill(0, $this->cantidadEnvases, '');
+            // $this->photo = array_fill(0, $this->cantidadEnvases, '');
+            // $this->statusEnvases = 2;
+            $this->inputs = $serviciosEnvases->mapWithKeys(function ($item) {
+                return [$item->id => [
+                    'cantidad' => '',
+                    'folio' => '',
+                    'photo' => '',
+                    'violado' => false,
+                ]];
+            })->toArray();
         }
+
+       
     }
 
     public function ModalAceptar()
@@ -98,37 +122,55 @@ class OperadoresIndex extends Component
         $this->validate([
             'idrecolecta' => 'required',
             'MontoEntrega' => 'required',
-            'MontoEntregado' => 'required',
-            'photo.*' => 'required',
+            // 'MontoEntregado' => 'required',
+            'inputs.*.photo' => 'required|image|max:1024', // Máximo 1MB
+        ], [
+            'inputs.*.photo.required' => 'La imagen es obligatoria',
         ]);
-        if ($this->MontoEntrega == $this->MontoEntregado) {
-            $servicioRuta = RutaServicio::find($this->idrecolecta);
-            $servicioRuta->status_ruta_servicios = 3;
-            $servicioRuta->save();
-            $rutaServicioReporte = new RutaServicioReporte();
 
-            // Asignar valores del servicio actualizado al reporte
-            $rutaServicioReporte->servicio_id = $servicioRuta->servicio_id;
-            $rutaServicioReporte->ruta_id = $servicioRuta->ruta_id;
-            $rutaServicioReporte->monto = $servicioRuta->monto;
-            $rutaServicioReporte->folio = $servicioRuta->folio;
-            $rutaServicioReporte->envases = $servicioRuta->envases;
-            $rutaServicioReporte->tipo_servicio = $servicioRuta->tipo_servicio;
-            $rutaServicioReporte->status_ruta_servicio_reportes = $servicioRuta->status_ruta_servicios;
-            $rutaServicioReporte->motivocancelacion = $this->motivoReprogramarConcepto;
-            $rutaServicioReporte->area = 3;
-            // Guardar el nuevo registro en la base de datos
-            $rutaServicioReporte->save();
-            foreach ($this->photo as $index => $file) {
-                // Almacenar el archivo con un nombre personalizado y en una ubicación específica
-                $path = $file->storeAs(path: 'evidencias/', name: 'avatar.png');
-        
-                // Aquí puedes hacer cualquier otra cosa que necesites con la ruta donde se almacenó el archivo
+        try {
+            DB::beginTransaction();
+            $this->MontoEntregado=0;
+            foreach ($this->inputs as $index => $input) {
+                $this->MontoEntregado  += (float)$input['cantidad'];
             }
-            //$this->photo->storeAs(path: 'evidencias/', name: 'avatar.png');
-            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La cantidad Ingresada es correcta'], ['tipomensaje' => 'success']);
-        } else {
-            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La cantidad Ingresada no es la cantidad a entregar'], ['tipomensaje' => 'error']);
+            if ((float)$this->MontoEntrega == (float)$this->MontoEntregado) {
+                $servicioRuta = RutaServicio::find($this->idrecolecta);
+                $servicioRuta->status_ruta_servicios = 3;
+                $servicioRuta->save();
+                $rutaServicioReporte = new RutaServicioReporte();
+
+                // Asignar valores del servicio actualizado al reporte
+                $rutaServicioReporte->servicio_id = $servicioRuta->servicio_id;
+                $rutaServicioReporte->ruta_id = $servicioRuta->ruta_id;
+                $rutaServicioReporte->monto = $servicioRuta->monto;
+                $rutaServicioReporte->folio = $servicioRuta->folio;
+                $rutaServicioReporte->envases = $servicioRuta->envases;
+                $rutaServicioReporte->tipo_servicio = $servicioRuta->tipo_servicio;
+                $rutaServicioReporte->status_ruta_servicio_reportes = $servicioRuta->status_ruta_servicios;
+                $rutaServicioReporte->motivocancelacion = $this->motivoReprogramarConcepto;
+                $rutaServicioReporte->area = 3;
+                // Guardar el nuevo registro en la base de datos
+                $rutaServicioReporte->save();
+
+                //guardar fotos y la evidencia en la tabla
+                foreach ($this->inputs as $index => $input) {
+                    $evidencia = ServicioEvidenciaEntrega::create(['servicio_envases_ruta_id' => $index]);
+
+                    $input['photo']->storeAs(path: 'evidencias/', name: 'evidencia_' . $evidencia->id . '.png');
+                }
+
+                //$this->photo->storeAs(path: 'evidencias/', name: 'avatar.png');
+                $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La cantidad Ingresada es correcta'], ['tipomensaje' => 'success'],['op'=>1]);
+            } else {
+                $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La cantidad Ingresada no es la cantidad a entregar:'.$this->MontoEntrega.'-'.$this->MontoEntregado], ['tipomensaje' => 'error']);
+
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
+            Log::info('Info: ' . $e);
         }
     }
     public function updatedEvidencias()
@@ -174,17 +216,23 @@ class OperadoresIndex extends Component
             'photo' => 'required',
         ]);
 
-        $servicioruta=RutaServicio::find($this->idrecolecta);
-        $servicioruta->monto=$this->MontoEntregado;
-        $servicioruta->envases=$this->envasescantidad;
-        $servicioruta->status_ruta_servicios=3;
+        $servicioruta = RutaServicio::find($this->idrecolecta);
+        $servicioruta->monto = $this->MontoEntregado;
+        $servicioruta->envases = $this->envasescantidad;
+        $servicioruta->status_ruta_servicios = 3;
         $servicioruta->save();
 
-        $ruta=Ruta::find($servicioruta->ruta_id);
-        $ruta->total_ruta=$ruta->total_ruta+$this->MontoEntregado;
+        $ruta = Ruta::find($servicioruta->ruta_id);
+        $ruta->total_ruta = $ruta->total_ruta + $this->MontoEntregado;
         $ruta->save();
-        $nombreRutaGuardaImg='Servicio_'.$servicioruta->id.'_evidencia.png';
-        $this->photo->storeAs(path: 'evidencias/EntregasRecolectas/', name: $nombreRutaGuardaImg);
+        $nombreRutaGuardaImg = 'Servicio_' . $servicioruta->id . '_evidencia.png';
+        foreach ($this->photo as $photo) {
+            $photo->storeAs(path: 'evidencias/EntregasRecolectas/', name: $nombreRutaGuardaImg);
+        }
+
+
+
+
         $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La recolecta se completo correctamente'], ['tipomensaje' => 'success']);
     }
 

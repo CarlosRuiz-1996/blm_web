@@ -173,7 +173,110 @@
                 @endif
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" wire:click='cancelar()' data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" wire:ignore.self id="modalMemo" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title" id="exampleModalLabel">Complementos del servicio</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+
+                        <x-input-validado label="Grupo comercial:" placeholder="Grupo comercial:"
+                            wire-model="form_memo.grupo" type="text" />
+
+                    </div>
+                    <div class="col-md-4 mb-3">
+
+                        <x-select-validado label="Tipo de solicitud:" placeholder="Seleccione"
+                            wire-model="form_memo.ctg_tipo_solicitud_id" required>
+                            @foreach ($ctg_tipo_solicitud as $ctg)
+                                <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
+                            @endforeach
+                        </x-select-validado>
+
+                    </div>
+                    <div class="col-md-4 mb-3">
+
+                        <x-select-validado label="Tipo de servicio:" placeholder="Seleccione"
+                            wire-model="form_memo.ctg_tipo_servicio_id" required>
+
+                            @foreach ($ctg_tipo_servicio as $ctg)
+                                <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
+                            @endforeach
+                        </x-select-validado>
+
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <x-select-validadolive label="HORARIO DE ENTREGA:" placeholder="Selecciona"
+                            wire-model="form_memo.horarioEntrega" required>
+
+                            @foreach ($ctg_horario_entrega as $ctg)
+                                <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
+                            @endforeach
+
+                        </x-select-validadolive>
+
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <x-select-validadolive label="DIA DE ENTREGA:" placeholder="Selecciona"
+                            wire-model="form_memo.diaEntrega" required>
+                            @foreach ($ctg_dia_entrega as $ctg)
+                                <option value="{{ $ctg->id }}">{{ $ctg->name }}
+                                </option>
+                            @endforeach
+
+                        </x-select-validadolive>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <x-select-validadolive label="HORARIO DE SERVICIO:" placeholder="Selecciona"
+                            wire-model="form_memo.horarioServicio" required>
+                            @foreach ($ctg_horario_servicio as $ctg)
+                                <option value="{{ $ctg->id }}">{{ $ctg->name }}
+                                </option>
+                            @endforeach
+
+                        </x-select-validadolive>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <x-select-validadolive label="DIA DE SERVICIO:" placeholder="Selecciona"
+                            wire-model="form_memo.diaServicio" required>
+                            @foreach ($ctg_dia_servicio as $ctg)
+                                <option value="{{ $ctg->id }}">{{ $ctg->name }}
+                                </option>
+                            @endforeach
+
+                        </x-select-validadolive>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <x-select-validadolive label="CONSIGNATARIO:" placeholder="Selecciona"
+                            wire-model="form_memo.consignatorio" required>
+                            @foreach ($ctg_consignatario as $ctg)
+                                <option value="{{ $ctg->id }}">{{ $ctg->name }}
+                                </option>
+                            @endforeach
+
+                        </x-select-validadolive>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" wire:click='terminar()'>Terminar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click='cancelar()'>Cerrar</button>
             </div>
         </div>
     </div>
@@ -237,13 +340,13 @@
                 });
             });
 
-            @this.on('sucursal-servico-memorandum', (a) => {
-                console.log('entra a sucursal-servico-memorandum'+a);
-                if(a==1){
-                @this.dispatch('open-memorandum-clienteActivo');
-                Livewire.emit('mi-evento', { mensaje: 'Hola desde Blade' });
 
-                }
+            Livewire.on('close-memo', function([message]) {
+                $('#modalMemo').modal('hide');
+
+            });
+            @this.on('sucursal-servico-memorandum', () => {
+                $('#modalMemo').modal('show');
                 $('#modalElegir').modal('hide');
             });
 

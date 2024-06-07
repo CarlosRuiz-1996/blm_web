@@ -10,11 +10,11 @@ class ServicioEvidenciaRecolecta extends Model
     protected $table = 'servicios_evidencias_recolecta';
 
     protected $fillable = [
-        'ruta_servicios_id', 'status_evidencia_recolecta'
+        'servicio_envases_ruta_id', 'status_evidencia_recolecta'
     ];
 
-    public function rutaServicio()
+    public function envases()
     {
-        return $this->belongsTo(RutaServicio::class);
+        return $this->belongsTo(ServicioRutaEnvases::class);
     }
 }

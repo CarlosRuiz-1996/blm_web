@@ -2,14 +2,20 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\Anexo1;
 use App\Models\Cliente;
 use App\Models\Cotizacion;
 use App\Models\Ctg_Cp;
 use App\Models\Ctg_Tipo_Cliente;
+use App\Models\Memorandum;
+use App\Models\MemorandumServicios;
 use App\Models\Servicios;
+use App\Models\servicios_conceptos_foraneos;
+use App\Models\SucursalServicio;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -163,12 +169,12 @@ class ClienteActivoForm extends Form
     public function getServicios()
     {
         return Servicios::where('cliente_id', $this->cliente->id)
-        ->where(function ($query) {
-            $query->where('status_servicio', '>=', 3)
-                  ->orWhere('status_servicio', 0);
-        })
-        ->paginate(5);
-}
+            ->where(function ($query) {
+                $query->where('status_servicio', '>=', 3)
+                    ->orWhere('status_servicio', 0);
+            })
+            ->paginate(5);
+    }
 
     public function updateServicio(Servicios $servicio, $accion)
     {
@@ -180,6 +186,111 @@ class ClienteActivoForm extends Form
             //para reactivarlo se cambia status a 3.
             $servicio->status_servicio = 3;
             $servicio->save();
+        }
+    }
+
+
+    //guardar datos complementarios:
+
+    public function saveComplementarios($dataforaneo, $data, $listaForaneosguarda)
+    {
+
+        try {
+            DB::beginTransaction();
+            $servicio = "";
+            //crea servicio
+            if (empty($dataforaneo)) {
+                foreach ($data as $datos) {
+                    // Realizar la inserción en la base de datos
+                    $servicio = Servicios::create([
+                        'precio_unitario' => $datos['preciounitario'],
+                        'cantidad' => $datos['cantidad'],
+                        'subtotal' => $datos['total'],
+                        'ctg_servicios_id' => $datos['servicioId'],
+                        'servicio_especial' => $datos['isAdmin'] ? 1 : 0,
+                        'status_servicio' => 3,
+                        'cliente_id' => $this->cliente->id,
+                    ]);
+                }
+            } else {
+                foreach ($dataforaneo as $datosf) {
+                    // Realizar la inserción en la base de datos
+                    $servicio = Servicios::create([
+                        'precio_unitario' => $datosf['sumatotal'],
+                        'cantidad' => 1,
+                        'subtotal' => $datosf['sumatotal'],
+                        'servicio_especial' => 1,
+                        'status_servicio' => 3,
+                        'kilometros' => $datosf['km'],
+                        'kilometros_costo' => $datosf['costokm'],
+                        'miles' => $datosf['miles'],
+                        'miles_costo' => $datosf['milesprecio'],
+                        'servicio_foraneo' => 1,
+                        'gastos_operaciones' => $datosf['goperacion'],
+                        'iva' => $datosf['totaliva'],
+                        'cliente_id' => $this->cliente->id,
+                        'foraneo_destino' => $datosf['destinoruta'],
+                        'foraneo_inicio'  => $datosf['inicioruta'],
+                        'montotransportar_foraneo'  => $datosf['cantidadlleva'],
+
+                    ]);
+                }
+                foreach ($listaForaneosguarda as $concepto) {
+                    servicios_conceptos_foraneos::create([
+                        'concepto' => $concepto['consepforaneo'], // Aquí ajusta según la estructura de tu array
+                        'costo' => $concepto['precioconsepforaneo'], // Aquí ajusta según la estructura de tu array
+                        'servicio_id' => $servicio->id,
+                        'cantidadfora' => $concepto['cantidadfora'],
+                    ]);
+                }
+            }
+
+
+
+            $servcios_sucursal = Session::get('servicio-sucursal', []);
+            $servcios_memo = Session::get('servicio-memo', []);
+            $sucursal_servicio="";
+            if (!empty($servcios_sucursal) && is_array($servcios_sucursal)) {
+                $anexo1 = Anexo1::create(['cliente_id' => $this->cliente->id]);
+                $registro = $servcios_sucursal[0];
+                $sucursal_servicio = SucursalServicio::create([
+                    'servicio_id' => $servicio->id,
+                    'sucursal_id' => $registro['sucursal_id'],
+                    'anexo1_id' => $anexo1->id
+                ]);
+            }
+
+            if (!empty($servcios_memo) && is_array($servcios_memo)) {
+                $registro = $servcios_memo[0];
+                $memorandum = Memorandum::create(
+                    [
+                        'grupo' => $registro['grupo'],
+                        'ctg_tipo_solicitud_id' => $registro['ctg_tipo_solicitud'],
+                        'ctg_tipo_servicio_id' => $registro['ctg_tipo_servicio'],
+                        'observaciones' => '',
+                        'cliente_id' => $this->cliente->id,
+                        'status_memoranda' => 2
+                    ]
+                );
+                
+                MemorandumServicios::create([
+                    'sucursal_servicio_id' =>$sucursal_servicio->id,
+                    'memoranda_id' => $memorandum->id,
+                    'ctg_dia_servicio_id' => $registro['horarioEntrega'],
+                    'ctg_dia_entrega_id' => $registro['diaEntrega'],
+                    'ctg_horario_servicio_id' => $registro['horarioServicio'],
+                    'ctg_horario_entrega_id' => $registro['diaServicio'],
+                    'ctg_consignatario_id' => $registro['consignatorio'],
+                ]);
+                Log::info("termina-MemorandumServicios");
+            }
+      
+            DB::commit();
+            return 1;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al intentar guardar los datos: ' . $e->getMessage());
+            return 0;
         }
     }
 }
