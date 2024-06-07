@@ -359,4 +359,20 @@ class ServiciosClientes extends Component
         $this->data = [];
         $this->isAdmin = "";
     }
+
+
+    public function validarCp()
+    {
+
+        // dd('entra');
+        $this->validate([
+            'form.cp' => 'required|digits_between:1,5',
+        ], [
+            'form.cp.digits_between' => 'El código postal solo contiene 5 digitos.',
+            'form.cp.required' => 'Código postal requerido.',
+
+        ]);
+
+        $this->form->validarCp();
+    }
 }
