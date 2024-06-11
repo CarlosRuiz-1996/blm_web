@@ -2,17 +2,7 @@
 
     {{-- cabecera --}}
     <div class="d-sm-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center">
-            <h1 class="me-4">
-                <a href="/operaciones" title="ATRAS" class="me-2">
-                    <i class="fa fa-arrow-left"></i>
-                </a>
-
-                {{ $op == 1 ? 'Nueva Ruta' : 'Gestión de Ruta' }}
-            </h1>
-
-
-        </div>
+        {{--
         @if ($op != 1)
             @php
                 $maxValue = 10000000; // 10 millones
@@ -38,8 +28,63 @@
                         aria-valuenow="{{ $progressPercentage }}" aria-valuemin="0" aria-valuemax="100">
                     </div>
                 </div>
+               
             </div>
-        @endif
+            <div class="w-5 ml-12">
+                <button>PDF</button>
+            </div>
+        @endif --}}
+        <table class="table " width="100%" cellspacing="0">
+            <tr>
+                <td align="left" class="d-flex align-items-center">
+                    <h1 class="me-4">
+
+                        <a href="/operaciones" title="ATRAS" class="me-2">
+                            <i class="fa fa-arrow-left"></i>
+                        </a>
+
+                        {{ $op == 1 ? 'Nueva Ruta' : 'Gestión de Ruta' }}
+                    </h1>
+                </td>
+                <td align="center" style="width: 40%;">
+                    @if ($op != 1)
+                        @php
+                            $maxValue = 10000000; // 10 millones
+                            $progressPercentage = min(($total_ruta / $maxValue) * 100, 100); // Asegurarse de no exceder 100%
+
+                            $progressClass = '';
+
+                            if ($total_ruta >= 10000000) {
+                                $progressClass = 'bg-danger'; // Rojo para >= 10 millones
+                            } elseif ($total_ruta >= 7000000) {
+                                $progressClass = 'bg-warning'; // Amarillo para >= 7 millones
+                            } else {
+                                $progressClass = 'bg-success'; // Verde para menos de 7 millones
+                            }
+                        @endphp
+                            <div style="width: 100%;">
+                                Total: {{ number_format($total_ruta, 2) }}
+                            </div>
+                            <div class="progress" style="width: 120%;">
+                                <div class="progress-bar {{ $progressClass }} progress-bar-striped progress-bar-animated"
+                                    role="progressbar" style="width: {{ $progressPercentage }}%;"
+                                    aria-label="Basic example" aria-valuenow="{{ $progressPercentage }}"
+                                    aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+
+                    @endif
+                </td>
+                <td align="right" style="width: 20%;">
+                    <a target="_blank">
+                        <i title="Hoja de ruta" style="color: red;" class="fas fa-file-pdf fa-2x"
+                            aria-hidden="true"></i>
+                    </a>
+                </td>
+
+            </tr>
+
+        </table>
 
         <div class="w-80">
             <div style="width: 100%;">
@@ -150,7 +195,7 @@
 
                 @this.on('confirm', ([op, boveda_pase, total_ruta, firma]) => {
 
-                    console.log('firma'+firma);
+                    console.log('firma' + firma);
 
                     if (op == 1 || boveda_pase == 1) {
                         //!total_ruta || 
@@ -217,25 +262,25 @@
                                         timer: 4000
                                     })
                                 }
-                            }else{
+                            } else {
                                 //no hay firma
                                 Swal.fire({
-                                        title: '¿Estas seguro?',
-                                        text: op == 1 ? "La ruta sera guardada en la base de datos" :
-                                            "La ruta pasara a boveda.",
-                                        icon: 'warning',
-                                        showCancelButton: true,
-                                        confirmButtonColor: '#3085d6',
-                                        cancelButtonColor: '#d33',
-                                        confirmButtonText: 'Si, adelante!',
-                                        cancelButtonText: 'Cancelar'
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta', {
-                                                accion: 1
-                                            });
-                                        }
-                                    });
+                                    title: '¿Estas seguro?',
+                                    text: op == 1 ? "La ruta sera guardada en la base de datos" :
+                                        "La ruta pasara a boveda.",
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Si, adelante!',
+                                    cancelButtonText: 'Cancelar'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        @this.dispatch(op == 1 ? 'save-ruta' : 'update-ruta', {
+                                            accion: 1
+                                        });
+                                    }
+                                });
                             }
 
                         }

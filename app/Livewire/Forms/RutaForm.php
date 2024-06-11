@@ -314,40 +314,44 @@ class RutaForm extends Form
         try {
             DB::beginTransaction();
             $totalRuta = 0;
-            
+
             Log::info('Entra al array seleccionados: ');
-            foreach ($seleccionados as $data) {
+            if (count($seleccionados)) {
+                foreach ($seleccionados as $data) {
+                    if ($data['folio']) {
+                        $servicio_ruta = RutaServicio::create([
+                            'servicio_id' => $data['servicio_id'],
+                            'ruta_id' => $this->ruta->id,
+                            'monto' => $data['monto'],
+                            'folio' => $data['folio'],
+                            'envases' => $data['envases'],
+                            'tipo_servicio' => 1,
+                        ]);
 
-                $servicio_ruta = RutaServicio::create([
-                    'servicio_id' => $data['servicio_id'],
-                    'ruta_id' => $this->ruta->id,
-                    'monto' => $data['monto'],
-                    'folio' => $data['folio'],
-                    'envases' => $data['envases'],
-                    'tipo_servicio' => 1,
-                ]);
+                        $servicio_ruta->servicio->status_servicio = 4;
+                        $servicio_ruta->servicio->save();
 
-                $servicio_ruta->servicio->status_servicio = 4;
-                $servicio_ruta->servicio->save();
-
-                $totalRuta += $data['monto'];
+                        $totalRuta += $data['monto'];
+                    }
+                }
             }
             Log::info('Entra al array seleccionadosRecolecta: ');
+            if (count($seleccionadosRecolecta)) {
+                foreach ($seleccionadosRecolecta as $data) {
+                    if ($data['folio']) {
+                        $servicio_ruta = RutaServicio::create([
+                            'servicio_id' => $data['servicio_id'],
+                            'ruta_id' => $this->ruta->id,
+                            'monto' => $data['monto'],
+                            'folio' => $data['folio'],
+                            'envases' => $data['envases'],
+                            'tipo_servicio' => 2,
+                        ]);
 
-            foreach ($seleccionadosRecolecta as $data) {
-
-                $servicio_ruta = RutaServicio::create([
-                    'servicio_id' => $data['servicio_id'],
-                    'ruta_id' => $this->ruta->id,
-                    'monto' => $data['monto'],
-                    'folio' => $data['folio'],
-                    'envases' => $data['envases'],
-                    'tipo_servicio' => 2,
-                ]);
-
-                $servicio_ruta->servicio->status_servicio = 4;
-                $servicio_ruta->servicio->save();
-
+                        $servicio_ruta->servicio->status_servicio = 4;
+                        $servicio_ruta->servicio->save();
+                    }
+                }
             }
 
             Log::info('Entra al calculaRiesgo: ');
@@ -629,33 +633,33 @@ class RutaForm extends Form
         try {
             DB::beginTransaction();
 
-            
 
-           $firma =  RutaFirma10M::create([
+
+            $firma =  RutaFirma10M::create([
                 'ruta_id' => $this->ruta->id
             ]);
 
             $users = Empleado::whereIn('ctg_area_id', [2, 3])->get();
             //genera el mensaje
             $msg = 'Ser requiere validacion para que la ruta ' . $this->ruta->nombre->name . ' lleve mas de 10 millones';
-    
-    
+
+
             //Insertar en notificaciones de boveda
             ModelsNotification::create([
                 'empleado_id_send' => Auth::user()->empleado->id,
                 'ctg_area_id' => 3,
                 'message' => $msg,
-                'ruta_firma_id'=> $firma->id,
-                'tipo'=>2
+                'ruta_firma_id' => $firma->id,
+                'tipo' => 2
             ]);
             ModelsNotification::create([
                 'empleado_id_send' => Auth::user()->empleado->id,
                 'ctg_area_id' => 2,
                 'message' => $msg,
-                'ruta_firma_id'=> $firma->id,
-                'tipo'=>2
+                'ruta_firma_id' => $firma->id,
+                'tipo' => 2
             ]);
-    
+
             Notification::send($users, new \App\Notifications\newNotification($msg));
 
 

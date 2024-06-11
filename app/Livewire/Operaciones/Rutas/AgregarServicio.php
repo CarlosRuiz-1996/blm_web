@@ -154,23 +154,20 @@ class AgregarServicio extends Component
 
             $bandera = 0;
             $seleccionados = [];
+            $seleccionadosRecolecta=[];
             foreach ($this->selectServicios as $servicio_id => $item) {
 
-                //creo mi arreglo
-                $seleccionados[$bandera] = [
-                    "servicio_id" => $servicio_id,
-                    "monto" => "",
-                    "folio" => "",
-                    "envases" => "",
-                ];
                 //entregas
-                $seleccionadosRecolecta[$bandera] = [
-                    "servicio_id" => $servicio_id,
-                    "monto" => "",
-                    "folio" => "",
-                    "envases" => "",
-                ];
+
                 if (array_key_exists($servicio_id, $this->selectServiciosEntrega)) {
+                    //creo mi arreglo
+                    $seleccionados[$bandera] = [
+                        "servicio_id" => $servicio_id,
+                        "monto" => "",
+                        "folio" => "",
+                        "envases" => "",
+                    ];
+                   
                     if (array_key_exists($servicio_id, $this->montoArray)) {
                         $seleccionados[$bandera]['monto'] = $this->montoArray[$servicio_id];
                     } else {
@@ -184,9 +181,15 @@ class AgregarServicio extends Component
                     } else {
                         $seleccionados[$bandera]['envases'] = 0;
                     }
-                } 
+                    
+                }
                 if (array_key_exists($servicio_id, $this->selectServiciosRecolecta)) {
-
+                    $seleccionadosRecolecta[$bandera] = [
+                        "servicio_id" => $servicio_id,
+                        "monto" => "",
+                        "folio" => "",
+                        "envases" => "",
+                    ];
                     if (array_key_exists($servicio_id, $this->montoArrayRecolecta)) {
                         $seleccionadosRecolecta[$bandera]['monto'] = $this->montoArrayRecolecta[$servicio_id];
                     } else {
@@ -203,13 +206,14 @@ class AgregarServicio extends Component
                 }
                 $bandera++;
             }
-            
+
 
             $res = $this->form->storeRutaServicio($seleccionados, $seleccionadosRecolecta);
 
             if ($res == 1) {
-                $this->dispatch('clean-servicios');
+                $this->clean();
                 $seleccionados = [];
+                $seleccionadosRecolecta = [];
                 $this->dispatch('total-ruta');
                 $this->dispatch('success-servicio', 'Servicios agregados con exito a la ruta');
                 $this->dispatch('render-modal-vehiculos');
@@ -275,7 +279,10 @@ class AgregarServicio extends Component
             'montoArray',
             'folioArray',
             'envaseArray',
-            'selectServiciosRecolecta'
+            'selectServiciosRecolecta',
+            'montoArrayRecolecta',
+            'folioArrayRecolecta',
+            'envaseArrayRecolecta',
         );
 
         $this->resetValidation();
