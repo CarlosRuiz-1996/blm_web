@@ -1,7 +1,7 @@
 <div wire:init='loadPersonalOperador'>
     <div class="d-sm-flex align-items-center justify-content-between">
 
-        <h1 class="ml-3">Personal Operador</h1>
+        <h1 class="ml-3">Personal Operador / Cajeros</h1>
         @if ($this->form->ruta->ctg_rutas_estado_id == 1)
             <button title="Agrega una nueva ruta al catalogo" class="btn btn-primary m-2" data-toggle="modal"
                 data-target="#personalOperador" wire:click='getPersonalOperador()'>

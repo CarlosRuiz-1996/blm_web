@@ -129,6 +129,9 @@ Route::get('validacion/listar/{area}/{name?}/{admin?}',[ValidacionMemorandumCont
 //operaciones.-rutas
 Route::get('/operaciones', [OperacionesController::class, 'index'])->name('operaciones');
 Route::get('/ruta/gestion/{op}/{ruta?}', [OperacionesController::class, 'ruta_gestion'])->name('ruta.gestion');
+//hoja de rutas
+Route::get('/ruta/ruta-pdf/{ruta}', [OperacionesController::class, 'hoja_ruta'])->name('ruta.pdf');
+
 
 //operadores
 Route::get('/operadores', [Operadores::class, 'index'])->name('index');

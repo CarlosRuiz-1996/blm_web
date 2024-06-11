@@ -76,7 +76,7 @@
                     @endif
                 </td>
                 <td align="right" style="width: 20%;">
-                    <a target="_blank">
+                    <a target="_blank" href="{{route('ruta.pdf',[$form->ruta])}}">
                         <i title="Hoja de ruta" style="color: red;" class="fas fa-file-pdf fa-2x"
                             aria-hidden="true"></i>
                     </a>
