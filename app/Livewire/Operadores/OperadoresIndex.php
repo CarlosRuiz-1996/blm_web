@@ -187,12 +187,6 @@ class OperadoresIndex extends Component
             }
         }
     }
-    public function updatedPhotorepro()
-    {
-        foreach ($this->photorepro as $photorepro) {
-            $photorepro->store(path: 'photorepro');
-        }
-    }
 
 
     public function modalCerrado()
@@ -216,23 +210,28 @@ class OperadoresIndex extends Component
 
         $this->validate([
             'idrecolecta' => 'required',
-            // 'MontoEntrega' => 'required',
+            'envasescantidad' => 'required',
             'MontoRecolecta' => 'required',
             'inputs.*.cantidad' => 'required', // Máximo 1MB
             'inputs.*.folio' => 'required', // Máximo 1MB
             'inputs.*.sello' => 'required', // Máximo 1MB
             'inputs.*.photo' => 'required|image|max:1024', // Máximo 1MB
-
         ], [
             'inputs.*.photo.required' => 'La imagen es obligatoria',
             'inputs.*.cantidad.required' => 'La cantidad es obligatoria',
             'inputs.*.folio.required' => 'El folio es obligatoria',
             'inputs.*.sello.required' => 'El sello es obligatoria',
             'MontoRecolecta.required' => 'Debe ingresar el monto total',
-        ]);
+            'envasescantidad.required' => 'La cantidad de envases es obligatoria',
 
+        ]);
         try {
             DB::beginTransaction();
+
+            if (!count($this->inputs)) {
+                throw new \Exception('No hay envases para guardar');
+            }
+
             //acumulo la cantidad de los envase
             $MontoEnvases = 0;
             $montoEnvaseViolado = 0;
@@ -246,11 +245,11 @@ class OperadoresIndex extends Component
             }
 
             if ($MontoEnvases != $this->MontoRecolecta) {
-                $this->dispatch('error', ['La suma de los envases no coinside con el monto ingresado']);
+                throw new \Exception('La suma de los envases no coinside con el monto ingresado');
             }
 
             //si hay violado se resta porque no se llevara.
-            $this->MontoRecolecta = $this->MontoRecolecta - $montoEnvaseViolado;
+            $this->MontoRecolecta = $MontoEnvases - $montoEnvaseViolado;
 
             //completo datos del servicio en la ruta
             $servicioruta = RutaServicio::find($this->idrecolecta);
@@ -259,6 +258,7 @@ class OperadoresIndex extends Component
             $servicioruta->status_ruta_servicios = 3;
             $servicioruta->save();
 
+            // dd($servicioruta);
 
             $ruta = Ruta::find($servicioruta->ruta_id);
             $ruta->total_ruta = $ruta->total_ruta + $this->MontoRecolecta;
@@ -268,7 +268,7 @@ class OperadoresIndex extends Component
             foreach ($this->inputs as $index => $input) {
 
                 $servicio_envases =  ServicioRutaEnvases::create([
-                    'ruta_servicios_id' => $servicioruta->ruta_id,
+                    'ruta_servicios_id' => $servicioruta->id,
                     'tipo_servicio' => 2,
                     'cantidad' => $input['cantidad'],
                     'folio' => $input['folio'],
@@ -284,15 +284,27 @@ class OperadoresIndex extends Component
                 $input['photo']->storeAs(path: 'evidencias/EntregasRecolectas/', name: $nombreRutaGuardaImg);
             }
 
+            RutaServicioReporte::create([
+                'servicio_id' => $servicioruta->servicio_id,
+                'ruta_id' => $servicioruta->ruta_id,
+                'monto' => $servicioruta->monto,
+                'folio' => $servicioruta->folio,
+                'envases' => $servicioruta->envases,
+                'tipo_servicio' => $servicioruta->tipo_servicio,
+                'area'=>3
+            ]);
 
 
 
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La recolecta se completo correctamente'], ['tipomensaje' => 'success']);
 
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
+            $this->dispatch('error', [$e->getMessage()]);
+
             Log::info('Info: ' . $e);
         }
     }
