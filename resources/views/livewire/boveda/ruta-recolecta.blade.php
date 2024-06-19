@@ -25,7 +25,11 @@
                         <td>{{ $serviciosTerinado->estado->name }}</td>
                         <td>{{ $serviciosTerinado->hora_inicio }}</td>
                         <td>{{ $serviciosTerinado->hora_fin }}</td>
-                        <td>opciones</td>
+                        <td>
+                            <a href="{{route('boveda.procesa-ruta', [$serviciosTerinado])}}"
+                            class="btn btn-info"
+                            >Procesar</a>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

@@ -123,6 +123,12 @@
     </div>
     @endif
 </div>
+<style>
+    #message {
+        display: none;
+        /* El mensaje está oculto por defecto */
+    }
+</style>
 <div class="modal fade" id="ModalEntregarRecolectar" wire:ignore.self tabindex="-1" role="dialog"
     aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
@@ -150,35 +156,55 @@
                         <x-input-validado :readonly="true" label="Monto:" placeholder="Ingrese Monto"
                             wire-model="MontoEntrega" wire-attribute="MontoEntrega" type="text" />
                     </div>
-                    <div class="col-md-12 mb-1" {{ $tiposervicio == 'Entrega' ? 'hidden' : '' }}>
-                        <x-input-validado :readonly="false" label="Envases:" placeholder="Ingrese cantidad de envases"
-                            wire-model="envasescantidad" wire-attribute="envasescantidad" type="text" />
+
+                    @if ($tiposervicio == 'Recolección')
+                        <div class="col-md-5 mb-3">
+                            <x-input-validado :readonly="false" label="Monto:" placeholder="Ingrese Monto total"
+                                wire-model="MontoRecolecta" wire-attribute="MontoRecolecta" type="text" />
+                        </div>
+                        <div class="col-md-5 mb-1">
+                            <x-input-validadolive :readonly="false" label="Envases:"
+                                placeholder="Ingrese cantidad de envases" wire-model="envasescantidad"
+                                wire-attribute="envasescantidad" type="text" />
+
+                        </div>
+                        <div class="col-md-2" style="margin-top: 32px">
+
+                            <button class="btn btn-info" wire:click='envase_recolecta'>Agregar</button>
+                        </div>
+                    @endif
+                    <div class="col-md-12 mb-3">
+                        <div class="alert alert-warning" id="message" role="alert">
+                            No puedes llevar envases dañados.
+                        </div>
                     </div>
-                    {{-- <div class="col-md-12 mb-3">
-                        <x-input-validado :readonly="false" label="Monto:" placeholder="Ingrese Monto a entregar"
-                            wire-model="MontoEntregado" wire-attribute="MontoEntregado" type="text" />
-                    </div> --}}
                     @foreach ($inputs as $index => $input)
-                        <div class="col-md-1 mb-3">
+                        <div class="col-md-1 mb-3" {{ $tiposervicio == 'Entrega' ? 'hidden' : '' }}>
                             <Label>Violado</Label>
-                            <input label="Cantidad:" 
-                                wire:model="inputs.{{ $index }}.violado" 
-                                type="checkbox" />
+                            <input label="Cantidad:" id="violado.{{ $index }}" onclick="select_violado(this)"
+                                wire:model="inputs.{{ $index }}.violado" type="checkbox" />
 
                         </div>
 
+                        @php
+                        @endphp
                         <div class="col-md-2 mb-3">
-                            <x-input-validado label="Cantidad:" :readonly="false" placeholder="Envase"
+                            <x-input-validado label="Cantidad:" :readonly="$tiposervicio == 'Entrega'" placeholder="Envase"
                                 wire-model="inputs.{{ $index }}.cantidad" wire-attribute="inputs"
                                 type="text" />
 
                         </div>
-                        <div class="col-md-3 mb-3">
-                            <x-input-validado label="Folio:" :readonly="false" placeholder="Folio"
+                        <div class="col-md-2 mb-3">
+                            <x-input-validado label="Papeleta:" :readonly="false" placeholder="Papeleta"
                                 wire-model="inputs.{{ $index }}.folio" wire-attribute="folios"
                                 type="text" />
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-md-2 mb-3">
+                            <x-input-validado label="Sello seguridad:" :readonly="false"
+                                placeholder="Sello de seguridad" wire-model="inputs.{{ $index }}.sello"
+                                type="text" />
+                        </div>
+                        <div class="col-md-2 mb-3">
                             <x-input-validado label="Evidencia:" :readonly="false" placeholder="Evidencia"
                                 wire:model="inputs.{{ $index }}.photo" type="file" />
                         </div>
@@ -196,10 +222,10 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 @if ($tiposervicio == 'Entrega')
-                    <button type="button" class="btn btn-primary" {{-- @if (!$photo) disabled @endif --}} wire:loading.remove
+                    <button type="button" class="btn btn-primary" wire:loading.remove
                         wire:click='ModalAceptar'>Aceptar</button>
                 @elseif($tiposervicio == 'Recolección')
-                    <button type="button" class="btn btn-primary" {{-- @if (!$photo) disabled @endif --}} wire:loading.remove
+                    <button type="button" class="btn btn-primary" wire:loading.remove
                         wire:click='ModalAceptarRecolecta'>Aceptar</button>
                 @endif
 
@@ -403,6 +429,23 @@
                 Livewire.dispatch('modalCerradoReprogramar');
             });
         });
+
+        var i = 0;
+        function select_violado(check) {
+            var message = document.getElementById('message');
+            
+            if (check.checked) {
+                i++;
+                message.style.display = 'block'; // Muestra el mensaje
+
+            } else {
+                i--;
+                if (i == 0) {
+                    message.style.display = 'none'; // Oculta el mensaje
+                }
+            }
+            console.log(i)
+        }
     </script>
 @endpush
 

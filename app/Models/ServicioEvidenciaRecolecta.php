@@ -10,7 +10,7 @@ class ServicioEvidenciaRecolecta extends Model
     protected $table = 'servicios_evidencias_recolecta';
 
     protected $fillable = [
-        'servicio_envases_ruta_id', 'status_evidencia_recolecta'
+        'servicio_envases_ruta_id', 'status_evidencia_recolecta', 'violate'
     ];
 
     public function envases()

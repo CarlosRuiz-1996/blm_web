@@ -14,6 +14,7 @@ class ServicioRutaEnvases extends Model
         'cantidad',
         'folio',
         'status_envases',
+        'sello_seguridad'
     ];
 
     // Relación con la tabla de rutas de servicios
