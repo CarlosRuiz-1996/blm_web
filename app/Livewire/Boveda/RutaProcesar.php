@@ -89,12 +89,16 @@ class RutaProcesar extends Component
             $this->form->servicio->save();
 
             //actualizar la informacion de envases
-            $this->form->servicio->envases_servicios->status_envases = 2;
-            $this->form->servicio->envases_servicios->save();
+            foreach($this->form->servicio->envases_servicios as $envase){
+                Log::info('Info: actualiza envases');
+                $envase->status_envases=2;
+                $envase->save();
+                Log::info('Info: actualiza evidencia');
+                $envase->evidencia_recolecta->status_evidencia_recolecta = 2;
+                $envase->evidencia_recolecta->save();
+            }
 
-            //actualizar la informacion de recolecta
-            $this->form->servicio->envases_servicios->evidencia_recolecta->status_evidencia_recolecta = 2;
-            $this->form->servicio->envases_servicios->evidencia_recolecta->save();
+           
             $this->limpiar();
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio de recolecta ha sido termiando'], ['tipomensaje' => 'success']);
 
@@ -123,16 +127,13 @@ class RutaProcesar extends Component
 
 
             //actualizar la informacion de ruta servicio
-            Log::info('Info: actualiza ruta_Servicio');
             $servicio->status_ruta_servicios = 1;
             $servicio->save();
 
             //actualizar la informacion de envases
             foreach($servicio->envases_servicios as $envase){
-                Log::info('Info: actualiza envases');
                 $envase->status_envases=2;
                 $envase->save();
-                Log::info('Info: actualiza evidencia');
                 $envase->evidencia_entrega->status_evidencia_entrega = 2;
                 $envase->evidencia_entrega->save();
             }
