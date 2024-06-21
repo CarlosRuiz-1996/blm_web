@@ -116,7 +116,7 @@ class RutaProcesar extends Component
     #[On('finaliza-entrega')]
     public function finaliza_entrega(RutaServicio $servicio)
     {
-
+        
         try {
             DB::beginTransaction();
 
@@ -134,10 +134,13 @@ class RutaProcesar extends Component
             Log::info('Info: actualiza evidencia');
             //actualizar la informacion de entrega
             foreach ($servicio->envases_servicios as $serv) {
-                
-                $serv->evidencia_entrega->status_evidencia_entrega = 2;
-                $serv->evidencia_entrega->save();
+                foreach ($serv->evidencia_entrega as $evidencia) {  // En caso de que evidencia_entrega sea una colección
+                    $evidencia->status_evidencia_entrega = 2;
+                    // Guarda el modelo individualmente
+                    $evidencia->save();
+                }
             }
+            
 
        
             $this->limpiar();
