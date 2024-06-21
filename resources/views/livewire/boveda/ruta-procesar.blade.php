@@ -283,7 +283,7 @@
                             cancelButtonText: 'Cancelar'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                @this.dispatch('terminar-ruta-boveda');
+                                @this.dispatch('finaliza-entrega');
                             }
                         })
                     })
