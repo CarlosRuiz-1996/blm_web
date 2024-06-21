@@ -21,5 +21,12 @@ class RutaServicio extends Model
         return $this->belongsTo(Ruta::class, 'ruta_id');
     }
 
-   
+    public function envases_servicios(){
+        return $this->hasMany(ServicioRutaEnvases::class, 'ruta_servicios_id');
+    }
+
+
+    // public function envase_servicio(){
+    //     return $this->hasOne(ServicioRutaEnvases::class, 'ruta_servicios_id');
+    // }
 }

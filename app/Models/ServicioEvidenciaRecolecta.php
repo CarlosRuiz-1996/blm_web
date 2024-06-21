@@ -13,8 +13,8 @@ class ServicioEvidenciaRecolecta extends Model
         'servicio_envases_ruta_id', 'status_evidencia_recolecta', 'violate'
     ];
 
-    public function envases()
-    {
-        return $this->belongsTo(ServicioRutaEnvases::class);
-    }
+    // public function envases()
+    // {
+    //     return $this->belongsTo(ServicioRutaEnvases::class);
+    // }
 }

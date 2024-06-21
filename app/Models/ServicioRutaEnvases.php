@@ -22,4 +22,13 @@ class ServicioRutaEnvases extends Model
     {
         return $this->belongsTo(RutaServicio::class, 'ruta_servicios_id');
     }
+
+    public function evidencia_recolecta(){
+        return $this->hasOne(ServicioEvidenciaRecolecta::class, 'servicio_envases_ruta_id');
+    }
+
+
+    public function evidencia_entrega(){
+        return $this->hasOne(ServicioEvidenciaEntrega::class, 'servicio_envases_ruta_id');
+    }
 }
