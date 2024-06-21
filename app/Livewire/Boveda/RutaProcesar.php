@@ -121,21 +121,26 @@ class RutaProcesar extends Component
             DB::beginTransaction();
 
 
-            
-
             //actualizar la informacion de ruta servicio
+            Log::info('Info: actualiza ruta_Servicio');
             $servicio->status_ruta_servicios = 1;
             $servicio->save();
 
+            Log::info('Info: actualiza envases');
             //actualizar la informacion de envases
             $servicio->envases_servicios->status_envases = 2;
             $servicio->envases_servicios->save();
 
+            Log::info('Info: actualiza evidencia');
             //actualizar la informacion de entrega
-            $servicio->envases_servicios->evidencia_entrega->status_evidencia_entrega = 2;
-            $servicio->envases_servicios->evidencia_entrega->save();
+            foreach ($servicio->envases_servicios as $servicio) {
+                $servicio->status_evidencia_entrega = 2;
+                $servicio->save();
+            }
+
+       
             $this->limpiar();
-            $this->dispatch('   ', ['nombreArchivo' => 'El servicio de entrega ha sido termiando'], ['tipomensaje' => 'success']);
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio de entrega ha sido termiando'], ['tipomensaje' => 'success']);
 
 
             DB::commit();
