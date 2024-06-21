@@ -10,6 +10,7 @@ use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
 use App\Models\RutaVehiculo;
 use App\Models\RutaVehiculoReporte;
+use App\Models\ServicioEvidenciaEntrega;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
@@ -116,7 +117,7 @@ class RutaProcesar extends Component
     #[On('finaliza-entrega')]
     public function finaliza_entrega(RutaServicio $servicio)
     {
-        
+       
         try {
             DB::beginTransaction();
 
@@ -133,14 +134,9 @@ class RutaProcesar extends Component
 
             Log::info('Info: actualiza evidencia');
             //actualizar la informacion de entrega
-            foreach ($servicio->envases_servicios as $serv) {
-                foreach ($serv->evidencia_entrega as $evidencia) {  // En caso de que evidencia_entrega sea una colección
-                    $evidencia->status_evidencia_entrega = 2;
-                    // Guarda el modelo individualmente
-                    $evidencia->save();
-                }
-            }
-            
+            ServicioEvidenciaEntrega::where('servicio_envases_ruta_id', $servicio->id)
+            ->where('status_evidencia_entrega', 1)->update(['status_evidencia_entrega' => 1]);
+
 
        
             $this->limpiar();
