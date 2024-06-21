@@ -134,8 +134,9 @@ class RutaProcesar extends Component
             Log::info('Info: actualiza evidencia');
             //actualizar la informacion de entrega
             foreach ($servicio->envases_servicios as $serv) {
+                
                 $serv->evidencia_entrega->status_evidencia_entrega = 2;
-                $serv->save();
+                $serv->evidencia_entrega->save();
             }
 
        
