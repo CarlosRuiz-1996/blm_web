@@ -54,7 +54,7 @@
                                                 data-target="#terminar_servicio">Verificar monto</button>
                                         @else
                                             <button class="btn btn-info" {{-- wire:click='opernModal({{ $servicio }})' --}}
-                                                wire:click="$dispatch('finalizar-entrega')">Finalizar Entrega</button>
+                                                wire:click="$dispatch('finalizar-entrega',{{ $servicio }})">Finalizar Entrega</button>
                                         @endif
                                     @else
                                         <span style="font-weight: bold;"> Finalizado.</span>
@@ -270,7 +270,7 @@
 
 
 
-                    @this.on('finalizar-entrega', () => {
+                    @this.on('finalizar-entrega', (servicio) => {
 
                         Swal.fire({
                             title: '¿Estas seguro?',
@@ -283,7 +283,7 @@
                             cancelButtonText: 'Cancelar'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                @this.dispatch('finaliza-entrega');
+                                @this.dispatch('finaliza-entrega',{servicio:servicio});
                             }
                         })
                     })

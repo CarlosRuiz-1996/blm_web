@@ -69,6 +69,7 @@ class RutaProcesar extends Component
             'monto_envases.*.cantidad.numeric' => 'La cantidad debe ser un número',
             'monto_envases.*.cantidad.min' => 'La cantidad no debe ser al menos 0',
         ]);
+
         $inconsistencia = 0;
         try {
             DB::beginTransaction();
@@ -113,28 +114,28 @@ class RutaProcesar extends Component
     }
 
     #[On('finaliza-entrega')]
-    public function finaliza_entrega()
+    public function finaliza_entrega(RutaServicio $servicio)
     {
-
 
         try {
             DB::beginTransaction();
 
 
+            
 
             //actualizar la informacion de ruta servicio
-            $this->form->servicio->status_ruta_servicios = 1;
-            $this->form->servicio->save();
+            $servicio->status_ruta_servicios = 1;
+            $servicio->save();
 
             //actualizar la informacion de envases
-            $this->form->servicio->envases_servicios->status_envases = 2;
-            $this->form->servicio->envases_servicios->save();
+            $servicio->envases_servicios->status_envases = 2;
+            $servicio->envases_servicios->save();
 
             //actualizar la informacion de entrega
-            $this->form->servicio->envases_servicios->evidencia_entrega->status_evidencia_entrega = 2;
-            $this->form->servicio->envases_servicios->evidencia_entrega->save();
+            $servicio->envases_servicios->evidencia_entrega->status_evidencia_entrega = 2;
+            $servicio->envases_servicios->evidencia_entrega->save();
             $this->limpiar();
-            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio de entrega ha sido termiando'], ['tipomensaje' => 'success']);
+            $this->dispatch('   ', ['nombreArchivo' => 'El servicio de entrega ha sido termiando'], ['tipomensaje' => 'success']);
 
 
             DB::commit();
