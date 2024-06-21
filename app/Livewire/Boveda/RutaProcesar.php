@@ -10,7 +10,6 @@ use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
 use App\Models\RutaVehiculo;
 use App\Models\RutaVehiculoReporte;
-use App\Models\ServicioEvidenciaEntrega;
 use App\Models\ServicioRutaEnvases;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -128,20 +127,16 @@ class RutaProcesar extends Component
             $servicio->status_ruta_servicios = 1;
             $servicio->save();
 
-            Log::info('Info: actualiza envases');
             //actualizar la informacion de envases
-            
-            ServicioRutaEnvases::where('ruta_servicios_id', $servicio->id)
-            ->where('status_envases', 2)->update(['status_envases' => 1]);
-
-
-            Log::info('Info: actualiza evidencia');
-            //actualizar la informacion de entrega
+            foreach($servicio->envases_servicios as $envase){
+                Log::info('Info: actualiza envases');
+                $envase->status_envases=2;
+                $envase->save();
+                Log::info('Info: actualiza evidencia');
+                $envase->evidencia_entrega->status_evidencia_entrega = 2;
+                $envase->evidencia_entrega->save();
+            }
            
-            ServicioEvidenciaEntrega::where('servicio_envases_ruta_id', $servicio->envases_servicios->id)
-            ->where('status_evidencia_entrega', 1)->update(['status_evidencia_entrega' => 1]);
-
-
 
             $this->limpiar();
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio de entrega ha sido termiando'], ['tipomensaje' => 'success']);
