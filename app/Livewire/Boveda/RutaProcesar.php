@@ -171,7 +171,7 @@ class RutaProcesar extends Component
                 $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'No se puede terminar la ruta porque aún tiene servicios pendientes'], ['tipomensaje' => 'error']);
             } else {
 
-                dd('mal validado');
+                // dd('mal validado');
                 // Si no hay servicios pendientes con estado 2, actualiza el estado de la ruta
                 $this->ruta->status_ruta = 1;
                 $this->ruta->ctg_rutas_estado_id = 1;
