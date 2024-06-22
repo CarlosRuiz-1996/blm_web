@@ -89,16 +89,15 @@ class RutaProcesar extends Component
             $this->form->servicio->save();
 
             //actualizar la informacion de envases
-            foreach($this->form->servicio->envases_servicios as $envase){
-                Log::info('Info: actualiza envases');
-                $envase->status_envases=2;
+            foreach ($this->form->servicio->envases_servicios as $envase) {
+                $envase->status_envases = 2;
                 $envase->save();
                 Log::info('Info: actualiza evidencia');
                 $envase->evidencia_recolecta->status_evidencia_recolecta = 2;
                 $envase->evidencia_recolecta->save();
             }
 
-           
+
             $this->limpiar();
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio de recolecta ha sido termiando'], ['tipomensaje' => 'success']);
 
@@ -131,13 +130,13 @@ class RutaProcesar extends Component
             $servicio->save();
 
             //actualizar la informacion de envases
-            foreach($servicio->envases_servicios as $envase){
-                $envase->status_envases=2;
+            foreach ($servicio->envases_servicios as $envase) {
+                $envase->status_envases = 2;
                 $envase->save();
                 $envase->evidencia_entrega->status_evidencia_entrega = 2;
                 $envase->evidencia_entrega->save();
             }
-           
+
 
             $this->limpiar();
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio de entrega ha sido termiando'], ['tipomensaje' => 'success']);
@@ -159,7 +158,6 @@ class RutaProcesar extends Component
     #[On('terminar-ruta-boveda')]
     public function TerminarRuta()
     {
-
         try {
             DB::beginTransaction();
             $serviciosPendientes = RutaServicio::where('ruta_id', $this->ruta->id)
@@ -177,30 +175,35 @@ class RutaProcesar extends Component
                 $this->ruta->ctg_rutas_estado_id = 1;
                 $this->ruta->save();
 
+                Log::info('Info: actualiza vehiculo');
 
                 //actualizo ruta vehiculo
                 RutaVehiculo::where('ruta_id', $this->ruta->id)->where('status_ruta_vehiculos', 2)->update(['status_ruta_vehiculos' => 1]);
+                Log::info('Info: actualiza empleados');
 
                 //actualizar empleados
                 RutaEmpleados::where('ruta_id', $this->ruta->id)->where('status_ruta_empleados', 2)->update(['status_ruta_empleados' => 1]);
 
 
                 //actualiza el reportes:
+                Log::info('Info: actualiza reportes servicio');
 
-                RutaServicioReporte::where('servicio_id', $this->form->servicio->servicio_id)
-                    ->where('ruta_id', $this->ruta->id)
-                    ->where('tipo_servicio', $this->form->servicio->tipo_servicio)
+                RutaServicioReporte::where('ruta_id', $this->ruta->id)
+                    // ->where('tipo_servicio', $this->form->servicio->tipo_servicio)
                     ->update(['status_ruta_servicio_reportes' => 0]);
+                Log::info('Info: actualiza reportes servicio');
 
+                Log::info('Info: actualiza reportes vehiculo');
 
                 RutaVehiculoReporte::where('ruta_id', $this->ruta->id)
                     ->where('status_ruta_vehiculo_reportes', 2)->update(['status_ruta_vehiculo_reportes' => 1]);
 
+                Log::info('Info: actualiza reportes empleado');
 
                 RutaEmpleadoReporte::where('ruta_id', $this->ruta->id)
                     ->where('status_ruta_empleado_reportes', 2)->update(['status_ruta_empleado_reportes' => 0]);
                 // Envía un mensaje de éxito
-                $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La ruta ha sido terminada'], ['tipomensaje' => 'success'], ['terminar'=>1]);
+                $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La ruta ha sido terminada'], ['tipomensaje' => 'success'], ['terminar' => 1]);
             }
 
             DB::commit();
