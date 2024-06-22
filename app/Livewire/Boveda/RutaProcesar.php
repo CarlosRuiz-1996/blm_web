@@ -200,7 +200,7 @@ class RutaProcesar extends Component
                 RutaEmpleadoReporte::where('ruta_id', $this->ruta->id)
                     ->where('status_ruta_empleado_reportes', 2)->update(['status_ruta_empleado_reportes' => 0]);
                 // Envía un mensaje de éxito
-                $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La ruta ha sido terminada'], ['tipomensaje' => 'success']);
+                $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La ruta ha sido terminada'], ['tipomensaje' => 'success'], ['terminar'=>1]);
             }
 
             DB::commit();

@@ -236,6 +236,8 @@
                     Livewire.on('agregarArchivocre', function(params) {
                         const nombreArchivo = params[0].nombreArchivo;
                         const tipomensaje = params[1].tipomensaje;
+                        const terminar = params[1].terminar;
+
                         Swal.fire({
                             position: 'center',
                             icon: tipomensaje,
@@ -243,9 +245,10 @@
                             showConfirmButton: false,
                             timer: 3000
                         });
-                        if (params[2]) {
-                            $('#terminar_servicio').modal('hide');
+                        if (terminar&&terminar==1) {
+                            window.location.href = '/boveda/inicio';
                         }
+                        $('#terminar_servicio').modal('hide');
 
                     });
 
