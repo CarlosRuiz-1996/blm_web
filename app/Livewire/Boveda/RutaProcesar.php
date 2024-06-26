@@ -27,7 +27,7 @@ class RutaProcesar extends Component
     }
     public function mount(Ruta $ruta)
     {
-        $this->ruta = $ruta;
+        $this->ruta = $ruta;    
     }
     public function render()
     {
@@ -57,7 +57,7 @@ class RutaProcesar extends Component
             ]];
         })->toArray();
 
-        // dd($this->monto_envases);
+        // dd($this->form->monto);
     }
 
     public function validar()

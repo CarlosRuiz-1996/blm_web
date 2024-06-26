@@ -81,7 +81,7 @@ class OperadoresIndex extends Component
         $this->idrecolecta = $id;
         $this->cantidadEnvases = $servicioRuta->envases;
         // Consultar los registros de servicios_envases_rutas para esta ruta
-        $serviciosEnvases = ServicioRutaEnvases::where('ruta_servicios_id', $id)->get();
+        $serviciosEnvases = ServicioRutaEnvases::where('ruta_servicios_id', $id)->where('status_envases',1)->get();
 
         // Si hay registros, llenar los arreglos con los valores recuperados
         if ($serviciosEnvases->isNotEmpty()) {

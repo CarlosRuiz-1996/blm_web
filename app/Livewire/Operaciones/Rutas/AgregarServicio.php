@@ -41,7 +41,7 @@ class AgregarServicio extends Component
         $this->clientes = $this->form->getClientes();
     }
 
-    #[On('render-modal-vehiculos')]
+    #[On('render-modal-servicios')]
     public function render()
     {
         if ($this->readyToLoad) {
@@ -60,7 +60,7 @@ class AgregarServicio extends Component
 
     public function getServicios()
     {
-        $this->dispatch('render-modal-vehiculos');
+        $this->render();
         $this->readyToLoad = true;
     }
     public function updated($property)
@@ -143,6 +143,7 @@ class AgregarServicio extends Component
     public function addServicios()
     {
 
+        // dd($this->selectServicios);
         $this->selectServicios = array_filter($this->selectServicios);
         if (empty($this->selectServicios)) {
 
@@ -154,7 +155,7 @@ class AgregarServicio extends Component
 
             $bandera = 0;
             $seleccionados = [];
-            $seleccionadosRecolecta=[];
+            $seleccionadosRecolecta = [];
             foreach ($this->selectServicios as $servicio_id => $item) {
 
                 //entregas
@@ -167,7 +168,7 @@ class AgregarServicio extends Component
                         "folio" => "",
                         "envases" => "",
                     ];
-                   
+
                     if (array_key_exists($servicio_id, $this->montoArray)) {
                         $seleccionados[$bandera]['monto'] = $this->montoArray[$servicio_id];
                     } else {
@@ -181,7 +182,6 @@ class AgregarServicio extends Component
                     } else {
                         $seleccionados[$bandera]['envases'] = 0;
                     }
-                    
                 }
                 if (array_key_exists($servicio_id, $this->selectServiciosRecolecta)) {
                     $seleccionadosRecolecta[$bandera] = [
@@ -214,9 +214,11 @@ class AgregarServicio extends Component
                 $this->clean();
                 $seleccionados = [];
                 $seleccionadosRecolecta = [];
+                // $selectServicios = [];
+                // $selectServiciosRecolecta = [];
                 $this->dispatch('total-ruta');
                 $this->dispatch('success-servicio', 'Servicios agregados con exito a la ruta');
-                $this->dispatch('render-modal-vehiculos');
+                $this->render();
             } else {
                 $this->dispatch('error-servicio', ['Ha ocurrido un problema, intenta mas tarde']);
             }
@@ -283,6 +285,7 @@ class AgregarServicio extends Component
             'montoArrayRecolecta',
             'folioArrayRecolecta',
             'envaseArrayRecolecta',
+          
         );
 
         $this->resetValidation();
