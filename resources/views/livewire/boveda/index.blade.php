@@ -405,10 +405,10 @@
                     });
                 });
 
-                Livewire.on('successservicioEnvases', function(message) {
+                Livewire.on('successservicioEnvases', function([message]) {
                     Swal.fire({
-                        icon: 'success',
-                        title: message,
+                        icon: message[1],
+                        title: message[0],
                         showConfirmButton: false,
                         timer: 3000
                     }).then(() => {

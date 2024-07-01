@@ -168,15 +168,17 @@ class OperadoresIndex extends Component
                 }
 
                 //$this->photo->storeAs(path: 'evidencias/', name: 'avatar.png');
-                $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La cantidad Ingresada es correcta'], ['tipomensaje' => 'success'], ['op' => 1]);
+                $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Entrega realizada con exito.'], ['tipomensaje' => 'success'], ['op' => 1]);
             } else {
                 $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La cantidad Ingresada no es la cantidad a entregar:' . $this->MontoEntrega . '-' . $this->MontoEntregado], ['tipomensaje' => 'error']);
             }
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-            Log::info('Info: ' . $e);
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Hubo un error intenta más tarde.'], ['tipomensaje' => 'error']);
+
+            // Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
+            // Log::info('Info: ' . $e);
         }
     }
     public function updatedEvidencias()
@@ -301,7 +303,8 @@ class OperadoresIndex extends Component
 
 
 
-            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La recolecta se completo correctamente'], ['tipomensaje' => 'success']);
+            // $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La recolecta se completo correctamente'], ['tipomensaje' => 'success']);
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La recolecta se completo correctamente.'], ['tipomensaje' => 'success'], ['op' => 1]);
 
 
             DB::commit();

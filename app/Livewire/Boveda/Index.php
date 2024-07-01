@@ -203,12 +203,10 @@ class Index extends Component
     public function cargarRecoleccion($idservicioruta, $rutaId)
     {
         $servicioRuta = RutaServicio::find($idservicioruta);
-        $serviciosRutaAll = RutaServicio::where('ruta_id', $rutaId)->get();
         if ($servicioRuta) {
 
             $servicioRuta->update(['status_ruta_servicios' => 2]);
             $this->llenarmodalservicios($servicioRuta->ruta_id); // Actualiza los datos
-            $servicioRutastatus2 = RutaServicio::where('ruta_id', $rutaId)->where('status_ruta_servicios', 2)->get();
             // Crear un nuevo objeto RutaServicioReporte
             $rutaServicioReporte = new RutaServicioReporte();
 
@@ -222,15 +220,7 @@ class Index extends Component
             $rutaServicioReporte->status_ruta_servicio_reportes = $servicioRuta->status_ruta_servicios; // Igualamos al status actualizado del servicio
             // Guardar el nuevo registro en la base de datos
             $rutaServicioReporte->save();
-            // Cuenta el número de registros obtenidos
-            $numServicios = $serviciosRutaAll->count();
-            $numServiciosStatus2 = $servicioRutastatus2->count();
-
-            if ($numServicios == $numServiciosStatus2) {
-                $ruta = Ruta::findOrFail($rutaId);
-                $ruta->ctg_rutas_estado_id = 3;
-                $ruta->save();
-            }
+           
         }
     }
 
