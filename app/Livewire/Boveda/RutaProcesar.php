@@ -27,7 +27,7 @@ class RutaProcesar extends Component
     }
     public function mount(Ruta $ruta)
     {
-        $this->ruta = $ruta;    
+        $this->ruta = $ruta;
     }
     public function render()
     {
@@ -36,33 +36,31 @@ class RutaProcesar extends Component
 
     public $monto_calculado = 0;
     public $monto_envases = [];
+    public $servicio_e = [];
 
-    public function opernModal(RutaServicio $servicio)
+    public function opernModal($servicio_id)
     {
 
-        // foreach($servicio->envases_servicios as $n){
-        //     if($n->tipo_servicio==2){
-        //     dd($n->evidencia_recolecta);
-        //     }
-        // }
 
-        $this->form->servicio = $servicio;
-        $this->form->folio = $servicio->folio;
-        $this->form->envases = $servicio->envases;
-        $this->form->monto = $servicio->monto;
+        $servicio = ServicioRutaEnvases::where('ruta_servicios_id',$servicio_id)->where('status_envases',1)->get();
+        foreach ($servicio as $s) {
+            $this->form->servicio = $s->rutaServicios;
+            $this->form->folio = $this->form->servicio->folio;
+            $this->form->envases =$this->form->servicio->envases_servicios;
+            $this->form->monto = $this->form->servicio->monto;
 
-        $this->monto_envases = $servicio->envases_servicios->mapWithKeys(function ($item) {
-            return [$item->id => [
-                'cantidad' => 0,
-            ]];
-        })->toArray();
+            $this->monto_envases[$s->id] = ['cantidad' => 0];
+        }
 
-        // dd($this->form->monto);
+        $this->servicio_e = $servicio;
+        // dd($this->monto_envases);
+
+       
+        
     }
 
     public function validar()
     {
-
         $this->validate([
             'monto_envases.*.cantidad' => 'required|numeric|min:1',
         ], [
@@ -70,10 +68,10 @@ class RutaProcesar extends Component
             'monto_envases.*.cantidad.numeric' => 'La cantidad debe ser un número',
             'monto_envases.*.cantidad.min' => 'La cantidad no debe ser al menos 0',
         ]);
-
         $inconsistencia = 0;
         try {
             DB::beginTransaction();
+            Log::info('Info: entra a la transaccion');
 
             foreach ($this->monto_envases as $index => $input) {
                 $this->monto_calculado  += (float)$input['cantidad'];
@@ -86,6 +84,9 @@ class RutaProcesar extends Component
 
             //actualizar la informacion de ruta servicio
             $this->form->servicio->status_ruta_servicios = 1;
+            $this->form->servicio->monto = 0;
+            $this->form->servicio->envases = 0;
+
             $this->form->servicio->save();
 
             //actualizar la informacion de envases
@@ -97,7 +98,7 @@ class RutaProcesar extends Component
                 $envase->evidencia_recolecta->save();
             }
 
-
+            
             $this->limpiar();
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio de recolecta ha sido termiando'], ['tipomensaje' => 'success']);
 
@@ -158,6 +159,7 @@ class RutaProcesar extends Component
     #[On('terminar-ruta-boveda')]
     public function TerminarRuta()
     {
+
         try {
             DB::beginTransaction();
             $serviciosPendientes = RutaServicio::where('ruta_id', $this->ruta->id)

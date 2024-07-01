@@ -43,7 +43,7 @@ class OperadoresIndex extends Component
     #[Validate(['photo.*' => 'image|max:1024'])]
     public $photorepro;
     protected $listeners = ['modalCerrado', 'modalCerradoReprogramar'];
-
+    public $papeleta;
     use WithFileUploads;
     public function render()
     {
@@ -77,6 +77,7 @@ class OperadoresIndex extends Component
 
         $this->tiposervicio = $tiposervicio == 1 ? 'Entrega' : ($tiposervicio == 2 ? 'Recolección' : 'Otro');
         $servicioRuta = RutaServicio::find($id);
+        $this->papeleta = $servicioRuta->folio;
         $this->MontoEntrega = $servicioRuta->monto;
         $this->idrecolecta = $id;
         $this->cantidadEnvases = $servicioRuta->envases;
@@ -90,7 +91,7 @@ class OperadoresIndex extends Component
                     'cantidad' => $item->cantidad,
                     'folio' => $item->folio,
                     'photo' => '',
-                    'sello' => '',
+                    'sello' => $item->sello_seguridad,
                     'violado' => false,
                 ]];
             })->toArray();
@@ -100,7 +101,7 @@ class OperadoresIndex extends Component
             for ($i = 0; $i < $this->envasescantidad; $i++) {
                 $this->inputs[] = [
                     'cantidad' => '',
-                    'folio' => '',
+                    'folio' => $this->papeleta,
                     'photo' => '',
                     'sello' => '',
                     'violado' => false,
@@ -113,8 +114,11 @@ class OperadoresIndex extends Component
     {
         $this->validate([
             'envasescantidad' => 'required',
+            'MontoRecolecta' => 'required',
         ], [
             'envasescantidad.required' => 'La cantidad de envases es obligatoria',
+            'MontoRecolecta.required' => 'Debe ingresar el monto total',
+
         ]);
         $this->ModalEntregaRecolecta($this->idrecolecta, $this->tiposervicio == 'Recolección' ? 2 : 1);
     }
@@ -139,6 +143,7 @@ class OperadoresIndex extends Component
             if ((float)$this->MontoEntrega == (float)$this->MontoEntregado) {
                 $servicioRuta = RutaServicio::find($this->idrecolecta);
                 $servicioRuta->status_ruta_servicios = 3;
+                $servicioRuta->envase_cargado = 0;
                 $servicioRuta->save();
                 $rutaServicioReporte = new RutaServicioReporte();
 
@@ -239,7 +244,7 @@ class OperadoresIndex extends Component
 
                 $MontoEnvases  += (float)$input['cantidad'];
                 //si esta el monto violado se acumula para despues descontar este valor 
-                if ($input['cantidad']) {
+                if ($input['violado']) {
                     $montoEnvaseViolado  += (float)$input['cantidad'];
                 }
             }
@@ -250,7 +255,7 @@ class OperadoresIndex extends Component
 
             //si hay violado se resta porque no se llevara.
             $this->MontoRecolecta = $MontoEnvases - $montoEnvaseViolado;
-
+         
             //completo datos del servicio en la ruta
             $servicioruta = RutaServicio::find($this->idrecolecta);
             $servicioruta->monto = $this->MontoRecolecta;
@@ -329,6 +334,7 @@ class OperadoresIndex extends Component
             // Si no hay servicios pendientes con estado 2, actualiza el estado de la ruta
             $ruta = Ruta::find($id);
             $ruta->status_ruta = 3;
+            $ruta->hora_fin = now();
             $ruta->ctg_rutas_estado_id = 4;
             $ruta->save();
             $rutaempleados = RutaEmpleados::where('ruta_id', $id)->get();

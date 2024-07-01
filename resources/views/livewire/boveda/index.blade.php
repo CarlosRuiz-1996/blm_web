@@ -168,9 +168,14 @@
                                             <td>{{ $rutaserv->servicio->ctg_servicio->descripcion }}</td>
                                             <td>{{ $rutaserv->tipo_servicio == 1 ? 'Entrega' : 'Recolección' }}</td>
                                             @if ($rutaserv->tipo_servicio == 1)
-                                                <td><a href="#" data-toggle="modal"
-                                                        data-target="#detalleModalEnvases"
-                                                        wire:click='llenarmodalEnvases({{ $rutaserv->id }})'>Envases</a>
+                                                <td>
+                                                    @if ($rutaserv->envase_cargado == 0)
+                                                        <a href="#" data-toggle="modal" class="btn btn-info"
+                                                            data-target="#detalleModalEnvases"
+                                                            wire:click='llenarmodalEnvases({{ $rutaserv->id }})'>Envases</a>
+                                                    @else
+                                                        Cargado.
+                                                    @endif
                                                 </td>
                                                 <td>$ {{ number_format($rutaserv->monto, 2, '.', ',') }}</td>
                                             @else
@@ -285,12 +290,11 @@
                 <div class="modal-body">
                     <div class="row">
                         @if (isset($inputs) && is_array($inputs) && count($inputs) > 0)
-
-                        <div class="col-md-12 mb-3">
-                            <x-input-validadolive label="Papeleta/folio:" :readonly="true"
-                                placeholder="Papeleta/folio" wire-model="papeleta" wire-attribute="papeleta"
-                                type="text" />
-                        </div>
+                            <div class="col-md-12 mb-3">
+                                <x-input-validadolive label="Papeleta/folio:" :readonly="true"
+                                    placeholder="Papeleta/folio" wire-model="papeleta" wire-attribute="papeleta"
+                                    type="text" />
+                            </div>
                         @endif
                         @foreach ($inputs as $index => $input)
                             <div class="col-md-6 mb-3">
@@ -300,19 +304,16 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <x-input-validado label="Sello de seguridad:" :readonly="false"
-                                    placeholder="Folio {{ $index + 1 }}" wire-model="folios.{{ $index }}"
-                                    wire-attribute="folios.{{ $index }}" type="text" />
+                                    placeholder="Sello {{ $index + 1 }}" wire-model="sellos.{{ $index }}"
+                                    wire-attribute="sellos.{{ $index }}" type="text" />
                             </div>
                         @endforeach
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-dark" data-dismiss="modal">Cerrar</button>
-                    {{-- @if ($statusEnvases == 2) --}}
                     <button class="btn btn-primary" wire:click="GuardarEnvases">Guardar</button>
-                    {{-- @else --}}
-                    {{-- <button class="btn btn-primary" wire:click="EditarEnvases">Editar</button> --}}
-                    {{-- @endif --}}
+                  
 
                 </div>
             </div>
@@ -433,6 +434,15 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Aun falta que se carguen servicios',
+                        // text:'El operador comenzara la ruta a la hora indicada en operaciones.',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+                Livewire.on('error-envases', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Aun falta que se carguen evases en las entregas',
                         // text:'El operador comenzara la ruta a la hora indicada en operaciones.',
                         showConfirmButton: false,
                         timer: 3000

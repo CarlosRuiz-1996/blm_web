@@ -48,7 +48,7 @@
                                         </tr>
                                         <tr class="table-dark">
                                             <th colspan="3">Servicio</th>
-                                            <th>Folio</th>
+                                            <th>Papeleta</th>
                                             <th>Envases</th>
                                             <th>Tipo de Servicio</th>
                                             <th>Acción</th>
@@ -156,13 +156,18 @@
                         <x-input-validado :readonly="true" label="Monto:" placeholder="Ingrese Monto"
                             wire-model="MontoEntrega" wire-attribute="MontoEntrega" type="text" />
                     </div>
-
+                    @if ($tiposervicio)
+                        <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-12' }} mb-3">
+                            <x-input-validado label="Papeleta:" :readonly="true" placeholder="Papeleta"
+                                wire-model="papeleta" type="text" />
+                        </div>
+                    @endif
                     @if ($tiposervicio == 'Recolección')
-                        <div class="col-md-5 mb-3">
+                        <div class="col-md-4 mb-3">
                             <x-input-validado :readonly="false" label="Monto:" placeholder="Ingrese Monto total"
                                 wire-model="MontoRecolecta" wire-attribute="MontoRecolecta" type="text" />
                         </div>
-                        <div class="col-md-5 mb-1">
+                        <div class="col-md-4 mb-1">
                             <x-input-validadolive :readonly="false" label="Envases:"
                                 placeholder="Ingrese cantidad de envases" wire-model="envasescantidad"
                                 wire-attribute="envasescantidad" type="text" />
@@ -178,6 +183,9 @@
                             No puedes llevar envases dañados.
                         </div>
                     </div>
+
+
+
                     @foreach ($inputs as $index => $input)
                         <div class="col-md-1 mb-3" {{ $tiposervicio == 'Entrega' ? 'hidden' : '' }}>
                             <Label>Violado</Label>
@@ -186,20 +194,22 @@
 
                         </div>
 
-                        @php
-                        @endphp
-                        <div class="col-md-2 mb-3">
+
+                        <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
                             <x-input-validado label="Cantidad:" :readonly="$tiposervicio == 'Entrega'" placeholder="Envase"
                                 wire-model="inputs.{{ $index }}.cantidad" wire-attribute="inputs"
                                 type="text" />
 
                         </div>
-                        <div class="col-md-2 mb-3">
-                            <x-input-validado label="Papeleta:" :readonly="false" placeholder="Papeleta"
-                                wire-model="inputs.{{ $index }}.folio" wire-attribute="folios"
-                                type="text" />
-                        </div>
-                        <div class="col-md-2 mb-3">
+
+                        @if ($tiposervicio == 'Recolección')
+                            <div class="col-md-2 mb-3">
+                                <x-input-validado label="Papeleta:" :readonly="false" placeholder="Papeleta"
+                                    wire-model="inputs.{{ $index }}.folio" wire-attribute="folios"
+                                    type="text" />
+                            </div>
+                        @endif
+                        <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
                             <x-input-validado label="Sello seguridad:" :readonly="false"
                                 placeholder="Sello de seguridad" wire-model="inputs.{{ $index }}.sello"
                                 type="text" />
@@ -431,9 +441,10 @@
         });
 
         var i = 0;
+
         function select_violado(check) {
             var message = document.getElementById('message');
-            
+
             if (check.checked) {
                 i++;
                 message.style.display = 'block'; // Muestra el mensaje

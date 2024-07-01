@@ -40,6 +40,7 @@
 
                         @foreach ($ruta->rutaServicios as $servicio)
                             <tr>
+
                                 <td>{{ $servicio->servicio->cliente->razon_social }}</td>
                                 <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
                                 <td>{{ $servicio->tipo_servicio == 1 ? 'Entrega' : 'Recolecta' }}</td>
@@ -54,7 +55,8 @@
                                                 data-target="#terminar_servicio">Verificar monto</button>
                                         @else
                                             <button class="btn btn-info" {{-- wire:click='opernModal({{ $servicio }})' --}}
-                                                wire:click="$dispatch('finalizar-entrega',{{ $servicio }})">Finalizar Entrega</button>
+                                                wire:click="$dispatch('finalizar-entrega',{{ $servicio }})">Finalizar
+                                                Entrega</button>
                                         @endif
                                     @else
                                         <span style="font-weight: bold;"> Finalizado.</span>
@@ -107,7 +109,8 @@
                             </div>
 
 
-                            @foreach ($form->servicio->envases_servicios as $envases)
+                            @foreach ($servicio_e as $envases)
+                               
                                 <div class="col-md-3 mb-3">
                                     <label for="">Sello</label>
                                     <input class="form-control" value="{{ $envases->sello_seguridad }}" disabled
@@ -236,8 +239,7 @@
                     Livewire.on('agregarArchivocre', function(params) {
                         const nombreArchivo = params[0].nombreArchivo;
                         const tipomensaje = params[1].tipomensaje;
-                        const terminar = params[1].terminar;
-
+                        const terminar = params[2].terminar;
                         Swal.fire({
                             position: 'center',
                             icon: tipomensaje,
@@ -245,7 +247,7 @@
                             showConfirmButton: false,
                             timer: 3000
                         });
-                        if (terminar&&terminar==1) {
+                        if (terminar == 1) {
                             window.location.href = '/boveda/inicio';
                         }
                         $('#terminar_servicio').modal('hide');
@@ -286,7 +288,9 @@
                             cancelButtonText: 'Cancelar'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                @this.dispatch('finaliza-entrega',{servicio:servicio});
+                                @this.dispatch('finaliza-entrega', {
+                                    servicio: servicio
+                                });
                             }
                         })
                     })
