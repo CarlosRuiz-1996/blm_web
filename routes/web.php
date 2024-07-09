@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\altaValidaCumplimiento;
 use App\Http\Controllers\Anexo1;
+use App\Http\Controllers\BancosController;
 use App\Http\Controllers\BitacoraController;
 use App\Http\Controllers\boveda;
 use App\Http\Controllers\BovedaController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\ValidacionMemorandumController;
 use App\Http\Controllers\ventasController;
+use App\Livewire\BancosGestion;
 use Illuminate\Support\Facades\Route;
 //rutas para livewire
 use Livewire\Livewire;
@@ -139,6 +141,10 @@ Route::middleware([
 
     //operadores
     Route::get('/operadores', [Operadores::class, 'index'])->name('index');
+
+
+    //bancos
+    Route::get('/bancos', [BancosController::class, 'index'])->name('bancos.index');
 
 
     Livewire::setUpdateRoute(function ($handle) {
