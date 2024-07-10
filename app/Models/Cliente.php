@@ -52,4 +52,8 @@ class Cliente extends Model
     public function servicios(){
         return $this->hasMany(Servicios::class, 'cliente_id');
     }
+
+    public function montos(){
+        return $this->hasMany(ClienteMontos::class, 'cliente_id');
+    }
 }

@@ -429,7 +429,7 @@ return [
         ],
         [
             'text' => 'Bancos',
-            'url'  => '/Bancos',
+            'url'  => '/bancos',
             'icon' => 'fas fa-fw fa-university',
             'can' => 'menu-bancos'
         ],
