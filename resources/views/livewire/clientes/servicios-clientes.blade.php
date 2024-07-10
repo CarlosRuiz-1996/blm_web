@@ -27,12 +27,12 @@
                         <tbody>
                             @foreach ($servicios_cliente as $servicio)
                                 <tr>
-                                    <td>{{ $servicio->ctg_servicio->descripcion }}</td>
+                                    <td>{{ $servicio->ctg_servicio->descripcion }}--{{$servicio->id}}</td>
                                     <td>$ {{$servicio->subtotal}}
                                         {{-- {{ $servicio->ruta_servicio ? number_format($servicio->ruta_servicio->monto, 2, ',', '.') : 0 }} --}}
                                     </td>
                                     <td>
-                                        {{ $servicio->sucursal->sucursal->sucursal }}
+                                        {{ $servicio->sucursal->sucursal->sucursal??'' }}
                                     </td>
                                     <td>
                                         @if ($servicio->status_servicio != 0)

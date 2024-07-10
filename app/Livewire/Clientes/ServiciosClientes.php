@@ -13,6 +13,7 @@ use App\Models\Servicios;
 use App\Models\servicios_conceptos_foraneos;
 use Livewire\Attributes\On;
 use Livewire\WithPagination;
+use PhpParser\Node\Expr\FuncCall;
 
 class ServiciosClientes extends Component
 {
@@ -83,7 +84,6 @@ class ServiciosClientes extends Component
         // session()->forget('servicio-memo');
         $this->form_anexo->cliente_id = $cliente->id;
         $this->form_anexo->direcconFiscal();
-
     }
     public function render()
     {
@@ -344,10 +344,54 @@ class ServiciosClientes extends Component
             $this->dispatch('success-terminado');
             session()->forget('servicio-sucursal');
             session()->forget('servicio-memo');
+            $this->clean();
             $this->render();
         } else {
             $this->dispatch('error-terminado');
         }
+    }
+
+    public function clean()
+    {
+        $this->reset(
+            'foraneos',
+            'servicioId',
+            'nombreServicio',
+            'tipoServicio',
+            'unidadMedida',
+            'precioUnitario',
+            'editarPreciocheck',
+            'editarPrecio',
+            'cantidadcheck',
+            'cantidad',
+            'isAdmin',
+            'total',
+            'checkforaneo',
+            'consepforaneo',
+            'cantidadfora',
+            'precioconsepforaneo',
+            'agregarALista',
+            'listaForaneos',
+            'costototalservicios',
+            'cantidadlleva',
+            'inicioruta',
+            'destinoruta',
+            'km',
+            'costokm',
+            'totalkmprecio',
+            'miles',
+            'milesprecio',
+            'costomiles',
+            'goperacion',
+            'iva',
+            'totaliva',
+            'subtotalforaneo',
+            'sumatotal',
+            'folioctg',
+            'tipoctg',
+            'descripcionctg',
+            'unidadctg'
+        );
     }
 
     #[On('cancelar-servicio')]
@@ -364,7 +408,4 @@ class ServiciosClientes extends Component
         $this->data = [];
         $this->isAdmin = "";
     }
-
-
-   
 }

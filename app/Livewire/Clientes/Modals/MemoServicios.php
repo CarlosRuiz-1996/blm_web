@@ -43,5 +43,6 @@ class MemoServicios extends Component
             'consignatorio' => $this->form->consignatorio,
         ]);
         $this->dispatch('cliente-servicio-fin');
+        $this->reset('form.horarioEntrega','form.diaEntrega','form.horarioServicio','form.diaServicio','form.consignatorio');
     }
 }
