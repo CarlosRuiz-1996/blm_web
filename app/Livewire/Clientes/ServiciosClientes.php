@@ -370,7 +370,7 @@ class ServiciosClientes extends Component
             'consepforaneo',
             'cantidadfora',
             'precioconsepforaneo',
-            'agregarALista',
+            
             'listaForaneos',
             'costototalservicios',
             'cantidadlleva',
