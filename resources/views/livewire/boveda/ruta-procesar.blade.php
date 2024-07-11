@@ -110,7 +110,6 @@
 
 
                             @foreach ($servicio_e as $envases)
-                               
                                 <div class="col-md-3 mb-3">
                                     <label for="">Sello</label>
                                     <input class="form-control" value="{{ $envases->sello_seguridad }}" disabled
@@ -160,141 +159,143 @@
                 </div>
             </div>
         </div>
-
-
-        @push('js')
-            <script>
-                $('#terminar_servicio').on('hidden.bs.modal', function() {
-                    Livewire.dispatch('clean');
-                });
-                var array_monto = [];
-
-                const monto = (input, index) => {
-                    // Obtener el valor actual del campo de entrada y convertirlo a número
-                    let montoActual = parseFloat($('#monto_total').val());
-
-                    // Verificar si el valor actual es un número válido, si no, inicializar a 0
-                    if (isNaN(montoActual)) {
-                        montoActual = 0;
-                    }
-
-                    // Obtener el valor ingresado en el input y convertirlo a número
-                    let nuevoMonto = parseFloat($(input).val());
-
-                    // Verificar si el nuevo monto es un número válido, si no, inicializar a 0
-                    if (isNaN(nuevoMonto)) {
-                        nuevoMonto = 0;
-                    }
-
-                    // Verificar si ya existe el índice en el arreglo
-                    if (typeof array_monto[index] !== 'undefined') {
-                        // Restar el monto antiguo del monto total
-                        montoActual -= array_monto[index];
-                    }
-
-                    // Actualizar el valor en el arreglo
-                    array_monto[index] = nuevoMonto;
-
-                    // Sumar el nuevo monto al valor actual
-                    montoActual += nuevoMonto;
-
-                    // Establecer el nuevo valor en el campo de entrada de monto total
-                    $('#monto_total').val(montoActual);
-                };
-
-                document.addEventListener('livewire:initialized', () => {
-                    Livewire.on('error', function([message]) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: message[0],
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
-                    });
-
-                    Livewire.on('diferencia', function([message]) {
-                        Swal.fire({
-                            title: "Diferencia de montos",
-                            text: message[0],
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonText: true,
-
-                            confirmButtonColor: "#3085d6",
-                            cancelButtonColor: "#d33",
-                            confirmButtonText: "Si, generar hoja de diferencia.",
-                            cancelButtonText: "No, Corregir",
-
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                Swal.fire({
-                                    title: "Deleted!",
-                                    text: "Your file has been deleted.",
-                                    icon: "success"
-                                });
-                            }
-                        });
-                    });
-
-                    Livewire.on('agregarArchivocre', function(params) {
-                        const nombreArchivo = params[0].nombreArchivo;
-                        const tipomensaje = params[1].tipomensaje;
-                        const terminar = params[2].terminar;
-                        Swal.fire({
-                            position: 'center',
-                            icon: tipomensaje,
-                            title: nombreArchivo,
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
-                        if (terminar == 1) {
-                            window.location.href = '/boveda/inicio';
-                        }
-                        $('#terminar_servicio').modal('hide');
-
-                    });
-
-
-                    @this.on('terminar', () => {
-
-                        Swal.fire({
-                            title: '¿Estas seguro?',
-                            text: "La ruta terminara.",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Si, adelante!',
-                            cancelButtonText: 'Cancelar'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                @this.dispatch('terminar-ruta-boveda');
-                            }
-                        })
-                    })
-
-
-
-                    @this.on('finalizar-entrega', (servicio) => {
-
-                        Swal.fire({
-                            title: '¿Estas seguro?',
-                            text: "El servicio de entrega termino sin ningun problema.",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Si, adelante!',
-                            cancelButtonText: 'Cancelar'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                @this.dispatch('finaliza-entrega', {
-                                    servicio: servicio
-                                });
-                            }
-                        })
-                    })
-                });
-            </script>
-        @endpush
     </div>
+
+    @push('js')
+        <script>
+            $('#terminar_servicio').on('hidden.bs.modal', function() {
+                Livewire.dispatch('clean');
+            });
+            var array_monto = [];
+
+            const monto = (input, index) => {
+                // Obtener el valor actual del campo de entrada y convertirlo a número
+                let montoActual = parseFloat($('#monto_total').val());
+
+                // Verificar si el valor actual es un número válido, si no, inicializar a 0
+                if (isNaN(montoActual)) {
+                    montoActual = 0;
+                }
+
+                // Obtener el valor ingresado en el input y convertirlo a número
+                let nuevoMonto = parseFloat($(input).val());
+
+                // Verificar si el nuevo monto es un número válido, si no, inicializar a 0
+                if (isNaN(nuevoMonto)) {
+                    nuevoMonto = 0;
+                }
+
+                // Verificar si ya existe el índice en el arreglo
+                if (typeof array_monto[index] !== 'undefined') {
+                    // Restar el monto antiguo del monto total
+                    montoActual -= array_monto[index];
+                }
+
+                // Actualizar el valor en el arreglo
+                array_monto[index] = nuevoMonto;
+
+                // Sumar el nuevo monto al valor actual
+                montoActual += nuevoMonto;
+
+                // Establecer el nuevo valor en el campo de entrada de monto total
+                $('#monto_total').val(montoActual);
+            };
+
+            document.addEventListener('livewire:initialized', () => {
+                Livewire.on('error', function([message]) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: message[0],
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
+
+                Livewire.on('diferencia', function([message]) {
+                    Swal.fire({
+                        title: "Diferencia de montos",
+                        text: message[0],
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: true,
+
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Si, generar hoja de diferencia.",
+                        cancelButtonText: "No, Corregir",
+
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "Your file has been deleted.",
+                                icon: "success"
+                            });
+                        }
+                    });
+                });
+
+                Livewire.on('agregarArchivocre', function(params) {
+                    const msg = params[0].msg;
+                    const tipomensaje = params[1].tipomensaje;
+                    const terminar = params[2].terminar;
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: tipomensaje,
+                        title: msg,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    $('#terminar_servicio').modal('hide');
+
+                    if (terminar) {
+                        window.location.href = '/boveda/inicio';
+                    }
+
+                });
+
+
+                @this.on('terminar', () => {
+
+                    Swal.fire({
+                        title: '¿Estas seguro?',
+                        text: "La ruta terminara.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, adelante!',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            @this.dispatch('terminar-ruta-boveda');
+                        }
+                    })
+                })
+
+
+
+                @this.on('finalizar-entrega', (servicio) => {
+
+                    Swal.fire({
+                        title: '¿Estas seguro?',
+                        text: "El servicio de entrega termino sin ningun problema.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, adelante!',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            @this.dispatch('finaliza-entrega', {
+                                servicio: servicio
+                            });
+                        }
+                    })
+                })
+            });
+        </script>
+    @endpush
+</div>
