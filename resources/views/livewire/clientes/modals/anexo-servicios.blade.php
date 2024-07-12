@@ -176,7 +176,7 @@
                         <button type="button" class="btn btn-primary" wire:click='sucursal_servicio'
                     >Siguente</button>
                 @endif
-                <button type="button" class="btn btn-danger" wire:click='cancelar()'
+                <button type="button" class="btn btn-danger" wire:click='clean()'
                     data-dismiss="modal">Cerrar</button>
             </div>
         </div>
@@ -281,7 +281,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" wire:click='terminar()'>Terminar</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal"
-                    wire:click='cancelar()'>Cerrar</button>
+                    wire:click='clean()'>Cerrar</button>
             </div>
         </div>
     </div>

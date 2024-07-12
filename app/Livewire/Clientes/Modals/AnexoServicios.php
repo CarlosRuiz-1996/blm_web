@@ -52,7 +52,7 @@ class AnexoServicios extends Component
     public function sucursal_servicio()
     {
 
-        
+
         $this->form->getSucursalName();
 
         // dd($sucursal);
@@ -71,7 +71,6 @@ class AnexoServicios extends Component
         if ($res == 1) {
             $this->dispatch('success', ["La sucursal creo exitosamente.", 1]);
             $this->sucursales =  $this->form->getAllSucursal();
-
         } else {
             $this->dispatch('error', ["Ha ocurrido un error, intente más tarde.", 1]);
         }
@@ -98,20 +97,23 @@ class AnexoServicios extends Component
     }
 
 
-    public function cancelar(){
+    public function clean()
+    {
         session()->forget('servicio-sucursal');
         session()->forget('servicio-memo');
-        $this->clean();
-        $this->dispatch('cancelar-servicio');
-    }
+        $this->dispatch('clean-servicio');
 
-
-    public function clean(){
-        $this->reset('form.sucursal_id',
-        'form_memo.horarioEntrega',
-        'form_memo.grupo','form_memo.ctg_tipo_solicitud_id','form_memo.ctg_tipo_servicio_id',
-        'form_memo.diaEntrega','form_memo.horarioServicio','form_memo.diaServicio','form_memo.consignatorio');
-
+        $this->reset(
+            'form.sucursal_id',
+            'form_memo.horarioEntrega',
+            'form_memo.grupo',
+            'form_memo.ctg_tipo_solicitud_id',
+            'form_memo.ctg_tipo_servicio_id',
+            'form_memo.diaEntrega',
+            'form_memo.horarioServicio',
+            'form_memo.diaServicio',
+            'form_memo.consignatorio'
+        );
     }
 
     public function validarCp()
@@ -127,6 +129,5 @@ class AnexoServicios extends Component
         ]);
 
         $this->form->validarCp();
-
     }
 }

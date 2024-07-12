@@ -425,7 +425,7 @@
                   
                     <button class="btn btn-primary" wire:click="crearServicioctg">Crear Servicio</button>
                     <button class="btn btn-danger" data-target="#exampleModalToggle2"
-                    data-toggle="modal" wire:click='cancelar()'>Cerrar</button>
+                    data-toggle="modal" wire:click='clean()'>Cerrar</button>
                 </div>
             </div>
         </div>

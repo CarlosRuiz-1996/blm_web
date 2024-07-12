@@ -351,7 +351,8 @@ class ServiciosClientes extends Component
         }
     }
 
-    #[On('clean-modal-servicio')]
+
+    #[On('clean-servicio')]
     public function clean()
     {
         $this->reset(
@@ -371,7 +372,6 @@ class ServiciosClientes extends Component
             'consepforaneo',
             'cantidadfora',
             'precioconsepforaneo',
-            
             'listaForaneos',
             'costototalservicios',
             'cantidadlleva',
@@ -393,22 +393,16 @@ class ServiciosClientes extends Component
             'descripcionctg',
             'unidadctg'
         );
-    }
-
-    #[On('cancelar-servicio')]
-    public function cancelar()
-    {
-        $this->clean();
+    
 
         session()->forget('servicio-sucursal');
         session()->forget('servicio-memo');
         $this->listaForaneosguarda = [];
         $this->dataforaneo = [];
-        $this->editarPreciohabilitado = 0;
+        $this->editarPreciohabilitado = false;
         $this->precioUnitario = 0;
-        $this->cantidadhabilitado = 0;
+        $this->cantidadhabilitado = false;
         $this->totalreal = 0;
         $this->data = [];
-        $this->isAdmin = "";
     }
 }
