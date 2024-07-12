@@ -89,7 +89,6 @@ class AnexoServicios extends Component
             'diaServicio' => $this->form_memo->diaServicio,
             'consignatorio' => $this->form_memo->consignatorio,
         ]);
-        $this->clean();
 
         $this->dispatch('close-memo');
 
@@ -97,6 +96,7 @@ class AnexoServicios extends Component
     }
 
 
+    #[On('clean-servicio-memo-anexo')]
     public function clean()
     {
         session()->forget('servicio-sucursal');

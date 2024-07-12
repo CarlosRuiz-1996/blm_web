@@ -342,9 +342,7 @@ class ServiciosClientes extends Component
 
         if ($res == 1) {
             $this->dispatch('success-terminado');
-            session()->forget('servicio-sucursal');
-            session()->forget('servicio-memo');
-            $this->clean();
+            $this->dispatch('clean-servicio-memo-anexo');
             $this->render();
         } else {
             $this->dispatch('error-terminado');
