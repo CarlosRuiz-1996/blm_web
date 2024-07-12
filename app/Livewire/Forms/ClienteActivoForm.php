@@ -172,8 +172,8 @@ class ClienteActivoForm extends Form
             ->where(function ($query) {
                 $query->where('status_servicio', '>=', 3)
                     ->orWhere('status_servicio', 0);
-            })
-            ->paginate(5);
+            })->orderBy('id','DESC')
+            ->paginate(10);
     }
 
     public function updateServicio(Servicios $servicio, $accion)
