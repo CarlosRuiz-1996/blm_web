@@ -59,7 +59,6 @@ class AnexoServicios extends Component
         Session::push('servicio-sucursal', [
             'sucursal_id' => $this->form->sucursal_id,
         ]);
-        $this->clean();
         $this->dispatch('sucursal-servico-memorandum');
     }
 
@@ -108,7 +107,8 @@ class AnexoServicios extends Component
 
 
     public function clean(){
-        $this->reset('form.sucursal_id','form.horarioEntrega','form.diaEntrega','form.horarioServicio','form.diaServicio','form.consignatorio');
+        $this->reset('form.sucursal_id',
+        'form_memo.horarioEntrega','form_memo.diaEntrega','form_memo.horarioServicio','form_memo.diaServicio','form_memo.consignatorio');
 
     }
 
