@@ -351,6 +351,7 @@ class ServiciosClientes extends Component
         }
     }
 
+    #[On('clean-modal-servicio')]
     public function clean()
     {
         $this->reset(
@@ -397,6 +398,8 @@ class ServiciosClientes extends Component
     #[On('cancelar-servicio')]
     public function cancelar()
     {
+        $this->clean();
+
         session()->forget('servicio-sucursal');
         session()->forget('servicio-memo');
         $this->listaForaneosguarda = [];

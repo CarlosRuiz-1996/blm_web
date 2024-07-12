@@ -1,10 +1,19 @@
 <div>
-    <div class="container-fluid">
+    <div class="container-fluid" wire:init='loadServicios'>
         <div class="info-box">
             <span class="info-box-icon bg-info"><i class="fas fa-dollar-sign"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Resguardo</span>
-                <span class="info-box-number">{{ number_format($resguardototal, 2, '.', ',') }} MXN</span>
+
+                @if ($readyToLoad)
+                    <span class="info-box-number">
+
+                        {{ number_format($resguardototal, 2, '.', ',') }} MXN
+                    </span>
+                @else
+                    <div class="spinner-border" role="status"></div>
+                @endif
+
                 <div class="progress">
                     <div class="progress-bar bg-info" style="width: 70%"></div>
                 </div>
@@ -52,28 +61,51 @@
                                 </thead>
                                 <!-- Cuerpo de la tabla -->
                                 <tbody>
-                                    @foreach ($servicios as $ruta)
-                                        <tr>
-                                            <td>{{ $ruta->id }}</td>
-                                            <td>{{ $ruta->nombre->name }}</td>
-                                            <td>{{ $ruta->dia->name }}</td>
-                                            <td>{{ $ruta->riesgo->name }}</td>
-                                            <td>{{ $ruta->estado->name }}</td>
-                                            <td>{{ $ruta->hora_inicio }}</td>
-                                            <td>{{ $ruta->hora_fin ?? 'No especificada' }}</td>
-                                            <td>
-                                                <a href="#" class="btn btn-info" data-toggle="modal"
-                                                    data-target="#detalleModal"
-                                                    wire:click='llenarmodalservicios({{ $ruta->id }})'>Cargar
-                                                    ruta</a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                    @if (count($servicios))
+                                        @foreach ($servicios as $ruta)
+                                            <tr>
+                                                <td>{{ $ruta->id }}</td>
+                                                <td>{{ $ruta->nombre->name }}</td>
+                                                <td>{{ $ruta->dia->name }}</td>
+                                                <td>{{ $ruta->riesgo->name }}</td>
+                                                <td>{{ $ruta->estado->name }}</td>
+                                                <td>{{ $ruta->hora_inicio }}</td>
+                                                <td>{{ $ruta->hora_fin ?? 'No especificada' }}</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-info" data-toggle="modal"
+                                                        data-target="#detalleModal"
+                                                        wire:click='llenarmodalservicios({{ $ruta->id }})'>Cargar
+                                                        ruta</a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        @if ($readyToLoad)
+                                            <tr>
+                                                <td colspan="8">No hay datos disponibles</td>
+                                            </tr>
+                                        @else
+                                            <tr>
+                                                <td colspan="8" class="text-center">
+                                                    <div class="spinner-border"
+                                                        style="width: 5rem; height: 5rem; border-width: 0.5em;"
+                                                        role="status">
+                                                        {{-- <span class="visually-hidden">Loading...</span> --}}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
                         <!-- Paginación -->
-                        {{ $servicios->links() }}
+
+                        @if ($servicios && $servicios->hasPages())
+                            <div class="col-md-12 text-center">
+                                {{ $servicios->links() }}
+                            </div>
+                        @endif
                     </div>
                     <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
                         <div class="table-responsive">
@@ -91,36 +123,61 @@
                                 </thead>
                                 <!-- Cuerpo de la tabla -->
                                 <tbody>
-                                    @foreach ($Movimientos as $movimiento)
-                                        <tr>
-                                            <td class="text-xs">{{ $movimiento->ruta->nombre->name }}</td>
-                                            <td class="text-xs">{{ $movimiento->servicio->ctg_servicio->descripcion }}
-                                            </td>
-                                            <td class="text-xs">{{ $movimiento->servicio->cliente->rfc_cliente }}</td>
+                                    @if (count($Movimientos))
+                                        @foreach ($Movimientos as $movimiento)
+                                            <tr>
+                                                <td class="text-xs">{{ $movimiento->ruta->nombre->name }}</td>
+                                                <td class="text-xs">
+                                                    {{ $movimiento->servicio->ctg_servicio->descripcion }}
+                                                </td>
+                                                <td class="text-xs">{{ $movimiento->servicio->cliente->rfc_cliente }}
+                                                </td>
 
-                                            <td class="text-xs">
-                                                {{ $movimiento->tipo_servicio == 1 ? 'Entrega' : 'Recolección' }}</td>
-                                            <td class="text-xs">
-                                                @if ($movimiento->tipo_servicio == 1)
-                                                    <span
-                                                        class="badge {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'bg-success' : 'bg-danger' }}">
-                                                        {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'Servicio cargado' : 'Servicio eliminado para esta ruta (reprogramar)' }}
-                                                    </span>
-                                                @else
-                                                    <span
-                                                        class="badge {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'bg-success' : 'bg-danger' }}">
-                                                        {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'Servicio Autorizado para recolectar' : 'Servicio no autorizado para esta ruta (reprogramar)' }}
-                                                    </span>
-                                                @endif
-                                            </td>
-                                            <td class="text-xs">{{ $movimiento->created_at }}</td>
-                                        </tr>
-                                    @endforeach
+                                                <td class="text-xs">
+                                                    {{ $movimiento->tipo_servicio == 1 ? 'Entrega' : 'Recolección' }}
+                                                </td>
+                                                <td class="text-xs">
+                                                    @if ($movimiento->tipo_servicio == 1)
+                                                        <span
+                                                            class="badge {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'bg-success' : 'bg-danger' }}">
+                                                            {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'Servicio cargado' : 'Servicio eliminado para esta ruta (reprogramar)' }}
+                                                        </span>
+                                                    @else
+                                                        <span
+                                                            class="badge {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'bg-success' : 'bg-danger' }}">
+                                                            {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'Servicio Autorizado para recolectar' : 'Servicio no autorizado para esta ruta (reprogramar)' }}
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                                <td class="text-xs">{{ $movimiento->created_at }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        @if ($readyToLoad)
+                                            <tr>
+                                                <td colspan="8">No hay datos disponibles</td>
+                                            </tr>
+                                        @else
+                                            <tr>
+                                                <td colspan="8" class="text-center">
+                                                    <div class="spinner-border"
+                                                        style="width: 5rem; height: 5rem; border-width: 0.5em;"
+                                                        role="status">
+                                                        {{-- <span class="visually-hidden">Loading...</span> --}}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
                         <!-- Paginación -->
-                        {{ $Movimientos->links() }}
+                        @if ($Movimientos && $Movimientos->hasPages())
+                            <div class="col-md-12 text-center">
+                                {{ $Movimientos->links() }}
+                            </div>
+                        @endif
                     </div>
                     <div class="tab-pane fade" id="rutaRecoleccion" role="tabpanel"
                         aria-labelledby="rutaRecoleccion-tab">
@@ -155,7 +212,7 @@
                                         <th>Servicio</th>
                                         <th>Tipo Servicio</th>
                                         <th>Envases</th>
-                                        <th>Monto</th>
+                                        <th style="width: 150px">Monto</th>
                                         <th>Cargado</th>
                                     </tr>
                                 </thead>
@@ -191,8 +248,7 @@
                                             <td>
                                                 @if ($rutaserv->tipo_servicio == 1)
                                                     @if ($rutaserv->status_ruta_servicios == 1)
-                                                        <button
-                                                            wire:click="cargar({{ $rutaserv->id }}, {{ $rutaserv->ruta_id }})"
+                                                        <button wire:click="cargar({{ $rutaserv->id }})"
                                                             class="btn btn-primary">Si</button>
                                                         <button type="button" data-target="#exampleModalCerrar"
                                                             data-toggle="modal"
@@ -206,8 +262,7 @@
                                                     @endif
                                                 @else
                                                     @if ($rutaserv->status_ruta_servicios == 1)
-                                                        <button
-                                                            wire:click="cargarRecoleccion({{ $rutaserv->id }}, {{ $rutaserv->ruta_id }})"
+                                                        <button wire:click="cargarRecoleccion({{ $rutaserv->id }})"
                                                             class="btn btn-primary">Aceptar</button>
                                                         <button type="button" data-target="#exampleModalCerrar"
                                                             data-toggle="modal"
@@ -313,7 +368,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-dark" data-dismiss="modal">Cerrar</button>
                     <button class="btn btn-primary" wire:click="GuardarEnvases">Guardar</button>
-                  
+
 
                 </div>
             </div>
@@ -366,44 +421,10 @@
                         timer: 3000
                     });
                 });
-                Livewire.on('ServicioResguardo', function([res]) {
 
-                    Swal.fire({
-                        icon: res[1],
-                        title: res[0],
-                        showConfirmButton: false,
-                        timer: 5000
-                    });
-                });
 
-                Livewire.on('errorTablaDatos', function([message]) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: message[0],
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                });
-                Livewire.on('errorTabla', function([message]) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: message[0],
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                });
-                Livewire.on('successservicio', function(message) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: message,
-                        showConfirmButton: false,
-                        timer: 3000
-                    }).then(() => {
-                        // Cerrar el modal después de que se muestra el mensaje de éxito
-                        $('#exampleModalCerrar').modal('hide');
-                        $('#detalleModal').modal('hide');
-                    });
-                });
+
+
 
                 Livewire.on('successservicioEnvases', function([message]) {
                     Swal.fire({

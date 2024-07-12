@@ -28,7 +28,9 @@
                             @foreach ($servicios_cliente as $servicio)
                                 <tr>
                                     <td>{{ $servicio->ctg_servicio->descripcion }}</td>
-                                    <td>$ {{$servicio->subtotal}}
+                                    <td>$ 
+                                        {{ number_format($servicio->subtotal, 2, '.', ',') }} MXN
+
                                         {{-- {{ $servicio->ruta_servicio ? number_format($servicio->ruta_servicio->monto, 2, ',', '.') : 0 }} --}}
                                     </td>
                                     <td>
@@ -377,7 +379,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" {{ $bloqser ? 'disabled' : '' }}
                     wire:click='llenartabla'>Siguiente</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-danger" wire:click='clean()' data-dismiss="modal">Cerrar</button>
                    
 
                 </div>

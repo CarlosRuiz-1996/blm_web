@@ -236,9 +236,13 @@
                 });
 
                 Livewire.on('agregarArchivocre', function(params) {
+
+                    console.log('entra')
+                    console.log(params)
                     const msg = params[0].msg;
                     const tipomensaje = params[1].tipomensaje;
-                    const terminar = params[2].terminar;
+                    const terminar = params[2]?.terminar || '';
+                    $('#terminar_servicio').modal('hide');
 
                     Swal.fire({
                         position: 'center',
@@ -247,7 +251,6 @@
                         showConfirmButton: false,
                         timer: 3000
                     });
-                    $('#terminar_servicio').modal('hide');
 
                     if (terminar) {
                         window.location.href = '/boveda/inicio';

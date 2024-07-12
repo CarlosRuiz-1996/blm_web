@@ -7,9 +7,21 @@ use Livewire\Component;
 
 class RutaRecolecta extends Component
 {
+    public $readyToLoad = false;
+
     public function render()
     {
-        $serviciosTerinados = Ruta::where('ctg_rutas_estado_id',4)->paginate(10);
+        if ($this->readyToLoad) {
+
+            $serviciosTerinados = Ruta::where('ctg_rutas_estado_id', 4)->paginate(10);
+        } else {
+            $serviciosTerinados = [];
+        }
         return view('livewire.boveda.ruta-recolecta', compact('serviciosTerinados'));
+    }
+
+    public function loadServicios()
+    {
+        $this->readyToLoad = true;
     }
 }

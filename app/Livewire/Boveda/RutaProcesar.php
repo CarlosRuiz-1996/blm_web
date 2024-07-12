@@ -116,8 +116,8 @@ class RutaProcesar extends Component
             $this->form->servicio->servicio->cliente->save();
 
 
-            $this->limpiar();
             $this->dispatch('agregarArchivocre', ['msg' => 'El servicio de recolecta ha sido termiando'], ['tipomensaje' => 'success']);
+            $this->limpiar();
 
             DB::commit();
         } catch (\Exception $e) {
@@ -264,5 +264,9 @@ class RutaProcesar extends Component
         $this->form->envases = "";
         $this->form->monto = "";
         $this->monto_calculado = 0;
+    }
+
+    public function inconsistencia(){
+        
     }
 }
