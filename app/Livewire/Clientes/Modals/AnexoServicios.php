@@ -108,7 +108,9 @@ class AnexoServicios extends Component
 
     public function clean(){
         $this->reset('form.sucursal_id',
-        'form_memo.horarioEntrega','form_memo.diaEntrega','form_memo.horarioServicio','form_memo.diaServicio','form_memo.consignatorio');
+        'form_memo.horarioEntrega',
+        'form_memo.grupo','form_memo.ctg_tipo_solicitud_id','form_memo.ctg_tipo_servicio_id',
+        'form_memo.diaEntrega','form_memo.horarioServicio','form_memo.diaServicio','form_memo.consignatorio');
 
     }
 
