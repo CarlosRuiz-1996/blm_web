@@ -5,6 +5,7 @@ namespace App\Livewire\Boveda;
 use App\Livewire\Forms\BovedaForm;
 use App\Models\Cliente;
 use App\Models\ClienteMontos;
+use App\Models\Inconsistencias;
 use App\Models\Ruta;
 use App\Models\RutaEmpleadoReporte;
 use App\Models\RutaEmpleados;
@@ -43,24 +44,25 @@ class RutaProcesar extends Component
 
     public function opernModal($servicio_id)
     {
-
+        $this->limpiar();
 
         $servicio = ServicioRutaEnvases::where('ruta_servicios_id', $servicio_id)->where('status_envases', 1)->get();
         foreach ($servicio as $s) {
             $this->form->servicio = $s->rutaServicios;
             $this->form->folio = $this->form->servicio->folio;
-            $this->form->envases = $this->form->servicio->envases_servicios;
             $this->form->monto = $this->form->servicio->monto;
 
             $this->monto_envases[$s->id] = ['cantidad' => 0];
         }
-
         $this->servicio_e = $servicio;
         // dd($this->monto_envases);
 
 
 
     }
+
+    public $inconsistencia = 0;
+    public $diferencias = [];
 
     public function validar()
     {
@@ -71,51 +73,41 @@ class RutaProcesar extends Component
             'monto_envases.*.cantidad.numeric' => 'La cantidad debe ser un número',
             'monto_envases.*.cantidad.min' => 'La cantidad no debe ser al menos 0',
         ]);
-        $inconsistencia = 0;
+
         try {
             DB::beginTransaction();
             Log::info('Info: entra a la transaccion');
 
-            foreach ($this->monto_envases as $index => $input) {
-                $this->monto_calculado  += (float)$input['cantidad'];
+            $tipo_dif=1;
+            $diferencia="";
+            foreach ($this->servicio_e as $s) {
+
+                // dd($s);
+                foreach ($this->monto_envases as $index => $input) {
+                    if ($s->id == $index) {
+                        if ($s->cantidad != $input['cantidad']) {
+                           
+                            $diferencia = $input['cantidad'] - $s->cantidad;
+                            if ($input['cantidad'] < $s->cantidad) {
+                                $tipo_dif = 0; //menor
+                                $diferencia = $s->cantidad - $input['cantidad'];
+                            }
+                            $this->diferencias[] = [
+                                'servicio' => $s,
+                                'cantidad_ingresada' => $input['cantidad'],
+                                'diferencia' => $diferencia,
+                                'tipo_dif' => $tipo_dif,
+                                'monto' => $s->cantidad
+                            ];
+                            $this->inconsistencia = 1;
+            
+                            throw new \Exception('Existe una diferencia  si continuas se generará el acta administrativa  de diferencias, Deseas continuar...');
+                        }
+                    }
+                }
             }
-            //si los montos son diferentes
-            if ($this->monto_calculado != $this->form->monto) {
-                $inconsistencia = 1;
-                throw new \Exception('Los montos no coinsiden con lo que se indico. ¿Quiere generar una hoja de diferencia?');
-            }
 
-            //actualizar la informacion de ruta servicio
-            $this->form->servicio->status_ruta_servicios = 1;
-            $this->form->servicio->monto = 0;
-            $this->form->servicio->envases = 0;
-
-            $this->form->servicio->save();
-
-            //actualizar la informacion de envases
-            foreach ($this->form->servicio->envases_servicios as $envase) {
-                $envase->status_envases = 2;
-                $envase->save();
-                Log::info('Info: actualiza evidencia');
-                $envase->evidencia_recolecta->status_evidencia_recolecta = 2;
-                $envase->evidencia_recolecta->save();
-            }
-
-             //registra movimiento en el historial
-             ClienteMontos::create([
-                'cliente_id' => $this->form->servicio->servicio->cliente->id,
-                'monto_old' => $this->form->servicio->servicio->cliente->resguardo,
-                'monto_in' => $this->form->servicio->monto,
-                'monto_new' => $this->form->servicio->servicio->cliente->resguardo + $this->form->servicio->monto,
-                'empleado_id' => Auth::user()->empleado->id,
-                'ctg_area_id' => Auth::user()->empleado->ctg_area_id
-            ]);
-
-            //descontar
-            $this->form->servicio->servicio->cliente->resguardo = $this->form->servicio->servicio->cliente->resguardo + $this->form->servicio->monto;
-            $this->form->servicio->servicio->cliente->save();
-
-
+            $this->finalizar_recolecta();
             $this->dispatch('agregarArchivocre', ['msg' => 'El servicio de recolecta ha sido termiando'], ['tipomensaje' => 'success']);
             $this->limpiar();
 
@@ -124,7 +116,7 @@ class RutaProcesar extends Component
             DB::rollBack();
             Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
 
-            if ($inconsistencia == 0) {
+            if ($this->inconsistencia == 0) {
                 $this->dispatch('error', [$e->getMessage()]);
             } else {
                 $this->dispatch('diferencia', [$e->getMessage()]);
@@ -258,15 +250,87 @@ class RutaProcesar extends Component
     #[On('clean')]
     public function limpiar()
     {
+        // if ($this->inconsistencia == 0) {
         $this->monto_envases = [];
         $this->form->servicio = "";
         $this->form->folio = "";
-        $this->form->envases = "";
         $this->form->monto = "";
         $this->monto_calculado = 0;
+        // }
     }
 
-    public function inconsistencia(){
-        
+    public $observaciones;
+    #[On('inconsistencia')]
+    public function inconsistencia()
+    {
+
+        try {
+            DB::beginTransaction();
+            //ruta servicio se pone en 0 para reprogramar
+            $this->form->servicio->status_ruta_servicios = 1;
+            $this->form->servicio->save();
+
+            //actualizar la informacion de envases
+            foreach ($this->form->servicio->envases_servicios as $envase) {
+                $envase->status_envases = 0;
+                $envase->save();
+                $envase->evidencia_recolecta->status_evidencia_recolecta = 0;
+                $envase->evidencia_recolecta->save();
+            }
+
+            Inconsistencias::create([
+                'cliente_id' => $this->form->servicio->servicio->cliente->id,
+                'ruta_servicio_reportes_id' => $this->form->servicio->id,
+                'fecha_comprobante' => $this->form->servicio->updated_at,
+                'folio' => $this->form->servicio->folio,
+                'importe_indicado' => $this->form->servicio->monto,
+                'importe_comprobado' => $this->monto_calculado,
+                'diferencia' => $this->diferencia,
+                'tipo' => $this->tipo_dif,
+                'observacion' => $this->observaciones,
+
+            ]);
+            $this->dispatch('agregarArchivocre', ['msg' => 'El formato se genero con éxito.'], ['tipomensaje' => 'success']);
+
+            DB::rollBack();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
+            $this->dispatch('error', [$e->getMessage()]);
+            Log::info('Info: ' . $e);
+        }
+    }
+
+    public function finalizar_recolecta()
+    {
+        //actualizar la informacion de ruta servicio
+        $this->form->servicio->status_ruta_servicios = 1;
+        $this->form->servicio->monto = 0;
+        $this->form->servicio->envases = 0;
+
+        $this->form->servicio->save();
+
+        //actualizar la informacion de envases
+        foreach ($this->form->servicio->envases_servicios as $envase) {
+            $envase->status_envases = 2;
+            $envase->save();
+            Log::info('Info: actualiza evidencia');
+            $envase->evidencia_recolecta->status_evidencia_recolecta = 2;
+            $envase->evidencia_recolecta->save();
+        }
+
+        //registra movimiento en el historial
+        ClienteMontos::create([
+            'cliente_id' => $this->form->servicio->servicio->cliente->id,
+            'monto_old' => $this->form->servicio->servicio->cliente->resguardo,
+            'monto_in' => $this->form->servicio->monto,
+            'monto_new' => $this->form->servicio->servicio->cliente->resguardo + $this->form->servicio->monto,
+            'empleado_id' => Auth::user()->empleado->id,
+            'ctg_area_id' => Auth::user()->empleado->ctg_area_id
+        ]);
+
+        //descontar
+        $this->form->servicio->servicio->cliente->resguardo = $this->form->servicio->servicio->cliente->resguardo + $this->form->servicio->monto;
+        $this->form->servicio->servicio->cliente->save();
     }
 }

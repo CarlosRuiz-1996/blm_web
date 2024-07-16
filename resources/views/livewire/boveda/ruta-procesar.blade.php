@@ -23,6 +23,19 @@
                 border-radius: 5px;
                 /* Opcional: añadir bordes redondeados */
             }
+
+            .checkbox {
+                font-weight: bold;
+                text-decoration: underline;
+            }
+
+            .amount {
+                font-weight: bold;
+            }
+
+            .d-flex.align-items-center span {
+                margin-right: 5px;
+            }
         </style>
     @endpush
     <div class="card-outline card-info info-box">
@@ -152,7 +165,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-dark" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-dark" data-dismiss="modal" wire:click='limpiar'>Cerrar</button>
 
                     <button class="btn btn-primary" wire:click="validar">Verificar</button>
 
@@ -161,11 +174,151 @@
         </div>
     </div>
 
+
+    {{-- modal de diferencias --}}
+
+    <!--modal envases de cargar-->
+    <div class="modal fade" id="diferencia_mdl" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+        tabindex="-1" wire:ignore.self>
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" id="exampleModalLabel">Formato de diferencia de valores.</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="{{ asset('/img/logospdf.png') }}" alt="Nombre alternativo" class="mb-3"
+                                    style="max-width: 50px; float: left; margin-right: 10px;">
+                            </div>
+                            <div class="col-md-10">
+                                <h5 class="text-dark text-center" style="margin-top: 15px;">Servicios Integrados
+                                    PRO-BLM de México
+                                    S.A. de C.V.</h5>
+                            </div>
+                        </div>
+                        <div class="small-text mt-4">
+
+                            <p class="text-start">ACTA ADMINISTRATIVA DE DIFERENCIAS</p>
+
+
+                            <div class="col-md-12 col-12">
+                                @php
+                                    $fecha_creacion = \Carbon\Carbon::parse(now());
+                                    $nombre_mes = Str::upper($fecha_creacion->translatedFormat('F'));
+                                    $dia = $fecha_creacion->format('d');
+                                    $anio = $fecha_creacion->format('Y');
+                                @endphp
+                                <h6 class="text-dark text-right" style="margin-top: 15px;margin-right: 8%">EN LA
+                                    CIUDAD DE MÉXICO, A
+                                    {{ $dia . ' DE ' . $nombre_mes . ' DEL ' . $anio }}.
+                                </h6>
+                            </div>
+                            <p class="justify-text ">
+                                EN LA EMPRESA "SERVICIOS INTEGRADOS PRO-BLM DE MÉXICO, SA DE C.V" UBICADA EN CALLE
+                                CUAUHTEMOC No. 12, COL. PUEBLO DE SANTA CRUZ MEYEHUALCO, DEL. IZTAPALAPA, CP. 09700
+                                EN EL ÁREA DE RECUENTO Y PROCESO DE VALORES DE ESTA EMPRESA, SE LEVANTA LA PRESENTE ACTA
+                                PARA DEJAR
+                                CONSTANCIA
+                                DE LA DIFERENCIA DETALLADA A CONTUNUACIÓN:
+                            </p>
+                            @if ($form->servicio)
+                                <div class="col-md-6 mb-3">
+                                    <p>
+                                        FECHA DEL COMPROBANTE:
+                                        <span
+                                            class="font-weight-bold checkbox">{{ $form->servicio->updated_at }}</span>
+                                    </p>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <p>
+                                        ORIGEN DEL DEPÓSITO: (CLIENTE)
+                                        <span
+                                            class="font-weight-bold checkbox">{{ $form->servicio->servicio->cliente->rfc_cliente }}</span>
+                                    </p>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <p>
+                                        NÚMERO DE FOLIO DE PAPELETA:
+                                        <span class="font-weight-bold checkbox">{{ $form->servicio->folio }}</span>
+                                    </p>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <p>
+                                        IMPORTE QUE DICE CONTENER: $
+                                        <span class="font-weight-bold checkbox">{{ $form->servicio->monto }}</span>
+                                    </p>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <p>
+                                        IMPORTE COMPROBADO: $
+                                        <span class="font-weight-bold checkbox">{{ $monto_calculado }}</span>
+                                    </p>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <p>DIFERENCIA</p>
+                                    {{-- <p>
+                                        FALTANTE <span class="checkbox">{{ $tipo_dif == 0 ? '_X_' : '___' }}</span>
+                                        SOBRANTE <span class="checkbox">{{ $tipo_dif == 1 ? '_X_' : '___' }}</span>
+                                        DE $ <span class="amount">{{ $diferencia }}</span>
+                                    </p> --}}
+                                </div>
+                            @endif
+                            <div class="col-md-12 mb-3">
+                                <p>OBSERVACIONES:</p>
+
+                                <textarea class="form-control w-full" cols="3" rows="2"
+                                    wire:model='observaciones'>
+                            </textarea>
+                            </div>
+                            <p class="justify-text">LOS INVOLUCRADOS BIEN IMPUESTOS DEL CONTENIDO DE LA PRESENTE ACTA Y
+                                DE LOS ALCANCES DE LA MISMA SE
+                                MANIFIESTAN CONFORMES, CONSTATANDO MEDIANTE NOMBRE Y FIRMA.</p>
+
+
+
+
+
+                            {{-- <table align="center" style="margin-top: 130px">
+                                <th>
+                                    <p class="mr-3">_____________________________</p>
+                                    <p class="mr-3">NOMBRE Y FIRMA DEL CAJERO</p>
+                                </th>
+                                <th>
+                                    <p class="ml-5">_________________________________</p>
+                                    <p class="ml-5">NOMBRE Y FIRMA DEL SUPERVISOR</p>
+                                </th>
+                            </table> --}}
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+
+                    <button class="btn btn-primary" wire:click="inconsistencia">Aceptar</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('js')
         <script>
-            $('#terminar_servicio').on('hidden.bs.modal', function() {
-                Livewire.dispatch('clean');
-            });
+            // $('#terminar_servicio').on('hidden.bs.modal', function() {
+            //     Livewire.dispatch('clean');
+            // });
             var array_monto = [];
 
             const monto = (input, index) => {
@@ -213,7 +366,7 @@
 
                 Livewire.on('diferencia', function([message]) {
                     Swal.fire({
-                        title: "Diferencia de montos",
+                        title: "Diferencia de valores",
                         text: message[0],
                         icon: "warning",
                         showCancelButton: true,
@@ -226,11 +379,10 @@
 
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            Swal.fire({
-                                title: "Deleted!",
-                                text: "Your file has been deleted.",
-                                icon: "success"
-                            });
+                            $('#terminar_servicio').modal('hide');
+                            $('#diferencia_mdl').modal('show');
+
+
                         }
                     });
                 });

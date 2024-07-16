@@ -20,7 +20,6 @@ class Inconsistencias extends Model
         'diferencia',
         'tipo',
         'observacion',
-        'created_at',
-        'updated_at'
+        'status_incosistencia',
     ];
 }
