@@ -79,11 +79,12 @@ class RutaProcesar extends Component
             DB::beginTransaction();
             Log::info('Info: entra a la transaccion');
 
-            $tipo_dif = 1; //mayor
             $diferencia = "";
             foreach ($this->servicio_e as $s) {
 
                 // dd($s);
+
+                $tipo_dif = 1; 
                 foreach ($this->monto_envases as $index => $input) {
                     if ($s->id == $index) {
                         if ($s->cantidad != $input['cantidad']) {
