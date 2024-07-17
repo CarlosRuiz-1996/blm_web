@@ -36,6 +36,45 @@
             .d-flex.align-items-center span {
                 margin-right: 5px;
             }
+
+            .carousel-control-prev.custom-prev,
+            .carousel-control-next.custom-next {
+                background-color: rgba(0, 0, 0, 0.5);
+                /* Fondo semi-transparente */
+                border-radius: 50%;
+                /* Redondear los bordes */
+                width: 50px;
+                height: 50px;
+                position: absolute;
+                top: 10px;
+                /* Ajustar esta línea para posicionar los botones en la parte superior */
+                z-index: 5;
+            }
+
+            .carousel-control-prev.custom-prev {
+                left: 10px;
+                /* Ajusta esta línea para mover el botón izquierdo */
+            }
+
+            .carousel-control-next.custom-next {
+                right: 10px;
+                /* Ajusta esta línea para mover el botón derecho */
+            }
+
+            .carousel-control-prev-icon,
+            .carousel-control-next-icon {
+                background-color: rgb(154, 154, 158);
+                /* Cambia este valor al color deseado */
+                border-radius: 50%;
+                padding: 10px;
+                /* Ajustar el tamaño del icono */
+            }
+
+            .carousel-control-prev.custom-prev:hover,
+            .carousel-control-next.custom-next:hover {
+                background-color: rgba(0, 0, 0, 0.7);
+                /* Color al pasar el mouse */
+            }
         </style>
     @endpush
     <div class="card-outline card-info info-box">
@@ -97,7 +136,7 @@
             <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title" id="exampleModalLabel">Verificar Montos</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" wire:click='limpiar'>
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -140,7 +179,7 @@
                                     <input
                                         class="form-control {{ $errors->has('monto_envases.' . $envases->id . '.cantidad') ? 'is-invalid' : '' }}"
                                         wire:model="monto_envases.{{ $envases->id }}.cantidad" placeholder="Monto"
-                                        type="text" onkeyup="monto(this,{{ $envases->id }})" />
+                                        type="number" onkeyup="monto(this,{{ $envases->id }})" />
 
 
                                     @error('monto_envases.' . $envases->id . '.cantidad')
@@ -176,15 +215,13 @@
 
 
     {{-- modal de diferencias --}}
-
-    <!--modal envases de cargar-->
     <div class="modal fade" id="diferencia_mdl" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
         tabindex="-1" wire:ignore.self>
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title" id="exampleModalLabel">Formato de diferencia de valores.</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" wire:click='limpiar'>
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -226,102 +263,128 @@
                                 CONSTANCIA
                                 DE LA DIFERENCIA DETALLADA A CONTUNUACIÓN:
                             </p>
-                            @if ($form->servicio)
-                                <div class="col-md-6 mb-3">
-                                    <p>
-                                        FECHA DEL COMPROBANTE:
-                                        <span
-                                            class="font-weight-bold checkbox">{{ $form->servicio->updated_at }}</span>
-                                    </p>
+                            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner card" style="padding-left: 30px">
+                                    @foreach ($diferencias as $index => $diferencia)
+                                        <div class="carousel-item  {{ $index == 0 ? 'active' : '' }}">
+                                            <div class="d-block w-100 p-4">
+                                                <div class="col-md-8 mb-3">
+                                                    <p>
+                                                        FECHA DEL COMPROBANTE:
+                                                        <span
+                                                            class="font-weight-bold checkbox">{{ $diferencia['servicio']['updated_at'] }}</span>
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <p>
+                                                        ORIGEN DEL DEPÓSITO: (CLIENTE)
+                                                        <span
+                                                            class="font-weight-bold checkbox">{{ $diferencia['servicio']['rutaServicios']['servicio']['cliente']['rfc_cliente'] }}</span>
+                                                    </p>
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <p>
+                                                        NÚMERO DE FOLIO DE PAPELETA:
+                                                        <span
+                                                            class="font-weight-bold checkbox">{{ $diferencia['servicio']['folio'] }}</span>
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <p>
+                                                        Sello de seguridad:
+                                                        <span
+                                                            class="font-weight-bold checkbox">{{ $diferencia['servicio']['sello_seguridad'] }}</span>
+                                                    </p>
+                                                </div>
+
+                                                <div class="col-md-8 mb-3">
+                                                    <p>
+                                                        IMPORTE QUE DICE CONTENER: $
+                                                        <span
+                                                            class="font-weight-bold checkbox">
+                                                                {{ number_format($diferencia['monto'], 2, '.', ',') }} MXN
+                                                            </span>
+                                                    </p>
+                                                </div>
+
+                                                <div class="col-md-8 mb-3">
+                                                    <p>
+                                                        IMPORTE COMPROBADO: $
+                                                        <span
+                                                            class="font-weight-bold checkbox">
+                                                            
+                                                           
+                                                            {{ number_format($diferencia['cantidad_ingresada'], 2, '.', ',') }} MXN
+                                                            </span>
+                                                    </p>
+                                                </div>
+
+                                                <div class="col-md-8 mb-3">
+                                                    <p>DIFERENCIA</p>
+                                                    <p>
+                                                        FALTANTE <span
+                                                            class="checkbox">{{ $diferencia['tipo_dif'] == 0 ? '_X_' : '___' }}</span>
+                                                        SOBRANTE <span
+                                                            class="checkbox">{{ $diferencia['tipo_dif'] != 1 ? '___' : '_X_' }}</span>
+                                                        DE  <span
+                                                            class="amount">
+                                                            $ {{ number_format($diferencia['diferencia'], 2, '.', ',') }} MXN
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-12 mb-3">
+                                                    <p>OBSERVACIONES:</p>
+
+                                                    <textarea class="form-control w-full" cols="3" rows="2" wire:model='observaciones.{{ $index }}'>
+                                                </textarea>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
 
-                                <div class="col-md-6 mb-3">
-                                    <p>
-                                        ORIGEN DEL DEPÓSITO: (CLIENTE)
-                                        <span
-                                            class="font-weight-bold checkbox">{{ $form->servicio->servicio->cliente->rfc_cliente }}</span>
-                                    </p>
-                                </div>
+                                <button class="carousel-control-prev custom-prev" type="button"
+                                    data-target="#carouselExampleControls" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </button>
+                                <button class="carousel-control-next custom-next" type="button"
+                                    data-target="#carouselExampleControls" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </button>
 
-                                <div class="col-md-6 mb-3">
-                                    <p>
-                                        NÚMERO DE FOLIO DE PAPELETA:
-                                        <span class="font-weight-bold checkbox">{{ $form->servicio->folio }}</span>
-                                    </p>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <p>
-                                        IMPORTE QUE DICE CONTENER: $
-                                        <span class="font-weight-bold checkbox">{{ $form->servicio->monto }}</span>
-                                    </p>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <p>
-                                        IMPORTE COMPROBADO: $
-                                        <span class="font-weight-bold checkbox">{{ $monto_calculado }}</span>
-                                    </p>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <p>DIFERENCIA</p>
-                                    {{-- <p>
-                                        FALTANTE <span class="checkbox">{{ $tipo_dif == 0 ? '_X_' : '___' }}</span>
-                                        SOBRANTE <span class="checkbox">{{ $tipo_dif == 1 ? '_X_' : '___' }}</span>
-                                        DE $ <span class="amount">{{ $diferencia }}</span>
-                                    </p> --}}
-                                </div>
-                            @endif
-                            <div class="col-md-12 mb-3">
-                                <p>OBSERVACIONES:</p>
-
-                                <textarea class="form-control w-full" cols="3" rows="2"
-                                    wire:model='observaciones'>
-                            </textarea>
                             </div>
+
                             <p class="justify-text">LOS INVOLUCRADOS BIEN IMPUESTOS DEL CONTENIDO DE LA PRESENTE ACTA Y
                                 DE LOS ALCANCES DE LA MISMA SE
-                                MANIFIESTAN CONFORMES, CONSTATANDO MEDIANTE NOMBRE Y FIRMA.</p>
-
-
-
-
-
-                            {{-- <table align="center" style="margin-top: 130px">
-                                <th>
-                                    <p class="mr-3">_____________________________</p>
-                                    <p class="mr-3">NOMBRE Y FIRMA DEL CAJERO</p>
-                                </th>
-                                <th>
-                                    <p class="ml-5">_________________________________</p>
-                                    <p class="ml-5">NOMBRE Y FIRMA DEL SUPERVISOR</p>
-                                </th>
-                            </table> --}}
-
+                                MANIFIESTAN CONFORMES, CONSTATANDO MEDIANTE NOMBRE Y FIRMA.
+                            </p>
                         </div>
-
-
                     </div>
-
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-dark" data-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-dark" data-dismiss="modal" wire:click='limpiar'>Cancelar</button>
 
-                    <button class="btn btn-primary" wire:click="inconsistencia">Aceptar</button>
+                    <button class="btn btn-primary" wire:click='diferencia'>Aceptar</button>
 
                 </div>
             </div>
         </div>
     </div>
 
+
+
     @push('js')
         <script>
-            // $('#terminar_servicio').on('hidden.bs.modal', function() {
-            //     Livewire.dispatch('clean');
-            // });
             var array_monto = [];
 
             const monto = (input, index) => {
+
+
+
                 // Obtener el valor actual del campo de entrada y convertirlo a número
                 let montoActual = parseFloat($('#monto_total').val());
 
@@ -337,7 +400,6 @@
                 if (isNaN(nuevoMonto)) {
                     nuevoMonto = 0;
                 }
-
                 // Verificar si ya existe el índice en el arreglo
                 if (typeof array_monto[index] !== 'undefined') {
                     // Restar el monto antiguo del monto total
@@ -363,7 +425,15 @@
                         timer: 3000
                     });
                 });
-
+                // $('#terminar_servicio').on('show.bs.modal', function() {
+                //     $('#monto_total').val(0);
+                //     array_monto = [];
+                //     // @this.dispatch('corregirMonto');
+                // });
+                Livewire.on('limpiar_monto_js', function([message]) {
+                    $('#monto_total').val(0);
+                    array_monto = [];
+                });
                 Livewire.on('diferencia', function([message]) {
                     Swal.fire({
                         title: "Diferencia de valores",
@@ -374,15 +444,17 @@
 
                         confirmButtonColor: "#3085d6",
                         cancelButtonColor: "#d33",
-                        confirmButtonText: "Si, generar hoja de diferencia.",
-                        cancelButtonText: "No, Corregir",
+                        confirmButtonText: "Si, generar acta de diferencia.",
+                        cancelButtonText: "No, Corregir montos",
 
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $('#terminar_servicio').modal('hide');
                             $('#diferencia_mdl').modal('show');
-
-
+                        } else {
+                            $('#monto_total').val(0);
+                            array_monto = [];
+                            @this.dispatch('corregirMonto');
                         }
                     });
                 });
@@ -395,6 +467,7 @@
                     const tipomensaje = params[1].tipomensaje;
                     const terminar = params[2]?.terminar || '';
                     $('#terminar_servicio').modal('hide');
+                    $('#diferencia_mdl').modal('hide');
 
                     Swal.fire({
                         position: 'center',

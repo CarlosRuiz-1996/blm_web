@@ -41,11 +41,13 @@ class RutaProcesar extends Component
     public $monto_calculado = 0;
     public $monto_envases = [];
     public $servicio_e = [];
-
+    public $inconsistencia = 0;
+    public $diferencias = [];
+    public $observaciones = [];
     public function opernModal($servicio_id)
     {
+        $this->dispatch('limpiar_monto_js');
         $this->limpiar();
-
         $servicio = ServicioRutaEnvases::where('ruta_servicios_id', $servicio_id)->where('status_envases', 1)->get();
         foreach ($servicio as $s) {
             $this->form->servicio = $s->rutaServicios;
@@ -61,8 +63,7 @@ class RutaProcesar extends Component
 
     }
 
-    public $inconsistencia = 0;
-    public $diferencias = [];
+    
 
     public function validar()
     {
@@ -78,15 +79,15 @@ class RutaProcesar extends Component
             DB::beginTransaction();
             Log::info('Info: entra a la transaccion');
 
-            $tipo_dif=1;
-            $diferencia="";
+            $tipo_dif = 1;//mayor
+            $diferencia = "";
             foreach ($this->servicio_e as $s) {
 
                 // dd($s);
                 foreach ($this->monto_envases as $index => $input) {
                     if ($s->id == $index) {
                         if ($s->cantidad != $input['cantidad']) {
-                           
+
                             $diferencia = $input['cantidad'] - $s->cantidad;
                             if ($input['cantidad'] < $s->cantidad) {
                                 $tipo_dif = 0; //menor
@@ -100,11 +101,13 @@ class RutaProcesar extends Component
                                 'monto' => $s->cantidad
                             ];
                             $this->inconsistencia = 1;
-            
-                            throw new \Exception('Existe una diferencia  si continuas se generará el acta administrativa  de diferencias, Deseas continuar...');
                         }
                     }
                 }
+            }
+
+            if ($this->inconsistencia != 0) {
+                throw new \Exception('Existe una diferencia  si continuas se generará el acta administrativa  de diferencias, Deseas continuar...');
             }
 
             $this->finalizar_recolecta();
@@ -250,54 +253,67 @@ class RutaProcesar extends Component
     #[On('clean')]
     public function limpiar()
     {
-        // if ($this->inconsistencia == 0) {
         $this->monto_envases = [];
         $this->form->servicio = "";
         $this->form->folio = "";
         $this->form->monto = "";
         $this->monto_calculado = 0;
-        // }
+        $this->inconsistencia = 0;
+        $this->diferencias = [];
+        $this->servicio_e = [];
+        $this->observaciones = [];
+    }
+    #[On('corregirMonto')]
+    public function corregirMonto()
+    {
+        $this->monto_envases = [];
+        $this->monto_calculado = 0;
     }
 
-    public $observaciones;
-    #[On('inconsistencia')]
-    public function inconsistencia()
+
+
+    public function diferencia()
     {
 
         try {
             DB::beginTransaction();
-            //ruta servicio se pone en 0 para reprogramar
-            $this->form->servicio->status_ruta_servicios = 1;
-            $this->form->servicio->save();
+            foreach ($this->diferencias as $index => $diferencia) {
 
-            //actualizar la informacion de envases
-            foreach ($this->form->servicio->envases_servicios as $envase) {
-                $envase->status_envases = 0;
-                $envase->save();
-                $envase->evidencia_recolecta->status_evidencia_recolecta = 0;
-                $envase->evidencia_recolecta->save();
+
+                //actualizo el estado de los envases para saber que estan para revision.
+                $servicio_envase =  ServicioRutaEnvases::find($diferencia['servicio']['id']);
+                $servicio_envase->status_envases = 0;
+                $servicio_envase->save();
+
+                //insertar una inconsistencia de valores
+                Inconsistencias::create(
+                    [
+                        'cliente_id' => $diferencia['servicio']['rutaServicios']['servicio']['cliente_id'],
+                        'ruta_servicio_reportes_id' => $servicio_envase->rutaServicios->id,
+                        'fecha_comprobante' => $diferencia['servicio']['updated_at'],
+                        'folio' => $diferencia['servicio']['folio'],
+                        'importe_indicado' => $diferencia['monto'],
+                        'importe_comprobado' => $diferencia['cantidad_ingresada'],
+                        'diferencia' => $diferencia['diferencia'],
+                        'tipo' => $diferencia['tipo_dif'],
+                        'observacion' => $this->observaciones[$index] ?? '',
+                        'sello_seguridad' => $diferencia['servicio']['sello_seguridad']
+                    ]
+                );
             }
 
-            Inconsistencias::create([
-                'cliente_id' => $this->form->servicio->servicio->cliente->id,
-                'ruta_servicio_reportes_id' => $this->form->servicio->id,
-                'fecha_comprobante' => $this->form->servicio->updated_at,
-                'folio' => $this->form->servicio->folio,
-                'importe_indicado' => $this->form->servicio->monto,
-                'importe_comprobado' => $this->monto_calculado,
-                'diferencia' => $this->diferencia,
-                'tipo' => $this->tipo_dif,
-                'observacion' => $this->observaciones,
+            $this->finalizar_recolecta();
 
-            ]);
-            $this->dispatch('agregarArchivocre', ['msg' => 'El formato se genero con éxito.'], ['tipomensaje' => 'success']);
+            $this->limpiar();
+            $this->dispatch('agregarArchivocre', ['msg' => 'El servicio de recoleccion ha sido termiando, los envases con diferencia estan en revision y los envases correctos fueron sumados a la cuenta del cliente.'], ['tipomensaje' => 'success']);
 
-            DB::rollBack();
+            DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-            $this->dispatch('error', [$e->getMessage()]);
             Log::info('Info: ' . $e);
+
+            $this->dispatch('error', ['No se pudo completar la solicitud, intenta mas tarde.']);
         }
     }
 
@@ -312,13 +328,18 @@ class RutaProcesar extends Component
 
         //actualizar la informacion de envases
         foreach ($this->form->servicio->envases_servicios as $envase) {
-            $envase->status_envases = 2;
-            $envase->save();
-            Log::info('Info: actualiza evidencia');
-            $envase->evidencia_recolecta->status_evidencia_recolecta = 2;
-            $envase->evidencia_recolecta->save();
-        }
 
+            $servicio_envase =  ServicioRutaEnvases::find($envase->id);
+            if ($servicio_envase->status_envases != 0) {
+                $envase->status_envases = 2;
+                $envase->save();
+                Log::info('Info: actualiza evidencia');
+                $envase->evidencia_recolecta->status_evidencia_recolecta = 2;
+                $envase->evidencia_recolecta->save();
+            }else{
+                $this->form->servicio->monto = $this->form->servicio->monto-$envase->cantidad;
+            }
+        }
         //registra movimiento en el historial
         ClienteMontos::create([
             'cliente_id' => $this->form->servicio->servicio->cliente->id,

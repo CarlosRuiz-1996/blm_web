@@ -21,5 +21,6 @@ class Inconsistencias extends Model
         'tipo',
         'observacion',
         'status_incosistencia',
+        'sello_seguridad'
     ];
 }
