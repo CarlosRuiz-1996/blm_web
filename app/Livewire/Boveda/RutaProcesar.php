@@ -63,7 +63,7 @@ class RutaProcesar extends Component
 
     }
 
-    
+
 
     public function validar()
     {
@@ -79,7 +79,7 @@ class RutaProcesar extends Component
             DB::beginTransaction();
             Log::info('Info: entra a la transaccion');
 
-            $tipo_dif = 1;//mayor
+            $tipo_dif = 1; //mayor
             $diferencia = "";
             foreach ($this->servicio_e as $s) {
 
@@ -319,12 +319,7 @@ class RutaProcesar extends Component
 
     public function finalizar_recolecta()
     {
-        //actualizar la informacion de ruta servicio
-        $this->form->servicio->status_ruta_servicios = 1;
-        $this->form->servicio->monto = 0;
-        $this->form->servicio->envases = 0;
 
-        $this->form->servicio->save();
 
         //actualizar la informacion de envases
         foreach ($this->form->servicio->envases_servicios as $envase) {
@@ -336,8 +331,8 @@ class RutaProcesar extends Component
                 Log::info('Info: actualiza evidencia');
                 $envase->evidencia_recolecta->status_evidencia_recolecta = 2;
                 $envase->evidencia_recolecta->save();
-            }else{
-                $this->form->servicio->monto = $this->form->servicio->monto-$envase->cantidad;
+            } else {
+                $this->form->servicio->monto = $this->form->servicio->monto - $envase->cantidad;
             }
         }
         //registra movimiento en el historial
@@ -349,7 +344,11 @@ class RutaProcesar extends Component
             'empleado_id' => Auth::user()->empleado->id,
             'ctg_area_id' => Auth::user()->empleado->ctg_area_id
         ]);
-
+        //actualizar la informacion de ruta servicio
+        $this->form->servicio->status_ruta_servicios = 1;
+        $this->form->servicio->monto = 0;
+        $this->form->servicio->envases = 0;
+        $this->form->servicio->save();
         //descontar
         $this->form->servicio->servicio->cliente->resguardo = $this->form->servicio->servicio->cliente->resguardo + $this->form->servicio->monto;
         $this->form->servicio->servicio->cliente->save();
