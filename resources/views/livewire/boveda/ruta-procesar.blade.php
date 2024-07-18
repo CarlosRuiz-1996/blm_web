@@ -425,11 +425,7 @@
                         timer: 3000
                     });
                 });
-                // $('#terminar_servicio').on('show.bs.modal', function() {
-                //     $('#monto_total').val(0);
-                //     array_monto = [];
-                //     // @this.dispatch('corregirMonto');
-                // });
+                
                 Livewire.on('limpiar_monto_js', function([message]) {
                     $('#monto_total').val(0);
                     array_monto = [];
@@ -461,8 +457,7 @@
 
                 Livewire.on('agregarArchivocre', function(params) {
 
-                    console.log('entra')
-                    console.log(params)
+                    
                     const msg = params[0].msg;
                     const tipomensaje = params[1].tipomensaje;
                     const terminar = params[2]?.terminar || '';
@@ -474,7 +469,7 @@
                         icon: tipomensaje,
                         title: msg,
                         showConfirmButton: false,
-                        timer: 3000
+                        timer: 4000
                     });
 
                     if (terminar) {
