@@ -21,6 +21,11 @@ class Inconsistencias extends Model
         'tipo',
         'observacion',
         'status_incosistencia',
-        'sello_seguridad'
+        'sello_seguridad',
     ];
+
+
+    public function cliente(){
+        return $this->belongsTo(Cliente::class, 'cliente_id');
+    }
 }

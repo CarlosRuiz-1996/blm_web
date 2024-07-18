@@ -40,6 +40,10 @@
                         <a class="nav-link" id="tab2-tab" data-toggle="tab" href="#tab2" role="tab"
                             aria-controls="tab2" aria-selected="false">Reporte de Movimiento</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="diferencia-tab" data-toggle="tab" href="#diferencia" role="tab"
+                            aria-controls="diferencia" aria-selected="false">Diferencias de Valores</a>
+                    </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
@@ -182,6 +186,10 @@
                     <div class="tab-pane fade" id="rutaRecoleccion" role="tabpanel"
                         aria-labelledby="rutaRecoleccion-tab">
                         @livewire('boveda.ruta-recolecta')
+                    </div>
+                    <div class="tab-pane fade" id="diferencia" role="tabpanel"
+                        aria-labelledby="diferencia-tab">
+                        @livewire('boveda.diferecia-valores')
                     </div>
                 </div>
             </div>

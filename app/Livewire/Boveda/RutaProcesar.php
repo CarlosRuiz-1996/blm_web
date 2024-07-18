@@ -349,7 +349,8 @@ class RutaProcesar extends Component
             'monto_in' => $monto_in,
             'monto_new' => $monto_new,
             'empleado_id' => Auth::user()->empleado->id,
-            'ctg_area_id' => Auth::user()->empleado->ctg_area_id
+            'ctg_area_id' => Auth::user()->empleado->ctg_area_id,
+            'tipo'=>0
         ]);
         //actualizar la informacion de ruta servicio
         $this->form->servicio->status_ruta_servicios = 1;

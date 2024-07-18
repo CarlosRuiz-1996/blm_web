@@ -24,6 +24,11 @@
             line-height: 1.5;
             /* Espaciado entre líneas para mejorar la legibilidad */
         }
+
+        .checkbox {
+            font-weight: bold;
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -44,9 +49,19 @@
 
             <p class="text-start">ACTA ADMINISTRATIVA DE DIFERENCIAS</p>
 
-            <p> ACTA NO. __________</p>
+            <p> ACTA NO. <span class="checkbox font-weight-bold">{{ $diferencia->id }}</span></p>
+            @php
+                $fecha_creacion = \Carbon\Carbon::parse($diferencia->created_at);
+                $nombre_mes = Str::upper($fecha_creacion->translatedFormat('F'));
+                $dia = $fecha_creacion->format('d');
+                $anio = $fecha_creacion->format('Y');
+                $hora = $fecha_creacion->format('H:i'); // Formato de 24 horas (HH:MM)
 
-            <p> EN LA CIUDAD DE MÉXICO SIENDO LAS ____ HRS DEL DIA __ DE ___ DEL 2024.</p>
+            @endphp
+            <p>EN LA CIUDAD DE MÉXICO SIENDO LAS {{ $hora }} HRS DEL DÍA {{ $dia }} DE
+                {{ $nombre_mes }} DEL {{ $anio }}.</p>
+
+
 
             <p class="justify-text ">
                 EN LA EMPRESA "SERVICIOS INTEGRADOS PRO-BLM DE MÉXICO, SA DE C.V" UBICADA EN CALLE
@@ -56,19 +71,30 @@
                 DE LA DIFERENCIA DETALLADA A CONTUNUACIÓN:
             </p>
 
-            <p>FECHA DEL COMPROBANTE: ________</p>
-            <p>ORIGEN DEL DEPÓSITO:  (CLIENTE)_________________________</p>
-            <p>NÚMERO DE FOLIO DE PAPELETA: ________________________</p>
-            <p>IMPORTE QUE DICE CONTENER: $ _________________</p>
-            <p>IMPORTE COMPROBADO: $ _________________</p>
-            <p>DIFERENCIA
-            <p>FALTANTE __ SOBRANTE __ DE $ _____________</p>
-
-            <p>OBSERVACIONES:_________________________________________________________________
-                _________________________________________________________________________________
+            <p>FECHA DEL COMPROBANTE: <span class="font-weight-bold checkbox">{{ $diferencia->fecha_comprobante }}</span class="font-weight-bold checkbox"></p>
+            <p>ORIGEN DEL DEPÓSITO: (CLIENTE) <span class="font-weight-bold checkbox">{{ $diferencia->cliente->razon_social }}</span class="font-weight-bold checkbox"></p>
+            <p>NÚMERO DE FOLIO DE PAPELETA: <span class="font-weight-bold checkbox">{{ $diferencia->folio }}</span class="font-weight-bold checkbox"></p>
+            <p>SELLO DE SEGURIDAD: <span class="font-weight-bold checkbox">{{ $diferencia->sello_seguridad }}</span class="font-weight-bold checkbox"></p>
+            <p>IMPORTE QUE DICE CONTENER: <span class="font-weight-bold checkbox">$ {{ number_format($diferencia->importe_indicado, 2, '.', ',') }} MXN</span class="font-weight-bold checkbox">
             </p>
+            <p>IMPORTE COMPROBADO: <span class="font-weight-bold checkbox">$ {{ number_format($diferencia->importe_comprobado, 2, '.', ',') }} MXN </span class="font-weight-bold checkbox"></p>
+            <p>DIFERENCIA</p>
 
-            <p class="justify-text">LOS INVOLUCRADOS BIEN IMPUESTOS DEL CONTENIDO DE LA PRESENTE ACTA Y DE LOS ALCANCES DE LA MISMA SE
+            <p>
+                FALTANTE <span class="checkbox">{{ $diferencia->tipo == 0 ? '_X_' : '___' }}</span>
+                SOBRANTE <span class="checkbox">{{ $diferencia->tipo != 1 ? '___' : '_X_' }}</span>
+                DE <span class="checkbox font-weight-bold">
+                    $ {{ number_format($diferencia->diferencia, 2, '.', ',') }} MXN
+                </span>
+            </p>
+            <p>OBSERVACIONES:</p>
+
+            <textarea class="form-control w-full mb-5" cols="3" rows="2">{{ $diferencia->observacion }}</textarea>
+            
+
+
+            <p class="justify-text">LOS INVOLUCRADOS BIEN IMPUESTOS DEL CONTENIDO DE LA PRESENTE ACTA Y DE LOS ALCANCES
+                DE LA MISMA SE
                 MANIFIESTAN CONFORMES, CONSTATANDO MEDIANTE NOMBRE Y FIRMA.</p>
 
 
@@ -76,11 +102,11 @@
 
 
             <table align="center" style="margin-top: 130px">
-                <th >
+                <th>
                     <p class="mr-3">_____________________________</p>
                     <p class="mr-3">NOMBRE Y FIRMA DEL CAJERO</p>
                 </th>
-                <th >
+                <th>
                     <p class="ml-5">_________________________________</p>
                     <p class="ml-5">NOMBRE Y FIRMA DEL SUPERVISOR</p>
                 </th>
@@ -89,7 +115,6 @@
         </div>
 
 
-    </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">

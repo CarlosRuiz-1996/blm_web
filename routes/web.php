@@ -106,7 +106,7 @@ Route::middleware([
     Route::get('boveda/', [boveda::class, 'index'])->name('boveda.index');
     Route::get('/boveda/inicio', [BovedaController::class, 'index'])->name('boveda.inicio');
     Route::get('/boveda/reporte', [BovedaController::class, 'bovedaresguardo'])->name('boveda.bovedaresguardo');
-    Route::get('/boveda/acta_diferencia-pdf/', [BovedaController::class, 'acta_diferencia'])->name('acta_diferencia.pdf');
+    Route::get('/boveda/acta_diferencia-pdf/{diferencia}', [BovedaController::class, 'acta_diferencia'])->name('acta_diferencia.pdf');
     Route::get('/boveda/procesa-ruta/{ruta}', [BovedaController::class, 'procesa_ruta'])->name('boveda.procesa-ruta');
 
     //factibilidad

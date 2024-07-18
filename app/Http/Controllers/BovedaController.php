@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Inconsistencias;
 use App\Models\Ruta;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -15,10 +16,10 @@ class BovedaController extends Controller
         return view('boveda.boveda-resguardo');
     }
 
-    public function acta_diferencia(){
+    public function acta_diferencia(Inconsistencias $diferencia){
 
         $pdf = new PDF();
-        $pdf = PDF::loadView('boveda.acta_diferencia-pdf');
+        $pdf = PDF::loadView('boveda.acta_diferencia-pdf', compact('diferencia'));
         return $pdf->stream();
     }
 
