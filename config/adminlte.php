@@ -441,9 +441,21 @@ return [
         ],
         [
             'text' => 'Boveda/Proceso',
-            'route'  => 'boveda.inicio',
             'icon' => 'fa fa-fw fa-lock',
-            'can' => 'menu-boveda'
+            'can' => 'menu-boveda',
+            'submenu' => [
+                [
+                    'text' => 'Boveda',
+                    'route'  => 'boveda.inicio',
+                    'icon' => 'fas fa-solid fa-money-bill',
+                    // 
+                ],
+                [
+                    'text' => 'Cambio Efectivo',
+                    'route'  => 'boveda.cambio',
+                    'icon' => 'fas fa-solid fa-money-bill',
+                ],
+            ]
         ],
 
         [

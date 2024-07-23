@@ -21,6 +21,7 @@ use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\ValidacionMemorandumController;
 use App\Http\Controllers\ventasController;
 use App\Livewire\BancosGestion;
+use App\Livewire\Boveda\CambioEfectivo;
 use Illuminate\Support\Facades\Route;
 //rutas para livewire
 use Livewire\Livewire;
@@ -108,6 +109,7 @@ Route::middleware([
     Route::get('/boveda/reporte', [BovedaController::class, 'bovedaresguardo'])->name('boveda.bovedaresguardo');
     Route::get('/boveda/acta_diferencia-pdf/{diferencia}', [BovedaController::class, 'acta_diferencia'])->name('acta_diferencia.pdf');
     Route::get('/boveda/procesa-ruta/{ruta}', [BovedaController::class, 'procesa_ruta'])->name('boveda.procesa-ruta');
+    Route::get('/boveda/cambio-efectivo',[BovedaController::class, 'cambio_efectivo'])->name('boveda.cambio');
 
     //factibilidad
     Route::get('seguridad/', [Factibilidad::class, 'index'])->name('seguridad.index');

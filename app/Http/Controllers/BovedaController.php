@@ -27,4 +27,8 @@ class BovedaController extends Controller
     public function procesa_ruta(Ruta $ruta){
         return view('boveda.procesar-ruta', compact('ruta'));
     }
+
+    public function cambio_efectivo(){
+        return view('boveda.cambio-efectivo');
+    }
 }
