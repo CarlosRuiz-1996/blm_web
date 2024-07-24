@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification as NotificationsNotification;
 use Livewire\WithPagination;
+
 class Index extends Component
 {
     use WithPagination;
@@ -161,41 +162,52 @@ class Index extends Component
             'idserviorutacancelado.required' => 'id de servicio no encontrado.',
             'motivoNo.required' => 'Ingrese Motivo de Cancelación',
         ]);
+        try {
+            DB::beginTransaction();
+            $id = $this->idserviorutacancelado;
+            $servicioRuta = RutaServicio::findOrFail($id);
+            // $rutaId = $servicioRuta->ruta_id;
 
-        $id = $this->idserviorutacancelado;
-        $servicioRuta = RutaServicio::findOrFail($id);
-        $rutaId = $servicioRuta->ruta_id;
+            // Crear un nuevo objeto RutaServicioReporte
+            $rutaServicioReporte = new RutaServicioReporte();
 
-        // Crear un nuevo objeto RutaServicioReporte
-        $rutaServicioReporte = new RutaServicioReporte();
+            // Asignar valores del servicio actualizado al reporte
+            $rutaServicioReporte->servicio_id = $servicioRuta->servicio_id;
+            $rutaServicioReporte->ruta_id = $servicioRuta->ruta_id;
+            $rutaServicioReporte->monto = $servicioRuta->monto;
+            $rutaServicioReporte->folio = $servicioRuta->folio;
+            $rutaServicioReporte->envases = $servicioRuta->envases;
+            $rutaServicioReporte->tipo_servicio = $servicioRuta->tipo_servicio;
+            $rutaServicioReporte->status_ruta_servicio_reportes = 5;
+            $rutaServicioReporte->motivocancelacion = $this->motivoNo;
 
-        // Asignar valores del servicio actualizado al reporte
-        $rutaServicioReporte->servicio_id = $servicioRuta->servicio_id;
-        $rutaServicioReporte->ruta_id = $servicioRuta->ruta_id;
-        $rutaServicioReporte->monto = $servicioRuta->monto;
-        $rutaServicioReporte->folio = $servicioRuta->folio;
-        $rutaServicioReporte->envases = $servicioRuta->envases;
-        $rutaServicioReporte->tipo_servicio = $servicioRuta->tipo_servicio;
-        $rutaServicioReporte->status_ruta_servicio_reportes = 5;
-        $rutaServicioReporte->motivocancelacion = $this->motivoNo;
+            // Guardar el nuevo registro en la base de datos
+            $rutaServicioReporte->save();
 
-        // Guardar el nuevo registro en la base de datos
-        $rutaServicioReporte->save();
-
-        // Actualizar el modelo de Ruta relacionado
-        $ruta = Ruta::findOrFail($servicioRuta->ruta_id);
-        $ruta->total_ruta -= $servicioRuta->monto;
-        $ruta->save();
-        // Eliminar el registro de RutaServicio
-        $servicioRuta->delete();
-        $serviciosRutaAll = RutaServicio::where('ruta_id', $rutaId)->get();
-        $servicioRutastatus2 = RutaServicio::where('ruta_id', $rutaId)->where('status_ruta_servicios', 2)->get();
-        $numServicios = $serviciosRutaAll->count();
-        $numServiciosStatus2 = $servicioRutastatus2->count();
-        if ($numServicios == $numServiciosStatus2) {
-            $ruta = Ruta::findOrFail($rutaId);
-            $ruta->ctg_rutas_estado_id = 3;
+            // Actualizar el modelo de Ruta relacionado
+            $ruta = Ruta::findOrFail($servicioRuta->ruta_id);
+            $ruta->total_ruta -= $servicioRuta->monto;
             $ruta->save();
+            // Eliminar el registro de RutaServicio
+            $servicioRuta->status_ruta_servicios = 0;
+            $servicioRuta->save();
+            // $serviciosRutaAll = RutaServicio::where('ruta_id', $rutaId)->get();
+            // $servicioRutastatus2 = RutaServicio::where('ruta_id', $rutaId)->where('status_ruta_servicios', 2)->get();
+            // $numServicios = $serviciosRutaAll->count();
+            // $numServiciosStatus2 = $servicioRutastatus2->count();
+            // if ($numServicios == $numServiciosStatus2) {
+            //     $ruta = Ruta::findOrFail($rutaId);
+            //     $ruta->ctg_rutas_estado_id = 3;
+            //     $ruta->save();
+            // }
+            $this->dispatch('successservicioEnvases', ['Servicio mandado a reprogramación', 'success']);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('successservicioEnvases', ['Ocurrio un error intenta mas tarde.', 'error']);
+            // Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
+            // Log::info('Info: ' . $e);
         }
     }
 

@@ -30,6 +30,10 @@
                 <a class="nav-link" id="servicios-all-tab" data-toggle="pill" href="#servicios-all" role="tab"
                     aria-controls="servicios-all" aria-selected="true">TODOS LOS SERVICIOS</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" id="reprogramacion-tab" data-toggle="pill" href="#reprogramacion-all" role="tab"
+                    aria-controls="reprogramacion-all" aria-selected="true">REPROGRAMACIÓN</a>
+            </li>
         </ul>
 
         <div class="tab-content" wire:ignore.self id="custom-tabs-one-tabContent">
@@ -233,6 +237,11 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            
+            <div class="tab-pane fade " id="reprogramacion-all" role="tabpanel" aria-labelledby="reprogramacion-tab">
+                <livewire:operaciones.listados.reprogramacion>
             </div>
         </div>
     </div>

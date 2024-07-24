@@ -187,8 +187,7 @@
                         aria-labelledby="rutaRecoleccion-tab">
                         @livewire('boveda.ruta-recolecta')
                     </div>
-                    <div class="tab-pane fade" id="diferencia" role="tabpanel"
-                        aria-labelledby="diferencia-tab">
+                    <div class="tab-pane fade" id="diferencia" role="tabpanel" aria-labelledby="diferencia-tab">
                         @livewire('boveda.diferecia-valores')
                     </div>
                 </div>
@@ -234,12 +233,25 @@
                                             <td>{{ $rutaserv->tipo_servicio == 1 ? 'Entrega' : 'Recolección' }}</td>
                                             @if ($rutaserv->tipo_servicio == 1)
                                                 <td>
-                                                    @if ($rutaserv->envase_cargado == 0)
-                                                        <a href="#" data-toggle="modal" class="btn btn-info"
-                                                            data-target="#detalleModalEnvases"
-                                                            wire:click='llenarmodalEnvases({{ $rutaserv->id }})'>Envases</a>
+                                                    @if ($rutaserv->status_ruta_servicios != 0)
+                                                        @if ($rutaserv->envase_cargado == 0)
+                                                            <a href="#" data-toggle="modal"
+                                                                class="btn btn-info"
+                                                                data-target="#detalleModalEnvases"
+                                                                wire:click='llenarmodalEnvases({{ $rutaserv->id }})'>Envases</a>
+                                                        @else
+                                                            
+                                                            <span
+                                                            class="badge bg-success">
+                                                            Cargado.
+                                                        </span>
+                                                        @endif
                                                     @else
-                                                        Cargado.
+                                                        
+                                                        <span
+                                                            class="badge bg-secondary">
+                                                            Reprogramado
+                                                        </span>
                                                     @endif
                                                 </td>
                                                 <td>$ {{ number_format($rutaserv->monto, 2, '.', ',') }}</td>
@@ -264,8 +276,12 @@
                                                             class="btn btn-danger">No</button>
                                                     @else
                                                         <span
-                                                            class="badge {{ $rutaserv->status_ruta_servicios == 2 ? 'bg-success' : 'bg-danger' }}">
-                                                            {{ $rutaserv->status_ruta_servicios == 2 ? 'Servicio cargado' : 'Error en el servicio' }}
+                                                            class="badge {{ $rutaserv->status_ruta_servicios == 2 ? 'bg-success' : ($rutaserv->status_ruta_servicios == 0 ?'bg-secondary':'bg-danger') }}">
+                                                            {{ $rutaserv->status_ruta_servicios == 2
+                                                                ? 'Servicio cargado'
+                                                                : ($rutaserv->status_ruta_servicios == 0
+                                                                    ? 'En reprogramación'
+                                                                    : 'Error en el servicio') }}
                                                         </span>
                                                     @endif
                                                 @else
@@ -333,7 +349,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" data-dismiss="modal">Cerrar</button>
-                    <button class="btn btn-primary" wire:click="Nocargar">Aceptar</button>
+                    <button class="btn btn-primary" data-dismiss="modal" wire:click="Nocargar">Aceptar</button>
                 </div>
             </div>
         </div>

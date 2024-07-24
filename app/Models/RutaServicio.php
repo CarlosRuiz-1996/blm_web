@@ -9,7 +9,16 @@ class RutaServicio extends Model
 {
     use HasFactory;
     protected $table = "ruta_servicios";
-    protected $fillable = ['servicio_id', 'ruta_id', 'monto', 'folio', 'envases', 'tipo_servicio', 'status_ruta_servicios','envase_cargado'];
+    protected $fillable = [
+        'servicio_id', 
+        'ruta_id', 
+        'monto', 
+        'folio', 
+        'envases', 
+        'tipo_servicio', 
+        'status_ruta_servicios',
+        'envase_cargado'
+    ];
 
 
     public function servicio(){
