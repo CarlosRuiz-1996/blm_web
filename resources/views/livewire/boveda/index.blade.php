@@ -316,7 +316,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-info" wire:click='finailzar'>Mandar a ruta</button>
+                    <button type="button" class="btn btn-info" wire:click='finailzar' wire:loading>Mandar a ruta</button>
 
                 </div>
             </div>

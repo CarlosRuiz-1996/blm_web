@@ -132,15 +132,22 @@ class Index extends Component
     {
 
         $serviciosRutaAll = RutaServicio::where('ruta_id', $this->ruta_id)->count();
-        $servicioRutastatus2 = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios', 2)->count();
+        $servicioRutastatus2 = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios', 2)
+        ->orWhere('status_ruta_servicios', 0)->count();
 
-        //revisar si ya trae los envases
-        $entregas =  RutaServicio::where('ruta_id', $this->ruta_id)->where('tipo_servicio', 1)->count();;
+        //revisar si ya trae los envases y no contempla las de reprogramacion
+        $entregas =  RutaServicio::where('ruta_id', $this->ruta_id)->where('tipo_servicio', 1)
+        ->where(function ($query) {
+            $query->where('status_ruta_servicios', 1)
+                  ->orWhere('status_ruta_servicios', 2);
+        })
+        ->count();
         $envases = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios', 2)
             ->where('tipo_servicio', 1)->count();
 
         if ($entregas == $envases) {
             if ($serviciosRutaAll == $servicioRutastatus2) {
+
                 $ruta = Ruta::findOrFail($this->ruta_id);
                 $ruta->ctg_rutas_estado_id = 3;
                 $ruta->save();

@@ -9,7 +9,7 @@
 
 
             <li class="nav-item">
-                <a class="nav-link active" id="rutas-all-tab" data-toggle="pill" href="#rutas-all" role="tab"
+                <a class="nav-link " id="rutas-all-tab" data-toggle="pill" href="#rutas-all" role="tab"
                     aria-controls="rutas-all" aria-selected="true">TODAS LAS RUTAS</a>
             </li>
             <!-- Pestaña "Otra Pestaña 2" -->
@@ -31,14 +31,14 @@
                     aria-controls="servicios-all" aria-selected="true">TODOS LOS SERVICIOS</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="reprogramacion-tab" data-toggle="pill" href="#reprogramacion-all" role="tab"
+                <a class="nav-link active" id="reprogramacion-tab" data-toggle="pill" href="#reprogramacion-all" role="tab"
                     aria-controls="reprogramacion-all" aria-selected="true">REPROGRAMACIÓN</a>
             </li>
         </ul>
 
         <div class="tab-content" wire:ignore.self id="custom-tabs-one-tabContent">
             <!-- Contenido de la pestaña "anexo1coti" -->
-            <div class="tab-pane fade show active" id="rutas-all" role="tabpanel" aria-labelledby="rutas-all-tab">
+            <div class="tab-pane fade  " id="rutas-all" role="tabpanel" aria-labelledby="rutas-all-tab">
                 <div class="row">
 
                     <div class="col-md-12">
@@ -240,7 +240,7 @@
             </div>
 
             
-            <div class="tab-pane fade " id="reprogramacion-all" role="tabpanel" aria-labelledby="reprogramacion-tab">
+            <div class="tab-pane fade show active" id="reprogramacion-all" role="tabpanel" aria-labelledby="reprogramacion-tab">
                 <livewire:operaciones.listados.reprogramacion>
             </div>
         </div>

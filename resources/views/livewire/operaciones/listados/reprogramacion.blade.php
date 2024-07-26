@@ -37,7 +37,7 @@
                                         <td>{{ $repro->monto }}</td>
                                         <td>{{ $repro->folio }}</td>
                                         <td>{{ $repro->envases }}</td>
-                                        <td>{{ $repro->tipo_servicio }}</td>
+                                        <td>{{ $repro->tipo_servicio==1?'ENTREGA':'RECOLECTA' }}</td>
                                         <td>{{ $repro->updated_at }}</td>
                                         <td>
                                             <button class="btn btn-info">Asignar Ruta</button>
