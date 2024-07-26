@@ -316,7 +316,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-info" wire:click='finailzar' wire:loading>Mandar a ruta</button>
+                    @if ($serviciosRuta)
+                    <button type="button" class="btn btn-info" wire:click='finailzar' wire:loading.remove
+                    >Mandar a ruta</button>
+                    @endif
 
                 </div>
             </div>
