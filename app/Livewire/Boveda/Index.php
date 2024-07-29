@@ -6,6 +6,7 @@ use App\Livewire\Operaciones\RutaGestion;
 use App\Models\Cliente;
 use App\Models\Empleado;
 use App\Models\Notification;
+use App\Models\Reprogramacion;
 use App\Models\ResguardoResporte;
 use App\Models\Ruta;
 use App\Models\RutaServicio;
@@ -82,6 +83,10 @@ class Index extends Component
                     $rutaServicioReporte->envases = $servicioRuta->envases;
                     $rutaServicioReporte->tipo_servicio = $servicioRuta->tipo_servicio;
                     $rutaServicioReporte->status_ruta_servicio_reportes = $servicioRuta->status_ruta_servicios; // Igualamos al status actualizado del servicio
+                    $rutaServicioReporte->ruta_servicio_id = $servicioRuta->id;
+
+                    $rutaServicioReporte->area = 3;
+
                     // Guardar el nuevo registro en la base de datos
                     $rutaServicioReporte->save();
                     // ResguardoResporte::create([
@@ -185,11 +190,18 @@ class Index extends Component
             $rutaServicioReporte->folio = $servicioRuta->folio;
             $rutaServicioReporte->envases = $servicioRuta->envases;
             $rutaServicioReporte->tipo_servicio = $servicioRuta->tipo_servicio;
-            $rutaServicioReporte->status_ruta_servicio_reportes = 5;
-            $rutaServicioReporte->motivocancelacion = $this->motivoNo;
-
+            $rutaServicioReporte->status_ruta_servicio_reportes = 0;
+            $rutaServicioReporte->ruta_servicio_id = $servicioRuta->id;
+            $rutaServicioReporte->area = 3;
             // Guardar el nuevo registro en la base de datos
             $rutaServicioReporte->save();
+
+            //generar reprogramacion
+            Reprogramacion::create([
+                'motivo'=>$this->motivoNo,
+                'ruta_servicio_id' => $servicioRuta->id,
+                'area_id'=>3
+            ]);
 
             // Actualizar el modelo de Ruta relacionado
             $ruta = Ruta::findOrFail($servicioRuta->ruta_id);
@@ -198,15 +210,7 @@ class Index extends Component
             // Eliminar el registro de RutaServicio
             $servicioRuta->status_ruta_servicios = 0;
             $servicioRuta->save();
-            // $serviciosRutaAll = RutaServicio::where('ruta_id', $rutaId)->get();
-            // $servicioRutastatus2 = RutaServicio::where('ruta_id', $rutaId)->where('status_ruta_servicios', 2)->get();
-            // $numServicios = $serviciosRutaAll->count();
-            // $numServiciosStatus2 = $servicioRutastatus2->count();
-            // if ($numServicios == $numServiciosStatus2) {
-            //     $ruta = Ruta::findOrFail($rutaId);
-            //     $ruta->ctg_rutas_estado_id = 3;
-            //     $ruta->save();
-            // }
+            
             $this->dispatch('successservicioEnvases', ['Servicio mandado a reprogramación', 'success']);
 
             DB::commit();
@@ -245,6 +249,9 @@ class Index extends Component
                 $rutaServicioReporte->envases = $servicioRuta->envases;
                 $rutaServicioReporte->tipo_servicio = $servicioRuta->tipo_servicio;
                 $rutaServicioReporte->status_ruta_servicio_reportes = $servicioRuta->status_ruta_servicios; // Igualamos al status actualizado del servicio
+                $rutaServicioReporte->ruta_servicio_id = $servicioRuta->id;
+                $rutaServicioReporte->area = 3;
+
                 // Guardar el nuevo registro en la base de datos
                 $rutaServicioReporte->save();
                 DB::commit();

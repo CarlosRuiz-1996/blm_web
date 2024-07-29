@@ -2,15 +2,78 @@
 
 namespace App\Livewire\Operaciones\Listados;
 
+use App\Models\Reprogramacion as ModelsReprogramacion;
 use App\Models\RutaServicio;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Livewire\Forms\RutaForm;
+use App\Models\Ruta;
+use Livewire\Attributes\On;
+
 class Reprogramacion extends Component
 {
     use WithPagination;
+    public RutaForm $form;
+
     public function render()
     {
-        $reprogramacion = RutaServicio::where('status_ruta_servicios',0)->paginate(10);
-        return view('livewire.operaciones.listados.reprogramacion',compact('reprogramacion'));
+        $dias = $this->form->getCtgDias();
+        // $reprogramacion = RutaServicio::where('status_ruta_servicios',0)->paginate(10);
+        $reprogramacion = ModelsReprogramacion::where('status_reprogramacions', 1)->paginate(10);
+        return view('livewire.operaciones.listados.reprogramacion', compact('reprogramacion', 'dias'));
+    }
+
+    public $repro_detail;
+    public function DetalleServicio(ModelsReprogramacion $repro)
+    {
+        $this->repro_detail = $repro;
+        // dd($repro->ruta_servicio);
+        $this->form->monto = '$ ' . number_format($repro->ruta_servicio->monto, 2, '.', ',') . 'MXN';
+        $this->form->folio =  $repro->ruta_servicio->folio;
+        $this->form->envases =  $repro->ruta_servicio->envases;
+    }
+
+    public $ctg_ruta_dia_id;
+    public $rutas_dia;
+    public function updating($property, $value)
+    {
+        if ($property === 'form.ctg_ruta_dia_id') {
+
+            if ($value != "") {
+                $this->resetValidation('form.ctg_ruta_dia_id');
+
+                //traer las rutas dependiendo si es entrega o recoleccion
+                $baseQuery = Ruta::where('ctg_ruta_dia_id', '=', $value)
+                    ->where('id', '!=', $this->repro_detail->ruta_servicio->ruta_id);
+
+                if ($this->repro_detail->ruta_servicio->tipo_servicio == 1) {
+                    $baseQuery->where('status_ruta', '=', 1);//entrega
+                } else {
+                    $baseQuery->where('status_ruta', '<', 3);//recoleccion
+                }
+
+                $this->rutas_dia = $baseQuery->get();
+
+                $this->form->ruta_id = "";
+                $this->form->monto = "";
+                $this->form->folio = "";
+                $this->form->envases = "";
+            } else {
+
+                $this->addError('form.ctg_ruta_dia_id', 'La fecha de evaluación debe ser menor a la fecha de inicio de servicio.');
+
+                $this->form->ruta_id = "";
+                $this->form->monto = "";
+                $this->form->folio = "";
+                $this->form->envases = "";
+            }
+        }
+    }
+
+    #[On('save-reprogramacion-ruta')]
+    public function save()
+    {
+
+        dd('aun no guarda');
     }
 }

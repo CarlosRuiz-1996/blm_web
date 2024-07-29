@@ -147,86 +147,94 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12 mb-3" hidden>
-                        <x-input-validado :readonly="true" label="idrecolecta:" placeholder="idrecolecta"
-                            wire-model="idrecolecta" wire-attribute="idrecolecta" type="text" />
-                    </div>
-                    <div class="col-md-12 mb-3" hidden>
-                        <x-input-validado :readonly="true" label="Monto:" placeholder="Ingrese Monto"
-                            wire-model="MontoEntrega" wire-attribute="MontoEntrega" type="text" />
-                    </div>
-                    @if ($tiposervicio)
-                        <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-12' }} mb-3">
-                            <x-input-validado label="Papeleta:" :readonly="true" placeholder="Papeleta"
-                                wire-model="papeleta" type="text" />
+                <div class="row" wire:init='loadServicios'>
+                    @if ($inputs)
+                        <div class="col-md-12 mb-3" hidden>
+                            <x-input-validado :readonly="true" label="idrecolecta:" placeholder="idrecolecta"
+                                wire-model="idrecolecta" wire-attribute="idrecolecta" type="text" />
                         </div>
-                    @endif
-                    @if ($tiposervicio == 'Recolección')
-                        <div class="col-md-4 mb-3">
-                            <x-input-validado :readonly="false" label="Monto:" placeholder="Ingrese Monto total"
-                                wire-model="MontoRecolecta" wire-attribute="MontoRecolecta" type="text" />
+                        <div class="col-md-12 mb-3" hidden>
+                            <x-input-validado :readonly="true" label="Monto:" placeholder="Ingrese Monto"
+                                wire-model="MontoEntrega" wire-attribute="MontoEntrega" type="text" />
                         </div>
-                        <div class="col-md-4 mb-1">
-                            <x-input-validadolive :readonly="false" label="Envases:"
-                                placeholder="Ingrese cantidad de envases" wire-model="envasescantidad"
-                                wire-attribute="envasescantidad" type="text" />
-
-                        </div>
-                        <div class="col-md-2" style="margin-top: 32px">
-
-                            <button class="btn btn-info" wire:click='envase_recolecta'>Agregar</button>
-                        </div>
-                    @endif
-                    <div class="col-md-12 mb-3">
-                        <div class="alert alert-warning" id="message" role="alert">
-                            No puedes llevar envases dañados.
-                        </div>
-                    </div>
-
-
-
-                    @foreach ($inputs as $index => $input)
-                        <div class="col-md-1 mb-3" {{ $tiposervicio == 'Entrega' ? 'hidden' : '' }}>
-                            <Label>Violado</Label>
-                            <input label="Cantidad:" id="violado.{{ $index }}" onclick="select_violado(this)"
-                                wire:model="inputs.{{ $index }}.violado" type="checkbox" />
-
-                        </div>
-
-
-                        <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
-                            <x-input-validado label="Cantidad:" :readonly="$tiposervicio == 'Entrega'" placeholder="Envase"
-                                wire-model="inputs.{{ $index }}.cantidad" wire-attribute="inputs"
-                                type="text" />
-
-                        </div>
-
-                        @if ($tiposervicio == 'Recolección')
-                            <div class="col-md-2 mb-3">
-                                <x-input-validado label="Papeleta:" :readonly="false" placeholder="Papeleta"
-                                    wire-model="inputs.{{ $index }}.folio" wire-attribute="folios"
-                                    type="text" />
+                        @if ($tiposervicio)
+                            <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-12' }} mb-3">
+                                <x-input-validado label="Papeleta:" :readonly="true" placeholder="Papeleta"
+                                    wire-model="papeleta" type="text" />
                             </div>
                         @endif
-                        <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
-                            <x-input-validado label="Sello seguridad:" :readonly="false"
-                                placeholder="Sello de seguridad" wire-model="inputs.{{ $index }}.sello"
-                                type="text" />
-                        </div>
-                        <div class="col-md-2 mb-3">
-                            <x-input-validado label="Evidencia:" :readonly="false" placeholder="Evidencia"
-                                wire:model="inputs.{{ $index }}.photo" type="file" />
-                        </div>
-                        <div class="col-md-3 d-flex justify-content-center align-items-center">
-                            <!-- Muestra la imagen cargada si existe -->
-                            @if (isset($input['photo']) && $input['photo'])
-                                <img src="{{ $input['photo']->temporaryUrl() }}" alt="Foto Tomada" class="img-fluid"
-                                    style="max-width: 100px; height: auto;">
-                            @endif
-                        </div>
-                    @endforeach
+                        @if ($tiposervicio == 'Recolección')
+                            <div class="col-md-4 mb-3">
+                                <x-input-validado :readonly="false" label="Monto:" placeholder="Ingrese Monto total"
+                                    wire-model="MontoRecolecta" wire-attribute="MontoRecolecta" type="text" />
+                            </div>
+                            <div class="col-md-4 mb-1">
+                                <x-input-validadolive :readonly="false" label="Envases:"
+                                    placeholder="Ingrese cantidad de envases" wire-model="envasescantidad"
+                                    wire-attribute="envasescantidad" type="text" />
 
+                            </div>
+                            <div class="col-md-2" style="margin-top: 32px">
+
+                                <button class="btn btn-info" wire:click='envase_recolecta'>Agregar</button>
+                            </div>
+                        @endif
+                        <div class="col-md-12 mb-3">
+                            <div class="alert alert-warning" id="message" role="alert">
+                                No puedes llevar envases dañados.
+                            </div>
+                        </div>
+
+
+
+                        @foreach ($inputs as $index => $input)
+                            <div class="col-md-1 mb-3" {{ $tiposervicio == 'Entrega' ? 'hidden' : '' }}>
+                                <Label>Violado</Label>
+                                <input label="Cantidad:" id="violado.{{ $index }}"
+                                    onclick="select_violado(this)" wire:model="inputs.{{ $index }}.violado"
+                                    type="checkbox" />
+
+                            </div>
+
+
+                            <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
+                                <x-input-validado label="Cantidad:" :readonly="$tiposervicio == 'Entrega'" placeholder="Envase"
+                                    wire-model="inputs.{{ $index }}.cantidad" wire-attribute="inputs"
+                                    type="text" />
+
+                            </div>
+
+                            @if ($tiposervicio == 'Recolección')
+                                <div class="col-md-2 mb-3">
+                                    <x-input-validado label="Papeleta:" :readonly="false" placeholder="Papeleta"
+                                        wire-model="inputs.{{ $index }}.folio" wire-attribute="folios"
+                                        type="text" />
+                                </div>
+                            @endif
+                            <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
+                                <x-input-validado label="Sello seguridad:" :readonly="false"
+                                    placeholder="Sello de seguridad" wire-model="inputs.{{ $index }}.sello"
+                                    type="text" />
+                            </div>
+                            <div class="col-md-2 mb-3">
+                                <x-input-validado label="Evidencia:" :readonly="false" placeholder="Evidencia"
+                                    wire:model="inputs.{{ $index }}.photo" type="file" />
+                            </div>
+                            <div class="col-md-3 d-flex justify-content-center align-items-center">
+                                <!-- Muestra la imagen cargada si existe -->
+                                @if (isset($input['photo']) && $input['photo'])
+                                    <img src="{{ $input['photo']->temporaryUrl() }}" alt="Foto Tomada"
+                                        class="img-fluid" style="max-width: 100px; height: auto;">
+                                @endif
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="col-md-12 text-center">
+                            <div class="spinner-border" role="status">
+                                {{-- <span class="visually-hidden">Loading...</span> --}}
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
             <div class="modal-footer">
@@ -393,6 +401,7 @@
                 });
                 if (params[2]) {
                     $('#ModalEntregarRecolectar').modal('hide');
+                    $('#ModalReprogramarServicio').modal('hide');
                 }
 
             });

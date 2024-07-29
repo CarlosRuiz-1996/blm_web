@@ -33,7 +33,11 @@ class OperadoresIndex extends Component
     public $MontoEntregado;
     public $MontoEntrega;
     public $MontoRecolecta;
-
+    public $readyToLoad = false;
+    public function loadServicios()
+    {
+        $this->readyToLoad = true;
+    }
     public $envasescantidad;
     public $IdservicioReprogramar;
     public $evidencias = [];
@@ -145,20 +149,10 @@ class OperadoresIndex extends Component
                 $servicioRuta->status_ruta_servicios = 3;
                 $servicioRuta->envase_cargado = 0;
                 $servicioRuta->save();
-                $rutaServicioReporte = new RutaServicioReporte();
 
-                // Asignar valores del servicio actualizado al reporte
-                $rutaServicioReporte->servicio_id = $servicioRuta->servicio_id;
-                $rutaServicioReporte->ruta_id = $servicioRuta->ruta_id;
-                $rutaServicioReporte->monto = $servicioRuta->monto;
-                $rutaServicioReporte->folio = $servicioRuta->folio;
-                $rutaServicioReporte->envases = $servicioRuta->envases;
-                $rutaServicioReporte->tipo_servicio = $servicioRuta->tipo_servicio;
-                $rutaServicioReporte->status_ruta_servicio_reportes = $servicioRuta->status_ruta_servicios;
-                $rutaServicioReporte->motivocancelacion = $this->motivoReprogramarConcepto;
-                $rutaServicioReporte->area = 3;
-                // Guardar el nuevo registro en la base de datos
-                $rutaServicioReporte->save();
+                RutaServicioReporte::where('ruta_servicio_id',$servicioRuta->id)
+                ->where('status_ruta_servicio_reportes',2)->update(['status_ruta_servicio_reportes' => 3]);
+              
 
                 //guardar fotos y la evidencia en la tabla
                 foreach ($this->inputs as $index => $input) {
@@ -386,25 +380,16 @@ class OperadoresIndex extends Component
             'photorepro' => 'required',
         ]);
         $servicioRuta = RutaServicio::find($this->IdservicioReprogramar);
-        $servicioRuta->status_ruta_servicios = 4;
+        $servicioRuta->status_ruta_servicios = 0;
         $servicioRuta->save();
 
 
-        $rutaServicioReporte = new RutaServicioReporte();
+        RutaServicioReporte::where('ruta_servicio_id',$servicioRuta->id)
+        ->where('status_ruta_servicio_reportes',2)->update(['status_ruta_servicio_reportes' => 3]);
 
-        // Asignar valores del servicio actualizado al reporte
-        $rutaServicioReporte->servicio_id = $servicioRuta->servicio_id;
-        $rutaServicioReporte->ruta_id = $servicioRuta->ruta_id;
-        $rutaServicioReporte->monto = $servicioRuta->monto;
-        $rutaServicioReporte->folio = $servicioRuta->folio;
-        $rutaServicioReporte->envases = $servicioRuta->envases;
-        $rutaServicioReporte->tipo_servicio = $servicioRuta->tipo_servicio;
-        $rutaServicioReporte->status_ruta_servicio_reportes = 4;
-        $rutaServicioReporte->motivocancelacion = $this->motivoReprogramarConcepto;
-        $rutaServicioReporte->area = 3;
-        // Guardar el nuevo registro en la base de datos
-        $rutaServicioReporte->save();
+
+
         $this->photorepro->storeAs(path: 'evidencias/reprogramacion/', name: 'avatar.png');
-        $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio Sera reprogramado'], ['tipomensaje' => 'success']);
+        $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio Sera reprogramado'], ['tipomensaje' => 'success'], ['op' => 1]);
     }
 }

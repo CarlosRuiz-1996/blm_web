@@ -147,13 +147,9 @@ class RutaProcesar extends Component
         try {
             DB::beginTransaction();
 
-
             //actualizar la informacion de ruta servicio
             $servicio->status_ruta_servicios = 1;
             $servicio->save();
-
-
-
 
             //registra movimiento en el historial
             ClienteMontos::create([
@@ -170,7 +166,8 @@ class RutaProcesar extends Component
             $servicio->servicio->cliente->save();
 
             //actualizar la informacion de envases
-            foreach ($servicio->envases_servicios as $envase) {
+            $servicio_envase =  ServicioRutaEnvases::where('ruta_servicios_id', $servicio->id)->where('status_envases', 1)->get();
+            foreach ($servicio_envase as $envase) {
                 $envase->status_envases = 2;
                 $envase->save();
                 $envase->evidencia_entrega->status_evidencia_entrega = 2;
@@ -350,7 +347,7 @@ class RutaProcesar extends Component
             'monto_new' => $monto_new,
             'empleado_id' => Auth::user()->empleado->id,
             'ctg_area_id' => Auth::user()->empleado->ctg_area_id,
-            'tipo'=>0
+            'tipo' => 0
         ]);
         //actualizar la informacion de ruta servicio
         $this->form->servicio->status_ruta_servicios = 1;
