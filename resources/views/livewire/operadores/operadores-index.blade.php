@@ -148,7 +148,7 @@
             </div>
             <div class="modal-body">
                 <div class="row" wire:init='loadServicios'>
-                    @if ($inputs)
+                    {{-- @if ($inputs) --}}
                         <div class="col-md-12 mb-3" hidden>
                             <x-input-validado :readonly="true" label="idrecolecta:" placeholder="idrecolecta"
                                 wire-model="idrecolecta" wire-attribute="idrecolecta" type="text" />
@@ -228,13 +228,12 @@
                                 @endif
                             </div>
                         @endforeach
-                    @else
+                    {{-- @else
                         <div class="col-md-12 text-center">
                             <div class="spinner-border" role="status">
-                                {{-- <span class="visually-hidden">Loading...</span> --}}
                             </div>
                         </div>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
             <div class="modal-footer">

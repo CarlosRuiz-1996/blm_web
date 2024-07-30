@@ -21,7 +21,7 @@ class Reprogramacion extends Component
     {
         $dias = $this->form->getCtgDias();
         // $reprogramacion = RutaServicio::where('status_ruta_servicios',0)->paginate(10);
-        $reprogramacion = ModelsReprogramacion::where('status_reprogramacions', 1)->paginate(10);
+        $reprogramacion = ModelsReprogramacion::orderBy('id','DESC')->paginate(10);
         return view('livewire.operaciones.listados.reprogramacion', compact('reprogramacion', 'dias'));
     }
 

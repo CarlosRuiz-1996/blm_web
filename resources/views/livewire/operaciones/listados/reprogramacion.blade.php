@@ -142,7 +142,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     @if ($repro_detail)
-                    
+
                         <button type="submit" class="btn btn-info"
                             wire:click="$dispatch('reprogramar_confirm')">Guardar</button>
                     @endif
@@ -174,10 +174,10 @@
                     })
                 });
 
-                Livewire.on('alert', function([message]) {
+                Livewire.on('alert', function([data]) {
                     Swal.fire({
-                        icon: 'error',
-                        title: message,
+                        icon: data[1].tipo,
+                        title: data[0].msg,
                         showConfirmButton: false,
                         timer: 3000
                     });

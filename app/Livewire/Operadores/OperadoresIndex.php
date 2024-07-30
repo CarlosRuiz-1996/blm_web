@@ -86,10 +86,11 @@ class OperadoresIndex extends Component
         $this->idrecolecta = $id;
         $this->cantidadEnvases = $servicioRuta->envases;
         // Consultar los registros de servicios_envases_rutas para esta ruta
-        $serviciosEnvases = ServicioRutaEnvases::where('ruta_servicios_id', $id)->where('status_envases',1)->get();
+        $serviciosEnvases = ServicioRutaEnvases::where('ruta_servicios_id', $id)->where('status_envases', 1)->get();
 
         // Si hay registros, llenar los arreglos con los valores recuperados
         if ($serviciosEnvases->isNotEmpty()) {
+            dd('entra');
             $this->inputs = $serviciosEnvases->mapWithKeys(function ($item) {
                 return [$item->id => [
                     'cantidad' => $item->cantidad,
@@ -100,16 +101,17 @@ class OperadoresIndex extends Component
                 ]];
             })->toArray();
         } else {
-
             $this->inputs = [];
-            for ($i = 0; $i < $this->envasescantidad; $i++) {
-                $this->inputs[] = [
-                    'cantidad' => '',
-                    'folio' => $this->papeleta,
-                    'photo' => '',
-                    'sello' => '',
-                    'violado' => false,
-                ];
+            if ($this->envasescantidad) {
+                for ($i = 0; $i < $this->envasescantidad; $i++) {
+                    $this->inputs[] = [
+                        'cantidad' => '',
+                        'folio' => $this->papeleta,
+                        'photo' => '',
+                        'sello' => '',
+                        'violado' => false,
+                    ];
+                }
             }
         }
     }
@@ -153,9 +155,9 @@ class OperadoresIndex extends Component
                 $servicioRuta->save();
                 // Log::info('RutaServicioReporte: ');
 
-                RutaServicioReporte::where('ruta_servicio_id',$servicioRuta->id)
-                ->where('status_ruta_servicio_reportes',2)->update(['status_ruta_servicio_reportes' => 3]);
-              
+                RutaServicioReporte::where('ruta_servicio_id', $servicioRuta->id)
+                    ->where('status_ruta_servicio_reportes', 2)->update(['status_ruta_servicio_reportes' => 3]);
+
 
                 //guardar fotos y la evidencia en la tabla
                 foreach ($this->inputs as $index => $input) {
@@ -255,7 +257,7 @@ class OperadoresIndex extends Component
 
             //si hay violado se resta porque no se llevara.
             $this->MontoRecolecta = $MontoEnvases - $montoEnvaseViolado;
-         
+
             //completo datos del servicio en la ruta
             $servicioruta = RutaServicio::find($this->idrecolecta);
             $servicioruta->monto = $this->MontoRecolecta;
@@ -296,7 +298,7 @@ class OperadoresIndex extends Component
                 'folio' => $servicioruta->folio,
                 'envases' => $servicioruta->envases,
                 'tipo_servicio' => $servicioruta->tipo_servicio,
-                'area'=>3
+                'area' => 3
             ]);
 
 
@@ -388,8 +390,8 @@ class OperadoresIndex extends Component
         $servicioRuta->save();
 
 
-        RutaServicioReporte::where('ruta_servicio_id',$servicioRuta->id)
-        ->where('status_ruta_servicio_reportes',2)->update(['status_ruta_servicio_reportes' => 3]);
+        RutaServicioReporte::where('ruta_servicio_id', $servicioRuta->id)
+            ->where('status_ruta_servicio_reportes', 2)->update(['status_ruta_servicio_reportes' => 3]);
 
 
 
