@@ -14,7 +14,8 @@ class Reprogramacion extends Model
         'evidencia',
         'ruta_servicio_id',
         'status_reprogramacions',
-        'area_id'
+        'area_id',
+        'ruta_servicio_id_new'
     ];
 
     public function ruta_servicio(){

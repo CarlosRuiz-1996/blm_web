@@ -9,6 +9,8 @@ use Livewire\WithPagination;
 use App\Livewire\Forms\RutaForm;
 use App\Models\Ruta;
 use Livewire\Attributes\On;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Reprogramacion extends Component
 {
@@ -47,25 +49,25 @@ class Reprogramacion extends Component
                     ->where('id', '!=', $this->repro_detail->ruta_servicio->ruta_id);
 
                 if ($this->repro_detail->ruta_servicio->tipo_servicio == 1) {
-                    $baseQuery->where('status_ruta', '=', 1);//entrega
+                    $baseQuery->where('status_ruta', '=', 1); //entrega
                 } else {
-                    $baseQuery->where('status_ruta', '<', 3);//recoleccion
+                    $baseQuery->where('status_ruta', '<', 3); //recoleccion
                 }
 
                 $this->rutas_dia = $baseQuery->get();
 
-                $this->form->ruta_id = "";
-                $this->form->monto = "";
-                $this->form->folio = "";
-                $this->form->envases = "";
+                // $this->form->ruta_id = "";
+                // $this->form->monto = "";
+                // $this->form->folio = "";
+                // $this->form->envases = "";
             } else {
 
                 $this->addError('form.ctg_ruta_dia_id', 'La fecha de evaluación debe ser menor a la fecha de inicio de servicio.');
 
-                $this->form->ruta_id = "";
-                $this->form->monto = "";
-                $this->form->folio = "";
-                $this->form->envases = "";
+                // $this->form->ruta_id = "";
+                // $this->form->monto = "";
+                // $this->form->folio = "";
+                // $this->form->envases = "";
             }
         }
     }
@@ -73,7 +75,21 @@ class Reprogramacion extends Component
     #[On('save-reprogramacion-ruta')]
     public function save()
     {
-
-        dd('aun no guarda');
+        $this->validate([
+            'form.ruta_id' => 'required',
+        ], [
+            'form.ruta_id.required' => 'Ruta obligatoria',
+        ]);
+        try {
+            DB::beginTransaction();
+            $this->repro_detail->ruta_servicio_id_new = $this->form->ruta_id;
+            $this->repro_detail->status_reprogramacions = 2;
+            $this->repro_detail->save();
+            $this->dispatch('alert', ['msg' => "El servicio fue asignado correctamente."], ['tipo' => 'success']);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('alert', ['msg' => "Ha ocurrido un error."], ['tipo' => 'error']);
+        }
     }
 }

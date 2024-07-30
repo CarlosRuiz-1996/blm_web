@@ -144,11 +144,14 @@ class OperadoresIndex extends Component
             foreach ($this->inputs as $index => $input) {
                 $this->MontoEntregado  += (float)$input['cantidad'];
             }
+            // Log::info('Entra if: ');
             if ((float)$this->MontoEntrega == (float)$this->MontoEntregado) {
+                // Log::info('RutaServicio: ');
                 $servicioRuta = RutaServicio::find($this->idrecolecta);
                 $servicioRuta->status_ruta_servicios = 3;
                 $servicioRuta->envase_cargado = 0;
                 $servicioRuta->save();
+                // Log::info('RutaServicioReporte: ');
 
                 RutaServicioReporte::where('ruta_servicio_id',$servicioRuta->id)
                 ->where('status_ruta_servicio_reportes',2)->update(['status_ruta_servicio_reportes' => 3]);
@@ -156,6 +159,7 @@ class OperadoresIndex extends Component
 
                 //guardar fotos y la evidencia en la tabla
                 foreach ($this->inputs as $index => $input) {
+                    // Log::info('ServicioEvidenciaEntrega: ');
                     $evidencia = ServicioEvidenciaEntrega::create(['servicio_envases_ruta_id' => $index]);
 
                     $input['photo']->storeAs(path: 'evidencias/', name: 'evidencia_' . $evidencia->id . '.png');

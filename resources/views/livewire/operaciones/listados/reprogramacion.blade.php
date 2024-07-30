@@ -16,7 +16,8 @@
                                 <th>Envases</th>
                                 <th>Tipo</th>
                                 <th>Motivo</th>
-                                <th>Fecha</th>
+                                <th>Estatus</th>
+                                {{-- <th>Fecha</th> --}}
                                 <th>Detalles</th>
                             </thead>
                             <tbody>
@@ -41,7 +42,13 @@
                                         <td>{{ $repro->ruta_servicio->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECTA' }}
                                         </td>
                                         <td>{{ $repro->motivo }}</td>
-                                        <td>{{ $repro->ruta_servicio->updated_at }}</td>
+                                        {{-- <td>{{ $repro->ruta_servicio->updated_at }}</td> --}}
+                                        <td>
+                                            {{ $repro->status_reprogramacions==1?'PENDIENTE':'' }}
+                                            {{ $repro->status_reprogramacions==2?'RUTA':'' }}
+                                            {{ $repro->status_reprogramacions==3?'FINALIZADA':'' }}
+
+                                        </td>
                                         <td>
 
                                             <button class="btn btn-xs btn-default text-primary mx-1 shadow"
@@ -135,6 +142,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     @if ($repro_detail)
+                    
                         <button type="submit" class="btn btn-info"
                             wire:click="$dispatch('reprogramar_confirm')">Guardar</button>
                     @endif
@@ -164,6 +172,16 @@
                             @this.dispatch('save-reprogramacion-ruta');
                         }
                     })
+                });
+
+                Livewire.on('alert', function([message]) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: message,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+
                 });
             });
         </script>
