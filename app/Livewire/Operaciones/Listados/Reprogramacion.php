@@ -71,8 +71,11 @@ class Reprogramacion extends Component
     {
         $this->validate([
             'form.ruta_id' => 'required',
+            'form.ctg_ruta_dia_id' => 'required',
         ], [
             'form.ruta_id.required' => 'Ruta obligatoria',
+            'form.ctg_ruta_dia_id.required' => 'Dia obligatoria',
+
         ]);
         try {
             DB::beginTransaction();
