@@ -56,18 +56,12 @@ class Reprogramacion extends Component
 
                 $this->rutas_dia = $baseQuery->get();
 
-                // $this->form->ruta_id = "";
-                // $this->form->monto = "";
-                // $this->form->folio = "";
-                // $this->form->envases = "";
+                
             } else {
 
                 $this->addError('form.ctg_ruta_dia_id', 'La fecha de evaluación debe ser menor a la fecha de inicio de servicio.');
 
-                // $this->form->ruta_id = "";
-                // $this->form->monto = "";
-                // $this->form->folio = "";
-                // $this->form->envases = "";
+              
             }
         }
     }
