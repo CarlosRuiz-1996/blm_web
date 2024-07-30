@@ -90,7 +90,7 @@ class OperadoresIndex extends Component
 
         // Si hay registros, llenar los arreglos con los valores recuperados
         if ($serviciosEnvases->isNotEmpty()) {
-            dd('entra');
+            // dd('entra');
             $this->inputs = $serviciosEnvases->mapWithKeys(function ($item) {
                 return [$item->id => [
                     'cantidad' => $item->cantidad,
