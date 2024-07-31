@@ -16,15 +16,24 @@ class Reprogramacion extends Component
 {
     use WithPagination;
     public RutaForm $form;
-
+    public $readyToLoad = false;
     public function render()
     {
+        if($this->readyToLoad){
         $dias = $this->form->getCtgDias();
         // $reprogramacion = RutaServicio::where('status_ruta_servicios',0)->paginate(10);
-        $reprogramacion = ModelsReprogramacion::orderBy('id','DESC')->paginate(10);
+        $reprogramacion = ModelsReprogramacion::orderBy('id', 'DESC')->paginate(10);
+
+        }else{
+            $dias = [];
+            $reprogramacion = [];
+        }
         return view('livewire.operaciones.listados.reprogramacion', compact('reprogramacion', 'dias'));
     }
-
+    public function loadServicios()
+    {
+        $this->readyToLoad = true;
+    }
     public $repro_detail;
     public function DetalleServicio(ModelsReprogramacion $repro)
     {
@@ -55,13 +64,9 @@ class Reprogramacion extends Component
                 }
 
                 $this->rutas_dia = $baseQuery->get();
-
-                
             } else {
 
                 $this->addError('form.ctg_ruta_dia_id', 'La fecha de evaluación debe ser menor a la fecha de inicio de servicio.');
-
-              
             }
         }
     }
@@ -82,11 +87,13 @@ class Reprogramacion extends Component
             $this->repro_detail->ruta_servicio_id_new = $this->form->ruta_id;
             $this->repro_detail->status_reprogramacions = 2;
             $this->repro_detail->save();
-            $this->dispatch('alert', ['msg' => "El servicio fue asignado correctamente."], ['tipo' => 'success']);
+            $this->dispatch('alert', ['msg' => 'El servicio fue asignado correctamente.'], ['tipo' => 'success']);
+            // $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Entrega realizada con exito.'], ['tipomensaje' => 'success'], ['op' => 1]);
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->dispatch('alert', ['msg' => "Ha ocurrido un error."], ['tipo' => 'error']);
+            $this->dispatch('alert', ['msg' => 'Ha ocurrido un error.'], ['tipo' => 'error']);
         }
     }
 }
