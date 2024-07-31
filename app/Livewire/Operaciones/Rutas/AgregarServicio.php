@@ -143,6 +143,7 @@ class AgregarServicio extends Component
     public function addServicios()
     {
 
+        // dd($this->selectServicios);
         $this->selectServicios = array_filter($this->selectServicios);
         if (empty($this->selectServicios)) {
 
@@ -206,7 +207,7 @@ class AgregarServicio extends Component
                 $bandera++;
             }
 
-            // dd($seleccionadosRecolecta);
+
             $res = $this->form->storeRutaServicio($seleccionados, $seleccionadosRecolecta);
 
             if ($res == 1) {
