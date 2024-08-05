@@ -1,89 +1,95 @@
 <div>
-    <div class="row">
-        <div class="col-md-6">
-            <h3 for="">Servicios</h3>
-        </div>
-        <div class="col-md-6">
-            <div class="mb-3 d-flex justify-content-end">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Agregar Servicios</button>
+    @if ($banco == false)
+        <div class="row">
+            <div class="col-md-6">
+                <h3 for="">Servicios</h3>
             </div>
-        </div>
+            <div class="col-md-6">
+                <div class="mb-3 d-flex justify-content-end">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Agregar
+                        Servicios</button>
+                </div>
+            </div>
 
-        {{-- tabla mostrada <div wire:init='loadProducts'> --}}
-        <div class="col-md-12" wire:init='loadServicios'>
-            <div class="table-responsive">
-                @if (count($servicios_cliente))
+            {{-- tabla mostrada <div wire:init='loadProducts'> --}}
+            <div class="col-md-12" wire:init='loadServicios'>
+                <div class="table-responsive">
+                    @if (count($servicios_cliente))
 
-                    <table class="table">
-                        <thead class="table-primary">
-                            <tr>
-                                <th>Servicio</th>
-                                <th>Monto del servicio</th>
-                                <th>Sucursal</th>
-                                <th>Estatus</th>
-                                <th>Eliminar</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($servicios_cliente as $servicio)
+                        <table class="table">
+                            <thead class="table-primary">
                                 <tr>
-                                    <td>{{ $servicio->ctg_servicio->descripcion }}</td>
-                                    <td>$ 
-                                        {{ number_format($servicio->subtotal, 2, '.', ',') }} MXN
-
-                                        {{-- {{ $servicio->ruta_servicio ? number_format($servicio->ruta_servicio->monto, 2, ',', '.') : 0 }} --}}
-                                    </td>
-                                    <td>
-                                        {{ $servicio->sucursal->sucursal->sucursal??'' }}
-                                    </td>
-                                    <td>
-                                        @if ($servicio->status_servicio != 0)
-                                            <i class="fa fa-circle" style="color: green"></i>
-                                        @else
-                                            <i class="fa fa-circle" style="color: red"></i>
-                                        @endif
-                                    </td>
-                                    <td>
-
-                                        @if ($servicio->status_servicio != 0)
-                                            <button class="btn btn-danger"
-                                                wire:click='updateServicio({{ $servicio->id }},1)'>
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        @else
-                                            <button class="btn btn-primary"
-                                                wire:click='updateServicio({{ $servicio->id }},2)'>
-                                                Reactivar
-                                            </button>
-                                        @endif
-                                    </td>
+                                    <th>Servicio</th>
+                                    <th>Monto del servicio</th>
+                                    <th>Sucursal</th>
+                                    <th>Estatus</th>
+                                    <th>Eliminar</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach ($servicios_cliente as $servicio)
+                                    <tr>
+                                        <td>{{ $servicio->ctg_servicio->descripcion }}</td>
+                                        <td>$
+                                            {{ number_format($servicio->subtotal, 2, '.', ',') }} MXN
 
-                    @if ($servicios_cliente->hasPages())
-                        <div class="px-6 py-3 text-gray-500">
-                            {{ $servicios_cliente->links() }}
-                        </div>
-                    @endif
-                @else
-                    @if ($readyToLoad)
-                        <div class="alert alert-secondary" role="alert">
-                            No hay datos disponibles!
-                        </div>
+                                            {{-- {{ $servicio->ruta_servicio ? number_format($servicio->ruta_servicio->monto, 2, ',', '.') : 0 }} --}}
+                                        </td>
+                                        <td>
+                                            {{ $servicio->sucursal->sucursal->sucursal ?? '' }}
+                                        </td>
+                                        <td>
+                                            @if ($servicio->status_servicio != 0)
+                                                <i class="fa fa-circle" style="color: green"></i>
+                                            @else
+                                                <i class="fa fa-circle" style="color: red"></i>
+                                            @endif
+                                        </td>
+                                        <td>
+
+                                            @if ($servicio->status_servicio != 0)
+                                                <button class="btn btn-danger"
+                                                    wire:click='updateServicio({{ $servicio->id }},1)'>
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @else
+                                                <button class="btn btn-primary"
+                                                    wire:click='updateServicio({{ $servicio->id }},2)'>
+                                                    Reactivar
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
+                        @if ($servicios_cliente->hasPages())
+                            <div class="px-6 py-3 text-gray-500">
+                                {{ $servicios_cliente->links() }}
+                            </div>
+                        @endif
                     @else
-                        <!-- Muestra un spinner mientras los datos se cargan -->
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden"></span>
-                        </div>
+                        @if ($readyToLoad)
+                            <div class="alert alert-secondary" role="alert">
+                                No hay datos disponibles!
+                            </div>
+                        @else
+                            <!-- Muestra un spinner mientras los datos se cargan -->
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden"></span>
+                            </div>
+                        @endif
                     @endif
-                @endif
 
+                </div>
             </div>
         </div>
-    </div>
-
+    @else
+        <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            <i class="fa fa-fw fa-car"></i>
+        </button>
+    @endif
 
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
         wire:ignore.self>
@@ -378,9 +384,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" {{ $bloqser ? 'disabled' : '' }}
-                    wire:click='llenartabla'>Siguiente</button>
-                    <button type="button" class="btn btn-danger" wire:click='clean()' data-dismiss="modal">Cerrar</button>
-                   
+                        wire:click='llenartabla'>Siguiente</button>
+                    <button type="button" class="btn btn-danger" wire:click='clean()'
+                        data-dismiss="modal">Cerrar</button>
+
 
                 </div>
             </div>
@@ -422,10 +429,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                  
+
                     <button class="btn btn-primary" wire:click="crearServicioctg">Crear Servicio</button>
-                    <button class="btn btn-danger" data-target="#exampleModalToggle2"
-                    data-toggle="modal" wire:click='clean()'>Cerrar</button>
+                    <button class="btn btn-danger" data-target="#exampleModalToggle2" data-toggle="modal"
+                        wire:click='clean()'>Cerrar</button>
                 </div>
             </div>
         </div>

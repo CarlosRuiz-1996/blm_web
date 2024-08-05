@@ -40,7 +40,7 @@
                             <th>RFC</th>
                             <th>Contacto</th>
                             <th>Resguardo</th>
-                            <th style="width: 110px">Opciones</th>
+                            <th style="width: 180px">Opciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,14 +55,19 @@
                                     ${{ $cliente->resguardo > 0 ? number_format($cliente->resguardo, 2, '.', ',') : 0 }}
                                 </td>
                                 <td>
-                                    <button class="btn btn-info" title="detalles de movimientos" data-toggle="modal"
+                                    <button class="btn btn-info d-inline-block" title="detalles de movimientos" data-toggle="modal"
                                         wire:click="showDetail({{ $cliente->id }})" data-target="#modalDetail">
                                         <i class="fa fa-info-circle" aria-hidden="true"></i>
                                     </button>
-                                    <button class="btn btn-success" title="Agregar" data-toggle="modal"
+                                    <button class="btn btn-success d-inline-block" title="Agregar" data-toggle="modal"
                                         wire:click="showMonto({{ $cliente->id }})" data-target="#modalAdd">
                                         <i class="fas fa-plus"></i>
                                     </button>
+                                    {{-- <div class="d-inline-block">
+                                        <livewire:clientes.servicios-clientes :cliente="$cliente" :banco="true" />
+
+                                    </div> --}}
+
                                 </td>
                             </tr>
                         @endforeach

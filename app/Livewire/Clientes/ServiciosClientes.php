@@ -74,9 +74,10 @@ class ServiciosClientes extends Component
     public $editar = true;
     public $valoreditar = 0;
     public AnexoForm $form_anexo;
-
-    public function mount(Cliente $cliente)
+    public $banco = false;
+    public function mount(Cliente $cliente, $banco=false)
     {
+        $this->banco = $banco;
         $this->form->cliente = $cliente;
         $this->precio_servicio = ctg_precio_servicio::all();
         $this->servicios = ctg_servicios::all();
@@ -87,11 +88,12 @@ class ServiciosClientes extends Component
     }
     public function render()
     {
-        if ($this->readyToLoad) {
+        
+        $servicios_cliente = [];
+        if ($this->readyToLoad && $this->banco==false) {
             $servicios_cliente = $this->form->getServicios();
-        } else {
-            $servicios_cliente = [];
         }
+        // dd($this->banco);
         return view('livewire.clientes.servicios-clientes', compact('servicios_cliente'));
     }
 
@@ -391,7 +393,7 @@ class ServiciosClientes extends Component
             'descripcionctg',
             'unidadctg'
         );
-    
+
 
         session()->forget('servicio-sucursal');
         session()->forget('servicio-memo');
