@@ -6,6 +6,7 @@ use App\Models\Cliente;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Livewire\Forms\BancosForm;
+use App\Models\CompraEfectivo;
 use Livewire\Attributes\On;
 
 class BancosGestion extends Component
@@ -26,13 +27,17 @@ class BancosGestion extends Component
         if ($this->readyToLoad) {
             $resguardototal = $this->form->getCountResguadoClientes();
             $clientes = $this->form->getAllClientes();
+            $servicios = $this->form->getAllBancosServicios();
+            $compras = $this->form->getAllComprasEfectivo();
             // dd($clientes);
 
         } else {
             $resguardototal = 0;
             $clientes = [];
+            $servicios=[];
+            $compras=[];
         }
-        return view('livewire.bancos.bancos-gestion', compact('resguardototal', 'clientes'));
+        return view('livewire.bancos.bancos-gestion', compact('resguardototal', 'clientes','servicios','compras'));
     }
     public function loadClientes()
     {
@@ -87,5 +92,16 @@ class BancosGestion extends Component
         } else {
             $this->dispatch('alert', ['Hubo un problema, intenta más tarde.', 'error']);
         }
+    }
+
+    //detalle compra
+    public $compra_detalle = [];
+    public function showCompraDetail(CompraEfectivo $compra)
+    {
+
+        
+        $this->compra_detalle = $compra;
+        $this->readyToLoadModal = true;
+
     }
 }

@@ -41,6 +41,7 @@ class AgregarServicio extends Component
         $this->clientes = $this->form->getClientes();
     }
 
+    // public $servicios=[];
     #[On('render-modal-servicios')]
     public function render()
     {
@@ -208,7 +209,6 @@ class AgregarServicio extends Component
             }
 
 
-            dd($seleccionados);
             $res = $this->form->storeRutaServicio($seleccionados, $seleccionadosRecolecta);
 
             if ($res == 1) {

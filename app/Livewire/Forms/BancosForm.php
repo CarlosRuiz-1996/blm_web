@@ -2,8 +2,11 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\BancosServicios;
 use App\Models\Cliente;
 use App\Models\ClienteMontos;
+use App\Models\CompraEfectivo;
+use App\Models\CtgConsignatario;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 use Illuminate\Support\Facades\Auth;
@@ -33,12 +36,12 @@ class BancosForm extends Form
     public function getAllClientes()
     {
         return Cliente::where('status_cliente', 1)
-        ->where(function ($query) {
-            $query->orWhere('razon_social','ilike', '%' . $this->searchCliente . '%')
-            ->orWhere('rfc_cliente','ilike', '%' . $this->searchCliente . '%')
-            ;
-        })
-        ->paginate(10);
+            ->where(function ($query) {
+                $query->orWhere('razon_social', 'ilike', '%' . $this->searchCliente . '%')
+                    ->orWhere('rfc_cliente', 'ilike', '%' . $this->searchCliente . '%')
+                ;
+            })
+            ->paginate(10);
     }
 
     public function getCountResguadoClientes()
@@ -68,9 +71,34 @@ class BancosForm extends Form
             DB::commit();
             return 1;
         } catch (\Exception $e) {
-            
+
             DB::rollBack();
             return 0;
         }
+    }
+
+    public $searchClienteActivo;
+    public function getAllClientesActivo()
+    {
+        return Cliente::where('status_cliente', 1)
+            ->where(function ($query) {
+                $query->orWhere('razon_social', 'ilike', '%' . $this->searchClienteActivo . '%')
+                    ->orWhere('rfc_cliente', 'ilike', '%' . $this->searchClienteActivo . '%')
+                ;
+            })
+            ->get();
+    }
+
+    public function getAllConsignatorio()
+    {
+        return CtgConsignatario::all();
+    }
+
+
+    public function getAllBancosServicios(){
+        return BancosServicios::paginate(10);
+    }
+    public function getAllComprasEfectivo(){
+        return CompraEfectivo::paginate(10);
     }
 }

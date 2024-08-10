@@ -95,7 +95,7 @@
             </div>
         </div>
     </div>
-
+    
 
     {{-- Modal servicios --}}
     <x-adminlte-modal wire:ignore.self id="servicios" title="Agregar servicios a la ruta" theme="info"
@@ -124,7 +124,7 @@
         <div>
             @if ($servicios && count($servicios))
                 <div class="table-responsive">
-                    {{-- <table id="dataTable" class="table table-hover table-striped">
+                    <table id="dataTable" class="table table-hover table-striped">
                         <thead class="table-info">
                             <tr>
                                 <th></th>
@@ -265,84 +265,6 @@
                             @endforeach
 
                         </tbody>
-                    </table> --}}
-                    <table id="dataTable" class="table table-hover table-striped">
-                        <thead class="table-info">
-                            <tr>
-                                <th></th>
-                                <th>Servicio</th>
-                                <th>Cliente</th>
-                                <th>Dirección</th>
-                                <th>Tipo Servicio</th>
-                                <th>Monto</th>
-                                <th>Papeleta</th>
-                                <th>Contenedor</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($servicios as $servicio)
-                                <tr x-data="{
-                                    checkServicio: @entangle('selectServicios.{{ $servicio->id }}'),
-                                    checkbox1: @entangle('selectServiciosRecolecta.{{ $servicio->id }}'),
-                                    checkbox2: @entangle('selectServiciosEntrega.{{ $servicio->id }}'),
-                                    monto: @entangle('montoArrayRecolecta.{{ $servicio->id }}'),
-                                    monto2: @entangle('montoArray.{{ $servicio->id }}'),
-                                    folio: @entangle('folioArrayRecolecta.{{ $servicio->id }}'),
-                                    folio2: @entangle('folioArray.{{ $servicio->id }}'),
-                                    contenedor: @entangle('envaseArrayRecolecta.{{ $servicio->id }}'),
-                                    contenedor2: @entangle('envaseArray.{{ $servicio->id }}'),
-                                    updateCheckboxes() {
-                                        if (!this.checkServicio) {
-                                            this.checkbox1 = false;
-                                            this.checkbox2 = false;
-                                            this.monto = '';
-                                            this.monto2 = '';
-                                            this.folio = '';
-                                            this.folio2 = '';
-                                            this.contenedor = '';
-                                            this.contenedor2 = '';
-                                        }
-                                    }
-                                }" @change="updateCheckboxes()">
-                                    <td>
-                                        <input type="checkbox" x-model="checkServicio" />
-                                    </td>
-                                    <td>{{ $servicio->ctg_servicio->descripcion }}</td>
-                                    <td>{{ $servicio->cliente->razon_social }}</td>
-                                    <td>{{ $servicio->sucursal->sucursal->direccion . ' ' . $servicio->sucursal->sucursal->cp->cp . '' . $servicio->sucursal->sucursal->cp->estado->name }}</td>
-                                    <td>
-                                        <div class="d-flex flex-column">
-                                            <div class="form-check mt-2">
-                                                <input class="form-check-input" type="checkbox" x-model="checkbox1" />
-                                                <label class="form-check-label">Recolección</label>
-                                            </div>
-                                            <div class="form-check mt-4">
-                                                <input class="form-check-input" type="checkbox" x-model="checkbox2" />
-                                                <label class="form-check-label">Entrega</label>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-column">
-                                            <x-input-validado x-model="monto" placeholder="Monto" :disabled="!checkServicio || !checkbox1" type="number" />
-                                            <x-input-validado x-model="monto2" placeholder="Monto" :disabled="!checkServicio || !checkbox2" type="number" />
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-column">
-                                            <x-input-validado x-model="folio" placeholder="Papeleta" :disabled="!checkServicio || !checkbox1" type="text" />
-                                            <x-input-validado x-model="folio2" placeholder="Papeleta" :disabled="!checkServicio || !checkbox2" type="text" />
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-column">
-                                            <x-input-validado x-model="contenedor" placeholder="Envases" :disabled="!checkServicio || !checkbox1" type="number" />
-                                            <x-input-validado x-model="contenedor2" placeholder="Envases" :disabled="!checkServicio || !checkbox2" type="number" />
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
                     </table>
                 </div>
 
@@ -351,6 +273,8 @@
                         {{ $servicios->links() }}
                     </div>
                 @endif
+
+
                 <div class="text-center col-md-12 mb-3">
                     <button class="btn btn-info btn-xl " wire:click='$dispatch("confirm-servicio")'>Guardar</button>
                 </div>
@@ -366,6 +290,9 @@
                     </div>
                 @endif
             @endif
+
+
+
         </div>
     </x-adminlte-modal>
     <x-adminlte-modal wire:ignore.self id="servicios_edit" title="Editar datos del servicio" theme="info"
