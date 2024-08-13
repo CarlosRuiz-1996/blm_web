@@ -101,7 +101,7 @@
                                     type="date" />
 
                             </div>
-                            <div class="form-group  col-md-3">
+                            <div class="form-group  col-md-8">
                                 <x-select-validado label="Cajero:" placeholder="" wire-model="cajero_id" required>
                                     @foreach ($consignatarios as $consignatario)
                                         <option value="{{ $consignatario->id }}">

@@ -94,14 +94,14 @@ class ServiciosBancos extends Component
                 throw new \Exception('No hay servicios para guardar');
             }
             //guardar compra efectivo
-            $compra = CompraEfectivo::create([
+            $compra_efectivo = CompraEfectivo::create([
                 'consignatario_id' => $this->cajero_id,
                 'total' => $this->total,
                 'fecha_compra' => $this->fecha,
             ]);
             foreach ($this->compras as  $compra) {
                 DetallesCompraEfectivo::create([
-                    'compra_efectivo_id' => $compra->id,
+                    'compra_efectivo_id' => $compra_efectivo->id,
                     'monto' => $compra['monto'],
                     'cliente_id' => $compra['cliente'],
                 ]);
@@ -112,10 +112,7 @@ class ServiciosBancos extends Component
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-            // $this->dispatch('error', [$e->getMessage()]);
-            // dd();
             $this->dispatch('alert', [$e->getMessage(), 'error']);
-            Log::info('Info: ' . $e);
         }
     }
 
