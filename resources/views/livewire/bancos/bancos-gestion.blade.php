@@ -256,7 +256,6 @@
     </div>
 
     {{-- modal de agregar --}}
-    {{-- elegir sucursal --}}
     <div class="modal fade" wire:ignore.self id="modalAdd" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-md">

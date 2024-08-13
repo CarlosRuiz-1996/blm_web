@@ -90,7 +90,7 @@ class ServiciosBancos extends Component
         try {
             DB::beginTransaction();
 
-            if (!count($this->servicios)) {
+            if (!count($this->compras)) {
                 throw new \Exception('No hay servicios para guardar');
             }
             //guardar compra efectivo
