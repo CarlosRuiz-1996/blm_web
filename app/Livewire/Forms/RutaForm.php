@@ -268,7 +268,7 @@ class RutaForm extends Form
                     });
             })
 
-            ->orderBy('id', 'DESC')->paginate(5);
+            ->orderBy('id', 'DESC')->get();
     }
     public $searchServicio;
     public function getRutaServicios()

@@ -23,4 +23,9 @@ class CompraEfectivo extends Model
     public function detalles(){
         return $this->hasMany(DetallesCompraEfectivo::class,'compra_efectivo_id');
     }
+
+
+    public function ruta_compra(){
+        return $this->hasOne(RutaCompraEfectivo::class, 'compra_efectivo_id');
+    }
 }

@@ -172,11 +172,11 @@
         @if ($form->ruta)
             {{-- vehiculos --}}
 
-            {{-- <livewire:operaciones.rutas.agregar-vehiculo :ruta="$form->ruta" /> --}}
+            <livewire:operaciones.rutas.agregar-vehiculo :ruta="$form->ruta" />
             {{-- elementos de operaciones --}}
-            {{-- <livewire:operaciones.rutas.agregar-operador :ruta="$form->ruta" /> --}}
+            <livewire:operaciones.rutas.agregar-operador :ruta="$form->ruta" />
             {{-- elementos de seguridad --}}
-            {{-- <livewire:operaciones.rutas.agregar-personal :ruta="$form->ruta" /> --}}
+            <livewire:operaciones.rutas.agregar-personal :ruta="$form->ruta" />
             {{-- servicios --}}
             <livewire:operaciones.rutas.agregar-servicio :ruta="$form->ruta" />
 

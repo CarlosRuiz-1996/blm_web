@@ -7,7 +7,7 @@
     <div class="d-sm-flex align-items-center justify-content-between">
 
         <h1 class="ml-2">Operaciones</h1>
-        <a href="{{ route('ruta.gestion',1) }}" class="btn btn-primary">
+        <a href="{{ route('ruta.gestion', 1) }}" class="btn btn-primary">
             Nueva Ruta
             <i class="fa fa-plus" aria-hidden="true"></i>
         </a>
@@ -24,17 +24,19 @@
                         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
 
                             <li class="nav-item">
-                                <a class="nav-link active" id="rutas-tab" data-toggle="pill"
-                                    href="#rutas" role="tab"
+                                <a class="nav-link active" id="rutas-tab" data-toggle="pill" href="#rutas" role="tab"
                                     aria-controls="rutas" aria-selected="false">RUTAS</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="validacion-memo-tab" data-toggle="pill"
-                                    href="#validacion-memo" role="tab"
-                                    aria-controls="validacion-memo" aria-selected="false">VALIDACIÓN
+                                <a class="nav-link" id="bancos-tab" data-toggle="pill" href="#bancos" role="tab"
+                                    aria-controls="bancos" aria-selected="false">BANCOS</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="validacion-memo-tab" data-toggle="pill" href="#validacion-memo"
+                                    role="tab" aria-controls="validacion-memo" aria-selected="false">VALIDACIÓN
                                     MEMORANDUM</a>
                             </li>
-                            
+
                             <!-- Puedes agregar más pestañas según sea necesario -->
                         </ul>
                     </div>
@@ -43,13 +45,19 @@
 
                             <div class="tab-pane fade show active" id="rutas" role="tabpanel"
                                 aria-labelledby="rutas-tab">
-                                
+
                                 <livewire:operaciones.ruta-list />
+
+                            </div>
+                            <div class="tab-pane fade" id="bancos" role="tabpanel"
+                                aria-labelledby="bancos-tab">
+
+                                <livewire:operaciones.listados.bancos-rutas />
 
                             </div>
                             <div class="tab-pane fade" id="validacion-memo" role="tabpanel"
                                 aria-labelledby="validacion-memo-tab">
-                                <livewire:memorandum-validacion.validacion-listados :area="2" />
+                                <livewire:memorandum-validacion.validacion-listados :area="2" /> n
 
 
                             </div>

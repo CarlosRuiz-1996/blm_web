@@ -156,7 +156,7 @@ class GestionDocumentos extends Component
     public function agregarArchivo()
     {
         $this->validate([
-            'documentoSelec' => 'required|file|mimes:pdf|max:10240', // Ajusta según tus necesidades
+            'documentoSelec' => 'required|file|mimes:pdf|max:46080', // 45mb
         ]);
 
         try {
