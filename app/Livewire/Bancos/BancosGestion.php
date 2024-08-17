@@ -8,6 +8,7 @@ use Livewire\WithPagination;
 use App\Livewire\Forms\BancosForm;
 use App\Models\BancosServicios;
 use App\Models\CompraEfectivo;
+use App\Models\CtgConsignatario;
 use App\Models\DetallesCompraEfectivo;
 use App\Models\Servicios;
 use Illuminate\Support\Facades\DB;
@@ -22,10 +23,27 @@ class BancosGestion extends Component
     public $readyToLoad = false;
     public $readyToLoadModal = false;
 
+    public $activeNav = ['active', '', ''];
+    public $showNav = ['show', '', ''];
+
+
     protected $queryString = [
         'form.searchCliente' => ['except' => ''],
     ];
 
+    public function ActiveNav($op)
+    {
+        foreach ($this->showNav as $key => $value) {
+            $this->showNav[$key] = '';
+        }
+        foreach ($this->activeNav as $key => $value) {
+            $this->activeNav[$key] = '';
+        }
+
+        $this->activeNav[$op] = 'active';
+
+        $this->showNav[$op] = 'show';
+    }
     public function render()
     {
 
@@ -66,12 +84,14 @@ class BancosGestion extends Component
     {
 
         $this->cliente_detail = $cliente;
-        $this->readyToLoadModal = true;
+        // $this->readyToLoadModal = true;
     }
 
     public function getMontosProperty()
     {
+        // if($this->cliente_detail && count($this->cliente_detail->montos)){
         return $this->cliente_detail->montos()->paginate(10);
+        // }
     }
 
     #[On('clean')]
@@ -121,7 +141,7 @@ class BancosGestion extends Component
 
     public $cliente;
     public $servicio;
-    public $monto;
+    public $monto = 0;
     public $cajero_id;
     public $fecha;
     public $total;
@@ -133,23 +153,23 @@ class BancosGestion extends Component
     {
         $this->validate(
             [
-                'cliente' => 'required',
+                'cajero_id' => 'required',
                 'monto' => 'required',
             ],
             [
-                'cliente.required' => 'El cliente es obligatorio',
+                'cajero_id.required' => 'El cajero es obligatorio',
                 'monto.required' => 'El monto es obligatorio',
             ]
         );
-        $cliente = Cliente::find($this->cliente);
+        $cajero = CtgConsignatario::find($this->cajero_id);
         $this->compras_efectivo[] = [
-            "cliente" => $this->cliente,
-            "cliente_name" => $cliente->razon_social . '-' . $cliente->rfc_cliente,
+            "cajero" => $this->cajero_id,
+            "cajero_name" => $cajero->name,
             "monto" => $this->monto,
         ];
         $this->total += $this->monto;
-        $this->reset(['cliente', 'monto']);
-        $this->dispatch('resetSelect2');
+        $this->reset(['cajero_id', 'monto']);
+        // $this->dispatch('resetSelect2');
     }
     public function removeCompra($index)
     {
@@ -174,11 +194,11 @@ class BancosGestion extends Component
 
         $this->validate(
             [
-                'cajero_id' => 'required',
+                // 'cajero_id' => 'required',
                 'fecha' => 'required',
             ],
             [
-                'cajero_id.required' => 'El cajero es obligatorio',
+                // 'cajero_id.required' => 'El cajero es obligatorio',
                 'fecha.required' => 'La fecha es obligatorio',
             ]
         );
@@ -191,7 +211,6 @@ class BancosGestion extends Component
             }
             //guardar compra efectivo
             $compra_efectivo = CompraEfectivo::create([
-                'consignatario_id' => $this->cajero_id,
                 'total' => $this->total,
                 'fecha_compra' => $this->fecha,
             ]);
@@ -199,7 +218,7 @@ class BancosGestion extends Component
                 DetallesCompraEfectivo::create([
                     'compra_efectivo_id' => $compra_efectivo->id,
                     'monto' => $compra['monto'],
-                    'cliente_id' => $compra['cliente'],
+                    'consignatario_id' => $compra['cajero'],
                 ]);
             }
             DB::commit();
@@ -214,10 +233,22 @@ class BancosGestion extends Component
 
     public function clean()
     {
-        $this->reset(['cliente', 'monto', 'cajero_id', 'fecha', 'servicios_add',
-        'servicio', 'total', 'compras_efectivo', 'servicios_cliente', 'tipo', 'papeleta']);
+        $this->reset([
+            'cliente',
+            'monto',
+            'cajero_id',
+            'fecha',
+            'servicios_add',
+            'servicio',
+            'total',
+            'compras_efectivo',
+            'servicios_cliente',
+            'tipo',
+            'papeleta'
+        ]);
     }
 
+    public $direccion;
     public $servicios_add = [];
     public function addServicios()
     {
@@ -253,13 +284,22 @@ class BancosGestion extends Component
             "fecha" => $this->fecha,
             "papeleta" => $this->papeleta,
             "servicio" => $this->servicio,
-            "servicio_desc" => $servicio->ctg_servicio->descripcion
+            "servicio_desc" => $servicio->ctg_servicio->descripcion,
+            "direccion"=>$this->direccion
 
         ];
         $this->reset(['cliente', 'monto', 'papeleta', 'servicio', 'tipo', 'fecha']);
         $this->dispatch('resetSelect2');
     }
-
+    public function updatedServicio($value)
+    {
+        if ($value != '')
+            $direccion = Servicios::find($value);
+            $this->direccion = $direccion->sucursal->sucursal->sucursal . ', ' . $direccion->sucursal->sucursal->direccion .
+            ', ' .  $direccion->sucursal->sucursal->cp->cp .
+            '' .
+            $direccion->sucursal->sucursal->cp->estado->name;
+    }
     public function removeService($index)
     {
         unset($this->servicios_add[$index]);

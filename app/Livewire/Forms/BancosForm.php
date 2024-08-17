@@ -95,10 +95,77 @@ class BancosForm extends Form
     }
 
 
-    public function getAllBancosServicios(){
-        return BancosServicios::paginate(10);
+    public $cliente_bancoServ_serach;
+    public $papeleta_bancoServ_serach;
+    public $fechaini_bancoServ_serach;
+    public $fechafin_bancoServ_serach;
+    public $tipoServ_bancoServ_serach;
+    public $status_bancoServ_serach;
+    public function getAllBancosServicios()
+    {
+        return BancosServicios::where(function ($query) {
+
+            if ($this->papeleta_bancoServ_serach) {
+                $query->where('papeleta', 'ILIKE', '%' . $this->papeleta_bancoServ_serach . '%');
+            }
+            // Rango de fechas
+            if ($this->fechaini_bancoServ_serach && $this->fechafin_bancoServ_serach) {
+                $query->whereBetween('fecha_entrega', [$this->fechaini_bancoServ_serach, $this->fechafin_bancoServ_serach]);
+            } elseif ($this->fechaini_bancoServ_serach) {
+                $query->where('fecha_entrega', '=', $this->fechaini_bancoServ_serach);
+            } elseif ($this->fechafin_bancoServ_serach) {
+                $query->where('fecha_entrega', '=', $this->fechafin_bancoServ_serach);
+            }
+
+            if ($this->tipoServ_bancoServ_serach) {
+
+                $query->where('tipo_servicio', $this->tipoServ_bancoServ_serach);
+            }
+            if ($this->status_bancoServ_serach) {
+                $query->where('status_bancos_servicios', $this->status_bancoServ_serach);
+            }
+
+            if ($this->cliente_bancoServ_serach) {
+                $query->orWhereHas('servicio', function ($query2) {
+                    $query2->whereHas('cliente', function ($query3) {
+                        $query3->where('razon_social', 'ILIKE', '%' . $this->cliente_bancoServ_serach . '%');
+                    });
+                });
+            }
+        })->paginate(10);
     }
-    public function getAllComprasEfectivo(){
-        return CompraEfectivo::paginate(10);
+
+    public $fechaini_compra_search;
+    public $fechafin_compra_search;
+
+    public $banco_compra_search;
+    public $monto_compra_search;
+    public $status_compra_search;
+
+    public function getAllComprasEfectivo()
+    {
+        return CompraEfectivo::where(function ($query) {
+            if ($this->monto_compra_search) {
+                $query->where('total', 'ILIKE', '%' . $this->monto_compra_search . '%');
+            }
+            if ($this->status_compra_search) {
+                $query->where('status_compra_efectivos',  $this->status_compra_search);
+            }
+            // Rango de fechas
+            if ($this->fechaini_compra_search && $this->fechafin_compra_search) {
+                $query->whereBetween('fecha_compra', [$this->fechaini_compra_search, $this->fechafin_compra_search]);
+            } elseif ($this->fechaini_compra_search) {
+                $query->where('fecha_compra', '=', $this->fechaini_compra_search);
+            } elseif ($this->fechafin_compra_search) {
+                $query->where('fecha_compra', '=', $this->fechafin_compra_search);
+            }
+            if ($this->banco_compra_search) {
+                $query->orWhereHas('consignatario', function ($query) {
+                    $query->where('name', 'ILIKE', '%' . $this->banco_compra_search . '%');
+                });
+            }
+        })
+        ->orderBy('id','DESC')
+            ->paginate(10);
     }
 }

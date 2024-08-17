@@ -10,78 +10,159 @@
                         Servicios</button>
                 </div>
             </div>
+        </div>
+        <ul class="nav nav-tabs" wire:ignore.self id="custom-tabs-one-tab" role="tablist">
+            <!-- Pestaña "Servicios" -->
 
-            {{-- tabla mostrada <div wire:init='loadProducts'> --}}
-            <div class="col-md-12" wire:init='loadServicios'>
-                <div class="table-responsive">
-                    @if (count($servicios_cliente))
+            <li class="nav-item">
+                <a class="nav-link active" id="activos-tab" data-toggle="pill" href="#activos" role="tab"
+                    aria-controls="activos-all" aria-selected="true">Activos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " id="bajas-tab" data-toggle="pill" href="#bajas" role="tab"
+                    aria-controls="bajas" aria-selected="false">Bajas</a>
+            </li>
 
-                        <table class="table">
-                            <thead class="table-primary">
-                                <tr>
-                                    <th>Servicio</th>
-                                    <th>Monto del servicio</th>
-                                    <th>Sucursal</th>
-                                    <th>Estatus</th>
-                                    <th>Eliminar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($servicios_cliente as $servicio)
+
+        </ul>
+        <div class="tab-content" wire:ignore.self id="custom-tabs-one-tabContent">
+            <div class="tab-pane fade active show " id="activos" role="tabpanel" aria-labelledby="activos-tab">
+
+                <div class="col-md-12" wire:init='loadServicios'>
+                    <div class="table-responsive">
+                        @if (count($servicios_cliente))
+
+                            <table class="table">
+                                <thead class="table-primary">
                                     <tr>
-                                        <td>{{ $servicio->ctg_servicio->descripcion }}</td>
-                                        <td>$
-                                            {{ number_format($servicio->subtotal, 2, '.', ',') }} MXN
+                                        <th>Servicio</th>
+                                        <th>Monto del servicio</th>
+                                        <th>Sucursal</th>
+                                        <th>Estatus</th>
+                                        <th>Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($servicios_cliente as $servicio)
+                                        <tr>
+                                            <td>{{ $servicio->ctg_servicio->descripcion }}</td>
+                                            <td>$
+                                                {{ number_format($servicio->subtotal, 2, '.', ',') }} MXN
 
-                                            {{-- {{ $servicio->ruta_servicio ? number_format($servicio->ruta_servicio->monto, 2, ',', '.') : 0 }} --}}
-                                        </td>
-                                        <td>
-                                            {{ $servicio->sucursal->sucursal->sucursal ?? '' }}
-                                        </td>
-                                        <td>
-                                            @if ($servicio->status_servicio != 0)
-                                                <i class="fa fa-circle" style="color: green"></i>
-                                            @else
-                                                <i class="fa fa-circle" style="color: red"></i>
-                                            @endif
-                                        </td>
-                                        <td>
+                                                {{-- {{ $servicio->ruta_servicio ? number_format($servicio->ruta_servicio->monto, 2, ',', '.') : 0 }} --}}
+                                            </td>
+                                            <td>
+                                                {{ $servicio->sucursal->sucursal->sucursal ?? '' }}
+                                            </td>
+                                            <td>
+                                                @if ($servicio->status_servicio != 0)
+                                                    <i class="fa fa-circle" style="color: green"></i>
+                                                @else
+                                                    <i class="fa fa-circle" style="color: red"></i>
+                                                @endif
+                                            </td>
+                                            <td>
 
-                                            @if ($servicio->status_servicio != 0)
                                                 <button class="btn btn-danger"
-                                                    wire:click='updateServicio({{ $servicio->id }},1)'>
+                                                    wire:click="$dispatch('confirm',[{{ $servicio->id }},1])">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
-                                            @else
-                                                <button class="btn btn-primary"
-                                                    wire:click='updateServicio({{ $servicio->id }},2)'>
+
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+
+                            @if ($servicios_cliente->hasPages())
+                                <div class="px-6 py-3 text-gray-500">
+                                    {{ $servicios_cliente->links() }}
+                                </div>
+                            @endif
+                        @else
+                            @if ($readyToLoad)
+                                <div class="alert alert-secondary" role="alert">
+                                    No hay datos disponibles!
+                                </div>
+                            @else
+                                <!-- Muestra un spinner mientras los datos se cargan -->
+                                <div class="col-md-12 text-center">
+                                    <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
+                                        role="status">
+                                    </div>
+                                </div>
+                            @endif
+                        @endif
+
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="bajas" role="tabpanel" aria-labelledby="bajas-tab">
+
+                <div class="col-md-12" wire:init='loadServicios'>
+                    <div class="table-responsive">
+                        @if (count($servicios_clienteBaja))
+
+                            <table class="table">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Servicio</th>
+                                        <th>Monto del servicio</th>
+                                        <th>Sucursal</th>
+                                        <th>Estatus</th>
+                                        <th>Fecha Baja</th>
+                                        <th>Reactivar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($servicios_clienteBaja as $servicio)
+                                        <tr>
+                                            <td>{{ $servicio->ctg_servicio->descripcion }}</td>
+                                            <td>$
+                                                {{ number_format($servicio->subtotal, 2, '.', ',') }} MXN
+                                            </td>
+                                            <td>
+                                                {{ $servicio->sucursal->sucursal->sucursal ?? '' }}
+                                            </td>
+                                            <td>
+                                               
+                                                    <i class="fa fa-circle" style="color: red"></i>
+                                            </td>
+                                            <td>
+                                                {{$servicio->updated_at}}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-primary" 
+                                                    wire:click="$dispatch('confirm',[{{ $servicio->id }},2])">
                                                     Reactivar
                                                 </button>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
 
-                        @if ($servicios_cliente->hasPages())
-                            <div class="px-6 py-3 text-gray-500">
-                                {{ $servicios_cliente->links() }}
-                            </div>
-                        @endif
-                    @else
-                        @if ($readyToLoad)
-                            <div class="alert alert-secondary" role="alert">
-                                No hay datos disponibles!
-                            </div>
+                            @if ($servicios_clienteBaja->hasPages())
+                                <div class="px-6 py-3 text-gray-500">
+                                    {{ $servicios_clienteBaja->links() }}
+                                </div>
+                            @endif
                         @else
-                            <!-- Muestra un spinner mientras los datos se cargan -->
-                            <div class="spinner-border" role="status">
-                                <span class="visually-hidden"></span>
-                            </div>
+                            @if ($readyToLoad)
+                                <div class="alert alert-secondary" role="alert">
+                                    No hay datos disponibles!
+                                </div>
+                            @else
+                                <!-- Muestra un spinner mientras los datos se cargan -->
+                                <div class="col-md-12 text-center">
+                                    <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
+                                        role="status">
+                                    </div>
+                                </div>
+                            @endif
                         @endif
-                    @endif
 
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,7 +184,8 @@
                 </div>
                 <div class="modal-body">
                     <div>
-                        <h5 class="modal-title" id="tema" {{ $foraneos ? 'hidden' : '' }}>Seleccione servicio</h5>
+                        <h5 class="modal-title" id="tema" {{ $foraneos ? 'hidden' : '' }}>Seleccione servicio
+                        </h5>
                         <form>
                             <div class="row">
                                 <div class="col-md-3 mb-3" {{ $foraneos ? 'hidden' : '' }}>
@@ -465,7 +547,25 @@
 
                 })
 
-
+                @this.on('confirm', (data) => {
+                    Swal.fire({
+                        title: '¿Estas seguro?',
+                        text: "El servicio sera dado de baja y ya no se podra realizar.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, adelante!',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            @this.dispatch('baja-serv', {
+                                servicio: data[0],
+                                accion: data[1]
+                            });
+                        }
+                    })
+                })
                 Livewire.on('success-terminado', function() {
                     Swal.fire({
                         icon: 'success',
@@ -480,6 +580,14 @@
                         title: 'Ha ocurrido un error, intenta más tarde.',
                         showConfirmButton: true,
                         timer: 4000,
+                    });
+                });
+
+                Livewire.on('alert', function([data]) {
+                    Swal.fire({
+                        icon: data[1],
+                        title: data[0],
+                        timer: 3000,
                     });
                 });
             });

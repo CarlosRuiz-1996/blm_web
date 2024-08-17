@@ -59,26 +59,25 @@
         <ul class="nav nav-tabs" wire:ignore.self id="custom-tabs-one-tab" role="tablist">
             <!-- Pestaña "Servicios" -->
 
-
             <li class="nav-item">
-                <a class="nav-link active" id="bancos-tab" data-toggle="pill" href="#bancos" role="tab"
-                    aria-controls="bancos-all" aria-selected="true">Bancos</a>
+                <a class="nav-link {{ $activeNav[0] }}" wire:click='ActiveNav(0)' id="bancos-tab" data-toggle="pill"
+                    href="#bancos" role="tab" aria-controls="bancos-all" aria-selected="true">Saldo de clientes</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="compras-tab" data-toggle="pill" href="#compras" role="tab"
-                    aria-controls="compras" aria-selected="false">Compra de efectivo</a>
+                <a class="nav-link {{ $activeNav[1] }}" wire:click='ActiveNav(1)' id="compras-tab" data-toggle="pill"
+                    href="#compras" role="tab" aria-controls="compras" aria-selected="false">Compra de efectivo</a>
             </li>
-
-
             <li class="nav-item">
-                <a class="nav-link" id="servicios-tab" data-toggle="pill" href="#servicios" role="tab"
-                    aria-controls="servicios" aria-selected="true">Servicios mandados a rutas</a>
+                <a class="nav-link {{ $activeNav[2] }}" wire:click='ActiveNav(2)' id="servicios-tab" data-toggle="pill"
+                    href="#servicios" role="tab" aria-controls="servicios" aria-selected="true">Dotaciones mandados a
+                    rutas</a>
             </li>
 
         </ul>
 
         <div class="tab-content" wire:ignore.self id="custom-tabs-one-tabContent">
-            <div class="tab-pane fade show active " id="bancos" role="tabpanel" aria-labelledby="bancos-tab">
+            <div class="tab-pane fade {{ $activeNav[0] }} {{ $showNav[0] }} " id="bancos" role="tabpanel"
+                aria-labelledby="bancos-tab">
 
                 <div class="card col-md-12">
                     <div class="d-flex  mb-3 mt-3">
@@ -154,17 +153,58 @@
                     @endif
                 </div>
             </div>
-            <div class="tab-pane fade" id="compras" role="tabpanel" aria-labelledby="compras-tab">
+            <div class="tab-pane fade {{ $activeNav[1] }} {{ $showNav[1] }} " id="compras" role="tabpanel"
+                aria-labelledby="compras-tab">
 
                 <div class="card col-md-12 ">
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Efectivo</label>
+                                <input type="text" class="form-control w-full"
+                                    placeholder="Buscar total de la compra"
+                                    wire:model.live='form.monto_compra_search'>
+                            </div>
+                        </div>
 
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Banco/Consignatario</label>
+
+                                <input type="text" class="form-control w-full" placeholder="Buscar banco"
+                                    wire:model.live='form.banco_compra_search'>
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="">Fecha de inicio</label>
+                                <input type="date" class="form-control w-full"
+                                    wire:model.live='form.fechaini_compra_search'>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="">Fecha de fin</label>
+                                <input type="date" class="form-control w-full"
+                                    wire:model.live='form.fechafin_compra_search'>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="">Estatus</label>
+
+                                <input type="text" class="form-control w-full" placeholder=""
+                                    wire:model.live='form.status_compra_search'>
+                            </div>
+                        </div>
+                    </div>
                     @if (count($compras))
 
                         <table class="table table-bordered table-striped table-hover mt-3">
                             <thead class="table-info">
                                 <tr>
                                     <th>Total</th>
-                                    <th>Banco</th>
                                     <th>Fecha solicitada</th>
                                     <th>Estatus</th>
                                     <th style="width: 180px">Opciones</th>
@@ -174,11 +214,10 @@
                                 @foreach ($compras as $compra)
                                     <tr>
                                         <td>$ {{ number_format($compra->total, 2, '.', ',') }}
-                                        <td>{{ $compra->consignatario->name }}</td>
                                         <td>{{ $compra->fecha_compra }}
                                         </td>
                                         <td>
-                                            {{ $compra->status_bancos_servicios == 1 ? 'Pendiente' : 'Finalizada' }}
+                                            {{ $compra->status_compra_efectivos == 1 ? 'Pendiente' : 'Finalizada' }}
                                         </td>
                                         <td>
                                             <button class="btn btn-info" data-toggle="modal"
@@ -203,7 +242,7 @@
                             <h3 class="col-md-12 text-center">No hay datos disponibles</h3>
                         @else
                             <!-- Muestra un spinner mientras los datos se cargan -->
-                            <div class="col-md-12 text-center">
+                            <div class="col-md-12 text-center mt-3">
                                 <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
                                     role="status">
                                     {{-- <span class="visually-hidden">Loading...</span> --}}
@@ -213,10 +252,65 @@
                     @endif
                 </div>
             </div>
-            <div class="tab-pane fade" id="servicios" role="tabpanel" aria-labelledby="servicios-tab">
+            <div class="tab-pane fade {{ $activeNav[2] }} {{ $showNav[2] }} " id="servicios" role="tabpanel"
+                aria-labelledby="servicios-tab">
 
                 <div class="card col-md-12">
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Cliente</label>
+                                <input type="text" class="form-control w-full" placeholder="Buscar cliente"
+                                    wire:model.live='form.cliente_bancoServ_serach'>
+                            </div>
+                        </div>
 
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Papeleta</label>
+
+                                <input type="text" class="form-control w-full" placeholder="Buscar papeleta"
+                                    wire:model.live='form.papeleta_bancoServ_serach'>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Fecha de inicio</label>
+                                <input type="date" class="form-control w-full"
+                                    wire:model.live='form.fechaini_bancoServ_serach'>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Fecha de fin</label>
+                                <input type="date" class="form-control w-full"
+                                    wire:model.live='form.fechafin_bancoServ_serach'>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Tipo de servicio</label>
+                                <select class="custom-select" wire:model.live='form.tipoServ_bancoServ_serach'>
+                                    <option value="" selected>Seleccione</option>
+                                    <option value="1">Entrega</option>
+                                    <option value="2">Recolecta</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Estatus</label>
+                                <select class="custom-select" wire:model.live='form.status_bancoServ_serach'>
+                                    <option value="" selected>Seleccione</option>
+                                    <option value="1">Pendiente</option>
+                                    <option value="2">Finalizado</option>
+                                </select>
+                            </div>
+
+                            {{ $form->status_bancoServ_serach }}
+                        </div>
+                    </div>
                     @if (count($servicios))
 
                         <table class="table table-bordered table-striped table-hover mt-3">
@@ -327,7 +421,7 @@
                         aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
-                    @if ($readyToLoadModal)
+                    @if ($cliente_detail)
                         <table class="table table-bordered table-striped table-hover">
                             <thead class="table-info">
                                 <tr>
@@ -415,7 +509,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
-                        <div class="form-group  col-md-5" wire:ignore>
+                        {{-- <div class="form-group  col-md-5" wire:ignore>
 
                             <x-select-select2 label="Clientes:" placeholder="" wire-model="cliente" required
                                 classSelect2="cliente_compra" modalName='compraEfectivo'>
@@ -429,10 +523,27 @@
                                     <option value="">Sin clientes</option>
                                 @endif
                             </x-select-select2>
+                        </div> --}}
+                        <div class="form-group  col-md-5">
+
+                            <label for="">Monto: {{ number_format($monto, 2, '.', ',') }} MXN</label>
+                            <input type="number" wire:model.live='monto'
+                                class="form-control @error('monto') is-invalid @enderror">
+                            @error('monto')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+
+
                         </div>
                         <div class="form-group  col-md-5">
-                            <x-input-validadolive label="Monto " placeholder="Monto " wire-model="monto"
-                                type="number" />
+                            <x-select-validado label="Cajero:" placeholder="" wire-model="cajero_id" required>
+                                @foreach ($consignatarios as $consignatario)
+                                    <option value="{{ $consignatario->id }}">
+
+                                        {{ $consignatario->name }}</option>
+                                @endforeach
+
+                            </x-select-validado>
                         </div>
 
                         <div class="form-group  col-md-2" style="margin-top: 32px">
@@ -443,17 +554,18 @@
                     @if ($compras_efectivo)
                         <table class="table table-striped">
                             <thead class="table-info">
-                                <th>Cliente</th>
+                                <th>Cajero</th>
                                 <th>Monto</th>
                                 <th>Eliminar</th>
                             </thead>
                             <tbody>
+
                                 @foreach ($compras_efectivo as $index => $compra)
                                     <tr>
-                                        <td>{{ $compra['cliente_name'] }}</td>
+                                        <td>{{ $compra['cajero_name'] }}</td>
                                         <td>
 
-                                            {{ number_format($compra['monto'], 2, '.', ',') }} MXN
+                                            $ {{ number_format($compra['monto'], 2, '.', ',') }} MXN
                                         </td>
                                         <td>
                                             <button class="btn btn-danger"
@@ -473,16 +585,13 @@
                                     type="date" />
 
                             </div>
-                            <div class="form-group  col-md-8">
-                                <x-select-validado label="Cajero:" placeholder="" wire-model="cajero_id" required>
-                                    @foreach ($consignatarios as $consignatario)
-                                        <option value="{{ $consignatario->id }}">
+                            <div class="form-group  col-md-3">
+                                <label for="">Total de la compra</label>
+                                <input type="text" disabled class="form-control"
+                                    value="$ {{ number_format($total, 2, '.', ',') }} MXN">
 
-                                            {{ $consignatario->name }}</option>
-                                    @endforeach
-
-                                </x-select-validado>
                             </div>
+
                         </div>
                     @else
                         <span class="progress-description ">
@@ -513,7 +622,7 @@
                     <table class="table table-bordered table-striped table-hover">
                         <thead class="table-info">
                             <tr>
-                                <th>Razón social</th>
+                                <th>Banco/Consignatario</th>
                                 <th>Monto</th>
                                 {{-- <th>Fecha de la compra</th> --}}
                             </tr>
@@ -524,7 +633,7 @@
                                 @if ($compra_detalle && count($compra_detalle->detalles))
                                     @foreach ($compra_detalle->detalles as $detalle)
                                         <tr>
-                                            <td>{{ $detalle->cliente->razon_social }}</td>
+                                            <td>{{ $detalle->consignatario->name }}</td>
                                             <td>${{ number_format($detalle->monto, 2, '.', ',') }}</td>
                                         </tr>
                                     @endforeach
@@ -600,6 +709,10 @@
                                 type="date" />
 
                         </div>
+                        <div class="form-group  col-md-12">
+                            <x-input-validadolive label="Direccion:" placeholder="Direccion del servicio"
+                                wire-model="direccion" type="text" :readonly='true' />
+                        </div>
                         <div class="form-group  col-md-3">
                             <x-input-validadolive label="Monto " placeholder="Monto " wire-model="monto"
                                 type="number" />
@@ -619,11 +732,14 @@
                             <button type="button" class="btn btn-info" wire:click='addServicios'
                                 wire:loading.remove>Agregar</button>
                         </div>
+
+
                     </div>
                     @if ($servicios_add)
                         <table class="table table-striped">
                             <thead class="table-info">
                                 <th>Cliente</th>
+                                <th>Dirección</th>
                                 <th>Monto</th>
                                 <th>Tipo de servicio</th>
                                 <th>Papeleta</th>
@@ -634,6 +750,7 @@
                                 @foreach ($servicios_add as $index => $servicio)
                                     <tr>
                                         <td>{{ $servicio['cliente_name'] }}</td>
+                                        <td>{{ $servicio['direccion'] }}</td>
                                         <td>
 
                                             {{ number_format($servicio['monto'], 2, '.', ',') }} MXN

@@ -75,7 +75,7 @@ class ServiciosClientes extends Component
     public $valoreditar = 0;
     public AnexoForm $form_anexo;
     public $banco = false;
-    public function mount(Cliente $cliente, $banco=false)
+    public function mount(Cliente $cliente, $banco = false)
     {
         $this->banco = $banco;
         $this->form->cliente = $cliente;
@@ -88,13 +88,15 @@ class ServiciosClientes extends Component
     }
     public function render()
     {
-        
+
         $servicios_cliente = [];
-        if ($this->readyToLoad && $this->banco==false) {
+        $servicios_clienteBaja=[];
+        if ($this->readyToLoad && $this->banco == false) {
             $servicios_cliente = $this->form->getServicios();
+            $servicios_clienteBaja = $this->form->getServiciosBaja();
         }
         // dd($this->banco);
-        return view('livewire.clientes.servicios-clientes', compact('servicios_cliente'));
+        return view('livewire.clientes.servicios-clientes', compact('servicios_cliente','servicios_clienteBaja'));
     }
 
     public function loadServicios()
@@ -102,10 +104,18 @@ class ServiciosClientes extends Component
         $this->readyToLoad = true;
     }
 
+    #[On('baja-serv')]
     public function updateServicio(Servicios $servicio, $accion)
     {
-        $this->form->updateServicio($servicio, $accion);
-        $this->render();
+
+        $res = $this->form->updateServicio($servicio, $accion);
+
+        if ($res[0] == 1) {
+            $this->dispatch('alert', ['Accion completada.', 'success']);
+        } else {
+            $this->dispatch('alert', [$res[1], 'error']);
+        }
+        // $this->render();
     }
 
 

@@ -9,6 +9,7 @@ use App\Models\Ctg_Cp;
 use App\Models\Ctg_Tipo_Cliente;
 use App\Models\Memorandum;
 use App\Models\MemorandumServicios;
+use App\Models\RutaServicio;
 use App\Models\Servicios;
 use App\Models\servicios_conceptos_foraneos;
 use App\Models\SucursalServicio;
@@ -108,8 +109,14 @@ class ClienteActivoForm extends Form
         $this->user_id = $user->id; //usuario_id para relacionar con la tabla cliente
         //creo cliente
         Cliente::create($this->only([
-            'user_id', 'puesto', 'direccion', 'ctg_cp_id', 'razon_social', 'rfc_cliente',
-            'phone', 'ctg_tipo_cliente_id'
+            'user_id',
+            'puesto',
+            'direccion',
+            'ctg_cp_id',
+            'razon_social',
+            'rfc_cliente',
+            'phone',
+            'ctg_tipo_cliente_id'
         ]));
 
 
@@ -153,8 +160,13 @@ class ClienteActivoForm extends Form
         $this->cliente->user->update($this->only(['name', 'paterno', 'materno', 'email', 'password']));
 
         $this->cliente->update($this->only([
-            'puesto', 'direccion', 'ctg_cp_id', 'razon_social', 'rfc_cliente',
-            'phone', 'ctg_tipo_cliente_id'
+            'puesto',
+            'direccion',
+            'ctg_cp_id',
+            'razon_social',
+            'rfc_cliente',
+            'phone',
+            'ctg_tipo_cliente_id'
         ]));
 
 
@@ -170,23 +182,42 @@ class ClienteActivoForm extends Form
     {
         return Servicios::where('cliente_id', $this->cliente->id)
             ->where(function ($query) {
-                $query->where('status_servicio', '>=', 3)
-                    ->orWhere('status_servicio', 0);
-            })->orderBy('id','DESC')
+                $query->where('status_servicio', '>=', 3);
+            })->orderBy('id', 'DESC')
+            ->paginate(10);
+    }
+    public function getServiciosBaja()
+    {
+        return Servicios::where('cliente_id', $this->cliente->id)
+            ->where(function ($query) {
+                $query->where('status_servicio', 0);
+            })->orderBy('id', 'DESC')
             ->paginate(10);
     }
 
     public function updateServicio(Servicios $servicio, $accion)
     {
-        if ($accion == 1) {
-            //para darlo de baja se cambia el status a 1.
-            $servicio->status_servicio = 0;
-            $servicio->save();
+
+
+        $serv = RutaServicio::where('servicio_id', $servicio->id)->first();
+
+        if ($serv) {
+            if ($serv->status_ruta_servicios == 1) {
+                $servicio->status_servicio = $accion == 1 ? 0 : 3;
+                $servicio->save();
+
+                //ELIMINAR RUTASERVICIO O DAR DE BAJA NADA MAS ?
+                return [1];
+            } else {
+                return [0, 'El servicio esta en ruta no se puede dar de baja en este momento.'];
+            }
         } else {
-            //para reactivarlo se cambia status a 3.
-            $servicio->status_servicio = 3;
+            $servicio->status_servicio = $accion == 1 ? 0 : 3;
             $servicio->save();
+            return [1];
         }
+
+        return [0, 'Hubo un problema, intenta más tarde.'];
     }
 
 
@@ -249,7 +280,7 @@ class ClienteActivoForm extends Form
 
             $servcios_sucursal = Session::get('servicio-sucursal', []);
             $servcios_memo = Session::get('servicio-memo', []);
-            $sucursal_servicio="";
+            $sucursal_servicio = "";
             if (!empty($servcios_sucursal) && is_array($servcios_sucursal)) {
                 $anexo1 = Anexo1::create(['cliente_id' => $this->cliente->id]);
                 $registro = $servcios_sucursal[0];
@@ -272,9 +303,9 @@ class ClienteActivoForm extends Form
                         'status_memoranda' => 2
                     ]
                 );
-                
+
                 MemorandumServicios::create([
-                    'sucursal_servicio_id' =>$sucursal_servicio->id,
+                    'sucursal_servicio_id' => $sucursal_servicio->id,
                     'memoranda_id' => $memorandum->id,
                     'ctg_dia_servicio_id' => $registro['horarioEntrega'],
                     'ctg_dia_entrega_id' => $registro['diaEntrega'],
@@ -284,7 +315,7 @@ class ClienteActivoForm extends Form
                 ]);
                 Log::info("termina-MemorandumServicios");
             }
-      
+
             DB::commit();
             return 1;
         } catch (\Exception $e) {
