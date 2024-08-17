@@ -167,14 +167,14 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        {{-- <div class="col-md-3">
                             <div class="form-group">
                                 <label for="">Banco/Consignatario</label>
 
                                 <input type="text" class="form-control w-full" placeholder="Buscar banco"
                                     wire:model.live='form.banco_compra_search'>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="col-md-2">
                             <div class="form-group">
@@ -190,13 +190,18 @@
                                     wire:model.live='form.fechafin_compra_search'>
                             </div>
                         </div>
-                        <div class="col-md-2">
+                       
+
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="">Estatus</label>
-
-                                <input type="text" class="form-control w-full" placeholder=""
-                                    wire:model.live='form.status_compra_search'>
+                                <select class="custom-select" wire:model.live='form.status_compra_search'>
+                                    <option value="" selected>Seleccione</option>
+                                    <option value="1">Pendiente</option>
+                                    <option value="2">Finalizado</option>
+                                </select>
                             </div>
+
                         </div>
                     </div>
                     @if (count($compras))
@@ -308,7 +313,6 @@
                                 </select>
                             </div>
 
-                            {{ $form->status_bancoServ_serach }}
                         </div>
                     </div>
                     @if (count($servicios))
