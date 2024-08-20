@@ -119,7 +119,7 @@
                             <thead class="table-info">
                                 <tr>
                                     <th>Total</th>
-                                    <th>Banco</th>
+                                    {{-- <th>Banco</th> --}}
                                     <th>Fecha solicitada</th>
                                     <th>Estatus</th>
                                     <th style="width: 180px">Opciones</th>
@@ -129,7 +129,7 @@
                                 @foreach ($compras as $compra)
                                     <tr>
                                         <td>$ {{ number_format($compra->total, 2, '.', ',') }}
-                                        <td>{{ $compra->consignatario->name }}</td>
+                                        {{-- <td>{{ $compra->consignatario->name }}</td> --}}
                                         <td>{{ $compra->fecha_compra }}
                                         </td>
                                         <td>
@@ -197,8 +197,8 @@
                         <input class="form-control" disabled
                             value="$ {{ number_format($compra->total, 2, '.', ',') }}" />
 
-                        <label for="">Consignatario/Banco</label>
-                        <input class="form-control" disabled value="{{ $compra->consignatario->name }}" />
+                        {{-- <label for="">Consignatario/Banco</label>
+                        <input class="form-control" disabled value="{{ $compra->consignatario->name }}" /> --}}
 
                         <label for="">Fecha solicitud</label>
                         <input class="form-control" disabled value="{{ $compra->fecha_compra }}" />
@@ -260,8 +260,8 @@
                         <input class="form-control" disabled
                             value="$ {{ number_format($compra->total, 2, '.', ',') }}" />
 
-                        <label for="">Consignatario/Banco</label>
-                        <input class="form-control" disabled value="{{ $compra->consignatario->name }}" />
+                        {{-- <label for="">Consignatario/Banco</label> --}}
+                        {{-- <input class="form-control" disabled value="{{ $compra->consignatario->name }}" /> --}}
 
                         <label for="">Fecha solicitud</label>
                         <input class="form-control" disabled value="{{ $compra->fecha_compra }}" />

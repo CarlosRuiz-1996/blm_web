@@ -42,4 +42,8 @@ class Ruta extends Model
     {
         return $this->hasMany(RutaServicio::class, 'ruta_id');
     }
+
+    public function ruta_compra(){
+        return $this->hasMany(RutaCompraEfectivo::class, 'ruta_id');
+    }
 }

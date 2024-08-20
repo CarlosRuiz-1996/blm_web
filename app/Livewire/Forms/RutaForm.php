@@ -277,7 +277,8 @@ class RutaForm extends Form
             ->where(function ($query) {
                 $query->where('folio', 'ilike', '%' . $this->searchServicio . '%')
                     ->orWhere('monto', 'ilike', '%' . $this->searchServicio . '%')
-                    ->orWhere('envases', 'ilike', '%' . $this->searchServicio . '%');
+                    // ->orWhere('envases', 'ilike', '%' . $this->searchServicio . '%')
+                    ;
             })
             ->whereHas('servicio', function ($query) {
                 $query->where(function ($subquery) {
@@ -310,7 +311,6 @@ class RutaForm extends Form
     }
     public function storeRutaServicio($seleccionados, $seleccionadosRecolecta)
     {
-
         try {
             DB::beginTransaction();
             $totalRuta = 0;
@@ -324,7 +324,7 @@ class RutaForm extends Form
                             'ruta_id' => $this->ruta->id,
                             'monto' => $data['monto'],
                             'folio' => $data['folio'],
-                            'envases' => $data['envases'],
+                            // 'envases' => $data['envases'],
                             'tipo_servicio' => 1,
                         ]);
 
@@ -344,7 +344,7 @@ class RutaForm extends Form
                             'ruta_id' => $this->ruta->id,
                             'monto' => $data['monto'],
                             'folio' => $data['folio'],
-                            'envases' => $data['envases'],
+                            // 'envases' => $data['envases'],
                             'tipo_servicio' => 2,
                         ]);
 
@@ -401,7 +401,7 @@ class RutaForm extends Form
 
     public $monto;
     public $folio;
-    public $envases;
+    // public $envases;
     public $servicio_desc;
     public $servicio_edit;
     public function updateServicio()
@@ -416,7 +416,7 @@ class RutaForm extends Form
             $riesgo = $this->calculaRiesgo($this->ruta->total_ruta);
             $this->ruta->ctg_rutas_riesgo_id = $riesgo;
             $this->ruta->save();
-            $this->servicio_edit->update($this->only(['monto', 'folio', 'envases']));
+            $this->servicio_edit->update($this->only(['monto', 'folio']));//, 'envases'
 
             DB::commit();
             return 1;
@@ -503,7 +503,7 @@ class RutaForm extends Form
                 'ruta_id' => $this->ruta_id,
                 'monto' => $this->monto,
                 'folio' => $this->folio,
-                'envases' => $this->envases,
+                // 'envases' => $this->envases,
             ]);
 
             $servicio_ruta->servicio->status_servicio = 4;

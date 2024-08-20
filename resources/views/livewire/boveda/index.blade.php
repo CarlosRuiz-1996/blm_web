@@ -110,6 +110,7 @@
                                 {{ $servicios->links() }}
                             </div>
                         @endif
+
                     </div>
                     <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
                         <div class="table-responsive">
@@ -206,11 +207,11 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="table-responsive" wire:init='loadServicios'>
+                    <div class="table-responsive">
 
                         @if ($serviciosRuta)
 
-                            <table class="table">
+                            <table class="table table-hover table-striped">
                                 <thead class="table-info">
                                     <tr>
                                         <th>Cliente</th>
@@ -240,16 +241,12 @@
                                                                 data-target="#detalleModalEnvases"
                                                                 wire:click='llenarmodalEnvases({{ $rutaserv->id }})'>Envases</a>
                                                         @else
-                                                            
-                                                            <span
-                                                            class="badge bg-success">
-                                                            Cargado.
-                                                        </span>
+                                                            <span class="badge bg-success">
+                                                                Cargado.
+                                                            </span>
                                                         @endif
                                                     @else
-                                                        
-                                                        <span
-                                                            class="badge bg-secondary">
+                                                        <span class="badge bg-secondary">
                                                             Reprogramado
                                                         </span>
                                                     @endif
@@ -276,7 +273,7 @@
                                                             class="btn btn-danger">No</button>
                                                     @else
                                                         <span
-                                                            class="badge {{ $rutaserv->status_ruta_servicios == 2 ? 'bg-success' : ($rutaserv->status_ruta_servicios == 0 ?'bg-secondary':'bg-danger') }}">
+                                                            class="badge {{ $rutaserv->status_ruta_servicios == 2 ? 'bg-success' : ($rutaserv->status_ruta_servicios == 0 ? 'bg-secondary' : 'bg-danger') }}">
                                                             {{ $rutaserv->status_ruta_servicios == 2
                                                                 ? 'Servicio cargado'
                                                                 : ($rutaserv->status_ruta_servicios == 0
@@ -305,20 +302,59 @@
                                 </tbody>
                             </table>
                         @else
-                            <div class="col-md-12 text-center">
-                                <div class="spinner-border" role="status">
-                                    {{-- <span class="visually-hidden">Loading...</span> --}}
+                            <div class="text-center">
+                                <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
+                                    role="status">
                                 </div>
                             </div>
                         @endif
+                        @if ($compra_efectivo)
+                            <div class="table-responsive">
+                                <h2>Compra de efectivo</h2>
+                                <table class="table">
+                                    <!-- Encabezados de la tabla -->
+                                    <thead class="table-info">
+                                        <tr>
+                                            <th>Monto compra</th>
+                                            <th>Fecha requerida</th>
+                                            <th>Detalles</th>
+                                            <th>Cargar</th>
+                                        </tr>
+                                    </thead>
+                                    <!-- Cuerpo de la tabla -->
+                                    <tbody>
+                                        @foreach ($compra_efectivo as $compra)
+                                            <tr>
+                                                <td>{{ $compra->compra->total }}</td>
+                                                <td>{{ $compra->compra->fecha_compra }}</td>
+                                                <td>
+                                                    <button class="btn btn-info" data-toggle="modal"
+                                                        wire:click="showCompraDetail({{ $compra->compra }})"
+                                                        data-target="#modalDetailCompra">Detalles</button>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-primary"
+                                                    wire:click='confirmCompra(1)'
+                                                    >Confirmar</button>
+                                                    <button class="btn btn-danger"
+                                                    wire:click='confirmCompra(0)'
+                                                    >Rechazar</button>
 
+                                                </td>
+                                            </tr>
+                                        @endforeach
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     @if ($serviciosRuta)
-                    <button type="button" class="btn btn-info" wire:click='finailzar' wire:loading.remove
-                    >Mandar a ruta</button>
+                        <button type="button" class="btn btn-info" wire:click='finailzar' wire:loading.remove>Mandar
+                            a ruta</button>
                     @endif
 
                 </div>
@@ -371,17 +407,31 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        @if (isset($inputs) && is_array($inputs) && count($inputs) > 0)
-                            <div class="col-md-12 mb-3">
-                                <x-input-validadolive label="Papeleta/folio:" :readonly="true"
-                                    placeholder="Papeleta/folio" wire-model="papeleta" wire-attribute="papeleta"
-                                    type="text" />
-                            </div>
-                        @endif
+                        <div class="col-md-4 mb-3">
+                            <x-input-validadolive label="Papeleta/folio:" :readonly="true"
+                                placeholder="Papeleta/folio" wire-model="papeleta" wire-attribute="papeleta"
+                                type="text" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <x-input-validado :readonly="true" label="Monto:" placeholder="Ingrese Monto total"
+                                wire-model="MontoRecolecta" wire-attribute="MontoRecolecta" type="text" />
+                        </div>
+                        <div class="col-md-3 mb-1">
+                            <x-input-validadolive :readonly="false" label="Envases:"
+                                placeholder="Ingrese cantidad de envases" wire-model="envasescantidad"
+                                wire-attribute="envasescantidad" type="text" />
+
+                        </div>
+                        <div class="col-md-2" style="margin-top: 32px">
+
+                            <button class="btn btn-info" wire:click='envase_recolecta'>Agregar</button>
+                        </div>
+
                         @foreach ($inputs as $index => $input)
                             <div class="col-md-6 mb-3">
                                 <x-input-validado label="Cantidad:" :readonly="false"
-                                    placeholder="Envase {{ $index + 1 }}" wire-model="inputs.{{ $index }}"
+                                    placeholder="Monto del envase {{ $index + 1 }}"
+                                    wire-model="inputs.{{ $index }}"
                                     wire-attribute="inputs.{{ $index }}" type="text" />
                             </div>
                             <div class="col-md-6 mb-3">
@@ -401,6 +451,58 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" wire:ignore.self id="modalDetailCompra" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" id="exampleModalLabel">Detalles de la compra</h5>
+                    <button type="button" wire:click='limpiarDatos' class="close" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="table-info">
+                            <tr>
+                                <th>Banco/Consignatario</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if ($readyToLoadModal)
+
+                                @if ($compra_detalle && count($compra_detalle->detalles))
+                                    @foreach ($compra_detalle->detalles as $detalle)
+                                        <tr>
+                                            <td>{{ $detalle->consignatario->name }}</td>
+                                            <td>${{ number_format($detalle->monto, 2, '.', ',') }}</td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr class="text-center">
+                                        <td colspan="8"> No hay movimientos</td>
+                                    </tr>
+                                @endif
+                            @else
+                                <tr class="text-center">
+                                    <td colspan="8">
+                                        <div class="spinner-border" role="status"></div>
+                                    </td>
+                                </tr>
+
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" wire:click='limpiarDatos' class="btn btn-secondary"
+                        data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('js')
         <script>
             document.addEventListener('livewire:initialized', () => {

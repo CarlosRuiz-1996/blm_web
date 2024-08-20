@@ -19,10 +19,8 @@ class AgregarServicio extends Component
 
     public $montoArray = [];
     public $folioArray = [];
-    public $envaseArray = [];
     public $montoArrayRecolecta = [];
     public $folioArrayRecolecta = [];
-    public $envaseArrayRecolecta = [];
     public $readyToLoad = false;
     public $selectValidacion = [];
     protected $rules = [];
@@ -34,10 +32,8 @@ class AgregarServicio extends Component
         $this->selectServicios = [];
         $this->montoArray = [];
         $this->folioArray = [];
-        $this->envaseArray = [];
         $this->montoArrayRecolecta = [];
         $this->folioArrayRecolecta = [];
-        $this->envaseArrayRecolecta = [];
         $this->clientes = $this->form->getClientes();
     }
 
@@ -99,7 +95,6 @@ class AgregarServicio extends Component
                     if (array_key_exists($id, $this->selectServiciosEntrega)) {
                         if ($this->selectServiciosEntrega[$id] === true) {
                             $rules["montoArray.$id"] = 'required';
-                            $rules["envaseArray.$id"] = 'required';
                             $rules["folioArray.$id"] = 'required';
                         }
                     }
@@ -121,7 +116,6 @@ class AgregarServicio extends Component
         return [
             'montoArray.*.required' => 'Campo obligatorio',
             'folioArray.*.required' => 'Campo obligatorio',
-            'envaseArray.*.required' => 'Campo obligatorio',
             'folioArrayRecolecta.*.required' => 'Campo obligatorio',
             'selectValidacion.*.required' => 'Debes seleccionar almenos un tipo de entrega',
 
@@ -132,10 +126,8 @@ class AgregarServicio extends Component
     {
         $this->resetErrorBag("montoArray.$servicioId");
         $this->resetErrorBag("folioArray.$servicioId");
-        $this->resetErrorBag("envaseArray.$servicioId");
         $this->resetErrorBag("montoArrayRecolecta.$servicioId");
         $this->resetErrorBag("folioArrayRecolecta.$servicioId");
-        $this->resetErrorBag("envaseArrayRecolecta.$servicioId");
         $this->resetErrorBag("selectValidacion.$servicioId");
     }
 
@@ -167,7 +159,6 @@ class AgregarServicio extends Component
                         "servicio_id" => $servicio_id,
                         "monto" => "",
                         "folio" => "",
-                        "envases" => "",
                     ];
 
                     if (array_key_exists($servicio_id, $this->montoArray)) {
@@ -178,18 +169,13 @@ class AgregarServicio extends Component
                     if (array_key_exists($servicio_id, $this->folioArray)) {
                         $seleccionados[$bandera]['folio'] = $this->folioArray[$servicio_id];
                     }
-                    if (array_key_exists($servicio_id, $this->envaseArray)) {
-                        $seleccionados[$bandera]['envases'] = $this->envaseArray[$servicio_id];
-                    } else {
-                        $seleccionados[$bandera]['envases'] = 0;
-                    }
+                    
                 }
                 if (array_key_exists($servicio_id, $this->selectServiciosRecolecta)) {
                     $seleccionadosRecolecta[$bandera] = [
                         "servicio_id" => $servicio_id,
                         "monto" => "",
                         "folio" => "",
-                        "envases" => "",
                     ];
                     if (array_key_exists($servicio_id, $this->montoArrayRecolecta)) {
                         $seleccionadosRecolecta[$bandera]['monto'] = $this->montoArrayRecolecta[$servicio_id];
@@ -199,11 +185,7 @@ class AgregarServicio extends Component
                     if (array_key_exists($servicio_id, $this->folioArrayRecolecta)) {
                         $seleccionadosRecolecta[$bandera]['folio'] = $this->folioArrayRecolecta[$servicio_id];
                     }
-                    if (array_key_exists($servicio_id, $this->envaseArrayRecolecta)) {
-                        $seleccionadosRecolecta[$bandera]['envases'] = $this->envaseArrayRecolecta[$servicio_id];
-                    } else {
-                        $seleccionadosRecolecta[$bandera]['envases'] = 0;
-                    }
+                    
                 }
                 $bandera++;
             }
@@ -243,7 +225,6 @@ class AgregarServicio extends Component
         $this->form->servicio_edit = $ruta_servicio;
         $this->form->monto = $ruta_servicio->monto;
         $this->form->folio = $ruta_servicio->folio;
-        $this->form->envases = $ruta_servicio->envases;
         $this->form->servicio_desc = $ruta_servicio->servicio->cliente->razon_social;
     }
 
@@ -253,11 +234,9 @@ class AgregarServicio extends Component
         $this->validate([
             'form.monto' => 'required',
             'form.folio' => 'required',
-            'form.envases' => 'required',
         ], [
             'form.monto' => 'El monto es obligatorio.',
             'form.folio' => 'El folio es obligatorio.',
-            'form.envases' => 'El envases es obligatorio',
         ]);
         $res = $this->form->updateServicio();
         if ($res == 1) {
@@ -275,17 +254,14 @@ class AgregarServicio extends Component
         $this->reset(
             'form.monto',
             'form.folio',
-            'form.envases',
             'form.servicio_desc',
             'form.servicio_edit',
             'selectServicios',
             'montoArray',
             'folioArray',
-            'envaseArray',
             'selectServiciosRecolecta',
             'montoArrayRecolecta',
             'folioArrayRecolecta',
-            'envaseArrayRecolecta',
           
         );
 

@@ -4,11 +4,13 @@ namespace App\Livewire\Boveda;
 
 use App\Livewire\Operaciones\RutaGestion;
 use App\Models\Cliente;
+use App\Models\CompraEfectivo;
 use App\Models\Empleado;
 use App\Models\Notification;
 use App\Models\Reprogramacion;
 use App\Models\ResguardoResporte;
 use App\Models\Ruta;
+use App\Models\RutaCompraEfectivo;
 use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
 use App\Models\ServicioRutaEnvases;
@@ -28,7 +30,6 @@ class Index extends Component
     public $idservioruta;
     public $idserviorutaEnvases;
     public $idserviorutacancelado;
-    public $cantidadEnvases;
     public $statusEnvases;
     public $inputs = [];
     public $sellos = [];
@@ -53,10 +54,25 @@ class Index extends Component
         $this->readyToLoad = true;
     }
     public $ruta_id;
+    public $compra_efectivo;
+
     public function llenarmodalservicios($idruta)
     {
         $this->ruta_id = $idruta;
         $this->serviciosRuta = RutaServicio::where('ruta_id', $idruta)->get();
+        //compra de efectivo
+        $this->compra_efectivo = RutaCompraEfectivo::where('ruta_id', $idruta)->where('status_ruta_compra_efectivos', 1)->get();
+
+        // dd($this->compra_efectivo);
+    }
+
+    public $compra_detalle = [];
+    public $readyToLoadModal = false;
+
+    public function showCompraDetail(CompraEfectivo $compra)
+    {
+        $this->compra_detalle = $compra;
+        $this->readyToLoadModal = true;
     }
     public function cargar($idservicioruta)
     {
@@ -138,15 +154,15 @@ class Index extends Component
 
         $serviciosRutaAll = RutaServicio::where('ruta_id', $this->ruta_id)->count();
         $servicioRutastatus2 = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios', 2)
-        ->orWhere('status_ruta_servicios', 0)->count();
+            ->orWhere('status_ruta_servicios', 0)->count();
 
         //revisar si ya trae los envases y no contempla las de reprogramacion
         $entregas =  RutaServicio::where('ruta_id', $this->ruta_id)->where('tipo_servicio', 1)
-        ->where(function ($query) {
-            $query->where('status_ruta_servicios', 1)
-                  ->orWhere('status_ruta_servicios', 2);
-        })
-        ->count();
+            ->where(function ($query) {
+                $query->where('status_ruta_servicios', 1)
+                    ->orWhere('status_ruta_servicios', 2);
+            })
+            ->count();
         $envases = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios', 2)
             ->where('tipo_servicio', 1)->count();
 
@@ -198,9 +214,9 @@ class Index extends Component
 
             //generar reprogramacion
             Reprogramacion::create([
-                'motivo'=>$this->motivoNo,
+                'motivo' => $this->motivoNo,
                 'ruta_servicio_id' => $servicioRuta->id,
-                'area_id'=>3
+                'area_id' => 3
             ]);
 
             // Actualizar el modelo de Ruta relacionado
@@ -210,7 +226,7 @@ class Index extends Component
             // Eliminar el registro de RutaServicio
             $servicioRuta->status_ruta_servicios = 0;
             $servicioRuta->save();
-            
+
             $this->dispatch('successservicioEnvases', ['Servicio mandado a reprogramación', 'success']);
 
             DB::commit();
@@ -299,6 +315,8 @@ class Index extends Component
             $servicioRuta = RutaServicio::find($this->idserviorutaEnvases);
             $ClienteResguardo = $servicioRuta->servicio->cliente->resguardo;
             $totalinputs = array_sum($this->inputs);
+
+            // dd($servicioRuta->servicio->cliente);
             if ($ClienteResguardo >= $servicioRuta->monto) {
                 if ($servicioRuta->monto == $totalinputs) {
                     foreach ($this->inputs as $index => $input) {
@@ -317,7 +335,7 @@ class Index extends Component
                     $this->llenarmodalservicios($servicioRuta->ruta_id);
                     $this->dispatch('successservicioEnvases', ['Los envases han sido almacenados correctamente', 'success']);
                 } else {
-                    $this->dispatch('successservicioEnvases', ['Las Cantidades no coinciden con el monto total de entrega', 'error']);
+                    $this->dispatch('error', ['Las Cantidades no coinciden con el monto total de entrega.']);
                 }
             } else {
                 $this->dispatch('successservicioEnvases', ['No cuenta con dinero en resguardo,Se notificara a las areas Correspondientes', 'error']);
@@ -333,18 +351,40 @@ class Index extends Component
     }
 
     public $papeleta;
+    public $MontoRecolecta;
+    public $envasescantidad;
+
     public function llenarmodalEnvases(RutaServicio $ServicioRuta)
     {
+
         $this->resetValidation();
-        $this->cantidadEnvases = $ServicioRuta->envases;
         $this->idserviorutaEnvases =  $ServicioRuta->id;
         $this->papeleta =  $ServicioRuta->folio; //papeleta
+        $this->MontoRecolecta = $ServicioRuta->monto;
+        $this->envasescantidad = $ServicioRuta->envases;
+    }
 
+    public function envase_recolecta()
+    {
+        $this->validate([
+            'envasescantidad' => 'required',
+        ], [
+            'envasescantidad.required' => 'La cantidad de envases es obligatoria',
+        ]);
 
-        // Si no hay registros, inicializar los arreglos con valores vacíos
-        $this->inputs = array_fill(0, $this->cantidadEnvases, '');
-        $this->sellos = array_fill(0, $this->cantidadEnvases, '');
+        $this->inputs = array_fill(0, $this->envasescantidad, '');
+        $this->sellos = array_fill(0, $this->envasescantidad, '');
         $this->statusEnvases = 2;
-        // }
+    }
+
+    public function limpiarDatos()
+    {
+        $this->reset('readyToLoadModal','compra_efectivo');
+    }
+
+    public function confirmCompra($op){
+        $this->compra_efectivo->status_ruta_compra_efectivos=$op;
+        $this->compra_efectivo->save();
+        
     }
 }

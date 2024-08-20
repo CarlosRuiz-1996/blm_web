@@ -180,6 +180,8 @@
             {{-- servicios --}}
             <livewire:operaciones.rutas.agregar-servicio :ruta="$form->ruta" />
 
+            <livewire:operaciones.rutas.listar-compras :ruta="$form->ruta" />
+
             @if ($this->form->ruta->ctg_rutas_estado_id == 1)
                 <div class="col-md-12 ">
                     <button

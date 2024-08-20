@@ -38,7 +38,6 @@
                                         <th>Servicio</th>
                                         <th>Monto</th>
                                         <th>Folio</th>
-                                        <th>Envases</th>
                                         <th>Tipo servicio</th>
                                         @if ($this->form->ruta->ctg_rutas_estado_id == 1)
                                             <th>Acciones</th>
@@ -54,7 +53,6 @@
 
                                                 <td>{{ $servicio->monto }}</td>
                                                 <td>{{ $servicio->folio }}</td>
-                                                <td>{{ $servicio->envases }}</td>
                                                 <td>{{ $servicio->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECCIÓN' }}</td>
                                                 @if ($this->form->ruta->ctg_rutas_estado_id == 1)
                                                     <td>
@@ -134,7 +132,6 @@
                                 <th>Tipo Servicio</th>
                                 <th>Monto</th>
                                 <th>Papeleta</th>
-                                <th>Contenedor</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -146,10 +143,8 @@
                                     checkbox2: false,
                                     monto: '',
                                     folio: '',
-                                    contenedor: '',
                                     monto2: '',
                                     folio2: '',
-                                    contenedor2: '',
                                     tipo: '0',
                                     updateCheckboxes() {
                                         if (!this.checkServicio) {
@@ -157,10 +152,8 @@
                                             this.checkbox2 = false;
                                             this.monto = '';
                                             this.folio = '';
-                                            this.contenedor = '';
                                             this.monto2 = '';
                                             this.folio2 = '';
-                                            this.contenedor2 = '';
                                         }
                                     },
                                     disableFields() {
@@ -192,7 +185,7 @@
                                                     x-bind:value="checkServicio ? tipo : '1'"
                                                     x-bind:disabled="!checkServicio" x-model="checkbox1"
                                                     wire:model='selectServiciosRecolecta.{{ $servicio->id }}'
-                                                    @change="if (!checkbox1) {  monto = ''; folio = ''; contenedor='' ;  }"
+                                                    @change="if (!checkbox1) {  monto = ''; folio = '';   }"
                                                     wire:click="resetError('{{ $servicio->id }}')" />
                                                 <label class="form-check-label"
                                                     for="selectServiciosRecolecta.{{ $servicio->id }}">Recolección</label>
@@ -201,7 +194,7 @@
                                                 <input class="form-check-input" type="checkbox"
                                                     x-bind:value="checkServicio ? tipo : '2'"
                                                     x-bind:disabled="!checkServicio" x-model="checkbox2"
-                                                    @change="if (!checkbox2) { monto2 = ''; folio2 = ''; contenedor2='' ; }"
+                                                    @change="if (!checkbox2) { monto2 = ''; folio2 = '';  }"
                                                     wire:model='selectServiciosEntrega.{{ $servicio->id }}'
                                                     wire:click="resetError('{{ $servicio->id }}')" />
                                                 <label class="form-check-label"
@@ -242,23 +235,7 @@
                                                 type="text" />
                                         </div>
                                     </td>
-                                    <td>
-                                        <div class="d-flex flex-column">
-                                            <x-input-validado
-                                                x-bind:value="checkServicio ? contenedor : '' || checkbox1 ? contenedor : ''"
-                                                style="margin-top: -17%"
-                                                x-bind:disabled="!checkServicio || !checkbox1" x-model="contenedor"
-                                                placeholder="Envases"
-                                                wire-model='envaseArrayRecolecta.{{ $servicio->id }}'
-                                                type="number" />
-                                            <x-input-validado
-                                                x-bind:value="checkServicio ? contenedor2 : '' || checkbox2 ? contenedor2 : ''"
-                                                style="margin-top: -21%"
-                                                x-bind:disabled="!checkServicio || !checkbox2" x-model="contenedor2"
-                                                placeholder="Envases" wire-model='envaseArray.{{ $servicio->id }}'
-                                                type="number" />
-                                        </div>
-                                    </td>
+                                    
 
 
                                 </tr>
@@ -306,7 +283,7 @@
 
             <x-input-validado label="Monto:" placeholder="Monto" wire-model='form.monto' type="number" />
             <x-input-validado label="Papeleta:" placeholder="Papeleta" wire-model='form.folio' type="text" />
-            <x-input-validado label="Envases:" placeholder="Envases" wire-model='form.envases' type="number" />
+            {{-- <x-input-validado label="Envases:" placeholder="Envases" wire-model='form.envases' type="number" /> --}}
 
             <div class="text-center col-md-12 mb-3">
                 <button class="btn btn-info btn-xl " wire:click='$dispatch("confirm-edit-servicio")'>Guardar</button>
