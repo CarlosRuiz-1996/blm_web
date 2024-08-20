@@ -385,7 +385,7 @@ class Index extends Component
 
     public function limpiarDatos()
     {
-        $this->reset('readyToLoadModal', 'compra_efectivo');
+        $this->reset('readyToLoadModal', 'compra_detalle');
     }
 
     #[On('confirmCompra-boveda')]
