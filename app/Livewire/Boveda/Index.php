@@ -15,11 +15,13 @@ use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
 use App\Models\ServicioRutaEnvases;
 use App\Models\Servicios;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification as NotificationsNotification;
+use Livewire\Attributes\On;
 use Livewire\WithPagination;
 
 class Index extends Component
@@ -61,9 +63,7 @@ class Index extends Component
         $this->ruta_id = $idruta;
         $this->serviciosRuta = RutaServicio::where('ruta_id', $idruta)->get();
         //compra de efectivo
-        $this->compra_efectivo = RutaCompraEfectivo::where('ruta_id', $idruta)->where('status_ruta_compra_efectivos', 1)->get();
-
-        // dd($this->compra_efectivo);
+        $this->compra_efectivo = RutaCompraEfectivo::where('ruta_id', $idruta)->where('status_ruta_compra_efectivos', '<', 3)->get();
     }
 
     public $compra_detalle = [];
@@ -152,6 +152,8 @@ class Index extends Component
     public function finailzar()
     {
 
+        $compra_efectivo = RutaCompraEfectivo::where('ruta_id', $this->ruta_id)->where('status_ruta_compra_efectivos', 1)->count();
+
         $serviciosRutaAll = RutaServicio::where('ruta_id', $this->ruta_id)->count();
         $servicioRutastatus2 = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios', 2)
             ->orWhere('status_ruta_servicios', 0)->count();
@@ -169,11 +171,15 @@ class Index extends Component
         if ($entregas == $envases) {
             if ($serviciosRutaAll == $servicioRutastatus2) {
 
-                $ruta = Ruta::findOrFail($this->ruta_id);
-                $ruta->ctg_rutas_estado_id = 3;
-                $ruta->save();
-                $this->ruta_id = 0;
-                $this->dispatch('success-fin-ruta');
+                if ($compra_efectivo == 0) {
+                    $ruta = Ruta::findOrFail($this->ruta_id);
+                    $ruta->ctg_rutas_estado_id = 3;
+                    $ruta->save();
+                    $this->ruta_id = 0;
+                    $this->dispatch('success-fin-ruta');
+                } else {
+                    $this->dispatch('error-fin-ruta-compra');
+                }
             } else {
                 $this->dispatch('error-fin-ruta');
             }
@@ -379,12 +385,31 @@ class Index extends Component
 
     public function limpiarDatos()
     {
-        $this->reset('readyToLoadModal','compra_efectivo');
+        $this->reset('readyToLoadModal', 'compra_efectivo');
     }
 
-    public function confirmCompra($op){
-        $this->compra_efectivo->status_ruta_compra_efectivos=$op;
-        $this->compra_efectivo->save();
-        
+    #[On('confirmCompra-boveda')]
+    public function confirmCompra(CompraEfectivo $compra, $op)
+    {
+
+        try {
+            DB::beginTransaction();
+            $compra->ruta_compra->status_ruta_compra_efectivos = $op;
+            $compra->ruta_compra->save();
+
+            if ($op == 0) {
+                $compra->status_compra_efectivos = 1;
+                $compra->save();
+            }
+            $this->llenarmodalservicios($compra->ruta_compra->ruta_id);
+            $conf = $op != 0 ? 'acepto.' : 'rechazo';
+            $msg = 'La compra se ' . $conf . ' con exito.';
+            $this->dispatch('success-compra', $msg);
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
+        }
     }
 }

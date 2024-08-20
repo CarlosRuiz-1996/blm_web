@@ -228,10 +228,19 @@
                                     @foreach ($serviciosRuta as $rutaserv)
                                         <tr>
                                             <td>{{ $rutaserv->servicio->cliente->razon_social }}</td>
-                                            <td>Direccion</td>
+                                            <td>Calle 
+                                                {{ $rutaserv->servicio->sucursal->sucursal->sucursal .
+                                                    ', ' .
+                                                    $rutaserv->servicio->sucursal->sucursal->direccion .
+                                                    ', CP.' .
+                                                    $rutaserv->servicio->sucursal->sucursal->cp->cp .
+                                                    ', ' .
+                                                    $rutaserv->servicio->sucursal->sucursal->cp->estado->name }}
+
+                                            </td>
                                             {{-- <td></td> --}}
                                             <td>{{ $rutaserv->servicio->ctg_servicio->descripcion }}</td>
-                                            <td>{{ $rutaserv->tipo_servicio == 1 ? 'Entrega' : 'Recolección' }}</td>
+                                            <td>{{ $rutaserv->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECCIÓN' }}</td>
                                             @if ($rutaserv->tipo_servicio == 1)
                                                 <td>
                                                     @if ($rutaserv->status_ruta_servicios != 0)
@@ -242,12 +251,12 @@
                                                                 wire:click='llenarmodalEnvases({{ $rutaserv->id }})'>Envases</a>
                                                         @else
                                                             <span class="badge bg-success">
-                                                                Cargado.
+                                                                CARGADO.
                                                             </span>
                                                         @endif
                                                     @else
                                                         <span class="badge bg-secondary">
-                                                            Reprogramado
+                                                            REPROGRAMADO
                                                         </span>
                                                     @endif
                                                 </td>
@@ -266,29 +275,29 @@
                                                 @if ($rutaserv->tipo_servicio == 1)
                                                     @if ($rutaserv->status_ruta_servicios == 1)
                                                         <button wire:click="cargar({{ $rutaserv->id }})"
-                                                            class="btn btn-primary">Si</button>
+                                                            class="btn btn-primary mb-3">Confirmar</button>
                                                         <button type="button" data-target="#exampleModalCerrar"
                                                             data-toggle="modal"
                                                             wire:click="cargarNoObtenerdatos({{ $rutaserv->id }})"
-                                                            class="btn btn-danger">No</button>
+                                                            class="btn btn-danger">Rechazar</button>
                                                     @else
                                                         <span
                                                             class="badge {{ $rutaserv->status_ruta_servicios == 2 ? 'bg-success' : ($rutaserv->status_ruta_servicios == 0 ? 'bg-secondary' : 'bg-danger') }}">
                                                             {{ $rutaserv->status_ruta_servicios == 2
                                                                 ? 'Servicio cargado'
                                                                 : ($rutaserv->status_ruta_servicios == 0
-                                                                    ? 'En reprogramación'
-                                                                    : 'Error en el servicio') }}
+                                                                    ? 'EN REPROGRAMACIÓN'
+                                                                    : 'ERROR EN EL SERVICIO') }}
                                                         </span>
                                                     @endif
                                                 @else
                                                     @if ($rutaserv->status_ruta_servicios == 1)
                                                         <button wire:click="cargarRecoleccion({{ $rutaserv->id }})"
-                                                            class="btn btn-primary">Aceptar</button>
+                                                            class="btn btn-primary mb-3">Confirmar</button>
                                                         <button type="button" data-target="#exampleModalCerrar"
                                                             data-toggle="modal"
                                                             wire:click="cargarNoObtenerdatos({{ $rutaserv->id }})"
-                                                            class="btn btn-danger">No Aceptar</button>
+                                                            class="btn btn-danger">Rechazar</button>
                                                     @else
                                                         <span
                                                             class="badge {{ $rutaserv->status_ruta_servicios == 2 ? 'bg-success' : 'bg-danger' }}">
@@ -325,7 +334,8 @@
                                     <tbody>
                                         @foreach ($compra_efectivo as $compra)
                                             <tr>
-                                                <td>{{ $compra->compra->total }}</td>
+                                                <td>${{ number_format($compra->compra->total, 2, '.', ',') }}</td>
+
                                                 <td>{{ $compra->compra->fecha_compra }}</td>
                                                 <td>
                                                     <button class="btn btn-info" data-toggle="modal"
@@ -333,13 +343,17 @@
                                                         data-target="#modalDetailCompra">Detalles</button>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-primary"
-                                                    wire:click='confirmCompra(1)'
-                                                    >Confirmar</button>
-                                                    <button class="btn btn-danger"
-                                                    wire:click='confirmCompra(0)'
-                                                    >Rechazar</button>
-
+                                                    @if ($compra->status_ruta_compra_efectivos == 1)
+                                                        <button class="btn btn-primary"
+                                                            wire:click="$dispatch('confirm-compra',[{{ $compra->compra }},2])">Confirmar</button>
+                                                        <button class="btn btn-danger"
+                                                            wire:click="$dispatch('confirm-compra',[{{ $compra->compra }},0])">Rechazar</button>
+                                                    @else
+                                                        <span
+                                                            class="badge bg-{{ $compra->status_ruta_compra_efectivos == 2 ? 'success' : 'secondary' }}">
+                                                            {{ $compra->status_ruta_compra_efectivos == 2 ? 'ACEPTADO' : 'RECHAZADO' }}
+                                                        </span>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -424,7 +438,7 @@
                         </div>
                         <div class="col-md-2" style="margin-top: 32px">
 
-                            <button class="btn btn-info" wire:click='envase_recolecta'>Agregar</button>
+                            <button class="btn btn-info" wire:loading.remove wire:click='envase_recolecta'>Agregar</button>
                         </div>
 
                         @foreach ($inputs as $index => $input)
@@ -506,12 +520,10 @@
     @push('js')
         <script>
             document.addEventListener('livewire:initialized', () => {
-
-                @this.on('confirm', () => {
-
+                @this.on('confirm-compra', (data) => {
                     Swal.fire({
                         title: '¿Estas seguro?',
-                        text: "La cotizacion se generara y comenzara el proceso de contratación.",
+                        text: "La compra sera procesada.",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -520,27 +532,13 @@
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            @this.dispatch('save-cotizacion');
+                            @this.dispatch('confirmCompra-boveda', {
+                                compra: data[0],
+                                op: data[1]
+                            });
                         }
                     })
-                })
-
-                Livewire.on('success-cotizacion', function([message]) {
-                    console.log(message);
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: message[0],
-                        showConfirmButton: true,
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-
-                            window.location.href = '/ventas/detalle-cotizacion/' + message[1];
-
-                        }
-                    });
                 });
-
 
                 Livewire.on('error', function([message]) {
                     Swal.fire({
@@ -550,10 +548,15 @@
                         timer: 3000
                     });
                 });
+                Livewire.on('success-compra', function(message) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: message,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
 
-
-
-
+                });
 
                 Livewire.on('successservicioEnvases', function([message]) {
                     Swal.fire({
@@ -589,6 +592,15 @@
                         timer: 3000
                     });
                 });
+                Livewire.on('error-fin-ruta-compra', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Aun quedan compras por revisar.',
+                        // text:'El operador comenzara la ruta a la hora indicada en operaciones.',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
                 Livewire.on('error-envases', function() {
                     Swal.fire({
                         icon: 'error',
@@ -604,7 +616,6 @@
             $('#exampleModalCerrar').on('show.bs.modal', function() {
                 $('#detalleModal').modal('hide');
             });
-
             // Mostrar el primer modal cuando se cierra el segundo modal
             $('#exampleModalCerrar').on('hidden.bs.modal', function() {
                 $('#detalleModal').modal('show');
@@ -613,6 +624,25 @@
             // Ocultar el segundo modal cuando se muestra el primer modal
             $('#detalleModal').on('show.bs.modal', function() {
                 $('#exampleModalCerrar').modal('hide');
+                $('#detalleModalEnvases').modal('hide');
+                $('#modalDetailCompra').modal('hide');
+            });
+
+
+            // Ocultar el primer modal cuando se muestra el segundo modal ENVASES
+            $('#detalleModalEnvases').on('show.bs.modal', function() {
+                $('#detalleModal').modal('hide');
+            });
+            $('#detalleModalEnvases').on('hidden.bs.modal', function() {
+                $('#detalleModal').modal('show');
+            });
+
+            // Ocultar el primer modal cuando se muestra el segundo modal COMPRAS
+            $('#modalDetailCompra').on('show.bs.modal', function() {
+                $('#detalleModal').modal('hide');
+            });
+            $('#modalDetailCompra').on('hidden.bs.modal', function() {
+                $('#detalleModal').modal('show');
             });
         </script>
     @endpush
