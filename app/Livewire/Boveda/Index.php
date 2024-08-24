@@ -149,6 +149,7 @@ class Index extends Component
         }
     }
 
+    // #[On('finalizar-ruta')]
     public function finailzar()
     {
 

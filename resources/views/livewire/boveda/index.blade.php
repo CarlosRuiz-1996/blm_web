@@ -367,7 +367,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     @if ($serviciosRuta)
-                        <button type="button" class="btn btn-info" wire:click='finailzar' wire:loading.remove>Mandar
+                    {{-- $dispatch('confirm-serv',3) --}}
+                        <button type="button" class="btn btn-info" wire:click="finailzar" wire:loading.remove>Mandar
                             a ruta</button>
                     @endif
 
@@ -472,7 +473,7 @@
             <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title" id="exampleModalLabel">Detalles de la compra</h5>
-                    <button type="button" wire:click='limpiarDatos' class="close" data-dismiss="modal"
+                    <button type="button" wire:click='limpiarDatosDetalleCompra' class="close" data-dismiss="modal"
                         aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
@@ -510,7 +511,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" wire:click='limpiarDatos' class="btn btn-secondary"
+                    <button type="button" wire:click='limpiarDatosDetalleCompra' class="btn btn-secondary"
                         data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
@@ -540,6 +541,30 @@
                     })
                 });
 
+                @this.on('confirm-serv', (data) => {
+
+                    console.log(data);
+                    
+                    // finalizar-ruta 3
+                    
+                    // Swal.fire({
+                    //     title: '¿Estas seguro?',
+                    //     text: "La compra sera procesada.",
+                    //     icon: 'warning',
+                    //     showCancelButton: true,
+                    //     confirmButtonColor: '#3085d6',
+                    //     cancelButtonColor: '#d33',
+                    //     confirmButtonText: 'Si, adelante!',
+                    //     cancelButtonText: 'Cancelar'
+                    // }).then((result) => {
+                    //     if (result.isConfirmed) {
+                    //         @this.dispatch('confirmCompra-boveda', {
+                    //             compra: data[0],
+                    //             op: data[1]
+                    //         });
+                    //     }
+                    // })
+                });
                 Livewire.on('error', function([message]) {
                     Swal.fire({
                         icon: 'error',

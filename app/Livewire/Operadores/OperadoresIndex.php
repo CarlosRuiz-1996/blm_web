@@ -2,8 +2,12 @@
 
 namespace App\Livewire\Operadores;
 
+use App\Models\CompraEfectivo;
+use App\Models\CompraEfectivoEnvases;
+use App\Models\DetallesCompraEfectivo;
 use App\Models\Empleado;
 use App\Models\Ruta;
+use App\Models\RutaCompraEfectivo;
 use App\Models\RutaEmpleadoReporte;
 use App\Models\RutaEmpleados;
 use App\Models\RutaServicio;
@@ -13,6 +17,7 @@ use App\Models\RutaVehiculoReporte;
 use App\Models\ServicioEvidenciaEntrega;
 use App\Models\ServicioEvidenciaRecolecta;
 use App\Models\ServicioRutaEnvases;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +25,7 @@ use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class OperadoresIndex extends Component
+class OperadoresIndex extends   Component
 {
     public $idrecolecta;
     public $cantidadEnvases;
@@ -78,6 +83,8 @@ class OperadoresIndex extends Component
 
     public function ModalEntregaRecolecta($id, $tiposervicio)
     {
+
+        $this->readyToLoadModal = true;
 
         $this->tiposervicio = $tiposervicio == 1 ? 'Entrega' : ($tiposervicio == 2 ? 'Recolección' : 'Otro');
         $servicioRuta = RutaServicio::find($id);
@@ -330,10 +337,20 @@ class OperadoresIndex extends Component
             ->where('status_ruta_servicios', 2)
             ->count();
 
-        if ($serviciosPendientes > 0) {
-            // Si hay servicios pendientes con estado 2, envía un mensaje de error
-            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'No se puede terminar la ruta porque aún tiene servicios pendientes'], ['tipomensaje' => 'error']);
-        } else {
+        $ruta_compra = RutaCompraEfectivo::where('ruta_id', $id)->where('status_ruta_compra_efectivos', '=', 2)->count();
+
+        try {
+
+            DB::beginTransaction();
+
+
+            if ($serviciosPendientes > 0) {
+                throw new \Exception('No se puede terminar la ruta porque aún tiene servicios pendientes');
+            }
+            if ($ruta_compra > 0) {
+                throw new \Exception('No se puede terminar la ruta porque aún tiene compras de efectivo por terminar');
+            }
+
             // Si no hay servicios pendientes con estado 2, actualiza el estado de la ruta
             $ruta = Ruta::find($id);
             $ruta->status_ruta = 3;
@@ -369,6 +386,10 @@ class OperadoresIndex extends Component
 
             // Envía un mensaje de éxito
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La ruta ha sido terminada'], ['tipomensaje' => 'success']);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => $e->getMessage()], ['tipomensaje' => 'error']);
         }
     }
     //status servicio ruta en 4 es reporgramnar
@@ -397,5 +418,205 @@ class OperadoresIndex extends Component
 
         $this->photorepro->storeAs(path: 'evidencias/reprogramacion/', name: 'avatar.png');
         $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio Sera reprogramado'], ['tipomensaje' => 'success'], ['op' => 1]);
+    }
+
+
+    //COMPRAS DE EFECTIVO}
+    public $readyToLoadModal = false;
+
+    public $compra_detalle;
+    public function showCompraDetail(CompraEfectivo $compra)
+    {
+
+
+        $this->compra_detalle = $compra;
+        $this->readyToLoadModal = true;
+    }
+
+    public function limpiarDatos()
+    {
+        // dd('limpia ');
+        $this->reset('readyToLoadModal', 'compra_detalle');
+    }
+
+    public function limpiarDatosDetalleCompra()
+    {
+        $this->reset(
+            'envases_compra',
+            'folio_compra',
+            'monto_compra',
+            'evidencia_compra',
+            'inputs',
+            'detalle_compra',
+        );
+    }
+    public $detalle_compra;
+    public function detalleCompraEfectivo(DetallesCompraEfectivo $compra)
+    {
+        $this->detalle_compra = $compra;
+    }
+    public $envases_compra;
+    public $folio_compra;
+    public $monto_compra = 0;
+    public $evidencia_compra;
+
+    public function addEnvasesCompra()
+    {
+        $this->validate([
+            'folio_compra' => 'required',
+            'envases_compra' => 'required',
+            'monto_compra' => 'required|gt:0', // Debe ser mayor que 0
+        ], [
+            'envases_compra.required' => 'La cantidad de envases es obligatoria',
+            'monto_compra.required' => 'Debe ingresar el monto total',
+            'monto_compra.gt' => 'El monto debe ser mayor que 0',
+            'folio_compra.required' => 'El campo es requerido',
+        ]);
+
+        $this->inputs = [];
+        if ($this->envases_compra) {
+            for ($i = 0; $i < $this->envases_compra; $i++) {
+                $this->inputs[] = [
+                    'cantidad' => '',
+                    'folio' => $this->folio_compra,
+                    'photo' => '',
+                    'sello' => '',
+                ];
+            }
+        }
+    }
+    public function finalizarCompra()
+    {
+
+        // |unique:sellos,sello
+        $rules = [
+            'folio_compra' => 'required',
+            'monto_compra' => 'required|gt:0',
+        ];
+
+        // Si envases_compra está vacío, hacer que evidencia_compra sea requerido
+        if (empty($this->envases_compra)) {
+            $rules['evidencia_compra'] = 'required|image|max:1024';
+        }
+
+        $this->validate($rules, [
+            'folio_compra.required' => 'El campo es requerido',
+            'monto_compra.required' => 'El campo es requerido',
+            'monto_compra.gt' => 'El monto debe ser mayor que 0',
+            'evidencia_compra.required' => 'El campo es requerido',
+            'evidencia_compra.image' => 'El archivo debe ser una imagen',
+            'evidencia_compra.max' => 'El tamaño máximo de la imagen es 10MB',
+
+        ]);
+        if ($this->envases_compra) {
+
+            // dd('entra if');
+            $this->validate(
+                [
+                    'inputs.*.cantidad' => 'required',
+                    'inputs.*.sello' => 'required',
+                    'inputs.*.photo' => 'required|image|max:1024',
+
+                ],
+                [
+                    'inputs.*.cantidad.required' => 'La cantidad es obligatoria',
+                    'inputs.*.sello.required' => 'El sello es obligatoria',
+                    'inputs.*.photo.required' => 'La evidencia es obligatoria',
+                    'inputs.*.photo.image' => 'El archivo debe ser una imagen',
+                    'inputs.*.photo.max' => 'El tamaño máximo de la imagen es 10MB',
+
+                ]
+            );
+        }
+
+
+        try {
+            DB::beginTransaction();
+
+            //valiar el monto...
+
+            if ($this->monto_compra != $this->detalle_compra->monto) {
+                throw new \Exception('El monto total ingresado no coinside con lo requerido');
+            }
+
+            //verificar la cantidad de los inputs
+            if ($this->envases_compra) {
+                $total_inputs = 0;
+                foreach ($this->inputs as $index => $input) {
+                    $total_inputs += $input['cantidad'];
+                }
+                if ($total_inputs != $this->detalle_compra->monto) {
+                    throw new \Exception('El monto de los envases no coinside con lo indicado');
+                }
+            }
+            //actualizo el detalle
+            $detalle_compra = DetallesCompraEfectivo::find($this->detalle_compra->id);
+            $detalle_compra->status_detalles_compra_efectivos = 2;
+            $detalle_compra->save();
+
+            //guardo la evidencia si no hay envase
+            if (empty($this->envases_compra)) {
+                $compra_envase = CompraEfectivoEnvases::create([
+                    'detalles_compra_efectivo_id' => $detalle_compra->id,
+                    'monto' => $this->monto_compra,
+                    'papeleta' => $this->folio_compra,
+                    'evidencia' => $this->evidencia_compra,
+                ]);
+                $nombreEvidenciaGuardaImg = 'compra_efectivo_detalle_' . $compra_envase->id . '.png';
+                $this->evidencia_compra->storeAs(path: 'evidencias/CompraEfectivo/', name: $nombreEvidenciaGuardaImg);
+            } else {
+                foreach ($this->inputs as $index => $input) {
+
+                    $compra_envase = CompraEfectivoEnvases::create([
+                        'detalles_compra_efectivo_id' => $detalle_compra->id,
+                        'monto' => $input['cantidad'],
+                        'papeleta' => $input['folio'],
+                        'sello_seguridad' => $input['sello'],
+                        'evidencia' => $input['photo'],
+                    ]);
+                    $nombreEvidenciaGuardaImg = 'compra_efectivo_detalle_' . $compra_envase->id . '.png';
+                    $input['photo']->storeAs(path: 'evidencias/CompraEfectivo/', name: $nombreEvidenciaGuardaImg);
+                }
+            }
+
+            $this->limpiarDatosDetalleCompra();
+            $this->showCompraDetail($detalle_compra->compra_efectivo);
+            $this->dispatch('success-compra-detalle', ['nombreArchivo' => 'Detalle de la compra finalizada.'], ['tipomensaje' => 'success']);
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $this->dispatch('success-compra-detalle', ['nombreArchivo' => $e->getMessage()], ['tipomensaje' => 'error']);
+        }
+    }
+
+    public function finalizarCompraEfectivo()
+    {
+        $compra = CompraEfectivo::find($this->compra_detalle->id);
+
+
+        try {
+            DB::beginTransaction();
+           
+            $detalles = DetallesCompraEfectivo::where('compra_efectivo_id', $compra->id)
+                ->where('status_detalles_compra_efectivos', 1)->count();
+            if ($detalles > 0) {
+                throw new \Exception('Aun quedan compras por terminar.');
+            }
+
+            $compra->status_compra_efectivos = 3;
+            $compra->save();
+
+            $compra->ruta_compra->status_ruta_compra_efectivos = 3;
+            $compra->ruta_compra->save();
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La Compra de efectivo se completo correctamente.'], ['tipomensaje' => 'success'], ['op' => 1]);
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::info($e->getMessage());
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => $e->getMessage()??'Ha ocurrido un problema'], ['tipomensaje' => 'error']);
+
+        }
     }
 }

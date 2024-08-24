@@ -12,14 +12,11 @@ class DetallesCompraEfectivo extends Model
     protected $fillable = [
         'compra_efectivo_id',
         'monto',
-        // 'cliente_id',
         'consignatario_id',
         'status_detalles_compra_efectivos'
     ];
 
-    // public function cliente(){
-    //     return $this->belongsTo(Cliente::class, 'cliente_id');
-    // }
+    
 
     public function consignatario()
     {

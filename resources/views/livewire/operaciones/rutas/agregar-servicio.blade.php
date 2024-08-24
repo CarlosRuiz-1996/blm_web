@@ -36,6 +36,7 @@
                                         <th>ID</th>
                                         <th>Cliente</th>
                                         <th>Servicio</th>
+                                        <th>Dirección</th>
                                         <th>Monto</th>
                                         <th>Folio</th>
                                         <th>Tipo servicio</th>
@@ -51,6 +52,12 @@
                                                 <td>{{ $servicio->servicio->cliente->razon_social }}</td>
                                                 <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
 
+                                                <td>Calle {{ $servicio->servicio->sucursal->sucursal->direccion .
+                                                    ', CP. ' .
+                                                    $servicio->servicio->sucursal->sucursal->cp->cp .
+                                                    ' ' .
+                                                    $servicio->servicio->sucursal->sucursal->cp->estado->name }}
+                                                </td>
                                                 <td>{{ $servicio->monto }}</td>
                                                 <td>{{ $servicio->folio }}</td>
                                                 <td>{{ $servicio->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECCIÓN' }}</td>
@@ -93,7 +100,7 @@
             </div>
         </div>
     </div>
-    
+
 
     {{-- Modal servicios --}}
     <x-adminlte-modal wire:ignore.self id="servicios" title="Agregar servicios a la ruta" theme="info"
@@ -171,10 +178,10 @@
                                     </td>
                                     <td>{{ $servicio->ctg_servicio->descripcion }}</td>
                                     <td>{{ $servicio->cliente->razon_social }}</td>
-                                    <td>{{ $servicio->sucursal->sucursal->direccion .
-                                        ' ' .
+                                    <td>Calle {{ $servicio->sucursal->sucursal->direccion .
+                                        ', CP. ' .
                                         $servicio->sucursal->sucursal->cp->cp .
-                                        '' .
+                                        ' ' .
                                         $servicio->sucursal->sucursal->cp->estado->name }}
                                     </td>
                                     <td>
@@ -235,7 +242,7 @@
                                                 type="text" />
                                         </div>
                                     </td>
-                                    
+
 
 
                                 </tr>

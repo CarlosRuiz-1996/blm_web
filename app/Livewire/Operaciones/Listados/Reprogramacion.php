@@ -41,7 +41,7 @@ class Reprogramacion extends Component
         // dd($repro->ruta_servicio);
         $this->form->monto = '$ ' . number_format($repro->ruta_servicio->monto, 2, '.', ',') . 'MXN';
         $this->form->folio =  $repro->ruta_servicio->folio;
-        $this->form->envases =  $repro->ruta_servicio->envases;
+        // $this->form->envases =  $repro->ruta_servicio->envases;
     }
 
     public $ctg_ruta_dia_id;
