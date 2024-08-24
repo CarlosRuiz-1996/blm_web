@@ -8,11 +8,14 @@
                         <div class="table-responsive">
                             <table class="table" x-data="{ open: false }">
                                 @foreach ($rutaEmpleados as $index => $rutaServicio)
-                                    <thead >
-                                        <tr @click="open === {{ $index }} ? open = false : open = {{ $index }}">
+                                    <thead>
+                                        <tr
+                                            @click="open === {{ $index }} ? open = false : open = {{ $index }}">
                                             <th colspan='8' class="text-center table-secondary">Ruta
                                                 {{ $rutaServicio->nombre->name . '-' . $rutaServicio->dia->name }}
-                                                <i :class="open === {{ $index }} ? 'fas fa-chevron-up' : 'fas fa-chevron-down'" class="ml-2"></i>
+                                                <i :class="open === {{ $index }} ? 'fas fa-chevron-up' :
+                                                    'fas fa-chevron-down'"
+                                                    class="ml-2"></i>
 
                                             </th>
                                         </tr>
@@ -448,8 +451,10 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" wire:click='finalizarCompraEfectivo' class="btn btn-success" wire:loading.remove
-                    >Finalizar compra de efectivo</button>
+                    @if ($status_compra == 2)
+                        <button type="button" wire:click='finalizarCompraEfectivo' class="btn btn-success"
+                            wire:loading.remove>Finalizar compra de efectivo</button>
+                    @endif
                     <button type="button" wire:click='limpiarDatos' class="btn btn-secondary"
                         data-dismiss="modal">Cerrar</button>
                 </div>
@@ -556,17 +561,17 @@
 
                         @foreach ($inputs as $index => $input)
                             <div class="col-md-2 mb-3">
-                                
 
-                                    <label for="">Monto: $
-                                        {{ number_format((float) $input['cantidad'], 2, '.', ',') }}
-                                    </label>
-                                    <input type="number"
-                                        class="form-control @error('inputs.' . $index . '.cantidad') is-invalid @enderror"
-                                        wire:model.live="inputs.{{ $index }}.cantidad">
-                                    @error('inputs.' . $index . '.cantidad')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
+
+                                <label for="">Monto: $
+                                    {{ number_format((float) $input['cantidad'], 2, '.', ',') }}
+                                </label>
+                                <input type="number"
+                                    class="form-control @error('inputs.' . $index . '.cantidad') is-invalid @enderror"
+                                    wire:model.live="inputs.{{ $index }}.cantidad">
+                                @error('inputs.' . $index . '.cantidad')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                @enderror
 
                             </div>
 

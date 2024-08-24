@@ -425,12 +425,15 @@ class OperadoresIndex extends   Component
     public $readyToLoadModal = false;
 
     public $compra_detalle;
+    public $status_compra;
     public function showCompraDetail(CompraEfectivo $compra)
     {
 
-
         $this->compra_detalle = $compra;
         $this->readyToLoadModal = true;
+
+        $this->status_compra= ($this->compra_detalle->status_compra_efectivos);
+
     }
 
     public function limpiarDatos()
