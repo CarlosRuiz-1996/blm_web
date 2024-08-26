@@ -439,7 +439,7 @@ class OperadoresIndex extends   Component
     public function limpiarDatos()
     {
         // dd('limpia ');
-        $this->reset('readyToLoadModal', 'compra_detalle');
+        $this->reset('readyToLoadModal', 'compra_detalle','status_compra');
     }
 
     public function limpiarDatosDetalleCompra()

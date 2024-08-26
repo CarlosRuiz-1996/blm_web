@@ -80,18 +80,29 @@
     <div class="card-outline card-info info-box">
         <div class="info-box-content">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table" x-data="{ servicio: false, compra: false }">
                     <thead>
-                        <th>Cliente</th>
-                        <th>Servicio</th>
-                        <th>Tipo</th>
-                        <th>Folio/Papeleta</th>
-                        <th>Acciones</th>
+                        <tr @click="servicio = ! servicio">
+                            <th colspan="5" class="text-center table-secondary">
+                                <h2>Servicios
+                                    <i :class="servicio === false ? 'fas fa-chevron-up' :
+                                        'fas fa-chevron-down'"
+                                        class="ml-2"></i>
+                                </h2>
+                            </th>
+                        </tr>
+                        <tr class="table-success" x-show="servicio">
+                            <th>Cliente</th>
+                            <th>Servicio</th>
+                            <th>Tipo</th>
+                            <th>Folio/Papeleta</th>
+                            <th>Acciones</th>
+                        </tr>
                     </thead>
                     <tbody>
 
                         @foreach ($ruta->rutaServicios as $servicio)
-                            <tr>
+                            <tr x-show="servicio">
 
                                 <td>{{ $servicio->servicio->cliente->razon_social }}</td>
                                 <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
@@ -111,7 +122,8 @@
                                                 Entrega</button>
                                         @endif
                                     @else
-                                        <span style="font-weight: bold;"> Finalizado.</span>
+                                        <span class="badge bg-success" style="font-weight: bold;"> Finalizado.</span>
+                                       
                                     @endif
                                     {{-- <input type="checkbox" name="" id="" class="large-checkbox"
                                     disabled 
@@ -119,6 +131,53 @@
                                 </td>
                             </tr>
                         @endforeach
+
+
+                        @if (count($ruta->ruta_compra) > 0)
+                            <tr @click="compra = ! compra">
+                                <th colspan="5" class="text-center table-secondary">
+                                    <h2>Compra de efectivo
+                                        <i :class="compra === false ? 'fas fa-chevron-up' :
+                                            'fas fa-chevron-down'"
+                                            class="ml-2"></i>
+                                    </h2>
+                                </th>
+                            </tr>
+                            <tr class="table-success" x-show="compra">
+                                <th>Total de la compra</th>
+                                <th>Fecha de la compra</th>
+                                <th>Estatus</th>
+                                <th colspan="2" class="text-center">Acciones</th>
+                            </tr>
+                            @foreach ($ruta->ruta_compra as $ruta_compra)
+                                <tr x-show="compra">
+                                    <td>
+                                        ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
+
+
+                                    </td>
+                                    <td>{{ $ruta_compra->compra->fecha_compra }}</td>
+                                    <td>
+                                        <span
+                                            class="badge {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'bg-warning' : 'bg-success' }}">
+                                            {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'Pendiente' : 'Finalizada' }}
+                                        </span>
+                                    </td>
+                                    <td colspan="2" class="text-center">
+                                        <button class="btn btn-info" data-toggle="modal"
+                                            wire:click="showCompraDetail({{ $ruta_compra->compra }})"
+                                            data-target="#modalDetailCompra">Detalles
+                                        </button>
+                                        @if ($ruta_compra->compra->status_compra_efectivos == 3)
+                                            <button class="btn btn-danger"
+                                                wire:click="$dispatch('finalizar-compra',{{ $ruta_compra->compra }})">
+                                                Finalizar
+                                            </button>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -221,7 +280,8 @@
             <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title" id="exampleModalLabel">Formato de diferencia de valores.</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" wire:click='limpiar'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        wire:click='limpiar'>
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -301,22 +361,21 @@
                                                 <div class="col-md-8 mb-3">
                                                     <p>
                                                         IMPORTE QUE DICE CONTENER: $
-                                                        <span
-                                                            class="font-weight-bold checkbox">
-                                                                {{ number_format($diferencia['monto'], 2, '.', ',') }} MXN
-                                                            </span>
+                                                        <span class="font-weight-bold checkbox">
+                                                            {{ number_format($diferencia['monto'], 2, '.', ',') }} MXN
+                                                        </span>
                                                     </p>
                                                 </div>
 
                                                 <div class="col-md-8 mb-3">
                                                     <p>
                                                         IMPORTE COMPROBADO: $
-                                                        <span
-                                                            class="font-weight-bold checkbox">
-                                                            
-                                                           
-                                                            {{ number_format($diferencia['cantidad_ingresada'], 2, '.', ',') }} MXN
-                                                            </span>
+                                                        <span class="font-weight-bold checkbox">
+
+
+                                                            {{ number_format($diferencia['cantidad_ingresada'], 2, '.', ',') }}
+                                                            MXN
+                                                        </span>
                                                     </p>
                                                 </div>
 
@@ -327,9 +386,10 @@
                                                             class="checkbox">{{ $diferencia['tipo_dif'] == 0 ? '_X_' : '___' }}</span>
                                                         SOBRANTE <span
                                                             class="checkbox">{{ $diferencia['tipo_dif'] != 1 ? '___' : '_X_' }}</span>
-                                                        DE  <span
-                                                            class="amount">
-                                                            $ {{ number_format($diferencia['diferencia'], 2, '.', ',') }} MXN
+                                                        DE <span class="amount">
+                                                            $
+                                                            {{ number_format($diferencia['diferencia'], 2, '.', ',') }}
+                                                            MXN
                                                         </span>
                                                     </p>
                                                 </div>
@@ -376,6 +436,68 @@
     </div>
 
 
+    {{-- detalle de la compra --}}
+    <div class="modal fade" wire:ignore.self id="modalDetailCompra" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" id="exampleModalLabel">Detalles de la compra</h5>
+                    <button type="button" wire:click='limpiarDatos' class="close" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="table-info">
+                            <tr>
+                                <th>Banco/Consignatario</th>
+                                <th>Monto</th>
+                                <th>Estatus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if ($readyToLoadModal)
+
+                                @if ($compra_detalle && count($compra_detalle->detalles))
+                                    @foreach ($compra_detalle->detalles as $detalle)
+                                        <tr>
+                                            <td>{{ $detalle->consignatario->name }}</td>
+                                            <td>${{ number_format($detalle->monto, 2, '.', ',') }}</td>
+
+                                            <td>
+
+                                                <span
+                                                    class="badge {{ $detalle->status_detalles_compra_efectivos == 2 ? 'bg-success' : 'bg-danger' }}">
+                                                    {{ $detalle->status_detalles_compra_efectivos == 2 ? 'Finalizada' : 'Reprogramada' }}
+                                                </span>
+
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr class="text-center">
+                                        <td colspan="8"> No hay movimientos</td>
+                                    </tr>
+                                @endif
+                            @else
+                                <tr class="text-center">
+                                    <td colspan="8">
+                                        <div class="spinner-border" role="status"></div>
+                                    </td>
+                                </tr>
+
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" wire:click='limpiarDatos' class="btn btn-secondary"
+                        data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @push('js')
         <script>
@@ -425,7 +547,7 @@
                         timer: 3000
                     });
                 });
-                
+
                 Livewire.on('limpiar_monto_js', function([message]) {
                     $('#monto_total').val(0);
                     array_monto = [];
@@ -457,7 +579,7 @@
 
                 Livewire.on('agregarArchivocre', function(params) {
 
-                    
+
                     const msg = params[0].msg;
                     const tipomensaje = params[1].tipomensaje;
                     const terminar = params[2]?.terminar || '';
@@ -514,6 +636,26 @@
                         if (result.isConfirmed) {
                             @this.dispatch('finaliza-entrega', {
                                 servicio: servicio
+                            });
+                        }
+                    })
+                });
+
+                @this.on('finalizar-compra', (compra) => {
+
+                    Swal.fire({
+                        title: '¿Estas seguro?',
+                        text: "La compra sera terminada y podra ser procesada en bancos.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, adelante!',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            @this.dispatch('finaliza-compra', {
+                                ruta_compra: compra
                             });
                         }
                     })

@@ -5,8 +5,10 @@ namespace App\Livewire\Boveda;
 use App\Livewire\Forms\BovedaForm;
 use App\Models\Cliente;
 use App\Models\ClienteMontos;
+use App\Models\CompraEfectivo;
 use App\Models\Inconsistencias;
 use App\Models\Ruta;
+use App\Models\RutaCompraEfectivo;
 use App\Models\RutaEmpleadoReporte;
 use App\Models\RutaEmpleados;
 use App\Models\RutaServicio;
@@ -14,6 +16,7 @@ use App\Models\RutaServicioReporte;
 use App\Models\RutaVehiculo;
 use App\Models\RutaVehiculoReporte;
 use App\Models\ServicioRutaEnvases;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -74,14 +77,17 @@ class RutaProcesar extends Component
             'monto_envases.*.cantidad.numeric' => 'La cantidad debe ser un número',
             'monto_envases.*.cantidad.min' => 'La cantidad no debe ser al menos 0',
         ]);
-
         try {
             DB::beginTransaction();
 
             $monto_total_envases = 0;
+
             //reviso so hay diferencia de valores
             foreach ($this->servicio_e as $s) {
-                foreach ($this->monto_envases as $index => $input) {
+                if (isset($this->monto_envases[$s->id])) {
+                    $input = $this->monto_envases[$s->id];
+                    
+                    // Verificar si la cantidad coincide
                     if ($s->cantidad == $input['cantidad']) {
                         $monto_total_envases += $input['cantidad'];
                     }
@@ -204,58 +210,48 @@ class RutaProcesar extends Component
                 ->where('status_ruta_servicios', '>', 1)
                 ->count();
 
+            $comprasPendientes = RutaCompraEfectivo::where('ruta_id', $this->ruta->id)
+                ->where('status_ruta_compra_efectivos', 3)->count();
             if ($serviciosPendientes > 0) {
-                // Si hay servicios pendientes con estado 2, envía un mensaje de error
-                $this->dispatch('agregarArchivocre', ['msg' => 'No se puede terminar la ruta porque aún tiene servicios pendientes'], ['tipomensaje' => 'error']);
-            } else {
-
-                // dd('mal validado');
-                // Si no hay servicios pendientes con estado 2, actualiza el estado de la ruta
-                $this->ruta->status_ruta = 1;
-                $this->ruta->ctg_rutas_estado_id = 1;
-                $this->ruta->save();
-
-                Log::info('Info: actualiza vehiculo');
-
-                //actualizo ruta vehiculo
-                RutaVehiculo::where('ruta_id', $this->ruta->id)->where('status_ruta_vehiculos', 2)->update(['status_ruta_vehiculos' => 1]);
-                Log::info('Info: actualiza empleados');
-
-                //actualizar empleados
-                RutaEmpleados::where('ruta_id', $this->ruta->id)->where('status_ruta_empleados', 2)->update(['status_ruta_empleados' => 1]);
-
-
-                //actualiza el reportes:
-                Log::info('Info: actualiza reportes servicio');
-
-                RutaServicioReporte::where('ruta_id', $this->ruta->id)
-                    // ->where('tipo_servicio', $this->form->servicio->tipo_servicio)
-                    ->update(['status_ruta_servicio_reportes' => 0]);
-                Log::info('Info: actualiza reportes servicio');
-
-                Log::info('Info: actualiza reportes vehiculo');
-
-                RutaVehiculoReporte::where('ruta_id', $this->ruta->id)
-                    ->where('status_ruta_vehiculo_reportes', 2)->update(['status_ruta_vehiculo_reportes' => 1]);
-
-                Log::info('Info: actualiza reportes empleado');
-
-                RutaEmpleadoReporte::where('ruta_id', $this->ruta->id)
-                    ->where('status_ruta_empleado_reportes', 2)->update(['status_ruta_empleado_reportes' => 0]);
-                // Envía un mensaje de éxito
-                $this->dispatch('agregarArchivocre', ['msg' => 'La ruta ha sido terminada'], ['tipomensaje' => 'success'], ['terminar' => 1]);
+                throw new \Exception('No se puede terminar la ruta porque aún tiene servicios pendientes.');
             }
+
+            if ($comprasPendientes > 0) {
+                throw new \Exception('No se puede terminar la ruta porque aún tiene compras de efectivo pendientes.');
+            }
+
+
+
+            // Si no hay servicios pendientes con estado 2, actualiza el estado de la ruta
+            $this->ruta->status_ruta = 1;
+            $this->ruta->ctg_rutas_estado_id = 1;
+            $this->ruta->save();
+
+
+            //actualizo ruta vehiculo
+            RutaVehiculo::where('ruta_id', $this->ruta->id)->where('status_ruta_vehiculos', 2)->update(['status_ruta_vehiculos' => 1]);
+            //actualizar empleados
+            RutaEmpleados::where('ruta_id', $this->ruta->id)->where('status_ruta_empleados', 2)->update(['status_ruta_empleados' => 1]);
+
+
+            //actualiza el reportes:
+            RutaServicioReporte::where('ruta_id', $this->ruta->id)
+                // ->where('tipo_servicio', $this->form->servicio->tipo_servicio)
+                ->update(['status_ruta_servicio_reportes' => 0]);
+            RutaVehiculoReporte::where('ruta_id', $this->ruta->id)
+                ->where('status_ruta_vehiculo_reportes', 2)->update(['status_ruta_vehiculo_reportes' => 1]);
+            RutaEmpleadoReporte::where('ruta_id', $this->ruta->id)
+                ->where('status_ruta_empleado_reportes', 2)->update(['status_ruta_empleado_reportes' => 0]);
+            // Envía un mensaje de éxito
+            $this->dispatch('agregarArchivocre', ['msg' => 'La ruta ha sido terminada'], ['tipomensaje' => 'success'], ['terminar' => 1]);
+
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
 
-            $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
-            // $this->dispatch('diferencia', [$e->getMessage()]);
-
-
-            Log::info('Info: ' . $e);
+            $this->dispatch('error', [$e->getMessage() ?? 'Hubo un error, intenta mas tarde.']);
         }
     }
 
@@ -358,5 +354,54 @@ class RutaProcesar extends Component
         //descontar
         $this->form->servicio->servicio->cliente->resguardo = $monto_new;
         $this->form->servicio->servicio->cliente->save();
+    }
+
+
+    // detalles de la comrpa
+    public $readyToLoadModal = false;
+
+    public $compra_detalle;
+    public $status_compra;
+    public function showCompraDetail(CompraEfectivo $compra)
+    {
+
+        $this->compra_detalle = $compra;
+        $this->readyToLoadModal = true;
+
+        $this->status_compra = ($this->compra_detalle->status_compra_efectivos);
+    }
+    public function limpiarDatos()
+    {
+        $this->reset('readyToLoadModal', 'compra_detalle', 'status_compra');
+    }
+
+
+    #[On('finaliza-compra')]
+    public function finalizaCompra(RutaCompraEfectivo $ruta_compra)
+    {
+
+        try {
+
+            DB::beginTransaction();
+            $ruta_compra->status_ruta_compra_efectivos = 4; //finalizada
+            $ruta_compra->save();
+
+            $ruta_compra->compra->status_compra_efectivos = 4; //finalizada la compra efectivo por boveda
+            $ruta_compra->compra->save();
+
+            $this->dispatch(
+                'agregarArchivocre',
+                ['msg' => 'La compra de efectivo se finalizo.'],
+                ['tipomensaje' => 'success']
+            );
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $this->dispatch(
+                'agregarArchivocre',
+                ['msg' => 'Hubo un error intenta mas tarde.'],
+                ['tipomensaje' => 'success']
+            );
+        }
     }
 }
