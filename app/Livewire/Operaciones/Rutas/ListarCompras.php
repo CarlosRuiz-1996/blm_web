@@ -12,6 +12,8 @@ class ListarCompras extends Component
     public $readyToLoadModal = false;
     public $ruta;
     public function mount(Ruta $ruta = null) {
+
+        
         $this->ruta = $ruta;
 
     }

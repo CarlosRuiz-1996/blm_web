@@ -24,9 +24,13 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($ruta->ruta_compra as $ruta)
+
+                                        @if($ruta->status_ruta_compra_efectivos!=4)
                                             <tr>
 
-                                                <td>{{ $ruta->compra->total }}</td>
+                                                
+                                                <td>$ {{ number_format($ruta->compra->total, 2, '.', ',') }}
+
                                                 <td>{{ $ruta->compra->fecha_compra }}</td>
                                                 <td>
                                                     <button class="btn btn-primary m-2" data-toggle="modal"
@@ -37,6 +41,7 @@
                                                     </button>
                                                 </td>
                                             </tr>
+                                            @endif
                                         @endforeach
                                     </tbody>
                                 </table>
