@@ -108,7 +108,7 @@
                                                 <th colspan="2">Detalles de la compra</th>
                                             </tr>
                                             @foreach ($rutaServicio->ruta_compra as $ruta_compra)
-                                                @if ($ruta_compra->status_ruta_compra_efectivos == 4)
+                                                @if ($ruta_compra->status_ruta_compra_efectivos != 4)
                                                     <tr>
                                                         <td colspan="2">
                                                             ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
