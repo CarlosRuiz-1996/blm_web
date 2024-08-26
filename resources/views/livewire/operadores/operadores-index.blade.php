@@ -108,24 +108,27 @@
                                                 <th colspan="2">Detalles de la compra</th>
                                             </tr>
                                             @foreach ($rutaServicio->ruta_compra as $ruta_compra)
-                                                <tr>
-                                                    <td colspan="2">
-                                                        ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
-                                                    </td>
+                                                @if ($ruta_compra->status_ruta_compra_efectivos == 4)
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
+                                                        </td>
 
-                                                    <td colspan="2">{{ $ruta_compra->compra->fecha_compra }}</td>
-                                                    <td colspan="2">
-                                                        <span
-                                                            class="badge {{ $ruta_compra->compra->status_compra_efectivos == 2 ? 'bg-warning' : 'bg-success' }}">
-                                                            {{ $ruta_compra->compra->status_compra_efectivos == 2 ? 'Pendiente' : 'Finalizada' }}
-                                                        </span>
-                                                    </td>
-                                                    <td colspan="2">
-                                                        <button class="btn btn-info" data-toggle="modal"
-                                                            wire:click="showCompraDetail({{ $ruta_compra->compra }})"
-                                                            data-target="#modalDetailCompra">Detalles</button>
-                                                    </td>
-                                                </tr>
+                                                        <td colspan="2">{{ $ruta_compra->compra->fecha_compra }}
+                                                        </td>
+                                                        <td colspan="2">
+                                                            <span
+                                                                class="badge {{ $ruta_compra->compra->status_compra_efectivos == 2 ? 'bg-warning' : 'bg-success' }}">
+                                                                {{ $ruta_compra->compra->status_compra_efectivos == 2 ? 'Pendiente' : 'Finalizada' }}
+                                                            </span>
+                                                        </td>
+                                                        <td colspan="2">
+                                                            <button class="btn btn-info" data-toggle="modal"
+                                                                wire:click="showCompraDetail({{ $ruta_compra->compra }})"
+                                                                data-target="#modalDetailCompra">Detalles</button>
+                                                        </td>
+                                                    </tr>
+                                                @endif
                                             @endforeach
                                             {{-- @break --}}
                                         @else
