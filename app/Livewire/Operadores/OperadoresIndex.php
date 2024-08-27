@@ -171,7 +171,9 @@ class OperadoresIndex extends   Component
                     // Log::info('ServicioEvidenciaEntrega: ');
                     $evidencia = ServicioEvidenciaEntrega::create(['servicio_envases_ruta_id' => $index]);
 
-                    $input['photo']->storeAs(path: 'evidencias/', name: 'evidencia_' . $evidencia->id . '.png');
+                    $nombreRutaGuardaImg = 'Servicio_' . $servicioRuta->id . '_entrega_' . $evidencia->id . '_evidencia.png';
+
+                    $input['photo']->storeAs(path: 'evidencias/EntregasRecolectas/', name: $nombreRutaGuardaImg);
                 }
 
                 //$this->photo->storeAs(path: 'evidencias/', name: 'avatar.png');
@@ -432,14 +434,13 @@ class OperadoresIndex extends   Component
         $this->compra_detalle = $compra;
         $this->readyToLoadModal = true;
 
-        $this->status_compra= ($this->compra_detalle->status_compra_efectivos);
-
+        $this->status_compra = ($this->compra_detalle->status_compra_efectivos);
     }
 
     public function limpiarDatos()
     {
         // dd('limpia ');
-        $this->reset('readyToLoadModal', 'compra_detalle','status_compra');
+        $this->reset('readyToLoadModal', 'compra_detalle', 'status_compra');
     }
 
     public function limpiarDatosDetalleCompra()
@@ -600,7 +601,7 @@ class OperadoresIndex extends   Component
 
         try {
             DB::beginTransaction();
-           
+
             $detalles = DetallesCompraEfectivo::where('compra_efectivo_id', $compra->id)
                 ->where('status_detalles_compra_efectivos', 1)->count();
             if ($detalles > 0) {
@@ -618,8 +619,7 @@ class OperadoresIndex extends   Component
         } catch (Exception $e) {
             DB::rollBack();
             Log::info($e->getMessage());
-            $this->dispatch('agregarArchivocre', ['nombreArchivo' => $e->getMessage()??'Ha ocurrido un problema'], ['tipomensaje' => 'error']);
-
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => $e->getMessage() ?? 'Ha ocurrido un problema'], ['tipomensaje' => 'error']);
         }
     }
 }

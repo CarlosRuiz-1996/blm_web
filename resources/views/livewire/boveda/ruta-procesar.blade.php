@@ -121,13 +121,14 @@
                                                 wire:click="$dispatch('finalizar-entrega',{{ $servicio }})">Finalizar
                                                 Entrega</button>
                                         @endif
+
+                                        {{-- <button class="btn btn-primary" data-toggle="modal"
+                                            wire:click='detalleServicio({{ $servicio }})'
+                                            data-target="#detalleServicio">Detalles</button> --}}
                                     @else
                                         <span class="badge bg-success" style="font-weight: bold;"> Finalizado.</span>
-                                       
                                     @endif
-                                    {{-- <input type="checkbox" name="" id="" class="large-checkbox"
-                                    disabled 
-                                    {{ $servicio->tipo_servicio == 1 ? 'checked' : 'hidden ' }}> --}}
+
                                 </td>
                             </tr>
                         @endforeach
@@ -150,32 +151,34 @@
                                 <th colspan="2" class="text-center">Acciones</th>
                             </tr>
                             @foreach ($ruta->ruta_compra as $ruta_compra)
-                                <tr x-show="compra">
-                                    <td>
-                                        ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
+                                @if ($ruta_compra->status_ruta_compra_efectivos != 4)
+                                    <tr x-show="compra">
+                                        <td>
+                                            ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
 
 
-                                    </td>
-                                    <td>{{ $ruta_compra->compra->fecha_compra }}</td>
-                                    <td>
-                                        <span
-                                            class="badge {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'bg-warning' : 'bg-success' }}">
-                                            {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'Pendiente' : 'Finalizada' }}
-                                        </span>
-                                    </td>
-                                    <td colspan="2" class="text-center">
-                                        <button class="btn btn-info" data-toggle="modal"
-                                            wire:click="showCompraDetail({{ $ruta_compra->compra }})"
-                                            data-target="#modalDetailCompra">Detalles
-                                        </button>
-                                        @if ($ruta_compra->compra->status_compra_efectivos == 3)
-                                            <button class="btn btn-danger"
-                                                wire:click="$dispatch('finalizar-compra',{{ $ruta_compra->compra }})">
-                                                Finalizar
+                                        </td>
+                                        <td>{{ $ruta_compra->compra->fecha_compra }}</td>
+                                        <td>
+                                            <span
+                                                class="badge {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'bg-warning' : 'bg-success' }}">
+                                                {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'Pendiente' : 'Finalizada' }}
+                                            </span>
+                                        </td>
+                                        <td colspan="2" class="text-center">
+                                            <button class="btn btn-info" data-toggle="modal"
+                                                wire:click="showCompraDetail({{ $ruta_compra->compra }})"
+                                                data-target="#modalDetailCompra">Detalles
                                             </button>
-                                        @endif
-                                    </td>
-                                </tr>
+                                            @if ($ruta_compra->compra->status_compra_efectivos == 3)
+                                                <button class="btn btn-danger"
+                                                    wire:click="$dispatch('finalizar-compra',{{ $ruta_compra->compra }})">
+                                                    Finalizar
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endif
                             @endforeach
                         @endif
                     </tbody>
@@ -245,11 +248,24 @@
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
-                                <div class="col-md-3 mb-3">
-                                    <Label>Violado</Label>
-
+                                <div class="col-md-1 mb-3">
+                                    <label style="display: block;">Violado</label>
                                     <input {{ $envases->evidencia_recolecta->violate ? 'checked' : '' }}
                                         type="checkbox" class="large-checkbox" disabled />
+                                </div>
+
+                                <div class="col-md-1 mb-3">
+                                    <Label>Evidencia</Label>
+                                    <button class="btn btn-primary" data-toggle="modal"data-target="#evidenciaModal"
+                                        wire:click='evidenciaRecolecta({{ $envases }})'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                                            <path
+                                                d="M13.002 1H2.998C2.447 1 2 1.447 2 2.002v11.996C2 14.553 2.447 15 2.998 15h11.004c.551 0 .998-.447.998-.998V2.002A1.002 1.002 0 0 0 13.002 1zM3 2h10a1 1 0 0 1 1 1v8.586l-3.293-3.293a1 1 0 0 0-1.414 0L7 10.586 5.707 9.293a1 1 0 0 0-1.414 0L3 10.586V3a1 1 0 0 1 1-1z" />
+                                            <path
+                                                d="M10.707 9.293a1 1 0 0 1 1.414 0L15 12.172V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-.828l3.293-3.293a1 1 0 0 1 1.414 0L7 10.586l3.707-3.707zM10 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                        </svg>
+                                    </button>
                                 </div>
                             @endforeach
                         @else
@@ -498,6 +514,37 @@
             </div>
         </div>
     </div>
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="evidenciaModal" wire:ignore.self tabindex="-1" aria-labelledby="imageModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Evidencia</h5>
+
+                </div>
+                <div class="modal-body text-center">
+                    @if ($readyToLoadModal)
+                        <img src="{{ asset('storage/'.$evidencia_foto) }}" alt="Evidencia">
+                        {{var_dump($evidencia_foto)}}
+                    @else
+                        <div class="col-md-12 text-center">
+                            <div class="spinner-border" role="status">
+                            </div>
+                        </div>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     @push('js')
         <script>

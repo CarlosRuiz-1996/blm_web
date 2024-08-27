@@ -220,13 +220,15 @@ class RutaProcesar extends Component
                 throw new \Exception('No se puede terminar la ruta porque aún tiene compras de efectivo pendientes.');
             }
 
-
+            
 
             // Si no hay servicios pendientes con estado 2, actualiza el estado de la ruta
             $this->ruta->status_ruta = 1;
             $this->ruta->ctg_rutas_estado_id = 1;
             $this->ruta->save();
 
+
+            
 
             //actualizo ruta vehiculo
             RutaVehiculo::where('ruta_id', $this->ruta->id)->where('status_ruta_vehiculos', 2)->update(['status_ruta_vehiculos' => 1]);
@@ -372,7 +374,7 @@ class RutaProcesar extends Component
     }
     public function limpiarDatos()
     {
-        $this->reset('readyToLoadModal', 'compra_detalle', 'status_compra');
+        $this->reset('readyToLoadModal', 'compra_detalle', 'status_compra','evidencia_foto');
     }
 
 
@@ -403,5 +405,19 @@ class RutaProcesar extends Component
                 ['tipomensaje' => 'success']
             );
         }
+    }
+
+
+    // public $servicio_detalle;
+    // public function detalleServicio(RutaServicio $ruta_servicio){
+    //     $this->servicio_detalle=$ruta_servicio;
+    //     $this->readyToLoadModal=true;
+    // }
+
+    public  $evidencia_foto;
+    public function evidenciaRecolecta(ServicioRutaEnvases $envase){
+        $this->evidencia_foto=  'evidencias/EntregasRecolectas/Servicio_' . $envase->ruta_servicios_id . '_recolecta_' . $envase->evidencia_recolecta->id . '_evidencia.png';
+        $this->readyToLoadModal=true;
+
     }
 }
