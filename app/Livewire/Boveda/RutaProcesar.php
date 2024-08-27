@@ -86,7 +86,7 @@ class RutaProcesar extends Component
             foreach ($this->servicio_e as $s) {
                 if (isset($this->monto_envases[$s->id])) {
                     $input = $this->monto_envases[$s->id];
-                    
+
                     // Verificar si la cantidad coincide
                     if ($s->cantidad == $input['cantidad']) {
                         $monto_total_envases += $input['cantidad'];
@@ -220,7 +220,11 @@ class RutaProcesar extends Component
                 throw new \Exception('No se puede terminar la ruta porque aún tiene compras de efectivo pendientes.');
             }
 
-            
+            //cambio a 5 su estatus de las compras
+            RutaCompraEfectivo::where('ruta_id', $this->ruta->id)
+                ->where('status_ruta_compra_efectivos', 4)
+                ->update(['status_ruta_compra_efectivos' => 5]);
+
 
             // Si no hay servicios pendientes con estado 2, actualiza el estado de la ruta
             $this->ruta->status_ruta = 1;
@@ -228,7 +232,7 @@ class RutaProcesar extends Component
             $this->ruta->save();
 
 
-            
+
 
             //actualizo ruta vehiculo
             RutaVehiculo::where('ruta_id', $this->ruta->id)->where('status_ruta_vehiculos', 2)->update(['status_ruta_vehiculos' => 1]);
@@ -374,7 +378,7 @@ class RutaProcesar extends Component
     }
     public function limpiarDatos()
     {
-        $this->reset('readyToLoadModal', 'compra_detalle', 'status_compra','evidencia_foto');
+        $this->reset('readyToLoadModal', 'compra_detalle', 'status_compra', 'evidencia_foto');
     }
 
 
@@ -410,9 +414,9 @@ class RutaProcesar extends Component
 
 
     public  $evidencia_foto;
-    public function evidenciaRecolecta(ServicioRutaEnvases $envase){
-        $this->evidencia_foto=  'evidencias/EntregasRecolectas/Servicio_' . $envase->ruta_servicios_id . '_recolecta_' . $envase->evidencia_recolecta->id . '_evidencia.png';
-        $this->readyToLoadModal=true;
-
+    public function evidenciaRecolecta(ServicioRutaEnvases $envase)
+    {
+        $this->evidencia_foto =  'evidencias/EntregasRecolectas/Servicio_' . $envase->ruta_servicios_id . '_recolecta_' . $envase->evidencia_recolecta->id . '_evidencia.png';
+        $this->readyToLoadModal = true;
     }
 }
