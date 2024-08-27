@@ -24,8 +24,6 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($ruta_compra as $ruta)
-
-                                        @if($ruta->status_ruta_compra_efectivos!=5)
                                             <tr>
 
                                                 
@@ -41,7 +39,6 @@
                                                     </button>
                                                 </td>
                                             </tr>
-                                            @endif
                                         @endforeach
                                     </tbody>
                                 </table>
