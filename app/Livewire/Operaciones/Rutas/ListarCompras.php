@@ -10,11 +10,13 @@ use Livewire\Component;
 class ListarCompras extends Component
 {
     public $readyToLoadModal = false;
-    public $ruta;
+    public $ruta_compra;
     public function mount(Ruta $ruta = null) {
 
         
-        $this->ruta = $ruta;
+        $this->ruta_compra =  RutaCompraEfectivo::where('ruta_id',$ruta->id)->where('status_ruta_compra_efectivos','!=',5)->get();
+
+       
 
     }
 

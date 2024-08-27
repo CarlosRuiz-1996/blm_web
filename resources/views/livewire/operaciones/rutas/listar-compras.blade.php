@@ -1,5 +1,5 @@
 <div>
-    @if ($ruta->ruta_compra && count($ruta->ruta_compra))
+    @if ($ruta_compra && count($ruta_compra))
 
         <div class="d-sm-flex align-items-center justify-content-between">
 
@@ -23,9 +23,9 @@
                                         <th>Detalles</th>
                                     </thead>
                                     <tbody>
-                                        @foreach ($ruta->ruta_compra as $ruta)
+                                        @foreach ($ruta_compra as $ruta)
 
-                                        @if($ruta->status_ruta_compra_efectivos!=4)
+                                        @if($ruta->status_ruta_compra_efectivos!=5)
                                             <tr>
 
                                                 
