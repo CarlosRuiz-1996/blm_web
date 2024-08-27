@@ -408,11 +408,6 @@ class RutaProcesar extends Component
     }
 
 
-    // public $servicio_detalle;
-    // public function detalleServicio(RutaServicio $ruta_servicio){
-    //     $this->servicio_detalle=$ruta_servicio;
-    //     $this->readyToLoadModal=true;
-    // }
 
     public  $evidencia_foto;
     public function evidenciaRecolecta(ServicioRutaEnvases $envase){

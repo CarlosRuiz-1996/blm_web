@@ -117,14 +117,12 @@
                                                 wire:click='opernModal({{ $servicio }})'
                                                 data-target="#terminar_servicio">Verificar monto</button>
                                         @else
-                                            <button class="btn btn-info" {{-- wire:click='opernModal({{ $servicio }})' --}}
+                                            <button class="btn btn-info" 
                                                 wire:click="$dispatch('finalizar-entrega',{{ $servicio }})">Finalizar
                                                 Entrega</button>
                                         @endif
 
-                                        {{-- <button class="btn btn-primary" data-toggle="modal"
-                                            wire:click='detalleServicio({{ $servicio }})'
-                                            data-target="#detalleServicio">Detalles</button> --}}
+                
                                     @else
                                         <span class="badge bg-success" style="font-weight: bold;"> Finalizado.</span>
                                     @endif
@@ -172,7 +170,7 @@
                                             </button>
                                             @if ($ruta_compra->compra->status_compra_efectivos == 3)
                                                 <button class="btn btn-danger"
-                                                    wire:click="$dispatch('finalizar-compra',{{ $ruta_compra->compra }})">
+                                                    wire:click="$dispatch('finalizar-compra',{{ $ruta_compra }})">
                                                     Finalizar
                                                 </button>
                                             @endif
@@ -689,6 +687,7 @@
 
                 @this.on('finalizar-compra', (compra) => {
 
+                    
                     Swal.fire({
                         title: '¿Estas seguro?',
                         text: "La compra sera terminada y podra ser procesada en bancos.",
