@@ -530,7 +530,6 @@
                 <div class="modal-body text-center">
                     @if ($readyToLoadModal)
                         <img src="{{ asset('storage/'.$evidencia_foto) }}" alt="Evidencia">
-                        {{var_dump($evidencia_foto)}}
                     @else
                         <div class="col-md-12 text-center">
                             <div class="spinner-border" role="status">
