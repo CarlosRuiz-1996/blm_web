@@ -539,7 +539,10 @@
                 </div>
                 <div class="modal-body text-center">
                     @if ($readyToLoadModal)
-                        <img src="{{ asset('storage/' . $evidencia_foto) }}" alt="Evidencia">
+                        <img src="{{ asset('storage/' . $evidencia_foto) }}"
+                        width="300px"
+                        height="350px"
+                        alt="Evidencia">
                     @else
                         <div class="col-md-12 text-center">
                             <div class="spinner-border" role="status">
