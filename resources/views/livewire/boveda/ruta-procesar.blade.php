@@ -117,12 +117,10 @@
                                                 wire:click='opernModal({{ $servicio }})'
                                                 data-target="#terminar_servicio">Verificar monto</button>
                                         @else
-                                            <button class="btn btn-info" 
+                                            <button class="btn btn-info"
                                                 wire:click="$dispatch('finalizar-entrega',{{ $servicio }})">Finalizar
                                                 Entrega</button>
                                         @endif
-
-                
                                     @else
                                         <span class="badge bg-success" style="font-weight: bold;"> Finalizado.</span>
                                     @endif
@@ -149,7 +147,7 @@
                                 <th colspan="2" class="text-center">Acciones</th>
                             </tr>
                             @foreach ($ruta->ruta_compra as $ruta_compra)
-                                @if ($ruta_compra->status_ruta_compra_efectivos <5)
+                                @if ($ruta_compra->status_ruta_compra_efectivos < 5)
                                     <tr x-show="compra">
                                         <td>
                                             ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
@@ -233,13 +231,14 @@
                                         disabled type="text" />
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <label for="">Monto</label>
-
-
+                                    <label for="">
+                                        Monto:
+                                        ${{ number_format((float) $monto_envases[$envases->id]['cantidad'] ?? 0, 2, '.', ',') }}
+                                    </label>
                                     <input
                                         class="form-control {{ $errors->has('monto_envases.' . $envases->id . '.cantidad') ? 'is-invalid' : '' }}"
-                                        wire:model="monto_envases.{{ $envases->id }}.cantidad" placeholder="Monto"
-                                        type="number" onkeyup="monto(this,{{ $envases->id }})" />
+                                        wire:model.live="monto_envases.{{ $envases->id }}.cantidad"
+                                        placeholder="Monto" type="number" onkeyup="monto(this,{{ $envases->id }})" />
 
 
                                     @error('monto_envases.' . $envases->id . '.cantidad')
@@ -264,6 +263,12 @@
                                                 d="M10.707 9.293a1 1 0 0 1 1.414 0L15 12.172V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-.828l3.293-3.293a1 1 0 0 1 1.414 0L7 10.586l3.707-3.707zM10 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                                         </svg>
                                     </button>
+                                </div>
+                                <div class="col-md-1 mb-3">
+                                    <label style="display: block;">Acreditación</label>
+                                    <input type="checkbox"
+                                        wire:model="monto_envases.{{ $envases->id }}.acreditacion"
+                                        class="large-checkbox" />
                                 </div>
                             @endforeach
                         @else
@@ -466,6 +471,7 @@
                             <tr>
                                 <th>Banco/Consignatario</th>
                                 <th>Monto</th>
+                                <th>Evidencia</th>
                                 <th>Estatus</th>
                             </tr>
                         </thead>
@@ -477,7 +483,13 @@
                                         <tr>
                                             <td>{{ $detalle->consignatario->name }}</td>
                                             <td>${{ number_format($detalle->monto, 2, '.', ',') }}</td>
-
+                                            <td>
+                                                <button class="btn btn-info"
+                                                    data-toggle="modal"data-target="#evidenciaModal"
+                                                    wire:click='evidenciaCompra({{ $detalle }})'>
+                                                    Evidencia
+                                                </button>
+                                            </td>
                                             <td>
 
                                                 <span
@@ -527,7 +539,7 @@
                 </div>
                 <div class="modal-body text-center">
                     @if ($readyToLoadModal)
-                        <img src="{{ asset('storage/'.$evidencia_foto) }}" alt="Evidencia">
+                        <img src="{{ asset('storage/' . $evidencia_foto) }}" alt="Evidencia">
                     @else
                         <div class="col-md-12 text-center">
                             <div class="spinner-border" role="status">
@@ -687,7 +699,7 @@
 
                 @this.on('finalizar-compra', (compra) => {
 
-                    
+
                     Swal.fire({
                         title: '¿Estas seguro?',
                         text: "La compra sera terminada y podra ser procesada en bancos.",

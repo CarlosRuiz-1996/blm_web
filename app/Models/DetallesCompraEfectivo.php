@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class DetallesCompraEfectivo extends Model
 {
@@ -25,5 +26,9 @@ class DetallesCompraEfectivo extends Model
     public function compra_efectivo()
     {
         return $this->belongsTo(CompraEfectivo::class, 'compra_efectivo_id');
+    }
+
+    public function envase(){
+        return $this->hasOne(CompraEfectivoEnvases::class, 'detalles_compra_efectivo_id');
     }
 }

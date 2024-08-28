@@ -17,4 +17,7 @@ class CompraEfectivoEnvases extends Model
         'evidencia',
         'status_compra_efectivo_envases'
     ];
+
+
+    
 }

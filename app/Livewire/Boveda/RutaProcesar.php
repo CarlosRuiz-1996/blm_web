@@ -3,9 +3,11 @@
 namespace App\Livewire\Boveda;
 
 use App\Livewire\Forms\BovedaForm;
+use App\Models\BancosServicioAcreditacion;
 use App\Models\Cliente;
 use App\Models\ClienteMontos;
 use App\Models\CompraEfectivo;
+use App\Models\DetallesCompraEfectivo;
 use App\Models\Inconsistencias;
 use App\Models\Ruta;
 use App\Models\RutaCompraEfectivo;
@@ -34,6 +36,7 @@ class RutaProcesar extends Component
     }
     public function mount(Ruta $ruta)
     {
+        
         $this->ruta = $ruta;
     }
     public function render()
@@ -57,7 +60,10 @@ class RutaProcesar extends Component
             $this->form->folio = $this->form->servicio->folio;
             $this->form->monto = $this->form->servicio->monto;
 
-            $this->monto_envases[$s->id] = ['cantidad' => 0];
+            $this->monto_envases[$s->id] = [
+                'cantidad' => 0,
+                'acreditacion' => false
+            ];
         }
         $this->servicio_e = $servicio;
         // dd($this->monto_envases);
@@ -77,6 +83,8 @@ class RutaProcesar extends Component
             'monto_envases.*.cantidad.numeric' => 'La cantidad debe ser un número',
             'monto_envases.*.cantidad.min' => 'La cantidad no debe ser al menos 0',
         ]);
+
+        // dd($this->monto_envases);
         try {
             DB::beginTransaction();
 
@@ -339,6 +347,13 @@ class RutaProcesar extends Component
             $envase->save();
             $envase->evidencia_recolecta->status_evidencia_recolecta = 2;
             $envase->evidencia_recolecta->save();
+
+            //acreditacion....
+            if($this->monto_envases[$envase->id]['acreditacion']){
+                BancosServicioAcreditacion::create([
+                    'servicios_envases_ruta_id'=>$envase->id,
+                ]);
+            }
         }
 
         $monto_in = $this->form->servicio->monto - $monto_diferencia;
@@ -417,6 +432,12 @@ class RutaProcesar extends Component
     public function evidenciaRecolecta(ServicioRutaEnvases $envase)
     {
         $this->evidencia_foto =  'evidencias/EntregasRecolectas/Servicio_' . $envase->ruta_servicios_id . '_recolecta_' . $envase->evidencia_recolecta->id . '_evidencia.png';
+        $this->readyToLoadModal = true;
+    }
+
+    public function evidenciaCompra(DetallesCompraEfectivo $detalle)
+    {
+        $this->evidencia_foto =  'evidencias/CompraEfectivo/compra_efectivo_detalle_' . $detalle->envase->id . '.png';
         $this->readyToLoadModal = true;
     }
 }
