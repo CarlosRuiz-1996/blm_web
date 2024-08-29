@@ -36,7 +36,7 @@ class RutaProcesar extends Component
     }
     public function mount(Ruta $ruta)
     {
-        
+
         $this->ruta = $ruta;
     }
     public function render()
@@ -349,9 +349,9 @@ class RutaProcesar extends Component
             $envase->evidencia_recolecta->save();
 
             //acreditacion....
-            if($this->monto_envases[$envase->id]['acreditacion']){
+            if ($this->monto_envases[$envase->id]['acreditacion']) {
                 BancosServicioAcreditacion::create([
-                    'servicios_envases_ruta_id'=>$envase->id,
+                    'servicios_envases_ruta_id' => $envase->id,
                 ]);
             }
         }
@@ -393,10 +393,17 @@ class RutaProcesar extends Component
     }
     public function limpiarDatos()
     {
-        $this->reset('readyToLoadModal', 'compra_detalle', 'status_compra', 'evidencia_foto');
+        $this->reset(
+            'readyToLoadModal',
+            'compra_detalle',
+            'status_compra',
+            'evidencia_foto',
+            'papeleta',
+            'MontoEntrega',
+            'servicioRuta_id',
+            'inputs'
+        );
     }
-
-
     #[On('finaliza-compra')]
     public function finalizaCompra(RutaCompraEfectivo $ruta_compra)
     {
@@ -425,19 +432,51 @@ class RutaProcesar extends Component
             );
         }
     }
-
-
-
     public  $evidencia_foto;
     public function evidenciaRecolecta(ServicioRutaEnvases $envase)
     {
         $this->evidencia_foto =  'evidencias/EntregasRecolectas/Servicio_' . $envase->ruta_servicios_id . '_recolecta_' . $envase->evidencia_recolecta->id . '_evidencia.png';
         $this->readyToLoadModal = true;
     }
-
     public function evidenciaCompra(DetallesCompraEfectivo $detalle)
     {
         $this->evidencia_foto =  'evidencias/CompraEfectivo/compra_efectivo_detalle_' . $detalle->envase->id . '.png';
         $this->readyToLoadModal = true;
+    }
+    // detalles entrega
+    public $papeleta;
+    public $MontoEntrega;
+    public $servicioRuta_id;
+    public $inputs = [];
+    public function detallesEntrega(RutaServicio $servicioRuta)
+    {
+        $this->readyToLoadModal = true;
+
+        $this->papeleta = $servicioRuta->folio;
+        $this->MontoEntrega = $servicioRuta->monto;
+        $this->servicioRuta_id = $servicioRuta->id;
+
+        $serviciosEnvases = ServicioRutaEnvases::where('ruta_servicios_id', $servicioRuta->id)->where('status_envases', 1)->get();
+
+        // Si hay registros, llenar los arreglos con los valores recuperados
+        if ($serviciosEnvases->isNotEmpty()) {
+            // dd('entra');
+            $this->inputs = $serviciosEnvases->mapWithKeys(function ($item) {
+                return [$item->id => [
+                    'cantidad' => $item->cantidad,
+                    'folio' => $item->folio,
+                    'sello' => $item->sello_seguridad,
+                ]];
+            })->toArray();
+        }
+    }
+
+    public function evidenciaEntrega(ServicioRutaEnvases $ruta_servicio){
+       
+        
+        $this->evidencia_foto =  'evidencias/EntregasRecolectas/Servicio_' . $ruta_servicio->ruta_servicios_id . 
+        '_entrega_' . $ruta_servicio->evidencia_entrega->id . '_evidencia.png';
+        $this->readyToLoadModal = true;
+
     }
 }
