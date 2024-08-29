@@ -90,6 +90,7 @@ class RutaProcesar extends Component
 
             $monto_total_envases = 0;
 
+            // dd($this->servicio_e); //139-monto_envases
             //reviso so hay diferencia de valores
             foreach ($this->servicio_e as $s) {
                 if (isset($this->monto_envases[$s->id])) {
@@ -102,7 +103,7 @@ class RutaProcesar extends Component
                 }
             }
             $diferencia = "";
-
+            // dd($this->form->monto .'--'. $monto_total_envases);
             //cuando hay diferencia de valores
             if ($this->form->monto != $monto_total_envases) {
                 foreach ($this->servicio_e as $s) {
@@ -286,6 +287,7 @@ class RutaProcesar extends Component
     public function corregirMonto()
     {
         $this->monto_envases = [];
+
         $this->monto_calculado = 0;
     }
 

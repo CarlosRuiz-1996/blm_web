@@ -234,7 +234,9 @@
                                 <div class="col-md-3 mb-3">
                                     <label for="">
                                         Monto:
-                                        ${{ number_format((float) $monto_envases[$envases->id]['cantidad'] ?? 0, 2, '.', ',') }}
+                                        {{-- ${{ number_format((float) $monto_envases[$envases->id]['cantidad'] ?? 0, 2, '.', ',') }} --}}
+                                        ${{ number_format((float) ($monto_envases[$envases->id]['cantidad'] ?? 0), 2, '.', ',') }}
+
                                     </label>
                                     <input
                                         class="form-control {{ $errors->has('monto_envases.' . $envases->id . '.cantidad') ? 'is-invalid' : '' }}"
