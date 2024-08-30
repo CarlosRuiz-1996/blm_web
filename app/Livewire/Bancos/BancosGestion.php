@@ -163,7 +163,7 @@ class BancosGestion extends Component
         $this->compras_efectivo[] = [
             "cajero" => $this->cajero_id,
             "cajero_name" => $cajero->name,
-            "monto" => $this->monto_e_e,
+            "monto" => $this->monto_e,
         ];
         $this->total += $this->monto_e;
         $this->reset(['cajero_id', 'monto_e']);
