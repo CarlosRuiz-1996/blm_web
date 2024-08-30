@@ -9,6 +9,7 @@ use App\Models\ClienteMontos;
 use App\Models\CompraEfectivo;
 use App\Models\DetallesCompraEfectivo;
 use App\Models\Inconsistencias;
+use App\Models\MontoBlm;
 use App\Models\Ruta;
 use App\Models\RutaCompraEfectivo;
 use App\Models\RutaEmpleadoReporte;
@@ -409,7 +410,6 @@ class RutaProcesar extends Component
     #[On('finaliza-compra')]
     public function finalizaCompra(RutaCompraEfectivo $ruta_compra)
     {
-
         try {
 
             DB::beginTransaction();
@@ -419,6 +419,8 @@ class RutaProcesar extends Component
             $ruta_compra->compra->status_compra_efectivos = 4; //finalizada la compra efectivo por boveda
             $ruta_compra->compra->save();
 
+            //agrego al monto total de blm
+            MontoBlm::find(1)->increment('monto', $ruta_compra->compra->total);
             $this->dispatch(
                 'agregarArchivocre',
                 ['msg' => 'La compra de efectivo se finalizo.'],
@@ -473,12 +475,12 @@ class RutaProcesar extends Component
         }
     }
 
-    public function evidenciaEntrega(ServicioRutaEnvases $ruta_servicio){
-       
-        
-        $this->evidencia_foto =  'evidencias/EntregasRecolectas/Servicio_' . $ruta_servicio->ruta_servicios_id . 
-        '_entrega_' . $ruta_servicio->evidencia_entrega->id . '_evidencia.png';
-        $this->readyToLoadModal = true;
+    public function evidenciaEntrega(ServicioRutaEnvases $ruta_servicio)
+    {
 
+
+        $this->evidencia_foto =  'evidencias/EntregasRecolectas/Servicio_' . $ruta_servicio->ruta_servicios_id .
+            '_entrega_' . $ruta_servicio->evidencia_entrega->id . '_evidencia.png';
+        $this->readyToLoadModal = true;
     }
 }

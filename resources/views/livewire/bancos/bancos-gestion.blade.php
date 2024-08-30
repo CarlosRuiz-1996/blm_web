@@ -10,7 +10,7 @@
                 @if ($readyToLoad)
                     <span class="info-box-number">
 
-                        {{ number_format($resguardototal, 2, '.', ',') }} MXN
+                        {{ number_format($resguardototal->monto, 2, '.', ',') }} MXN
                     </span>
                 @else
                     <div class="spinner-border" role="status"></div>
@@ -19,7 +19,7 @@
                     <div class="progress-bar bg-info" style="width: 70%"></div>
                 </div>
                 <span class="progress-description ">
-                    <b class="text-secondary"> Este monto es la suma total del resguardo de todos los clientes.</b>
+                    <b class="text-secondary"> Este es el monto disponible de blm.</b>
                 </span>
             </div>
             <div class="row g-3">
@@ -513,27 +513,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
-                        {{-- <div class="form-group  col-md-5" wire:ignore>
-
-                            <x-select-select2 label="Clientes:" placeholder="" wire-model="cliente" required
-                                classSelect2="cliente_compra" modalName='compraEfectivo'>
-                                @if ($clientes_activo && count($clientes_activo) > 0)
-                                    @foreach ($clientes_activo as $cliente)
-                                        <option value="{{ $cliente->id }}">
-
-                                            {{ $cliente->rfc_cliente }}-{{ $cliente->razon_social }}</option>
-                                    @endforeach
-                                @else
-                                    <option value="">Sin clientes</option>
-                                @endif
-                            </x-select-select2>
-                        </div> --}}
+                       
                         <div class="form-group  col-md-5">
 
-                            <label for="">Monto: {{ number_format($monto, 2, '.', ',') }} MXN</label>
-                            <input type="number" wire:model.live='monto'
-                                class="form-control @error('monto') is-invalid @enderror">
-                            @error('monto')
+                            <label for="">Monto: {{ number_format(($monto_e??0), 2, '.', ',') }} MXN</label>
+                            <input type="number" wire:model.live='monto_e'
+                                class="form-control @error('monto_e') is-invalid @enderror">
+                            @error('monto_e')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
 
@@ -718,7 +704,7 @@
                                 wire-model="direccion" type="text" :readonly='true' />
                         </div>
                         <div class="form-group  col-md-3">
-                            <x-input-validadolive label="Monto " placeholder="Monto " wire-model="monto"
+                            <x-input-validadolive label="Monto " placeholder="Monto " wire-model="monto_e"
                                 type="number" />
                         </div>
                         <div class="form-group  col-md-3">

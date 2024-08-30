@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\ClienteMontos;
 use App\Models\CompraEfectivo;
 use App\Models\CtgConsignatario;
+use App\Models\MontoBlm;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +47,7 @@ class BancosForm extends Form
 
     public function getCountResguadoClientes()
     {
-        return Cliente::where('status_cliente', 1)->sum('resguardo');
+        return MontoBlm::find(1);//Cliente::where('status_cliente', 1)->sum('resguardo');
     }
 
     public function addMonto()

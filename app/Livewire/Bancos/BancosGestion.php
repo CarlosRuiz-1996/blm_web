@@ -82,8 +82,8 @@ class BancosGestion extends Component
 
     public function showDetail(Cliente $cliente)
     {
-
         $this->cliente_detail = $cliente;
+        // dd($this->cliente_detail->montos);
         // $this->readyToLoadModal = true;
     }
 
@@ -130,8 +130,6 @@ class BancosGestion extends Component
     public $compra_detalle = [];
     public function showCompraDetail(CompraEfectivo $compra)
     {
-
-
         $this->compra_detalle = $compra;
         $this->readyToLoadModal = true;
     }
@@ -141,7 +139,7 @@ class BancosGestion extends Component
 
     public $cliente;
     public $servicio;
-    public $monto = 0;
+    public $monto_e = 0;
     public $cajero_id;
     public $fecha;
     public $total;
@@ -154,21 +152,21 @@ class BancosGestion extends Component
         $this->validate(
             [
                 'cajero_id' => 'required',
-                'monto' => 'required',
+                'monto_e' => 'required',
             ],
             [
                 'cajero_id.required' => 'El cajero es obligatorio',
-                'monto.required' => 'El monto es obligatorio',
+                'monto_e.required' => 'El monto es obligatorio',
             ]
         );
         $cajero = CtgConsignatario::find($this->cajero_id);
         $this->compras_efectivo[] = [
             "cajero" => $this->cajero_id,
             "cajero_name" => $cajero->name,
-            "monto" => $this->monto,
+            "monto" => $this->monto_e_e,
         ];
-        $this->total += $this->monto;
-        $this->reset(['cajero_id', 'monto']);
+        $this->total += $this->monto_e;
+        $this->reset(['cajero_id', 'monto_e']);
         // $this->dispatch('resetSelect2');
     }
     public function removeCompra($index)
@@ -235,7 +233,7 @@ class BancosGestion extends Component
     {
         $this->reset([
             'cliente',
-            'monto',
+            'monto_e',
             'cajero_id',
             'fecha',
             'servicios_add',
@@ -261,12 +259,12 @@ class BancosGestion extends Component
                 'papeleta' => 'required',
                 'fecha' => 'required',
                 'tipo' => 'required',
-                'monto' => 'required_if:tipo,1', // Aquí se usa la regla condicional
+                'monto_e' => 'required_if:tipo,1', // Aquí se usa la regla condicional
 
             ],
             [
                 'cliente.required' => 'El cliente es obligatorio',
-                'monto.required_if' => 'El monto es obligatorio',
+                'monto_e.required_if' => 'El monto es obligatorio',
                 'servicio.required' => 'El servicio es obligatorio',
                 'papeleta.required' => 'La papeleta es obligatorio',
                 'fecha.required' => 'La fecha es obligatorio',
@@ -278,7 +276,7 @@ class BancosGestion extends Component
         $this->servicios_add[] = [
             "cliente" => $this->cliente,
             "cliente_name" => $cliente->razon_social . '-' . $cliente->rfc_cliente,
-            "monto" => $this->monto,
+            "monto" => $this->monto_e,
             "tipo_id" => $this->tipo,
             "tipo_servicio" => $this->tipo == 1 ? 'Entrega' : 'Recolecta',
             "fecha" => $this->fecha,
@@ -288,7 +286,7 @@ class BancosGestion extends Component
             "direccion"=>$this->direccion
 
         ];
-        $this->reset(['cliente', 'monto', 'papeleta', 'servicio', 'tipo', 'fecha']);
+        $this->reset(['cliente', 'monto_e', 'papeleta', 'servicio', 'tipo', 'fecha', 'direccion']);
         $this->dispatch('resetSelect2');
     }
     public function updatedServicio($value)
