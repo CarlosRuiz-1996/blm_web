@@ -54,10 +54,15 @@ class BancosForm extends Form
     {
 
         $this->validate();
-
+        $error=false;
         try {
             DB::beginTransaction();
 
+            $blm = MontoBlm::find(1);
+            if($blm->monto < $this->ingresa_monto){
+                $error=true;
+                throw new \Exception('No hay saldo suficiente en blm para surtir esta petición.');
+            }
             $this->cliente->resguardo = $this->nuevo_monto;
             $this->cliente->save();
 
@@ -69,12 +74,16 @@ class BancosForm extends Form
                 'empleado_id' => Auth::user()->empleado->id,
                 'ctg_area_id' => Auth::user()->empleado->ctg_area_id
             ]);
+
+
+            //descontar monto al saldo de bancos. 
+            MontoBlm::find(1)->decrement('monto', $this->ingresa_monto);
             DB::commit();
             return 1;
         } catch (\Exception $e) {
 
             DB::rollBack();
-            return 0;
+            return $error? $e->getMessage():0;
         }
     }
 

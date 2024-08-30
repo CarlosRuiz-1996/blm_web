@@ -404,8 +404,8 @@
                             wire-model="form.ingresa_monto" type="number" />
 
 
-                        <x-input-validadolive label="Nuevo Monto" placeholder="0" wire-model="form.nuevo_monto"
-                            type="number" />
+                        <x-input-validadolive :readonly='true' label="Nuevo Monto" placeholder="0"
+                            wire-model="form.nuevo_monto" type="number" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -705,18 +705,16 @@
                                 wire-model="direccion" type="text" :readonly='true' />
                         </div>
                         <div class="form-group  col-md-3">
-                            
+
 
                             <label for="">
                                 Monto:
                                 ${{ number_format((float) ($monto_e ?? 0), 2, '.', ',') }}
 
                             </label>
-                            <input
-                                class="form-control  @error('monto_e') 'is-invalid' @enderror"
-                                wire:model.live="monto_e" placeholder="Monto"
-                                type="number" />
-                                @error('monto_e')
+                            <input class="form-control  @error('monto_e') 'is-invalid' @enderror"
+                                wire:model.live="monto_e" placeholder="Monto" type="number" />
+                            @error('monto_e')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -796,7 +794,9 @@
 
                 Livewire.on('alert', function([message]) {
 
-                    $("#modalAdd").modal('hide');
+                    if (message[1] == 'success') {
+                        $("#modalAdd").modal('hide');
+                    }
                     $("#compraEfectivo").modal('hide');
                     $("#addServicio").modal('hide');
 

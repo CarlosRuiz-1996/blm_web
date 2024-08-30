@@ -122,7 +122,8 @@ class BancosGestion extends Component
             $this->render();
             $this->limpiarDatos();
         } else {
-            $this->dispatch('alert', ['Hubo un problema, intenta más tarde.', 'error']);
+
+            $this->dispatch('alert', [$res == 0 ? 'Hubo un problema, intenta más tarde.' : $res, 'error']);
         }
     }
 
@@ -184,7 +185,7 @@ class BancosGestion extends Component
     public function updatedCliente($value)
     {
         if ($value != '')
-            $this->servicios_cliente = Servicios::where('cliente_id', $value)->where('status_servicio','>=',3)->get();
+            $this->servicios_cliente = Servicios::where('cliente_id', $value)->where('status_servicio', '>=', 3)->get();
     }
 
     public function finalizarCompra()
@@ -283,7 +284,7 @@ class BancosGestion extends Component
             "papeleta" => $this->papeleta,
             "servicio" => $this->servicio,
             "servicio_desc" => $servicio->ctg_servicio->descripcion,
-            "direccion"=>$this->direccion
+            "direccion" => $this->direccion
 
         ];
         $this->reset(['cliente', 'monto_e', 'papeleta', 'servicio', 'tipo', 'fecha', 'direccion']);
@@ -293,7 +294,7 @@ class BancosGestion extends Component
     {
         if ($value != '')
             $direccion = Servicios::find($value);
-            $this->direccion = $direccion->sucursal ? $direccion->sucursal->sucursal->sucursal . ', ' . $direccion->sucursal->sucursal->direccion .
+        $this->direccion = $direccion->sucursal ? $direccion->sucursal->sucursal->sucursal . ', ' . $direccion->sucursal->sucursal->direccion .
             ', ' .  $direccion->sucursal->sucursal->cp->cp .
             '' .
             $direccion->sucursal->sucursal->cp->estado->name : 'No tiene una sucursal definida aun.';
