@@ -121,7 +121,6 @@ class BancosRutas extends Component
     public function addServicioRuta()
     {
 
-        dd($this->banco_servicio);
         $this->validate(
             [
                 'ctg_ruta_dia_id' => 'required',
