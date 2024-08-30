@@ -184,7 +184,7 @@ class BancosGestion extends Component
     public function updatedCliente($value)
     {
         if ($value != '')
-            $this->servicios_cliente = Servicios::where('cliente_id', $value)->get();
+            $this->servicios_cliente = Servicios::where('cliente_id', $value)->where('status_servicio','>=',3)->get();
     }
 
     public function finalizarCompra()
@@ -293,10 +293,10 @@ class BancosGestion extends Component
     {
         if ($value != '')
             $direccion = Servicios::find($value);
-            $this->direccion = $direccion->sucursal->sucursal->sucursal . ', ' . $direccion->sucursal->sucursal->direccion .
+            $this->direccion = $direccion->sucursal ? $direccion->sucursal->sucursal->sucursal . ', ' . $direccion->sucursal->sucursal->direccion .
             ', ' .  $direccion->sucursal->sucursal->cp->cp .
             '' .
-            $direccion->sucursal->sucursal->cp->estado->name;
+            $direccion->sucursal->sucursal->cp->estado->name : 'No tiene una sucursal definida aun.';
     }
     public function removeService($index)
     {
