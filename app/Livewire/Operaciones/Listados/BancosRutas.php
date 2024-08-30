@@ -53,7 +53,7 @@ class BancosRutas extends Component
 
             if ($value != "") {
                 $this->resetValidation('ctg_ruta_dia_id');
-                $this->rutas_dia = Ruta::where('ctg_ruta_dia_id', '=', $value)->get();
+                $this->rutas_dia = Ruta::where('ctg_ruta_dia_id', '=', $value)->where('status_ruta', '!=', 3)->get();
 
                 $this->ruta_id = "";
             } else {
@@ -68,6 +68,7 @@ class BancosRutas extends Component
     #[On('banco-compra-rutas')]
     public function addCompraRuta()
     {
+
         $this->validate(
             [
                 'ctg_ruta_dia_id' => 'required',
@@ -120,6 +121,7 @@ class BancosRutas extends Component
     public function addServicioRuta()
     {
 
+        dd($this->banco_servicio);
         $this->validate(
             [
                 'ctg_ruta_dia_id' => 'required',
@@ -137,18 +139,26 @@ class BancosRutas extends Component
             if ($this->banco_servicio->servicio->ruta_servicio) {
 
 
-                if ($this->banco_servicio->servicio->ruta_servicio->status_ruta_servicios == 1) {
-                    RutaServicio::where('servicio_id', $this->banco_servicio->servicio->id)->update([
-                        'ruta_id' => $this->ruta_id,
-                        'monto' => $this->banco_servicio->monto,
-                        'folio' => $this->banco_servicio->papeleta,
-                        'tipo_servicio' => $this->banco_servicio->tipo_servicio,
-                        'status_ruta_servicios' => 1,
-                        'envase_cargado' => 0
-                    ]);
-                } else {
+                if ($this->banco_servicio->servicio->ruta_servicio->status_ruta_servicios != 1) {
                     throw new \Exception('El servicio esta en ruta y no se puede modificar hasta que termine.');
                 }
+                //validar la ruta
+                $ruta = Ruta::find($this->ruta_id);
+                if ($ruta->status_ruta == 3) {
+                    throw new \Exception('La ruta ya termino, no se puede asignar a esta ruta.');
+                }
+
+                if ($ruta->status_ruta == 2 && $this->banco_servicio->servicio->tipo_servicio == 1) {
+                    throw new \Exception('Ya no se puede agregar servicios de entrega a esta ruta.');
+                }
+                RutaServicio::where('servicio_id', $this->banco_servicio->servicio->id)->update([
+                    'ruta_id' => $this->ruta_id,
+                    'monto' => $this->banco_servicio->monto,
+                    'folio' => $this->banco_servicio->papeleta,
+                    'tipo_servicio' => $this->banco_servicio->tipo_servicio,
+                    'status_ruta_servicios' => 1,
+                    'envase_cargado' => 0
+                ]);
             } else {
                 RutaServicio::create([
                     'servicio_id' => $this->banco_servicio->servicio_id,

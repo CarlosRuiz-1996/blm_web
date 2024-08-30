@@ -129,12 +129,12 @@
                                 @foreach ($compras as $compra)
                                     <tr>
                                         <td>$ {{ number_format($compra->total, 2, '.', ',') }}
-                                        {{-- <td>{{ $compra->consignatario->name }}</td> --}}
+                                            {{-- <td>{{ $compra->consignatario->name }}</td> --}}
                                         <td>{{ $compra->fecha_compra }}
                                         </td>
                                         <td>
                                             <span
-                                                class="badge bg-{{ $servicio->status_compra_efectivos == 1 ? 'secondary' : 'success' }}">
+                                                class="badge bg-{{ $compra->status_compra_efectivos == 1 ? 'secondary' : 'success' }}">
 
                                                 {{ $compra->status_compra_efectivos == 1 ? 'PENDIENTE' : 'FINALIZADO' }}
                                             </span>
