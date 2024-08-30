@@ -69,7 +69,8 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ $activeNav[2] }}" wire:click='ActiveNav(2)' id="servicios-tab" data-toggle="pill"
-                    href="#servicios" role="tab" aria-controls="servicios" aria-selected="true">Dotaciones mandados a
+                    href="#servicios" role="tab" aria-controls="servicios" aria-selected="true">Dotaciones mandados
+                    a
                     rutas</a>
             </li>
 
@@ -190,7 +191,7 @@
                                     wire:model.live='form.fechafin_compra_search'>
                             </div>
                         </div>
-                       
+
 
                         <div class="col-md-3">
                             <div class="form-group">
@@ -513,10 +514,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
-                       
+
                         <div class="form-group  col-md-5">
 
-                            <label for="">Monto: {{ number_format(($monto_e??0), 2, '.', ',') }} MXN</label>
+                            <label for="">Monto: {{ number_format($monto_e ?? 0, 2, '.', ',') }} MXN</label>
                             <input type="number" wire:model.live='monto_e'
                                 class="form-control @error('monto_e') is-invalid @enderror">
                             @error('monto_e')
@@ -704,8 +705,20 @@
                                 wire-model="direccion" type="text" :readonly='true' />
                         </div>
                         <div class="form-group  col-md-3">
-                            <x-input-validadolive label="Monto " placeholder="Monto " wire-model="monto_e"
+                            
+
+                            <label for="">
+                                Monto:
+                                ${{ number_format((float) ($monto_e ?? 0), 2, '.', ',') }}
+
+                            </label>
+                            <input
+                                class="form-control  @error('monto_e') 'is-invalid' @enderror"
+                                wire:model.live="monto_e" placeholder="Monto"
                                 type="number" />
+                                @error('monto_e')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="form-group  col-md-3">
                             <x-input-validadolive label="Papeleta/Folio" placeholder="Folio del servicio"
