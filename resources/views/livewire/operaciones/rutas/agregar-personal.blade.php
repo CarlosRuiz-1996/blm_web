@@ -54,7 +54,7 @@
                                                 <td>Guardia</td>
                                                 <td>{{ $empleado->empleado->sexo }}</td>
                                                 <td>{{ $empleado->empleado->phone }}</td>
-                                                <td>NO</td>
+                                                <td>{{ $empleado->empleado->armado ? 'SI': 'NO' }}</td>
                                                 @if($this->form->ruta->ctg_rutas_estado_id==1)
 
                                                 <td>
@@ -123,7 +123,7 @@
                         <td>Guardia</td>
                         <td>{{ $empleado->sexo }}</td>
                         <td>{{ $empleado->phone }}</td>
-                        <td>NO</td>
+                        <td>{{ $empleado->armado ? 'SI': 'NO' }}</td>
 
                     </tr>
                 @endforeach

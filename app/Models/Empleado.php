@@ -37,4 +37,8 @@ class Empleado extends Model
     {
         return $this->belongsToMany(Ruta::class, 'ruta_empleados', 'empleado_id', 'ruta_id');
     }
+
+    public function armado (){
+        return $this->hasOne(EmpleadoArmado::class, 'empleado_id');
+    }
 }
