@@ -317,7 +317,7 @@
                                 </div>
                             </div>
                         @endif
-                        @if ($compra_efectivo)
+                        @if (isset($compra_efectivo) && $compra_efectivo->isNotEmpty())
                             <div class="table-responsive">
                                 <h2>Compra de efectivo</h2>
                                 <table class="table">
