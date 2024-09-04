@@ -131,7 +131,9 @@
                         @endforeach
 
 
-                        @if (count($ruta->ruta_compra) > 0)
+                        @if ($ruta->ruta_compra->isNotEmpty() &&
+                                $ruta->ruta_compra->where('status_ruta_compra_efectivos', '!=', 5)->count() > 0)
+                        
                             <tr @click="compra = ! compra">
                                 <th colspan="5" class="text-center table-secondary">
                                     <h2>Compra de efectivo
@@ -625,6 +627,7 @@
                 </div>
                 <div class="modal-body text-center">
                     @if ($readyToLoadModal)
+                    {{$evidencia_foto}}
                         <img src="{{ asset('storage/' . $evidencia_foto) }}" width="300px" height="350px"
                             alt="Evidencia">
                     @else

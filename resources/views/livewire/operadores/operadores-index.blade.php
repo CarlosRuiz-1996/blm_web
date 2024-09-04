@@ -57,6 +57,7 @@
                                         @if ($rutaServicio->status_ruta != 1)
                                             <tr class="table-primary">
                                                 <th colspan="3">Servicio</th>
+                                                <th>Dirección</th>
                                                 <th>Papeleta</th>
                                                 <th>Envases</th>
                                                 <th>Tipo de Servicio</th>
@@ -66,6 +67,15 @@
                                                 <tr>
                                                     <td colspan="3">
                                                         {{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+                                                    <td>
+                                                        {{ $servicio->servicio->sucursal->sucursal->sucursal .
+                                                            ', ' .
+                                                            $servicio->servicio->sucursal->sucursal->direccion .
+                                                            ', ' .
+                                                            $servicio->servicio->sucursal->sucursal->cp->cp .
+                                                            '' .
+                                                            $servicio->servicio->sucursal->sucursal->cp->estado->name }}
+                                                    </td>
                                                     <td>{{ $servicio->folio }}</td>
                                                     <td>{{ $servicio->envases }}</td>
                                                     <td>
@@ -135,7 +145,6 @@
                                                         </tr>
                                                     @endif
                                                 @endforeach
-                                           
                                             @endif {{-- @break --}}
                                         @else
                                             <tr>
