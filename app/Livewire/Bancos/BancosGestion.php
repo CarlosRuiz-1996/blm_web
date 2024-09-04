@@ -49,6 +49,8 @@ class BancosGestion extends Component
 
         if ($this->readyToLoad) {
             $resguardototal = $this->form->getCountResguadoClientes();
+            $resguardototalCliente = Cliente::where('status_cliente', 1)->sum('resguardo');
+
             $clientes = $this->form->getAllClientes();
             $servicios = $this->form->getAllBancosServicios();
             $compras = $this->form->getAllComprasEfectivo();
@@ -56,13 +58,14 @@ class BancosGestion extends Component
 
         } else {
             $resguardototal = 0;
+            $resguardototalCliente = 0;
             $clientes = [];
             $servicios = [];
             $compras = [];
         }
         $clientes_activo = $this->form->getAllClientesActivo();
         $consignatarios = $this->form->getAllConsignatorio();
-        return view('livewire.bancos.bancos-gestion', compact('resguardototal', 'clientes', 'servicios', 'compras', 'clientes_activo', 'consignatarios'));
+        return view('livewire.bancos.bancos-gestion', compact('resguardototal', 'resguardototalCliente', 'clientes', 'servicios', 'compras', 'clientes_activo', 'consignatarios'));
     }
     public function loadClientes()
     {
@@ -103,17 +106,21 @@ class BancosGestion extends Component
     public function updating($property, $value)
     {
 
+        dd('entra');
         if ($property === 'form.ingresa_monto') {
             if ($value != "") {
                 $this->form->nuevo_monto =  $value + $this->form->cliente->resguardo;
+
             } else {
                 $this->form->nuevo_monto = 0;
+
             }
         }
     }
 
     public function add()
     {
+        dd($this->form->nuevo_monto.'-'.$this->form->ingresa_monto);
 
         $res =  $this->form->addMonto();
 
@@ -243,7 +250,7 @@ class BancosGestion extends Component
             'compras_efectivo',
             'servicios_cliente',
             'tipo',
-            'papeleta'
+            'papeleta',
         ]);
     }
 

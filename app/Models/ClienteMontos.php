@@ -10,7 +10,7 @@ class ClienteMontos extends Model
 {
     use HasFactory;
     protected $table = "cliente_montos";
-    protected $fillable=['cliente_id','monto_old','monto_in','monto_new','empleado_id','ctg_area_id','tipo'];
+    protected $fillable=['cliente_id','monto_old','monto_in','monto_new','empleado_id','ctg_area_id','tipo','status_cliente_monto'];
 
     public function cliente()
     {

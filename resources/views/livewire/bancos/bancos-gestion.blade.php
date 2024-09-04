@@ -2,6 +2,7 @@
 
     <div class="container-fluid">
         <div class="info-box">
+            {{-- montoo total --}}
             <span class="info-box-icon bg-info"><i class="fas fa-dollar-sign"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Monto total en blm</span>
@@ -20,6 +21,27 @@
                 </div>
                 <span class="progress-description ">
                     <b class="text-secondary"> Este es el monto disponible de blm.</b>
+                </span>
+            </div>
+            {{-- resguardo --}}
+            <span class="info-box-icon bg-info"><i class="fas fa-dollar-sign"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Resguardo</span>
+
+                @if ($readyToLoad)
+                    <span class="info-box-number">
+
+                        {{ number_format($resguardototalCliente, 2, '.', ',') }} MXN
+                    </span>
+                @else
+                    <div class="spinner-border" role="status"></div>
+                @endif
+                <div class="progress">
+                    <div class="progress-bar bg-info" style="width: 70%"></div>
+                </div>
+                <span class="progress-description ">
+                    <b class="text-secondary"> Este es el monto en resguardo de todos los clientes</b>
                 </span>
             </div>
             <div class="row g-3">
@@ -397,15 +419,25 @@
                     <div>
                         <label for="">Monto Actual</label>
                         <input disabled type="text" class="form-control"
-                            value="{{ isset($form->cliente) ? $form->cliente->resguardo : '' }}">
+                            value="{{ isset($form->cliente) ? '$ ' . number_format($form->cliente->resguardo, 2, '.', ',') : '' }}">
 
 
-                        <x-input-validadolive label="Monto a Ingresar" placeholder="Monto a Ingresar"
-                            wire-model="form.ingresa_monto" type="number" />
+
+                        <label for="">Monto a Ingresar $
+                            {{-- {{ $form->ingresa_monto ? number_format($form->ingresa_monto, 2, '.', ',') : '0' }} --}}
+                        </label>
+                        <input type="number" class="form-control @error('form.ingresa_monto') is-invalid @enderror"
+                            placeholder="Monto a Ingresar" wire.model.live="form.ingresa_monto">
+                        @error('form.ingresa_monto')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                        @enderror
+
+                        <label for="">Nuevo Monto</label>
+                        <input disabled type="text" class="form-control"
+                            value="$ {{ isset($form->nuevo_monto) ? '$ ' . number_format($form->nuevo_monto, 2, '.', ',') : '0' }}">
 
 
-                        <x-input-validadolive :readonly='true' label="Nuevo Monto" placeholder="0"
-                            wire-model="form.nuevo_monto" type="number" />
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -509,8 +541,8 @@
             <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title" id="exampleModalLabel">Compra de efectivo.</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        wire:click='clean'><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
@@ -595,7 +627,8 @@
                         <button type="button" class="btn btn-info" wire:click='finalizarCompra'
                             wire:loading.remove>Aceptar</button>
                     @endif
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        wire:click='clean'>Cerrar</button>
                 </div>
             </div>
         </div>
@@ -660,8 +693,8 @@
             <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title" id="exampleModalLabel">Servicios.</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        wire:click='clean'><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
@@ -781,7 +814,8 @@
                         <button type="button" class="btn btn-info" wire:click='finalizarServicios'
                             wire:loading.remove>Aceptar</button>
                     @endif
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        wire:click='clean'>Cerrar</button>
                 </div>
             </div>
         </div>

@@ -7,12 +7,15 @@ use App\Models\Cliente;
 use App\Models\ClienteMontos;
 use App\Models\CompraEfectivo;
 use App\Models\CtgConsignatario;
+use App\Models\Empleado;
 use App\Models\MontoBlm;
+use App\Models\Notification;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification as NotificationsNotification;
 
 class BancosForm extends Form
 {
@@ -47,24 +50,24 @@ class BancosForm extends Form
 
     public function getCountResguadoClientes()
     {
-        return MontoBlm::find(1);//Cliente::where('status_cliente', 1)->sum('resguardo');
+        return MontoBlm::find(1); //Cliente::where('status_cliente', 1)->sum('resguardo');
     }
 
     public function addMonto()
     {
 
         $this->validate();
-        $error=false;
+        $error = false;
         try {
             DB::beginTransaction();
 
             $blm = MontoBlm::find(1);
-            if($blm->monto < $this->ingresa_monto){
-                $error=true;
+            if ($blm->monto < $this->ingresa_monto) {
+                $error = true;
                 throw new \Exception('No hay saldo suficiente en blm para surtir esta petición.');
             }
-            $this->cliente->resguardo = $this->nuevo_monto;
-            $this->cliente->save();
+            // $this->cliente->resguardo = $this->nuevo_monto;
+            // $this->cliente->save();
 
             ClienteMontos::create([
                 'cliente_id' => $this->cliente->id,
@@ -75,15 +78,27 @@ class BancosForm extends Form
                 'ctg_area_id' => Auth::user()->empleado->ctg_area_id
             ]);
 
+            $rz = $this->cliente->razon_social;
+            $msg = "Se solicita aprovación para darle saldo al cliente $rz la cantidad de $this->ingresa_monto";
 
+            //notifica a direccion 
+            Notification::create([
+                'empleado_id_send' => Auth::user()->empleado->id,
+                'ctg_area_id' => 9,
+                'message' => $msg,
+                'tipo' => 3
+            ]);
+            $users = Empleado::whereIn('ctg_area_id', [9, 12])->get();
+            NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
+            
             //descontar monto al saldo de bancos. 
-            MontoBlm::find(1)->decrement('monto', $this->ingresa_monto);
+            // MontoBlm::find(1)->decrement('monto', $this->ingresa_monto);
             DB::commit();
             return 1;
         } catch (\Exception $e) {
 
             DB::rollBack();
-            return $error? $e->getMessage():0;
+            return $error ? $e->getMessage() : 0;
         }
     }
 
@@ -175,7 +190,7 @@ class BancosForm extends Form
                 });
             }
         })
-        ->orderBy('id','DESC')
+            ->orderBy('id', 'DESC')
             ->paginate(10);
     }
 }
