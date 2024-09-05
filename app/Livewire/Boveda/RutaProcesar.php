@@ -356,6 +356,10 @@ class RutaProcesar extends Component
                 BancosServicioAcreditacion::create([
                     'servicios_envases_ruta_id' => $envase->id,
                 ]);
+
+                if ($envase->status_envases != 0) {
+                    $monto_diferencia += $envase->cantidad;
+                }
             }
         }
 
@@ -375,7 +379,7 @@ class RutaProcesar extends Component
         $this->form->servicio->monto = 0;
         $this->form->servicio->envases = 0;
         $this->form->servicio->save();
-        //descontar
+        //actualiza monto
         $this->form->servicio->servicio->cliente->resguardo = $monto_new;
         $this->form->servicio->servicio->cliente->save();
     }

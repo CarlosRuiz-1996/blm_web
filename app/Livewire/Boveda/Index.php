@@ -15,6 +15,7 @@ use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
 use App\Models\ServicioRutaEnvases;
 use App\Models\Servicios;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -63,7 +64,8 @@ class Index extends Component
         $this->ruta_id = $idruta;
         $this->serviciosRuta = RutaServicio::where('ruta_id', $idruta)->get();
         //compra de efectivo
-        $this->compra_efectivo = RutaCompraEfectivo::where('ruta_id', $idruta)->where('status_ruta_compra_efectivos', '<', 3)->get();
+        $this->compra_efectivo = RutaCompraEfectivo::where('ruta_id', $idruta)->where('status_ruta_compra_efectivos', '<', 3)->get()
+            ?: collect();
     }
 
     public $compra_detalle = [];
@@ -140,9 +142,17 @@ class Index extends Component
         $compra_efectivo = RutaCompraEfectivo::where('ruta_id', $this->ruta_id)->where('status_ruta_compra_efectivos', 1)->count();
 
         $serviciosRutaAll = RutaServicio::where('ruta_id', $this->ruta_id)->count();
-        $servicioRutastatus2 = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios', 2)
-            ->orWhere('status_ruta_servicios', 0)->count();
-
+       
+        // $today = Carbon::today();
+        $servicioRutastatus2 = RutaServicio::where('ruta_id', $this->ruta_id)
+            ->where(function ($query)  {
+            $query->where('status_ruta_servicios', 2)
+                ->orWhere(function ($query){
+                    $query->where('status_ruta_servicios', 0);
+                        // ->whereDate('updated_at', $today)
+                })
+                ;
+        })->count();
         //revisar si ya trae los envases y no contempla las de reprogramacion
         $entregas =  RutaServicio::where('ruta_id', $this->ruta_id)->where('tipo_servicio', 1)
             ->where(function ($query) {

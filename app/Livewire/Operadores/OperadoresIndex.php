@@ -27,6 +27,7 @@ use Livewire\WithFileUploads;
 
 class OperadoresIndex extends   Component
 {
+    
     public $idrecolecta;
     public $cantidadEnvases;
     public $idserviorutaEnvases;
