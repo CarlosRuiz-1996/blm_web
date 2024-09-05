@@ -17,6 +17,7 @@ use App\Http\Controllers\Operadores;
 use App\Http\Controllers\PermisosController;
 use App\Http\Controllers\RhController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\tableroController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\ValidacionMemorandumController;
 use App\Http\Controllers\ventasController;
@@ -148,7 +149,10 @@ Route::middleware([
     //bancos
     Route::get('/bancos', [BancosController::class, 'index'])->name('bancos.index');
 
+    //tablero
+    Route::get('/tablero', [tableroController::class, 'index'])->name('tablero.index');
 
+});
     Livewire::setUpdateRoute(function ($handle) {
         return Route::post('/livewire/update', $handle);
     });
@@ -156,4 +160,4 @@ Route::middleware([
     Livewire::setScriptRoute(function ($handle) {
         return Route::get('/livewire/livewire.js', $handle);
     });
-});
+

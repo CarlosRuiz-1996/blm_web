@@ -96,7 +96,7 @@
                                                 </tr>
                                             @endforeach
 
-
+                                            @if ($rutaServicio->ruta_compra->isNotEmpty() && $rutaServicio->ruta_compra->where('status_ruta_compra_efectivos', '!=', 5)->count() > 0)
                                             <tr>
                                                 <th colspan='8' class="text-center table-success">Compra efectivo
                                                 </th>
@@ -130,6 +130,7 @@
                                                     </tr>
                                                 @endif
                                             @endforeach
+                                            @endif
                                             {{-- @break --}}
                                         @else
                                             <tr>
