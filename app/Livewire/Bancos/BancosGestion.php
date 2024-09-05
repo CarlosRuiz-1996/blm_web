@@ -106,7 +106,6 @@ class BancosGestion extends Component
     public function updating($property, $value)
     {
 
-        dd('entra');
         if ($property === 'form.ingresa_monto') {
             if ($value != "") {
                 $this->form->nuevo_monto =  $value + $this->form->cliente->resguardo;
@@ -120,8 +119,6 @@ class BancosGestion extends Component
 
     public function add()
     {
-        dd($this->form->nuevo_monto.'-'.$this->form->ingresa_monto);
-
         $res =  $this->form->addMonto();
 
         if ($res == 1) {

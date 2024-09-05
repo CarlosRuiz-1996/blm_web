@@ -6,8 +6,10 @@
             </div>
             <div class="col-md-6">
                 <div class="mb-3 d-flex justify-content-end">
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Agregar
+                    <button class="btn btn-primary ml-3" data-toggle="modal" data-target="#exampleModal">Agregar
                         Servicios</button>
+                    <x-adminlte-button label="Agregar sucursal" onclick="ocultar(1)" class="bg-primary" />
+
                 </div>
             </div>
         </div>
@@ -125,14 +127,14 @@
                                                 {{ $servicio->sucursal->sucursal->sucursal ?? '' }}
                                             </td>
                                             <td>
-                                               
-                                                    <i class="fa fa-circle" style="color: red"></i>
+
+                                                <i class="fa fa-circle" style="color: red"></i>
                                             </td>
                                             <td>
-                                                {{$servicio->updated_at}}
+                                                {{ $servicio->updated_at }}
                                             </td>
                                             <td>
-                                                <button class="btn btn-primary" 
+                                                <button class="btn btn-primary"
                                                     wire:click="$dispatch('confirm',[{{ $servicio->id }},2])">
                                                     Reactivar
                                                 </button>
