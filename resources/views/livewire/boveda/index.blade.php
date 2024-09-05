@@ -30,23 +30,23 @@
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="tab1-tab" data-toggle="tab" href="#tab1" role="tab"
-                            aria-controls="tab1" aria-selected="true">Cargar Servicios</a>
+                            aria-controls="tab1" wire:ignore.self aria-selected="true">Cargar Servicios</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="rutaRecoleccion-tab" data-toggle="tab" href="#rutaRecoleccion"
-                            role="tab" aria-controls="rutaRecoleccion" aria-selected="false">Ruta Terminada</a>
+                            role="tab" aria-controls="rutaRecoleccion" wire:ignore.self aria-selected="false">Ruta Terminada</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="tab2-tab" data-toggle="tab" href="#tab2" role="tab"
-                            aria-controls="tab2" aria-selected="false">Reporte de Movimiento</a>
+                            aria-controls="tab2" wire:ignore.self aria-selected="false">Reporte de Movimiento</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="diferencia-tab" data-toggle="tab" href="#diferencia" role="tab"
-                            aria-controls="diferencia" aria-selected="false">Diferencias de Valores</a>
+                            aria-controls="diferencia" wire:ignore.self aria-selected="false">Diferencias de Valores</a>
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                    <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab" wire:ignore.self>
                         <!-- Contenido de la pestaña 1 -->
                         <div class="table-responsive">
                             <table class="table">
@@ -112,7 +112,7 @@
                         @endif
 
                     </div>
-                    <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+                    <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab" wire:ignore.self >
                         <div class="table-responsive">
                             <table class="table">
                                 <!-- Encabezados de la tabla -->
@@ -185,10 +185,10 @@
                         @endif
                     </div>
                     <div class="tab-pane fade" id="rutaRecoleccion" role="tabpanel"
-                        aria-labelledby="rutaRecoleccion-tab">
+                        aria-labelledby="rutaRecoleccion-tab" wire:ignore.self>
                         @livewire('boveda.ruta-recolecta')
                     </div>
-                    <div class="tab-pane fade" id="diferencia" role="tabpanel" aria-labelledby="diferencia-tab">
+                    <div class="tab-pane fade" id="diferencia" role="tabpanel" aria-labelledby="diferencia-tab" wire:ignore.self>
                         @livewire('boveda.diferecia-valores')
                     </div>
                 </div>

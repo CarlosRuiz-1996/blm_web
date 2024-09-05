@@ -34,7 +34,7 @@
                 </table>
             </div>
             <!-- Paginación -->
-            {{ $repotes->links() }}
+            {{ $repotes->links('pagination::bootstrap-4') }}
         </div>
     </div>
 </div>

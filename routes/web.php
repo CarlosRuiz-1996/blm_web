@@ -152,7 +152,7 @@ Route::middleware([
     //tablero
     Route::get('/tablero', [tableroController::class, 'index'])->name('tablero.index');
 
-});
+    });
     Livewire::setUpdateRoute(function ($handle) {
         return Route::post('/livewire/update', $handle);
     });

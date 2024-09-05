@@ -107,27 +107,22 @@
                                             @endforeach
 
                                             @if ($rutaServicio->ruta_compra->isNotEmpty() && $rutaServicio->ruta_compra->where('status_ruta_compra_efectivos', '!=', 5)->count() > 0)
-
-                                            @if (
-                                                $rutaServicio->ruta_compra->isNotEmpty() &&
-                                                    $rutaServicio->ruta_compra->where('status_ruta_compra_efectivos', '!=', 5)->count() > 0)
-                                                <tr>
-                                                    <th colspan='8' class="text-center table-success">
-                                                        Compra efectivo
-                                                    </th>
-                                                </tr>
-                                                <tr class="table-success">
-                                                    <th colspan="2">Monto de la compra</th>
-                                                    <th colspan="2">Fecha de la compra</th>
-                                                    <th colspan="2">Estatus de la compra</th>
-                                                    <th colspan="2">Detalles de la compra</th>
-                                                </tr>
-                                                @foreach ($rutaServicio->ruta_compra as $ruta_compra)
-                                                    @if ($ruta_compra->status_ruta_compra_efectivos != 5)
-                                                        <tr>
-                                                            <td colspan="2">
-                                                                ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
-                                                            </td>
+                                            <tr>
+                                                <th colspan='8' class="text-center table-success">Compra efectivo
+                                                </th>
+                                            </tr>
+                                            <tr class="table-success">
+                                                <th colspan="2">Monto de la compra</th>
+                                                <th colspan="2">Fecha de la compra</th>
+                                                <th colspan="2">Estatus de la compra</th>
+                                                <th colspan="2">Detalles de la compra</th>
+                                            </tr>
+                                            @foreach ($rutaServicio->ruta_compra as $ruta_compra)
+                                                @if ($ruta_compra->status_ruta_compra_efectivos != 5)
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
+                                                        </td>
 
                                                         <td colspan="2">{{ $ruta_compra->compra->fecha_compra }}
                                                         </td>
@@ -145,6 +140,7 @@
                                                     </tr>
                                                 @endif
                                             @endforeach
+                                            @endif
                                             {{-- @break --}}
                                         @else
                                             <tr>
