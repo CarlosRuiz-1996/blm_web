@@ -109,7 +109,7 @@ Route::middleware([
     Route::get('/boveda/reporte', [BovedaController::class, 'bovedaresguardo'])->name('boveda.bovedaresguardo');
     Route::get('/boveda/acta_diferencia-pdf/{diferencia}', [BovedaController::class, 'acta_diferencia'])->name('acta_diferencia.pdf');
     Route::get('/boveda/procesa-ruta/{ruta}', [BovedaController::class, 'procesa_ruta'])->name('boveda.procesa-ruta');
-    Route::get('/boveda/cambio-efectivo',[BovedaController::class, 'cambio_efectivo'])->name('boveda.cambio');
+    Route::get('/boveda/cambio-efectivo', [BovedaController::class, 'cambio_efectivo'])->name('boveda.cambio');
 
     //factibilidad
     Route::get('seguridad/', [Factibilidad::class, 'index'])->name('seguridad.index');
@@ -147,13 +147,11 @@ Route::middleware([
 
     //bancos
     Route::get('/bancos', [BancosController::class, 'index'])->name('bancos.index');
+});
+Livewire::setUpdateRoute(function ($handle) {
+    return Route::post('/livewire/update', $handle);
+});
 
-
-    Livewire::setUpdateRoute(function ($handle) {
-        return Route::post('/livewire/update', $handle);
-    });
-
-    Livewire::setScriptRoute(function ($handle) {
-        return Route::get('/livewire/livewire.js', $handle);
-    });
+Livewire::setScriptRoute(function ($handle) {
+    return Route::get('/livewire/livewire.js', $handle);
 });

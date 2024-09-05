@@ -79,12 +79,19 @@ class BancosForm extends Form
             ]);
 
             $rz = $this->cliente->razon_social;
-            $msg = "Se solicita aprovación para darle saldo al cliente $rz la cantidad de $this->ingresa_monto";
+            $mnt = number_format($this->ingresa_monto, 2, '.', ',');
+            $msg = "Se solicita aprovación para darle saldo al cliente $rz la cantidad de $mnt";
 
             //notifica a direccion 
             Notification::create([
                 'empleado_id_send' => Auth::user()->empleado->id,
                 'ctg_area_id' => 9,
+                'message' => $msg,
+                'tipo' => 3
+            ]);
+            Notification::create([
+                'empleado_id_send' => Auth::user()->empleado->id,
+                'ctg_area_id' => 12,
                 'message' => $msg,
                 'tipo' => 3
             ]);

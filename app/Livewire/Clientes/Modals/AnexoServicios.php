@@ -16,6 +16,9 @@ class AnexoServicios extends Component
 
     public function render()
     {
+
+        $clientes = Cliente::where('status_cliente',1)->get();
+
         return view('livewire.clientes.modals.anexo-servicios', [
             'ctg_tipo_solicitud' => $this->form_memo->getAllTipoSolicitud(),
             'ctg_tipo_servicio' => $this->form_memo->getAllTipoServicio(),
@@ -24,6 +27,7 @@ class AnexoServicios extends Component
             'ctg_horario_servicio' => $this->form_memo->getAllHorarioServicio(),
             'ctg_dia_servicio' => $this->form_memo->getAllDiaServicio(),
             'ctg_consignatario' => $this->form_memo->getAllConsignatorio(),
+            'clientes'=>$clientes
 
 
         ]);
@@ -71,6 +75,7 @@ class AnexoServicios extends Component
         if ($res == 1) {
             $this->dispatch('success', ["La sucursal creo exitosamente.", 1]);
             $this->sucursales =  $this->form->getAllSucursal();
+            $this->dispatch('resetSelect2');
         } else {
             $this->dispatch('error', ["Ha ocurrido un error, intente más tarde.", 1]);
         }
