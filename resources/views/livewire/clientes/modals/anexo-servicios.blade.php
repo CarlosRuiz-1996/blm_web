@@ -18,7 +18,7 @@
                             <div class="card-body">
                                 {{-- sucursal general --}}
                                 <div class="row">
-                                    
+
                                     <div class="col-md-4 mb-3">
                                         <x-input-validado label="Sucursal:"
                                             placeholder="Ingrese el nombre de la sucursal" wire-model="form.sucursal"
@@ -325,7 +325,10 @@
 
                         if (message[1]) {
                             $('#modalNueva').modal('hide');
-                            $('#modalElegir').modal('show');
+                            if (opcion_cliente == 0) {
+
+                                $('#modalElegir').modal('show');
+                            }
                         }
                     }
                 });
@@ -367,17 +370,15 @@
 
         function ocultar(op = 0) {
             opcion_cliente = op;
-            
+
             $('#modalNueva').modal('show');
             $('#modalElegir').modal('hide');
         }
 
         function cancelarNuevaSucursal() {
 
-            if (opcion_cliente == 0) {
-                $('#modalNueva').modal('hide');
-                $('#modalElegir').modal('show');
-            }
+            $('#modalNueva').modal('hide');
+            $('#modalElegir').modal('show');
 
         }
     </script>
