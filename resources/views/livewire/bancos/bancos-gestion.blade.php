@@ -422,12 +422,11 @@
                             value="{{ isset($form->cliente) ? '$ ' . number_format($form->cliente->resguardo, 2, '.', ',') : '' }}">
 
 
-
                         <label for="">Monto a Ingresar $
-                            {{-- {{ $form->ingresa_monto ? number_format($form->ingresa_monto, 2, '.', ',') : '0' }} --}}
+                            {{ $form->ingresa_monto ? number_format($form->ingresa_monto, 2, '.', ',') : '0' }}
                         </label>
                         <input type="number" class="form-control @error('form.ingresa_monto') is-invalid @enderror"
-                            placeholder="Monto a Ingresar" wire.model.live="form.ingresa_monto">
+                            placeholder="Monto a Ingresar" wire:model.live="form.ingresa_monto">
                         @error('form.ingresa_monto')
                             <span class="invalid-feedback">{{ $message }}</span>
                         @enderror
@@ -435,8 +434,6 @@
                         <label for="">Nuevo Monto</label>
                         <input disabled type="text" class="form-control"
                             value="$ {{ isset($form->nuevo_monto) ? '$ ' . number_format($form->nuevo_monto, 2, '.', ',') : '0' }}">
-
-
 
                     </div>
                 </div>

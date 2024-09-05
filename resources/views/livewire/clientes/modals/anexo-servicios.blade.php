@@ -173,8 +173,8 @@
                 @if ($sucursales && count($sucursales))
                     {{-- <x-adminlte-button class="btn-flat ml-2" type="submit" wire:click='sucursal_servicio'
                         label="Asignar" theme="primary" icon="fas fa-lg fa-save" /> --}}
-                        <button type="button" class="btn btn-primary" wire:click='sucursal_servicio'
-                    >Siguente</button>
+                    <button type="button" class="btn btn-primary"
+                        wire:click='sucursal_servicio'>Siguente</button>
                 @endif
                 <button type="button" class="btn btn-danger" wire:click='clean()'
                     data-dismiss="modal">Cerrar</button>
@@ -357,14 +357,21 @@
 
         });
 
-        function ocultar() {
+        var sucursalSola = 0;
+
+        function ocultar(op = 0) {
+            sucursalSola = op;
             $('#modalNueva').modal('show');
             $('#modalElegir').modal('hide');
         }
 
         function cancelarNuevaSucursal() {
-            $('#modalNueva').modal('hide');
-            $('#modalElegir').modal('show');
+
+            if (sucursalSola == 0) {
+                $('#modalNueva').modal('hide');
+                $('#modalElegir').modal('show');
+            }
+            sucursalSola =0;
         }
     </script>
 @endpush
