@@ -138,6 +138,7 @@
                                 <th>Servicio</th>
                                 <th>Cliente</th>
                                 <th>Dirección</th>
+                                <th>Sucursal</th>
                                 <th>Tipo Servicio</th>
                                 <th>Monto</th>
                                 <th>Papeleta</th>
@@ -186,6 +187,8 @@
                                         ' ' .
                                         $servicio->sucursal->sucursal->cp->estado->name }}
                                     </td>
+                                    <td>{{$servicio->servicio->sucursal->sucursal->sucursal}}</td>
+
                                     <td>
                                         <div class="d-flex flex-column">
                                             <div class="form-check mt-2">
