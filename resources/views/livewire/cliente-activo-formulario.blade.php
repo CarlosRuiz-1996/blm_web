@@ -80,7 +80,7 @@
                                 <x-input-validado label="Codigo postal:" placeholder="Codigo postal"
                                     wire-model="form.cp" type="number" />
                             </div>
-                            <div class="col-md-2 mb-3" style="margin-top: 3%">
+                            <div class="col-md-2 mb-3" style="margin-top: 32px">
                                 <div class="form-group">
                                     <button wire:click='validarCp' class="btn btn-secondary btn-block">Validar
                                         cp</button>

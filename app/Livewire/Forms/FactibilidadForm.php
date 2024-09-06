@@ -70,7 +70,8 @@ class FactibilidadForm extends Form
             FROM ctg_cp cp 
             LEFT JOIN ctg_estados e ON e.id = cp.ctg_estado_id
             LEFT JOIN ctg_municipios m ON m.id = cp.ctg_municipio_id AND m.ctg_estado_id = e.id 
-            WHERE cp LIKE CONCAT('%', " . $sucursal->cp->cp . " , '%')
+            WHERE cp LIKE CONCAT('%', '" . $sucursal->cp->cp . "' , '%')
+            
         ");
 
         $colonia = '';
