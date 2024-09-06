@@ -187,7 +187,7 @@
                                         ' ' .
                                         $servicio->sucursal->sucursal->cp->estado->name }}
                                     </td>
-                                    <td>{{$servicio->servicio->sucursal->sucursal->sucursal}}</td>
+                                    <td>{{$servicio->sucursal->sucursal->sucursal}}</td>
 
                                     <td>
                                         <div class="d-flex flex-column">
