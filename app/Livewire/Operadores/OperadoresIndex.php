@@ -49,9 +49,9 @@ class OperadoresIndex extends   Component
     public $IdservicioReprogramar;
     public $evidencias = [];
     public $motivoReprogramarConcepto;
-    #[Validate(['photo.*' => 'image|max:1024'])]
+    #[Validate(['photo.*' => 'image|max:1024000'])]
     public $photo = [];
-    #[Validate(['photo.*' => 'image|max:1024'])]
+    #[Validate(['photo.*' => 'image|max:1024000'])]
     public $photorepro;
     protected $listeners = ['modalCerrado', 'modalCerradoReprogramar'];
     public $papeleta;
@@ -144,7 +144,7 @@ class OperadoresIndex extends   Component
             'idrecolecta' => 'required',
             'MontoEntrega' => 'required',
             // 'MontoEntregado' => 'required',
-            'inputs.*.photo' => 'required|image|max:1024', // Máximo 1MB
+            'inputs.*.photo' => 'required|image|max:1024000', // Máximo 1MB
         ], [
             'inputs.*.photo.required' => 'La imagen es obligatoria',
         ]);
@@ -235,7 +235,7 @@ class OperadoresIndex extends   Component
             'inputs.*.cantidad' => 'required', // Máximo 1MB
             'inputs.*.folio' => 'required', // Máximo 1MB
             'inputs.*.sello' => 'required', // Máximo 1MB
-            'inputs.*.photo' => 'required|image|max:1024', // Máximo 1MB
+            'inputs.*.photo' => 'required|image|max:1024000', // Máximo 1MB
         ], [
             'inputs.*.photo.required' => 'La imagen es obligatoria',
             'inputs.*.cantidad.required' => 'La cantidad es obligatoria',
@@ -522,7 +522,7 @@ class OperadoresIndex extends   Component
 
         // Si envases_compra está vacío, hacer que evidencia_compra sea requerido
         if (empty($this->envases_compra)) {
-            $rules['evidencia_compra'] = 'required|image|max:1024';
+            $rules['evidencia_compra'] = 'required|image|max:1024000';
         }
 
         $this->validate($rules, [
@@ -531,7 +531,7 @@ class OperadoresIndex extends   Component
             'monto_compra.gt' => 'El monto debe ser mayor que 0',
             'evidencia_compra.required' => 'El campo es requerido',
             'evidencia_compra.image' => 'El archivo debe ser una imagen',
-            'evidencia_compra.max' => 'El tamaño máximo de la imagen es 10MB',
+            'evidencia_compra.max' => 'El tamaño máximo de la imagen es 100MB',
 
         ]);
         if ($this->envases_compra) {
@@ -541,7 +541,7 @@ class OperadoresIndex extends   Component
                 [
                     'inputs.*.cantidad' => 'required',
                     'inputs.*.sello' => 'required',
-                    'inputs.*.photo' => 'required|image|max:1024',
+                    'inputs.*.photo' => 'required|image|max:1024000',
 
                 ],
                 [
@@ -549,7 +549,7 @@ class OperadoresIndex extends   Component
                     'inputs.*.sello.required' => 'El sello es obligatoria',
                     'inputs.*.photo.required' => 'La evidencia es obligatoria',
                     'inputs.*.photo.image' => 'El archivo debe ser una imagen',
-                    'inputs.*.photo.max' => 'El tamaño máximo de la imagen es 10MB',
+                    'inputs.*.photo.max' => 'El tamaño máximo de la imagen es 100MB',
 
                 ]
             );

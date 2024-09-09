@@ -144,13 +144,13 @@
                                                 <td class="text-xs">
                                                     @if ($movimiento->tipo_servicio == 1)
                                                         <span
-                                                            class="badge {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'bg-success' : 'bg-danger' }}">
-                                                            {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'Servicio cargado' : 'Servicio eliminado para esta ruta (reprogramar)' }}
+                                                            class="badge {{ $movimiento->status_ruta_servicio_reportes == 4 ? 'bg-success' : 'bg-danger' }}">
+                                                            {{ $movimiento->status_ruta_servicio_reportes == 4 ? 'Servicio cargado' : 'Servicio eliminado para esta ruta (reprogramar)' }}
                                                         </span>
                                                     @else
                                                         <span
-                                                            class="badge {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'bg-success' : 'bg-danger' }}">
-                                                            {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'Servicio Autorizado para recolectar' : 'Servicio no autorizado para esta ruta (reprogramar)' }}
+                                                            class="badge {{ $movimiento->status_ruta_servicio_reportes == 4 ? 'bg-success' : 'bg-danger' }}">
+                                                            {{ $movimiento->status_ruta_servicio_reportes == 4 ? 'Servicio Autorizado para recolectar' : 'Servicio no autorizado para esta ruta (reprogramar)' }}
                                                         </span>
                                                     @endif
                                                 </td>
@@ -282,8 +282,8 @@
                                                             class="btn btn-danger">Rechazar</button>
                                                     @else
                                                         <span
-                                                            class="badge {{ $rutaserv->status_ruta_servicios == 2 ? 'bg-success' : ($rutaserv->status_ruta_servicios == 0 ? 'bg-secondary' : 'bg-danger') }}">
-                                                            {{ $rutaserv->status_ruta_servicios == 2
+                                                            class="badge {{ $rutaserv->status_ruta_servicios == 4 ? 'bg-success' : ($rutaserv->status_ruta_servicios == 0 ? 'bg-secondary' : 'bg-danger') }}">
+                                                            {{ $rutaserv->status_ruta_servicios == 4
                                                                 ? 'Servicio cargado'
                                                                 : ($rutaserv->status_ruta_servicios == 0
                                                                     ? 'EN REPROGRAMACIÓN'
@@ -300,8 +300,8 @@
                                                             class="btn btn-danger">Rechazar</button>
                                                     @else
                                                         <span
-                                                            class="badge {{ $rutaserv->status_ruta_servicios == 2 ? 'bg-success' : 'bg-danger' }}">
-                                                            {{ $rutaserv->status_ruta_servicios == 2 ? 'Servicio Autorizado para recolecta' : 'Error en el servicio' }}
+                                                            class="badge {{ $rutaserv->status_ruta_servicios == 4 ? 'bg-success' : 'bg-danger' }}">
+                                                            {{ $rutaserv->status_ruta_servicios == 4 ? 'Servicio Autorizado para recolecta' : 'Error en el servicio' }}
                                                         </span>
                                                     @endif
                                                 @endif
