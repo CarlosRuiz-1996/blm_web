@@ -5,12 +5,23 @@ namespace App\Livewire\Tablero;
 use App\Models\Ruta;
 use App\Models\Servicios;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class RutasYservicios extends Component
 {
 
 
+
+    public function getListeners()
+    {
+        $empleado_id = Auth::user()->empleado->id;
+        return [
+            // Private Channel
+            // "echo:notification.{$empleado_id},notification" => 'render'
+            "echo-notification:App.Models.Empleado.{$empleado_id},notification" => 'render',
+        ];
+    }
 
     public function render()
     {
