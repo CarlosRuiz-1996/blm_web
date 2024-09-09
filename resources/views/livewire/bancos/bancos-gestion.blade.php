@@ -433,7 +433,7 @@
 
                         <label for="">Nuevo Monto</label>
                         <input disabled type="text" class="form-control"
-                            value="$ {{ isset($form->nuevo_monto) ? '$ ' . number_format($form->nuevo_monto, 2, '.', ',') : '0' }}">
+                            value="{{ isset($form->nuevo_monto) ? '$ ' . number_format($form->nuevo_monto, 2, '.', ',') : '$ 0' }}">
 
                     </div>
                 </div>

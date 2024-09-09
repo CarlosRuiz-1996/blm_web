@@ -18,6 +18,7 @@
                             <div class="card-body">
                                 {{-- sucursal general --}}
                                 <div class="row">
+
                                     <div class="col-md-4 mb-3">
                                         <x-input-validado label="Sucursal:"
                                             placeholder="Ingrese el nombre de la sucursal" wire-model="form.sucursal"
@@ -122,7 +123,7 @@
 
                                 <div class="col-md-3">
                                     <button type="submit" class="btn btn-info btn-block"
-                                        wire:click="$dispatch('confirm', 1)">Guardar</button>
+                                        wire:click="$dispatch('confirm-sucursal')">Guardar</button>
                                 </div>
                             </div>
 
@@ -295,8 +296,8 @@
                 $('#modalElegir').modal('show');
             })
 
-            @this.on('confirm', (opcion) => {
-
+            @this.on('confirm-sucursal', () => {
+                console.log('entra')
                 Swal.fire({
                     title: '¿Estas seguro?',
                     text: "La sucursal sera guardada en la base de datos",
@@ -308,6 +309,7 @@
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        console.log('entra2')
                         @this.dispatch('save-sucursal-servicio');
                     }
                 })
@@ -323,7 +325,10 @@
 
                         if (message[1]) {
                             $('#modalNueva').modal('hide');
-                            $('#modalElegir').modal('show');
+                            if (opcion_cliente == 0) {
+
+                                $('#modalElegir').modal('show');
+                            }
                         }
                     }
                 });
@@ -355,23 +360,26 @@
                 $('#modalElegir').modal('hide');
             });
 
-        });
+            Livewire.on('resetSelect2', function() {
+                $('.cliente_sucursal').val('').trigger('change');
 
-        var sucursalSola = 0;
+            });
+
+        });
+        var opcion_cliente = 0;
 
         function ocultar(op = 0) {
-            sucursalSola = op;
+            opcion_cliente = op;
+
             $('#modalNueva').modal('show');
             $('#modalElegir').modal('hide');
         }
 
         function cancelarNuevaSucursal() {
 
-            if (sucursalSola == 0) {
-                $('#modalNueva').modal('hide');
-                $('#modalElegir').modal('show');
-            }
-            sucursalSola =0;
+            $('#modalNueva').modal('hide');
+            $('#modalElegir').modal('show');
+
         }
     </script>
 @endpush

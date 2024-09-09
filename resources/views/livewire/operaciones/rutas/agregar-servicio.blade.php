@@ -37,6 +37,7 @@
                                         <th>Cliente</th>
                                         <th>Servicio</th>
                                         <th>Dirección</th>
+                                        <th>Sucursal</th>
                                         <th>Monto</th>
                                         <th>Folio</th>
                                         <th>Tipo servicio</th>
@@ -58,6 +59,7 @@
                                                     ' ' .
                                                     $servicio->servicio->sucursal->sucursal->cp->estado->name }}
                                                 </td>
+                                                <td>{{$servicio->servicio->sucursal->sucursal->sucursal}}</td>
                                                 <td>{{ $servicio->monto }}</td>
                                                 <td>{{ $servicio->folio }}</td>
                                                 <td>{{ $servicio->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECCIÓN' }}</td>
@@ -136,6 +138,7 @@
                                 <th>Servicio</th>
                                 <th>Cliente</th>
                                 <th>Dirección</th>
+                                <th>Sucursal</th>
                                 <th>Tipo Servicio</th>
                                 <th>Monto</th>
                                 <th>Papeleta</th>
@@ -184,6 +187,8 @@
                                         ' ' .
                                         $servicio->sucursal->sucursal->cp->estado->name }}
                                     </td>
+                                    <td>{{$servicio->sucursal->sucursal->sucursal}}</td>
+
                                     <td>
                                         <div class="d-flex flex-column">
                                             <div class="form-check mt-2">

@@ -100,7 +100,8 @@ class BancosGestion extends Component
     #[On('clean')]
     public function limpiarDatos()
     {
-        $this->reset('form.cliente', 'readyToLoadModal', 'form.actual_monto', 'form.nuevo_monto', 'form.ingresa_monto', 'cliente_detail');
+            // 'form.ingresa_monto',
+        $this->reset('form.cliente', 'readyToLoadModal', 'form.actual_monto', 'form.nuevo_monto',  'cliente_detail');
     }
 
     public function updating($property, $value)
