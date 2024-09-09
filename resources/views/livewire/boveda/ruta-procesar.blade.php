@@ -616,33 +616,31 @@
     </div>
 
 
-    <!-- Modal -->
-    <div class="modal fade" id="evidenciaModal" wire:ignore.self tabindex="-1" aria-labelledby="imageModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Evidencia</h5>
-
-                </div>
-                <div class="modal-body text-center">
-                    @if ($readyToLoadModal)
-                    {{$evidencia_foto}}
-                        <img src="{{ asset('storage/' . $evidencia_foto) }}" width="300px" height="350px"
-                            alt="Evidencia">
-                    @else
-                        <div class="col-md-12 text-center">
-                            <div class="spinner-border" role="status">
-                            </div>
-                        </div>
-                    @endif
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                </div>
+<!-- Modal -->
+<div class="modal fade" id="evidenciaModal" wire:ignore.self tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl"> <!-- Tamaño del modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Evidencia</h5>
+            </div>
+            <div class="modal-body text-center">
+                @if ($readyToLoadModal)
+                    <div class="img-container">
+                        <img src="{{ asset('storage/' . $evidencia_foto) }}" alt="Evidencia" class="img-fluid">
+                    </div>
+                @else
+                    <div class="col-md-12 text-center">
+                        <div class="spinner-border" role="status"></div>
+                    </div>
+                @endif
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
+</div>
+
 
 
     @push('js')

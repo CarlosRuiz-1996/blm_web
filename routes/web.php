@@ -148,16 +148,15 @@ Route::middleware([
 
     //bancos
     Route::get('/bancos', [BancosController::class, 'index'])->name('bancos.index');
-
     //tablero
     Route::get('/tablero', [tableroController::class, 'index'])->name('tablero.index');
 
-    });
-    Livewire::setUpdateRoute(function ($handle) {
-        return Route::post('/livewire/update', $handle);
-    });
+});
 
-    Livewire::setScriptRoute(function ($handle) {
-        return Route::get('/livewire/livewire.js', $handle);
-    });
+Livewire::setUpdateRoute(function ($handle) {
+    return Route::post('/livewire/update', $handle);
+});
 
+Livewire::setScriptRoute(function ($handle) {
+    return Route::get('/livewire/livewire.js', $handle);
+});
