@@ -414,6 +414,12 @@ return [
             'can' => 'menu-operaciones',
             'submenu' => [
                 [
+                    'text' => 'Operaciones',
+                    'url'  => '/operaciones',
+                    'icon' => 'fa fa-fw fa-car',
+                    // 
+                ],
+                [
                     'text' => 'Tablero Rutas Operaciones',
                     'route'  => 'tablero.index',
                     'icon' => 'fas fa-route',
