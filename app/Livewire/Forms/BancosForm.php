@@ -66,10 +66,9 @@ class BancosForm extends Form
                 $error = true;
                 throw new \Exception('No hay saldo suficiente en blm para surtir esta petición.');
             }
-            // $this->cliente->resguardo = $this->nuevo_monto;
-            // $this->cliente->save();
+            
 
-            ClienteMontos::create([
+            $cliente_monto = ClienteMontos::create([
                 'cliente_id' => $this->cliente->id,
                 'monto_old' => $this->actual_monto,
                 'monto_in' => $this->ingresa_monto,
@@ -80,24 +79,27 @@ class BancosForm extends Form
 
             $rz = $this->cliente->razon_social;
             $mnt = number_format($this->ingresa_monto, 2, '.', ',');
-            $msg = "Se solicita aprovación para darle saldo al cliente $rz la cantidad de $mnt";
+            $msg = "Se solicita aprovación para darle saldo al cliente: $rz la cantidad de $mnt";
 
             //notifica a direccion 
             Notification::create([
                 'empleado_id_send' => Auth::user()->empleado->id,
                 'ctg_area_id' => 9,
                 'message' => $msg,
-                'tipo' => 3
+                'tipo' => 3,
+                'ruta_firma_id' => $cliente_monto->id
             ]);
             Notification::create([
                 'empleado_id_send' => Auth::user()->empleado->id,
                 'ctg_area_id' => 12,
                 'message' => $msg,
-                'tipo' => 3
+                'tipo' => 3,
+                'ruta_firma_id' => $cliente_monto->id
+
             ]);
             $users = Empleado::whereIn('ctg_area_id', [9, 12])->get();
             NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
-            
+
             //descontar monto al saldo de bancos. 
             // MontoBlm::find(1)->decrement('monto', $this->ingresa_monto);
             DB::commit();

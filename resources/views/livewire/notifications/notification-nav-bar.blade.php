@@ -20,11 +20,11 @@
             @endif
             @foreach ($notificationes as $notification)
                 <a href="javascript:void(0);"
-                    @if ($notification->tipo == 2) 
-                        wire:click="$dispatch('confirm', ['{{ $notification }}'])"
+                    @if ($notification->tipo == 2) wire:click="$dispatch('confirm', ['{{ $notification }}'])"
                     @elseif ($notification->tipo == 1)
-                        wire:click="deleteNotification({{ $notification->id }})"
-                    @endif
+                        wire:click="deleteNotification({{ $notification->id }})" 
+                    @elseif ($notification->tipo == 3)
+                    wire:click="$dispatch('banco-valida', ['{{ $notification }}'])" @endif
                     class="dropdown-item">
                     <div class="media">
                         <div class="media-body">
@@ -77,6 +77,36 @@
                     });
                 });
 
+                @this.on('banco-valida', ([notification]) => {
+                    var notif = JSON.parse(notification);
+                    Swal.fire({
+                        title: '¡Confirmación!',
+                        icon: "question",
+                        text: notif.message,
+                        input: "text",
+                        inputAttributes: {
+                            autocapitalize: "off",
+                            placeholder: 'Ingresa contraseña'
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: "Confirmar",
+                        showLoaderOnConfirm: true,
+
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            @this.dispatch('banco-validar', {
+                                respuesta: 1,
+                                notification: notif.id,
+                                password: result.value
+                            });
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            @this.dispatch('banco-validar', {
+                                respuesta: 0,
+                                notification: notif.id
+                            });
+                        }
+                    });
+                });
                 Livewire.on('success-firma10', function([res]) {
 
                     Swal.fire({
@@ -84,6 +114,14 @@
                         title: res[0],
                         showConfirmButton: false,
                         timer: 3000
+                    });
+                });
+
+                Livewire.on('alerta',  function([res]){
+                    Swal.fire({
+                        icon: res[0], // 'success' o 'error'
+                        title: 'Validación',
+                        text:  res[1]
                     });
                 });
             });
