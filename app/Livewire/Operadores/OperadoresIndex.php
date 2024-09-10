@@ -48,9 +48,9 @@ class OperadoresIndex extends   Component
     public $IdservicioReprogramar;
     public $evidencias = [];
     public $motivoReprogramarConcepto;
-    #[Validate(['photo.*' => 'image|max:1024'])]
+    #[Validate(['photo.*' => 'image|max:1024000'])]
     public $photo = [];
-    #[Validate(['photo.*' => 'image|max:1024'])]
+    #[Validate(['photo.*' => 'image|max:1024000'])]
     public $photorepro;
     protected $listeners = ['modalCerrado', 'modalCerradoReprogramar'];
     public $papeleta;
@@ -143,7 +143,7 @@ class OperadoresIndex extends   Component
             'idrecolecta' => 'required',
             'MontoEntrega' => 'required',
             // 'MontoEntregado' => 'required',
-            'inputs.*.photo' => 'required|image|max:1024', // Máximo 1MB
+            'inputs.*.photo' => 'required|image|max:1024000', // Máximo 1gb
         ], [
             'inputs.*.photo.required' => 'La imagen es obligatoria',
         ]);
@@ -232,7 +232,7 @@ class OperadoresIndex extends   Component
             'inputs.*.cantidad' => 'required', // Máximo 1MB
             'inputs.*.folio' => 'required', // Máximo 1MB
             'inputs.*.sello' => 'required', // Máximo 1MB
-            'inputs.*.photo' => 'required|image|max:1024', // Máximo 1MB
+            'inputs.*.photo' => 'required|image|max:1024000', // Máximo 1MB
         ], [
             'inputs.*.photo.required' => 'La imagen es obligatoria',
             'inputs.*.cantidad.required' => 'La cantidad es obligatoria',
@@ -501,7 +501,7 @@ class OperadoresIndex extends   Component
 
         // Si envases_compra está vacío, hacer que evidencia_compra sea requerido
         if (empty($this->envases_compra)) {
-            $rules['evidencia_compra'] = 'required|image|max:1024';
+            $rules['evidencia_compra'] = 'required|image|max:1024000';
         }
 
         $this->validate($rules, [
@@ -520,7 +520,7 @@ class OperadoresIndex extends   Component
                 [
                     'inputs.*.cantidad' => 'required',
                     'inputs.*.sello' => 'required',
-                    'inputs.*.photo' => 'required|image|max:1024',
+                    'inputs.*.photo' => 'required|image|max:1024000',
 
                 ],
                 [
