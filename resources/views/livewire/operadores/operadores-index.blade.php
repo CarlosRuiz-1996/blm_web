@@ -61,6 +61,9 @@
                                       <div class="card-header p-0" id="headingServicio{{$servicio->id}}{{$servicio->tipo_servicio}}">
                                           <button class="btn btn-block text-center text-xs" data-toggle="collapse" data-target="#collapseServicio{{$servicio->id}}{{$servicio->tipo_servicio}}" aria-expanded="false" aria-controls="collapseServicio{{$servicio->id}}{{$servicio->tipo_servicio}}">
                                             <p class="mb-0 text-success text-bold">{{ $servicio->servicio->ctg_servicio->descripcion }}</p>
+                                            <p class="mb-0 text-danger">
+                                                {{$servicio->servicio->cliente->razon_social}} 
+                                             </p>
                                             <p class="mb-0 text-info"> {{ $servicio->servicio->sucursal->sucursal->sucursal .
                                                 ', ' .
                                                 $servicio->servicio->sucursal->sucursal->direccion .
@@ -69,6 +72,7 @@
                                                 '' .
                                                 $servicio->servicio->sucursal->sucursal->cp->estado->name }}</p>
                                                 <p class="mb-0 text-danger">{{ $servicio->tipo_servicio == 1 ? 'Entrega' : ($servicio->tipo_servicio == 2 ? 'Recolección' : 'Otro') }}</p>
+                                                
                                           </button>
                                       </div>
                                   
