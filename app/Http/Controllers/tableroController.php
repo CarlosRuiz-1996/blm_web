@@ -8,6 +8,6 @@ class tableroController extends Controller
 {
     public function index()
     {
-        return view('Tablero.rutasyservicios');
+        return view('tablero.rutasyservicios');
     }
 }

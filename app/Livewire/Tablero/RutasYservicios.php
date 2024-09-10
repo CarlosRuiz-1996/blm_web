@@ -33,7 +33,7 @@ class RutasYservicios extends Component
     public function render()
     {
         $dia=$this->obtenerDia();
-        $rutaEmpleados = Ruta::where('ctg_ruta_dia_id', 2)
+        $rutaEmpleados = Ruta::where('ctg_ruta_dia_id', $dia)
         ->whereIn('ctg_rutas_estado_id', [3, 4])
         ->get();
         //dd($rutaEmpleados);
