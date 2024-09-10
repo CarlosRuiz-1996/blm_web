@@ -30,23 +30,23 @@
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active" id="tab1-tab" data-toggle="tab" href="#tab1" role="tab"
-                            aria-controls="tab1" aria-selected="true">Cargar Servicios</a>
+                            aria-controls="tab1" wire:ignore.self aria-selected="true">Cargar Servicios</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="rutaRecoleccion-tab" data-toggle="tab" href="#rutaRecoleccion"
-                            role="tab" aria-controls="rutaRecoleccion" aria-selected="false">Ruta Terminada</a>
+                            role="tab" aria-controls="rutaRecoleccion" wire:ignore.self aria-selected="false">Ruta Terminada</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="tab2-tab" data-toggle="tab" href="#tab2" role="tab"
-                            aria-controls="tab2" aria-selected="false">Reporte de Movimiento</a>
+                            aria-controls="tab2" wire:ignore.self aria-selected="false">Reporte de Movimiento</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="diferencia-tab" data-toggle="tab" href="#diferencia" role="tab"
-                            aria-controls="diferencia" aria-selected="false">Diferencias de Valores</a>
+                            aria-controls="diferencia" wire:ignore.self aria-selected="false">Diferencias de Valores</a>
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
+                    <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab" wire:ignore.self>
                         <!-- Contenido de la pestaña 1 -->
                         <div class="table-responsive">
                             <table class="table">
@@ -112,7 +112,7 @@
                         @endif
 
                     </div>
-                    <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
+                    <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab" wire:ignore.self >
                         <div class="table-responsive">
                             <table class="table">
                                 <!-- Encabezados de la tabla -->
@@ -144,13 +144,13 @@
                                                 <td class="text-xs">
                                                     @if ($movimiento->tipo_servicio == 1)
                                                         <span
-                                                            class="badge {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'bg-success' : 'bg-danger' }}">
-                                                            {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'Servicio cargado' : 'Servicio eliminado para esta ruta (reprogramar)' }}
+                                                            class="badge {{ $movimiento->status_ruta_servicio_reportes == 4 ? 'bg-success' : 'bg-danger' }}">
+                                                            {{ $movimiento->status_ruta_servicio_reportes == 4 ? 'Servicio cargado' : 'Servicio eliminado para esta ruta (reprogramar)' }}
                                                         </span>
                                                     @else
                                                         <span
-                                                            class="badge {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'bg-success' : 'bg-danger' }}">
-                                                            {{ $movimiento->status_ruta_servicio_reportes == 2 ? 'Servicio Autorizado para recolectar' : 'Servicio no autorizado para esta ruta (reprogramar)' }}
+                                                            class="badge {{ $movimiento->status_ruta_servicio_reportes == 4 ? 'bg-success' : 'bg-danger' }}">
+                                                            {{ $movimiento->status_ruta_servicio_reportes == 4 ? 'Servicio Autorizado para recolectar' : 'Servicio no autorizado para esta ruta (reprogramar)' }}
                                                         </span>
                                                     @endif
                                                 </td>
@@ -185,10 +185,10 @@
                         @endif
                     </div>
                     <div class="tab-pane fade" id="rutaRecoleccion" role="tabpanel"
-                        aria-labelledby="rutaRecoleccion-tab">
+                        aria-labelledby="rutaRecoleccion-tab" wire:ignore.self>
                         @livewire('boveda.ruta-recolecta')
                     </div>
-                    <div class="tab-pane fade" id="diferencia" role="tabpanel" aria-labelledby="diferencia-tab">
+                    <div class="tab-pane fade" id="diferencia" role="tabpanel" aria-labelledby="diferencia-tab" wire:ignore.self>
                         @livewire('boveda.diferecia-valores')
                     </div>
                 </div>
@@ -282,8 +282,8 @@
                                                             class="btn btn-danger">Rechazar</button>
                                                     @else
                                                         <span
-                                                            class="badge {{ $rutaserv->status_ruta_servicios == 2 ? 'bg-success' : ($rutaserv->status_ruta_servicios == 0 ? 'bg-secondary' : 'bg-danger') }}">
-                                                            {{ $rutaserv->status_ruta_servicios == 2
+                                                            class="badge {{ $rutaserv->status_ruta_servicios == 4 ? 'bg-success' : ($rutaserv->status_ruta_servicios == 0 ? 'bg-secondary' : 'bg-danger') }}">
+                                                            {{ $rutaserv->status_ruta_servicios == 4
                                                                 ? 'Servicio cargado'
                                                                 : ($rutaserv->status_ruta_servicios == 0
                                                                     ? 'EN REPROGRAMACIÓN'
@@ -300,8 +300,8 @@
                                                             class="btn btn-danger">Rechazar</button>
                                                     @else
                                                         <span
-                                                            class="badge {{ $rutaserv->status_ruta_servicios == 2 ? 'bg-success' : 'bg-danger' }}">
-                                                            {{ $rutaserv->status_ruta_servicios == 2 ? 'Servicio Autorizado para recolecta' : 'Error en el servicio' }}
+                                                            class="badge {{ $rutaserv->status_ruta_servicios == 4 ? 'bg-success' : 'bg-danger' }}">
+                                                            {{ $rutaserv->status_ruta_servicios == 4 ? 'Servicio Autorizado para recolecta' : 'Error en el servicio' }}
                                                         </span>
                                                     @endif
                                                 @endif

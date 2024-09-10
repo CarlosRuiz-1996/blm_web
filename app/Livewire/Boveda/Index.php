@@ -89,7 +89,7 @@ class Index extends Component
 
             $ClienteResguardo = $servicioRuta->servicio->cliente->resguardo;
             if ($ClienteResguardo >= $servicioRuta->monto) {
-                $servicioRuta->update(['status_ruta_servicios' => 2]);
+                $servicioRuta->update(['status_ruta_servicios' => 4]);
                 $this->llenarmodalservicios($servicioRuta->ruta_id); // Actualiza los datos
 
                 // Crear un nuevo objeto RutaServicioReporte
@@ -146,7 +146,7 @@ class Index extends Component
         // $today = Carbon::today();
         $servicioRutastatus2 = RutaServicio::where('ruta_id', $this->ruta_id)
             ->where(function ($query)  {
-            $query->where('status_ruta_servicios', 2)
+            $query->where('status_ruta_servicios', 4)
                 ->orWhere(function ($query){
                     $query->where('status_ruta_servicios', 0);
                         // ->whereDate('updated_at', $today)
@@ -157,10 +157,10 @@ class Index extends Component
         $entregas =  RutaServicio::where('ruta_id', $this->ruta_id)->where('tipo_servicio', 1)
             ->where(function ($query) {
                 $query->where('status_ruta_servicios', 1)
-                    ->orWhere('status_ruta_servicios', 2);
+                    ->orWhere('status_ruta_servicios', 4);
             })
             ->count();
-        $envases = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios', 2)
+        $envases = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios', 4)
             ->where('tipo_servicio', 1)->count();
 
         if ($entregas == $envases) {
@@ -253,7 +253,7 @@ class Index extends Component
         if ($servicioRuta) {
             try {
                 DB::beginTransaction();
-                $servicioRuta->update(['status_ruta_servicios' => 2]);
+                $servicioRuta->update(['status_ruta_servicios' => 4]);
                 $this->llenarmodalservicios($servicioRuta->ruta_id); // Actualiza los datos
                 // Crear un nuevo objeto RutaServicioReporte
                 $rutaServicioReporte = new RutaServicioReporte();

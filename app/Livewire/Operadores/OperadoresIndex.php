@@ -17,6 +17,7 @@ use App\Models\RutaVehiculoReporte;
 use App\Models\ServicioEvidenciaEntrega;
 use App\Models\ServicioEvidenciaRecolecta;
 use App\Models\ServicioRutaEnvases;
+use Illuminate\Support\Facades\Notification as NotificationsNotification;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -143,7 +144,7 @@ class OperadoresIndex extends   Component
             'idrecolecta' => 'required',
             'MontoEntrega' => 'required',
             // 'MontoEntregado' => 'required',
-            'inputs.*.photo' => 'required|image|max:1024000', // Máximo 1gb
+            'inputs.*.photo' => 'required|image|max:1024000', // Máximo 1MB
         ], [
             'inputs.*.photo.required' => 'La imagen es obligatoria',
         ]);
@@ -178,6 +179,8 @@ class OperadoresIndex extends   Component
                 }
 
                 //$this->photo->storeAs(path: 'evidencias/', name: 'avatar.png');
+                $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+                NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
                 $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Entrega realizada con exito.'], ['tipomensaje' => 'success'], ['op' => 1]);
             } else {
                 $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La cantidad Ingresada no es la cantidad a entregar:' . $this->MontoEntrega . '-' . $this->MontoEntregado], ['tipomensaje' => 'error']);
@@ -314,6 +317,8 @@ class OperadoresIndex extends   Component
 
 
             // $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La recolecta se completo correctamente'], ['tipomensaje' => 'success']);
+            $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+            NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La recolecta se completo correctamente.'], ['tipomensaje' => 'success'], ['op' => 1]);
 
 
@@ -332,7 +337,19 @@ class OperadoresIndex extends   Component
         $ruta = Ruta::find($id);
         $ruta->status_ruta = 2;
         $ruta->save();
+        $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+        NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
         $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La ruta a iniciado'], ['tipomensaje' => 'success']);
+    }
+    public function empezarRutaServicios($contactId, $serviciotipo)
+    {
+        $servicioRuta = RutaServicio::where('id',$contactId)->where('tipo_servicio',$serviciotipo)->first();
+        $servicioRuta->status_ruta_servicios = 2;
+        $servicioRuta->created_at = now();
+        $servicioRuta->save();
+        $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+        NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
+        $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio a iniciado'], ['tipomensaje' => 'success']);
     }
     public function TerminarRuta($id)
     {
@@ -388,6 +405,8 @@ class OperadoresIndex extends   Component
 
 
             // Envía un mensaje de éxito
+            $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+            NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La ruta ha sido terminada'], ['tipomensaje' => 'success']);
             DB::commit();
         } catch (Exception $e) {
@@ -420,6 +439,8 @@ class OperadoresIndex extends   Component
 
 
         $this->photorepro->storeAs(path: 'evidencias/reprogramacion/', name: 'avatar.png');
+        $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+        NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
         $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio Sera reprogramado'], ['tipomensaje' => 'success'], ['op' => 1]);
     }
 
@@ -510,7 +531,7 @@ class OperadoresIndex extends   Component
             'monto_compra.gt' => 'El monto debe ser mayor que 0',
             'evidencia_compra.required' => 'El campo es requerido',
             'evidencia_compra.image' => 'El archivo debe ser una imagen',
-            'evidencia_compra.max' => 'El tamaño máximo de la imagen es 10MB',
+            'evidencia_compra.max' => 'El tamaño máximo de la imagen es 100MB',
 
         ]);
         if ($this->envases_compra) {
@@ -528,7 +549,7 @@ class OperadoresIndex extends   Component
                     'inputs.*.sello.required' => 'El sello es obligatoria',
                     'inputs.*.photo.required' => 'La evidencia es obligatoria',
                     'inputs.*.photo.image' => 'El archivo debe ser una imagen',
-                    'inputs.*.photo.max' => 'El tamaño máximo de la imagen es 10MB',
+                    'inputs.*.photo.max' => 'El tamaño máximo de la imagen es 100MB',
 
                 ]
             );
@@ -586,6 +607,8 @@ class OperadoresIndex extends   Component
 
             $this->limpiarDatosDetalleCompra();
             $this->showCompraDetail($detalle_compra->compra_efectivo);
+            $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+            NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
             $this->dispatch('success-compra-detalle', ['nombreArchivo' => 'Detalle de la compra finalizada.'], ['tipomensaje' => 'success']);
 
             DB::commit();
@@ -614,6 +637,8 @@ class OperadoresIndex extends   Component
 
             $compra->ruta_compra->status_ruta_compra_efectivos = 3;
             $compra->ruta_compra->save();
+            $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+            NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La Compra de efectivo se completo correctamente.'], ['tipomensaje' => 'success'], ['op' => 1]);
 
             DB::commit();

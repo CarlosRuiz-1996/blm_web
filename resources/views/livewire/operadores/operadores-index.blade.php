@@ -1,189 +1,213 @@
 <div>
     <div class="container-fluid pt-5">
         @if ($identificado)
-            <h3 class="ml-2">Operador-<span class="text-info">{{ $nombreUsuario }}</span></h3>
-            <div class="card">
-                <div class="card-body">
-                    @if (count($rutaEmpleados) > 0)
-                        <div class="table-responsive">
-                            <table class="table" x-data="{ open: false }">
-                                @foreach ($rutaEmpleados as $index => $rutaServicio)
-                                    <thead>
-                                        <tr
-                                            @click="open === {{ $index }} ? open = false : open = {{ $index }}">
-                                            <th colspan='8' class="text-center table-secondary">Ruta
-                                                {{ $rutaServicio->nombre->name . '-' . $rutaServicio->dia->name }}
-                                                <i :class="open === {{ $index }} ? 'fas fa-chevron-up' :
-                                                    'fas fa-chevron-down'"
-                                                    class="ml-2"></i>
-
-                                            </th>
-                                        </tr>
-                                        <tr x-show="open === {{ $index }}" class="table-info">
-                                            <th colspan="2">Hora Inicio</th>
-                                            <th>Hora Termino</th>
-                                            <th>Dia</th>
-                                            <th>Riesgo</th>
-                                            <th>Estado</th>
-                                            <th colspan="2">Iniciar/Terminar</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody x-show="open === {{ $index }}">
-                                        <tr>
-
-                                            <td colspan="2">{{ $rutaServicio->hora_inicio }}</td>
-                                            <td>{{ $rutaServicio->hora_fin ?? 'N/A' }}</td>
-                                            <td>{{ $rutaServicio->dia->name }}</td>
-                                            <td>{{ $rutaServicio->riesgo->name }}</td>
-                                            <td>{{ $rutaServicio->estado->name }}</td>
-                                            <td colspan="2">
-                                                @if ($rutaServicio->status_ruta == 1)
-                                                    <button type="button"
-                                                        wire:click="$dispatch('confirm',{{ $rutaServicio->id }})"
-                                                        class="btn btn-primary"><i class="fas fa-play mr-1"></i>
-                                                        Iniciar</button>
-                                                @elseif($rutaServicio->status_ruta == 2)
-                                                    <button type="button"
-                                                        wire:click="$dispatch('terminar',{{ $rutaServicio->id }})"
-                                                        class="btn btn-danger"><i class="fas fa-stop mr-1"></i>
-                                                        Terminar</button>
-                                                @elseif($rutaServicio->status_ruta == 3)
-                                                    <span style="color: green;"><i class="fas fa-check-circle"></i> Ruta
-                                                        completada</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-
-                                        @if ($rutaServicio->status_ruta != 1)
-                                            <tr class="table-primary">
-                                                <th colspan="3">Servicio</th>
-                                                <th>Dirección</th>
-                                                <th>Papeleta</th>
-                                                <th>Envases</th>
-                                                <th>Tipo de Servicio</th>
-                                                <th>Acción</th>
-                                            </tr>
-                                            @foreach ($rutaServicio->rutaServicios as $servicio)
-                                                <tr>
-                                                    <td colspan="3">
-                                                        {{ $servicio->servicio->ctg_servicio->descripcion }}</td>
-                                                    <td>
-                                                        {{ $servicio->servicio->sucursal->sucursal->sucursal .
-                                                            ', ' .
-                                                            $servicio->servicio->sucursal->sucursal->direccion .
-                                                            ', ' .
-                                                            $servicio->servicio->sucursal->sucursal->cp->cp .
-                                                            '' .
-                                                            $servicio->servicio->sucursal->sucursal->cp->estado->name }}
-                                                    </td>
-                                                    <td>{{ $servicio->folio }}</td>
-                                                    <td>{{ $servicio->envases }}</td>
-                                                    <td>
-                                                        {{ $servicio->tipo_servicio == 1 ? 'Entrega' : ($servicio->tipo_servicio == 2 ? 'Recolección' : 'Otro') }}
-                                                    </td>
-                                                    <td>
-                                                        @if ($servicio->status_ruta_servicios == 2)
-                                                            <button type="button" class="btn btn-primary"
-                                                                wire:click="ModalEntregaRecolecta('{{ $servicio->id }}','{{ $servicio->tipo_servicio }}')"
-                                                                data-toggle="modal"
-                                                                data-target="#ModalEntregarRecolectar">
-                                                                <i class="fas fa-play mr-1"></i>
-                                                                {{ $servicio->tipo_servicio == 1 ? 'Entregar' : ($servicio->tipo_servicio == 2 ? 'Recolectar' : 'Otro') }}
-                                                            </button>
-                                                            <button type="button" class="btn btn-danger"
-                                                                wire:click="ModalReprogramarServicio('{{ $servicio->id }}')"
-                                                                data-toggle="modal"
-                                                                data-target="#ModalReprogramarServicio"><i
-                                                                    class="fas fa-clock mr-1"></i>
-                                                                Reprogramar</button>
-                                                        @else
-                                                            <span
-                                                                class="badge {{ $servicio->status_ruta_servicios == 3 ? 'bg-success' : 'bg-warning' }}">
-                                                                {{ $servicio->status_ruta_servicios == 3 ? 'Terminado' : 'Reprogramado' }}
-                                                            </span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-
-
-
-                                            @if (
-                                                $rutaServicio->ruta_compra->isNotEmpty() &&
-                                                    $rutaServicio->ruta_compra->where('status_ruta_compra_efectivos', '!=', 5)->count() > 0)
-                                                <tr>
-                                                    <th colspan='8' class="text-center table-success">
-                                                        Compra efectivo
-                                                    </th>
-                                                </tr>
-                                                <tr class="table-success">
-                                                    <th colspan="2">Monto de la compra</th>
-                                                    <th colspan="2">Fecha de la compra</th>
-                                                    <th colspan="2">Estatus de la compra</th>
-                                                    <th colspan="2">Detalles de la compra</th>
-                                                </tr>
-                                                @foreach ($rutaServicio->ruta_compra as $ruta_compra)
-                                                    @if ($ruta_compra->status_ruta_compra_efectivos != 5)
-                                                        <tr>
-                                                            <td colspan="2">
-                                                                ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
-                                                            </td>
-
-                                                            <td colspan="2">{{ $ruta_compra->compra->fecha_compra }}
-                                                            </td>
-                                                            <td colspan="2">
-                                                                <span
-                                                                    class="badge {{ $ruta_compra->compra->status_compra_efectivos == 2 ? 'bg-warning' : 'bg-success' }}">
-                                                                    {{ $ruta_compra->compra->status_compra_efectivos == 2 ? 'Pendiente' : 'Finalizada' }}
-                                                                </span>
-                                                            </td>
-                                                            <td colspan="2">
-                                                                <button class="btn btn-info" data-toggle="modal"
-                                                                    wire:click="showCompraDetail({{ $ruta_compra->compra }})"
-                                                                    data-target="#modalDetailCompra">Detalles</button>
-                                                            </td>
-                                                        </tr>
-                                                    @endif
-                                                @endforeach
-                                            @endif {{-- @break --}}
-                                        @else
-                                            <tr>
-                                                <td colspan="7">
-                                                    <div class="card bg-warning">
-                                                        <div class="card-body text-center">
-                                                            <h5 class="card-text text-center">Sin iniciar ruta</h5>
-                                                            <p class="card-text text-center">Iniciar Ruta para ver
-                                                                Servicios</p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endif
-
-                                    </tbody>
-                                @endforeach
-
-
-                            </table>
-
-
+        <h3 class="ml-2">Operador-<span class="text-info">{{ $nombreUsuario }}</span></h3>
+        <div class="card">
+            <div class="card-body">
+                @if (count($rutaEmpleados) > 0)
+                <div class="accordion" id="accordionExample">
+                    @foreach ($rutaEmpleados as $index => $rutaServicio)
+                    <div class="card">
+                        <div class="card-header bg-gray" id="heading{{ $index }}">
+                            <h2 class="mb-0">
+                                <button class="btn btn-block text-center bg-gray" data-toggle="collapse"
+                                    data-target="#collapse{{ $index }}" aria-expanded="false"
+                                    aria-controls="collapse{{ $index }}">
+                                    Ruta {{ $rutaServicio->nombre->name . '-' . $rutaServicio->dia->name }}
+                                </button>
+                            </h2>
                         </div>
-                    @else
-                        <div class="card bg-info">
-                            <div class="card-body text-center">
-                                <h5 class="card-text text-center">Sin Rutas Asignadas</h5>
+
+                        <div id="collapse{{ $index }}" class="collapse" aria-labelledby="heading{{ $index }}"
+                            data-parent="#accordionExample">
+                            <div class="card-body">
+                                <div class="d-table table-info mt-0 pt-0" style="width:100%">
+                                    <div class="d-table-row" style="width:100%">
+                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Hora Inicio : <p class="text-bold">{{ $rutaServicio->hora_inicio }}</p>
+                                        </div>
+                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Hora Termino : <p class="text-bold">{{ $rutaServicio->hora_fin ??
+                                            'N/A' }}</p></div>
+                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Dia : <p class="text-bold">{{ $rutaServicio->dia->name }}</p></div>
+                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Riesgo : <p class="text-bold">{{ $rutaServicio->riesgo->name }}</p>
+                                        </div>
+                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Estado : <p class="text-bold">{{ $rutaServicio->estado->name }}</p>
+                                        </div>
+                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Iniciar/Terminar :
+                                            <p>
+                                            @if ($rutaServicio->status_ruta == 1)
+                                            <button type="button"
+                                                    wire:click="$dispatch('confirm',{{ $rutaServicio->id }})"
+                                                    class="btn btn-primary btn-sm text-xs"><i class="fas fa-play mr-1"></i>
+                                                    Iniciar</button>
+                                            @elseif($rutaServicio->status_ruta == 2)
+                                                <button type="button"
+                                                    wire:click="$dispatch('terminar',{{ $rutaServicio->id }})"
+                                                    class="btn btn-danger btn-sm text-xs"><i class="fas fa-stop mr-1"></i>
+                                                    Terminar</button>
+                                            @elseif($rutaServicio->status_ruta == 3)
+                                                <span style="color: green;"><i class="fas fa-check-circle"></i> Ruta
+                                                    completada</span>
+                                            @endif
+                                        </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Servicios rutas inicio-->
+                                @if ($rutaServicio->status_ruta != 1)
+                                <div id="accordionServicios">
+                                    @foreach ($rutaServicio->rutaServicios as $servicio)
+                                    <div class="card m-0">
+                                      <div class="card-header p-0" id="headingServicio{{$servicio->id}}{{$servicio->tipo_servicio}}">
+                                          <button class="btn btn-block text-center text-xs" data-toggle="collapse" data-target="#collapseServicio{{$servicio->id}}{{$servicio->tipo_servicio}}" aria-expanded="false" aria-controls="collapseServicio{{$servicio->id}}{{$servicio->tipo_servicio}}">
+                                            <p class="mb-0 text-success text-bold">{{ $servicio->servicio->ctg_servicio->descripcion }}</p>
+                                            <p class="mb-0 text-danger">
+                                                {{$servicio->servicio->cliente->razon_social}} 
+                                             </p>
+                                            <p class="mb-0 text-info"> {{ $servicio->servicio->sucursal->sucursal->sucursal .
+                                                ', ' .
+                                                $servicio->servicio->sucursal->sucursal->direccion .
+                                                ', ' .
+                                                $servicio->servicio->sucursal->sucursal->cp->cp .
+                                                '' .
+                                                $servicio->servicio->sucursal->sucursal->cp->estado->name }}</p>
+                                                <p class="mb-0 text-danger">{{ $servicio->tipo_servicio == 1 ? 'Entrega' : ($servicio->tipo_servicio == 2 ? 'Recolección' : 'Otro') }}</p>
+                                                
+                                          </button>
+                                      </div>
+                                  
+                                      <div id="collapseServicio{{$servicio->id}}{{$servicio->tipo_servicio}}" class="collapse" aria-labelledby="headingServicio{{$servicio->id}}{{$servicio->tipo_servicio}}" data-parent="#accordionServicios">
+                                        <div class="card-body p-0">
+                                            <div class="d-table table-info mt-0 pt-0" style="width:100%">
+                                                <div class="d-table-row" style="width:100%">
+                                            <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Papeleta : <p class="text-bold">{{ $servicio->folio }}</p>
+                                            </div>
+                                            <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Envases : <p class="text-bold">{{ $servicio->envases }}</p>
+                                            </div>
+                                            <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Acción : 
+                                               
+                                                @if ($servicio->status_ruta_servicios == 4)
+                                                <p>
+                                                <button type="button"
+                                                wire:click="$dispatch('confirmarservicio', { contactId: {{ $servicio->id }}, serviciotipo: {{ $servicio->tipo_servicio }} })"
+                                                class="btn mb-2 btn-primary btn-sm text-xs">
+                                                <i class="fas fa-play mr-1"></i> Iniciar Servicio
+                                            </button>
+                                        </p>
+                                            
+
+                                                @elseif ($servicio->status_ruta_servicios == 2)
+                                                 <p class="mb-0">    
+                                                <button type="button" class="btn mb-2 btn-primary btn-sm text-xs"
+                                                        wire:click="ModalEntregaRecolecta('{{ $servicio->id }}','{{ $servicio->tipo_servicio }}')"
+                                                        data-toggle="modal"
+                                                        data-target="#ModalEntregarRecolectar">
+                                                        <i class="fas fa-play mr-1"></i>
+                                                        {{ $servicio->tipo_servicio == 1 ? 'Entregar' : ($servicio->tipo_servicio == 2 ? 'Recolectar' : 'Otro') }}
+                                                    </button>
+                                                 </p>
+                                                     <p class="mb-0">
+                                                    <button type="button" class="btn mb-2 btn-danger btn-sm text-xs"
+                                                        wire:click="ModalReprogramarServicio('{{ $servicio->id }}')"
+                                                        data-toggle="modal"
+                                                        data-target="#ModalReprogramarServicio"><i
+                                                            class="fas fa-clock mr-1"></i>
+                                                        Reprogramar</button>
+                                                     </p>
+                                                @else
+                                                <p>
+                                                    <span
+                                                        class="badge {{ $servicio->status_ruta_servicios == 3 ? 'bg-success' : 'bg-warning' }} mb-2">
+                                                        {{ $servicio->status_ruta_servicios == 3 ? 'Terminado' : 'Reprogramado' }}
+                                                    </span>
+                                                </p>
+                                                @endif
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                      </div>
+                                    </div>
+                                    @endforeach
+                                  </div>
+                                <!--Servicios rutas fin-->
+                                <!--COMPRAS BANCOS-->
+                                @if ($rutaServicio->ruta_compra->isNotEmpty() && $rutaServicio->ruta_compra->where('status_ruta_compra_efectivos', '!=', 5)->count() > 0)
+                                <div id="accordionCompras">
+                                    @foreach ($rutaServicio->ruta_compra as $ruta_compra)
+
+                                     @if ($ruta_compra->status_ruta_compra_efectivos != 5)
+                                    <div class="card m-0">
+                                      <div class="card-header p-0" id="headingCompras{{$ruta_compra->compra_efectivo_id}}">
+                                        <h5 class="mb-0">
+                                          <button class="btn btn-block text-center text-md" data-toggle="collapse" data-target="#collapseCompras{{$ruta_compra->compra_efectivo_id}}" aria-expanded="true" aria-controls="collapseCompras{{$ruta_compra->compra_efectivo_id}}">
+                                            <p class="mb-0 text-success text-bold"> Compra efectivo</p>
+                                          </button>
+                                        </h5>
+                                      </div>
+                                  
+                                      <div id="collapseCompras{{$ruta_compra->compra_efectivo_id}}" class="collapse show" aria-labelledby="headingCompras{{$ruta_compra->compra_efectivo_id}}" data-parent="#accordionCompras">
+                                        <div class="card-body p-0">
+                                            <div class="d-table table-info mt-0 pt-0" style="width:100%">
+                                                <div class="d-table-row" style="width:100%">
+                                                    <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Monto de la compra : <p class="text-bold"> ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }} </p>
+                                                    </div>
+                                                    <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Fecha de la compra : <p class="text-bold"> {{ $ruta_compra->compra->fecha_compra }} </p>
+                                                    </div>
+                                                    <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Estatus de la compra : <p class="text-bold"> 
+                                                        <span
+                                                        class="badge {{ $ruta_compra->compra->status_compra_efectivos == 2 ? 'bg-warning' : 'bg-success' }}">
+                                                        {{ $ruta_compra->compra->status_compra_efectivos == 2 ? 'Pendiente' : 'Finalizada' }}
+                                                    </span>
+                                                    </p>
+                                                    </div>
+                                                    <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Detalles de la compra : <p class="text-bold"> 
+                                                        <button class="btn btn-info" data-toggle="modal"
+                                                        wire:click="showCompraDetail({{ $ruta_compra->compra }})"
+                                                        data-target="#modalDetailCompra">Detalles</button>    
+                                                    </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    @endif
+                                    @endforeach
+                                </div>
+                                @endif
+                                @else
+                                <div class="card bg-warning">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-text text-center">Sin iniciar ruta</h5>
+                                        <p class="card-text text-center">Iniciar Ruta para ver
+                                            Servicios</p>
+                                    </div>
+                                </div>
+                                @endif
+                                <!--COMPRAS BANCOS-->
                             </div>
                         </div>
-                    @endif
+                    </div>
+                    @endforeach
                 </div>
+                @else
+                <div class="card bg-info">
+                    <div class="card-body text-center">
+                        <h5 class="card-text text-center">Sin Rutas Asignadas</h5>
+                    </div>
+                </div>
+                @endif
             </div>
+        </div>
         @else
-            <div class="card bg-danger">
-                <div class="card-body text-center">
-                    <h5 class="card-text text-center">No autorizado</h5>
-                    <p class="card-text text-center">Área no apta para visualizar datos del operador.</p>
-                </div>
+        <div class="card bg-danger">
+            <div class="card-body text-center">
+                <h5 class="card-text text-center">No autorizado</h5>
+                <p class="card-text text-center">Área no apta para visualizar datos del operador.</p>
             </div>
+        </div>
         @endif
     </div>
     <style>
@@ -208,9 +232,9 @@
                 <div class="modal-header bg-info">
                     <h5 class="modal-title" id="exampleModalLabel">
                         @if ($tiposervicio == 'Entrega')
-                            <i class="fas fa-box mr-1"></i>
+                        <i class="fas fa-box mr-1"></i>
                         @elseif($tiposervicio == 'Recolección')
-                            <i class="fas fa-hand-holding mr-1"></i>
+                        <i class="fas fa-hand-holding mr-1"></i>
                         @endif
                         {{ $tiposervicio }}
                     </h5>
@@ -221,119 +245,117 @@
                 <div class="modal-body">
                     <div class="row" wire:init='loadServicios'>
                         @if ($readyToLoadModal)
-                            <div class="col-md-12 mb-3" hidden>
-                                <x-input-validado :readonly="true" label="idrecolecta:" placeholder="idrecolecta"
-                                    wire-model="idrecolecta" wire-attribute="idrecolecta" type="text" />
-                            </div>
-                            <div class="col-md-12 mb-3" hidden>
-                                <x-input-validado :readonly="true" label="Monto:" placeholder="Ingrese Monto"
-                                    wire-model="MontoEntrega" wire-attribute="MontoEntrega" type="text" />
-                            </div>
-                            @if ($tiposervicio)
-                                <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-12' }} mb-3">
-                                    <x-input-validado label="Papeleta:" :readonly="true" placeholder="Papeleta"
-                                        wire-model="papeleta" type="text" />
-                                </div>
-                            @endif
-                            @if ($tiposervicio == 'Recolección')
-                                <div class="col-md-4 mb-3">
-                                    {{-- <x-input-validado :readonly="false" label="Monto:" placeholder="Ingrese Monto total"
+                        <div class="col-md-12 mb-3" hidden>
+                            <x-input-validado :readonly="true" label="idrecolecta:" placeholder="idrecolecta"
+                                wire-model="idrecolecta" wire-attribute="idrecolecta" type="text" />
+                        </div>
+                        <div class="col-md-12 mb-3" hidden>
+                            <x-input-validado :readonly="true" label="Monto:" placeholder="Ingrese Monto"
+                                wire-model="MontoEntrega" wire-attribute="MontoEntrega" type="text" />
+                        </div>
+                        @if ($tiposervicio)
+                        <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-12' }} mb-3">
+                            <x-input-validado label="Papeleta:" :readonly="true" placeholder="Papeleta"
+                                wire-model="papeleta" type="text" />
+                        </div>
+                        @endif
+                        @if ($tiposervicio == 'Recolección')
+                        <div class="col-md-4 mb-3">
+                            {{--
+                            <x-input-validado :readonly="false" label="Monto:" placeholder="Ingrese Monto total"
                                 wire-model="MontoRecolecta" wire-attribute="MontoRecolecta" type="text" /> --}}
-                                    <label for="">Monto de la recolecta: $
-                                        {{ number_format($MontoRecolecta, 2, '.', ',') }}</label>
-                                    <input type="number"
-                                        class="form-control @error('MontoRecolecta') is-invalid @enderror"
-                                        wire:model.live='MontoRecolecta'>
-                                    @error('MontoRecolecta')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-4 mb-1">
-                                    <x-input-validadolive :readonly="false" label="Envases:"
-                                        placeholder="Ingrese cantidad de envases" wire-model="envasescantidad"
-                                        wire-attribute="envasescantidad" type="text" />
+                            <label for="">Monto de la recolecta: $
+                                {{ number_format($MontoRecolecta, 2, '.', ',') }}</label>
+                            <input type="number" class="form-control @error('MontoRecolecta') is-invalid @enderror"
+                                wire:model.live='MontoRecolecta'>
+                            @error('MontoRecolecta')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="col-md-4 mb-1">
+                            <x-input-validadolive :readonly="false" label="Envases:"
+                                placeholder="Ingrese cantidad de envases" wire-model="envasescantidad"
+                                wire-attribute="envasescantidad" type="text" />
 
-                                </div>
-                                <div class="col-md-2" style="margin-top: 32px">
+                        </div>
+                        <div class="col-md-2" style="margin-top: 32px">
 
-                                    <button class="btn btn-info" wire:loading.remove
-                                        wire:click='envase_recolecta'>Agregar</button>
-                                </div>
-                            @endif
-                            <div class="col-md-12 mb-3">
-                                <div class="alert alert-warning" id="message" role="alert">
-                                    No puedes llevar envases dañados.
-                                </div>
+                            <button class="btn btn-info" wire:loading.remove
+                                wire:click='envase_recolecta'>Agregar</button>
+                        </div>
+                        @endif
+                        <div class="col-md-12 mb-3">
+                            <div class="alert alert-warning" id="message" role="alert">
+                                No puedes llevar envases dañados.
                             </div>
+                        </div>
 
 
 
-                            @foreach ($inputs as $index => $input)
-                                <div class="col-md-1 mb-3" {{ $tiposervicio == 'Entrega' ? 'hidden' : '' }}>
-                                    <Label>Violado</Label>
-                                    <input label="Cantidad:" id="violado.{{ $index }}"
-                                        onclick="select_violado(this)"
-                                        wire:model="inputs.{{ $index }}.violado" type="checkbox" />
+                        @foreach ($inputs as $index => $input)
+                        <div class="col-md-1 mb-3" {{ $tiposervicio=='Entrega' ? 'hidden' : '' }}>
+                            <Label>Violado</Label>
+                            <input label="Cantidad:" id="violado.{{ $index }}" onclick="select_violado(this)"
+                                wire:model="inputs.{{ $index }}.violado" type="checkbox" />
 
-                                </div>
+                        </div>
 
 
-                                <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
-                                    {{-- <x-input-validado label="Cantidad:" :readonly="$tiposervicio == 'Entrega'" placeholder="Envase"
-                                wire-model="inputs.{{ $index }}.cantidad" wire-attribute="inputs"
+                        <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
+                            {{--
+                            <x-input-validado label="Cantidad:" :readonly="$tiposervicio == 'Entrega'"
+                                placeholder="Envase" wire-model="inputs.{{ $index }}.cantidad" wire-attribute="inputs"
                                 type="text" /> --}}
-                                    <label for="">Monto: $
-                                        {{ number_format((float) $input['cantidad'], 2, '.', ',') }}
-                                    </label>
-                                    <input type="number"
-                                        class="form-control @error('inputs.' . $index . '.cantidad') is-invalid @enderror"
-                                        wire:model.live="inputs.{{ $index }}.cantidad">
-                                    @error('inputs.' . $index . '.cantidad')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
+                            <label for="">Monto: $
+                                {{ number_format((float) $input['cantidad'], 2, '.', ',') }}
+                            </label>
+                            <input type="number"
+                                class="form-control @error('inputs.' . $index . '.cantidad') is-invalid @enderror"
+                                wire:model.live="inputs.{{ $index }}.cantidad">
+                            @error('inputs.' . $index . '.cantidad')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
 
-                                </div>
+                        </div>
 
-                                @if ($tiposervicio == 'Recolección')
-                                    <div class="col-md-2 mb-3">
-                                        <x-input-validado label="Papeleta:" :readonly="false" placeholder="Papeleta"
-                                            wire-model="inputs.{{ $index }}.folio" wire-attribute="folios"
-                                            type="text" />
-                                    </div>
-                                @endif
-                                <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
-                                    <x-input-validado label="Sello seguridad:" :readonly="false"
-                                        placeholder="Sello de seguridad"
-                                        wire-model="inputs.{{ $index }}.sello" type="text" />
-                                </div>
-                                <div class="col-md-2 mb-3">
-                                    <x-input-validado label="Evidencia:" :readonly="false" placeholder="Evidencia"
-                                        wire:model="inputs.{{ $index }}.photo" type="file" />
-                                </div>
-                                <div class="col-md-3 d-flex justify-content-center align-items-center">
-                                    <!-- Muestra la imagen cargada si existe -->
-                                    @if (isset($input['photo']) && $input['photo'])
-                                        <img src="{{ $input['photo']->temporaryUrl() }}" alt="Foto Tomada"
-                                            class="img-fluid" style="max-width: 100px; height: auto;">
-                                    @endif
-                                </div>
-                            @endforeach
+                        @if ($tiposervicio == 'Recolección')
+                        <div class="col-md-2 mb-3">
+                            <x-input-validado label="Papeleta:" :readonly="false" placeholder="Papeleta"
+                                wire-model="inputs.{{ $index }}.folio" wire-attribute="folios" type="text" />
+                        </div>
+                        @endif
+                        <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
+                            <x-input-validado label="Sello seguridad:" :readonly="false"
+                                placeholder="Sello de seguridad" wire-model="inputs.{{ $index }}.sello" type="text" />
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <x-input-validado label="Evidencia:" :readonly="false" placeholder="Evidencia"
+                                wire:model="inputs.{{ $index }}.photo" type="file" />
+                        </div>
+                        <div class="col-md-3 d-flex justify-content-center align-items-center">
+                            <!-- Muestra la imagen cargada si existe -->
+                            @if (isset($input['photo']) && $input['photo'])
+                            <img src="{{ $input['photo']->temporaryUrl() }}" alt="Foto Tomada" class="img-fluid"
+                                style="max-width: 100px; height: auto;">
+                            @endif
+                        </div>
+                        @endforeach
                         @else
-                            <div class="col-md-12 text-center">
-                                <div class="spinner-border" role="status">
-                                </div>
+                        <div class="col-md-12 text-center">
+                            <div class="spinner-border" role="status">
                             </div>
+                        </div>
                         @endif
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     @if ($tiposervicio == 'Entrega')
-                        <button type="button" class="btn btn-primary" wire:loading.remove
-                            wire:click='ModalAceptar'>Aceptar</button>
+                    <button type="button" class="btn btn-primary" wire:loading.remove
+                        wire:click='ModalAceptar'>Aceptar</button>
                     @elseif($tiposervicio == 'Recolección')
-                        <button type="button" class="btn btn-primary" wire:loading.remove
-                            wire:click='ModalAceptarRecolecta'>Aceptar</button>
+                    <button type="button" class="btn btn-primary" wire:loading.remove
+                        wire:click='ModalAceptarRecolecta'>Aceptar</button>
                     @endif
 
                 </div>
@@ -357,20 +379,18 @@
                     <div class="row">
                         <div class="col-md-12 mb-3" hidden>
                             <x-input-validado :readonly="true" label="Id servicio" placeholder="Idservicio"
-                                wire-model="IdservicioReprogramar" wire-attribute="IdservicioReprogramar"
-                                type="text" />
+                                wire-model="IdservicioReprogramar" wire-attribute="IdservicioReprogramar" type="text" />
                         </div>
                         <div class="col-md-12 mb-3">
                             <x-input-validado :readonly="false" label="Motivo Reprogramación:"
-                                placeholder="Ingrese el motivo para reprogramar"
-                                wire-model="motivoReprogramarConcepto" wire-attribute="motivoReprogramarConcepto"
-                                type="text" />
+                                placeholder="Ingrese el motivo para reprogramar" wire-model="motivoReprogramarConcepto"
+                                wire-attribute="motivoReprogramarConcepto" type="text" />
                         </div>
                         <div class="col-md-12 mb-3">
                             <!-- Input file que abre la cámara -->
 
                             @error('photorepro')
-                                <div class="text-danger text-xs">{{ $message }}</div>
+                            <div class="text-danger text-xs">{{ $message }}</div>
                             @enderror
                             <input type="file" accept="image/*" capture="camera" id="photorepro"
                                 wire:model.live="photorepro" style="display: none;">
@@ -381,14 +401,13 @@
                         <div class="col-md-12 d-flex justify-content-center align-items-center">
                             <!-- Vista previa de la foto tomada -->
                             @if ($photorepro)
-                                <img src="{{ $photorepro->temporaryUrl() }}" alt="Foto Tomada" class="img-fluid"
-                                    style="max-width: 25%; height: auto;">
+                            <img src="{{ $photorepro->temporaryUrl() }}" alt="Foto Tomada" class="img-fluid"
+                                style="max-width: 25%; height: auto;">
                             @endif
                         </div>
                         <div class="col-md-12 mt-3 mb-2 text-center">
                             <div wire:loading wire:target="photorepro">
-                                <div class="d-flex justify-content-center align-items-center"
-                                    style="min-height: 50px;">
+                                <div class="d-flex justify-content-center align-items-center" style="min-height: 50px;">
                                     <div class="spinner-border text-primary" role="status">
                                         <span class="sr-only">Cargando archivo...</span>
                                     </div>
@@ -400,16 +419,16 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" @if (!$photorepro) disabled @endif
-                        wire:loading.remove wire:click='ModalAceptarReprogramar'>Aceptar</button>
+                    <button type="button" class="btn btn-primary" @if (!$photorepro) disabled @endif wire:loading.remove
+                        wire:click='ModalAceptarReprogramar'>Aceptar</button>
                 </div>
             </div>
         </div>
     </div>
 
 
-    <div class="modal fade" wire:ignore.self id="modalDetailCompra" tabindex="-1"
-        aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" wire:ignore.self id="modalDetailCompra" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-info">
@@ -430,39 +449,40 @@
                         <tbody>
                             @if ($readyToLoadModal)
 
-                                @if ($compra_detalle && count($compra_detalle->detalles))
-                                    @foreach ($compra_detalle->detalles as $detalle)
-                                        <tr>
-                                            <td>{{ $detalle->consignatario->name }}</td>
-                                            <td>${{ number_format($detalle->monto, 2, '.', ',') }}</td>
+                            @if ($compra_detalle && count($compra_detalle->detalles))
+                            @foreach ($compra_detalle->detalles as $detalle)
+                            <tr>
+                                <td>{{ $detalle->consignatario->name }}</td>
+                                <td>${{ number_format($detalle->monto, 2, '.', ',') }}</td>
 
-                                            <td>
-                                                @if ($detalle->status_detalles_compra_efectivos == 1)
-                                                    <button class="btn btn-success" data-toggle="modal"
-                                                        wire:click="detalleCompraEfectivo({{ $detalle }})"
-                                                        data-target="#finalizarCompra">Finalizar</button>
-                                                    <button class="btn btn-danger">Rechazar</button>
-                                                @else
-                                                    <span
-                                                        class="badge 
+                                <td>
+                                    @if ($detalle->status_detalles_compra_efectivos == 1)
+                                    <button class="btn btn-success" data-toggle="modal"
+                                        wire:click="detalleCompraEfectivo({{ $detalle }})"
+                                        data-target="#finalizarCompra">Finalizar</button>
+                                    <button class="btn btn-danger">Rechazar</button>
+                                    @else
+                                    <span
+                                        class="badge 
                                                     {{ $detalle->status_detalles_compra_efectivos == 2 ? 'bg-success' : 'bg-danger' }}">
-                                                        {{ $detalle->status_detalles_compra_efectivos == 2 ? 'Terminado' : 'Rechazado' }}
-                                                    </span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @else
-                                    <tr class="text-center">
-                                        <td colspan="8"> No hay movimientos</td>
-                                    </tr>
-                                @endif
+                                        {{ $detalle->status_detalles_compra_efectivos == 2 ? 'Terminado' : 'Rechazado'
+                                        }}
+                                    </span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @endforeach
                             @else
-                                <tr class="text-center">
-                                    <td colspan="8">
-                                        <div class="spinner-border" role="status"></div>
-                                    </td>
-                                </tr>
+                            <tr class="text-center">
+                                <td colspan="8"> No hay movimientos</td>
+                            </tr>
+                            @endif
+                            @else
+                            <tr class="text-center">
+                                <td colspan="8">
+                                    <div class="spinner-border" role="status"></div>
+                                </td>
+                            </tr>
 
                             @endif
                         </tbody>
@@ -470,8 +490,8 @@
                 </div>
                 <div class="modal-footer">
                     @if ($status_compra == 2)
-                        <button type="button" wire:click='finalizarCompraEfectivo' class="btn btn-success"
-                            wire:loading.remove>Finalizar compra de efectivo</button>
+                    <button type="button" wire:click='finalizarCompraEfectivo' class="btn btn-success"
+                        wire:loading.remove>Finalizar compra de efectivo</button>
                     @endif
                     <button type="button" wire:click='limpiarDatos' class="btn btn-secondary"
                         data-dismiss="modal">Cerrar</button>
@@ -499,132 +519,129 @@
                     <div class="row" wire:init='loadServicios'>
 
                         @if ($detalle_compra)
-                            <div class="col-md-4 mb-3">
-                                <label for="">Consignatario/Banco</label>
-                                <input type="text" disabled class="form-control"
-                                    value="{{ $detalle_compra->consignatario->name }}">
-                            </div>
-                            <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3">
+                            <label for="">Consignatario/Banco</label>
+                            <input type="text" disabled class="form-control"
+                                value="{{ $detalle_compra->consignatario->name }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
 
-                                <label for="">Monto de la recolecta: $
-                                    {{ number_format($monto_compra, 2, '.', ',') }}</label>
-                                <input type="number" class="form-control @error('monto_compra') is-invalid @enderror"
-                                    wire:model.live='monto_compra'>
-                                @error('monto_compra')
-                                    <span class="invalid-feedback">{{ $message }}</span>
-                                @enderror
+                            <label for="">Monto de la recolecta: $
+                                {{ number_format($monto_compra, 2, '.', ',') }}</label>
+                            <input type="number" class="form-control @error('monto_compra') is-invalid @enderror"
+                                wire:model.live='monto_compra'>
+                            @error('monto_compra')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <x-input-validadolive :readonly="false" label="Envases: (opcional)" placeholder="Envases"
+                                wire-model="envases_compra" wire-attribute="envases_compra" type="number" />
+                        </div>
+
+                        @if ($envases_compra)
+                        <div class="col-md-1" style="margin-top: 32px">
+                            <button class="btn btn-info" wire:loading.remove
+                                wire:click='addEnvasesCompra'>Agregar</button>
+                        </div>
+                        @endif
+
+
+                        <div class="col-md-4 mb-3">
+                            <label for="">Fecha solicitada.</label>
+                            <input type="text" disabled class="form-control"
+                                value="{{ $detalle_compra->compra_efectivo->fecha_compra }}">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <x-input-validado :readonly="false" label="Folio/Papeleta:"
+                                placeholder="Ingresa papeleta/folio" wire-model="folio_compra"
+                                wire-attribute="folio_compra" type="text" />
+                        </div>
+
+                        @if (!$envases_compra)
+                        <div class="col-md-2 " style="margin-top: 32px">
+
+                            <div class="input-group @error('evidencia_compra') is-invalid @enderror">
+                                <label class="input-group-text btn btn-primary " for="evidencia_compra">
+                                    <i class="fas fa-camera"></i> Subir Evidencia
+                                </label>
+                                <input type="file" id="evidencia_compra" wire:model="evidencia_compra"
+                                    class="form-control d-none">
+
                             </div>
-                            <div class="col-md-2 mb-3">
-                                <x-input-validadolive :readonly="false" label="Envases: (opcional)"
-                                    placeholder="Envases" wire-model="envases_compra" wire-attribute="envases_compra"
-                                    type="number" />
+                            @error('evidencia_compra')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+
+
+                        </div>
+                        <div class="col-md-3 d-flex justify-content-center align-items-center">
+                            <div wire:loading wire:target='evidencia_compra'
+                                class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
+                                <strong>Evidencia cargando!</strong>
                             </div>
 
-                            @if ($envases_compra)
-                                <div class="col-md-1" style="margin-top: 32px">
-                                    <button class="btn btn-info" wire:loading.remove
-                                        wire:click='addEnvasesCompra'>Agregar</button>
-                                </div>
+                            <!-- Muestra la imagen cargada si existe -->
+                            @if (isset($evidencia_compra) && $evidencia_compra)
+                            <img src="{{ $evidencia_compra->temporaryUrl() }}" alt="Foto Tomada" class="img-fluid"
+                                style="max-width: 100px; height: auto;">
                             @endif
-
-
-                            <div class="col-md-4 mb-3">
-                                <label for="">Fecha solicitada.</label>
-                                <input type="text" disabled class="form-control"
-                                    value="{{ $detalle_compra->compra_efectivo->fecha_compra }}">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <x-input-validado :readonly="false" label="Folio/Papeleta:"
-                                    placeholder="Ingresa papeleta/folio" wire-model="folio_compra"
-                                    wire-attribute="folio_compra" type="text" />
-                            </div>
-
-                            @if (!$envases_compra)
-                                <div class="col-md-2 " style="margin-top: 32px">
-
-                                    <div class="input-group @error('evidencia_compra') is-invalid @enderror">
-                                        <label class="input-group-text btn btn-primary " for="evidencia_compra">
-                                            <i class="fas fa-camera"></i> Subir Evidencia
-                                        </label>
-                                        <input type="file" id="evidencia_compra" wire:model="evidencia_compra"
-                                            class="form-control d-none">
-
-                                    </div>
-                                    @error('evidencia_compra')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
-
-
-                                </div>
-                                <div class="col-md-3 d-flex justify-content-center align-items-center">
-                                    <div wire:loading wire:target='evidencia_compra'
-                                        class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
-                                        <strong>Evidencia cargando!</strong>
-                                    </div>
-
-                                    <!-- Muestra la imagen cargada si existe -->
-                                    @if (isset($evidencia_compra) && $evidencia_compra)
-                                        <img src="{{ $evidencia_compra->temporaryUrl() }}" alt="Foto Tomada"
-                                            class="img-fluid" style="max-width: 100px; height: auto;">
-                                    @endif
-                                </div>
-                            @endif
+                        </div>
+                        @endif
                         @else
-                            <div class="col-md-12 text-center">
-                                <div class="spinner-border" role="status">
-                                </div>
+                        <div class="col-md-12 text-center">
+                            <div class="spinner-border" role="status">
                             </div>
+                        </div>
                         @endif
                         <div class="col-md-12 mb-3"></div>
 
                         @foreach ($inputs as $index => $input)
-                            <div class="col-md-2 mb-3">
+                        <div class="col-md-2 mb-3">
 
 
-                                <label for="">Monto: $
-                                    {{ number_format((float) $input['cantidad'], 2, '.', ',') }}
+                            <label for="">Monto: $
+                                {{ number_format((float) $input['cantidad'], 2, '.', ',') }}
+                            </label>
+                            <input type="number"
+                                class="form-control @error('inputs.' . $index . '.cantidad') is-invalid @enderror"
+                                wire:model.live="inputs.{{ $index }}.cantidad">
+                            @error('inputs.' . $index . '.cantidad')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <x-input-validado label="Papeleta:" :readonly="false" placeholder="Papeleta"
+                                wire-model="inputs.{{ $index }}.folio" wire-attribute="folios" type="text" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <x-input-validado label="Sello seguridad:" :readonly="false"
+                                placeholder="Sello de seguridad" wire-model="inputs.{{ $index }}.sello" type="text" />
+                        </div>
+
+                        <div class="col-md-2 " style="margin-top: 32px">
+
+                            <div class="input-group @error('inputs.' . $index . '.photo') is-invalid @enderror">
+                                <label class="input-group-text btn btn-primary" for="photo.{{ $index }}">
+                                    <i class="fas fa-camera"></i> Subir Evidencia
                                 </label>
-                                <input type="number"
-                                    class="form-control @error('inputs.' . $index . '.cantidad') is-invalid @enderror"
-                                    wire:model.live="inputs.{{ $index }}.cantidad">
-                                @error('inputs.' . $index . '.cantidad')
-                                    <span class="invalid-feedback">{{ $message }}</span>
-                                @enderror
-
+                                <input type="file" id="photo.{{ $index }}" wire:model="inputs.{{ $index }}.photo"
+                                    class="form-control d-none">
                             </div>
+                            @error('inputs.' . $index . '.photo')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="col-md-2 d-flex justify-content-center align-items-center">
+                            <!-- Muestra la imagen cargada si existe -->
+                            @if (isset($input['photo']) && $input['photo'])
+                            <img src="{{ $input['photo']->temporaryUrl() }}" alt="Foto Tomada" class="img-fluid"
+                                style="max-width: 100px; height: auto;">
+                            @endif
 
-                            <div class="col-md-3 mb-3">
-                                <x-input-validado label="Papeleta:" :readonly="false" placeholder="Papeleta"
-                                    wire-model="inputs.{{ $index }}.folio" wire-attribute="folios"
-                                    type="text" />
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <x-input-validado label="Sello seguridad:" :readonly="false"
-                                    placeholder="Sello de seguridad" wire-model="inputs.{{ $index }}.sello"
-                                    type="text" />
-                            </div>
-
-                            <div class="col-md-2 " style="margin-top: 32px">
-
-                                <div class="input-group @error('inputs.' . $index . '.photo') is-invalid @enderror">
-                                    <label class="input-group-text btn btn-primary" for="photo.{{ $index }}">
-                                        <i class="fas fa-camera"></i> Subir Evidencia
-                                    </label>
-                                    <input type="file" id="photo.{{ $index }}"
-                                        wire:model="inputs.{{ $index }}.photo" class="form-control d-none">
-                                </div>
-                                @error('inputs.' . $index . '.photo')
-                                    <span class="invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="col-md-2 d-flex justify-content-center align-items-center">
-                                <!-- Muestra la imagen cargada si existe -->
-                                @if (isset($input['photo']) && $input['photo'])
-                                    <img src="{{ $input['photo']->temporaryUrl() }}" alt="Foto Tomada"
-                                        class="img-fluid" style="max-width: 100px; height: auto;">
-                                @endif
-
-                            </div>
+                        </div>
                         @endforeach
                     </div>
                 </div>
@@ -640,8 +657,8 @@
     </div>
 
     @push('js')
-        <script>
-            document.addEventListener('livewire:initialized', () => {
+    <script>
+        document.addEventListener('livewire:initialized', () => {
 
                 @this.on('confirm', (contactId) => {
 
@@ -659,6 +676,24 @@
                             @this.call('empezarRuta', contactId);
                         }
                     })
+                })
+                @this.on('confirmarservicio', ({ contactId, serviciotipo }) => {
+                    console.log(contactId);
+                    console.log(serviciotipo);
+                Swal.fire({
+                    title: '¿Estas seguro?',
+                    text: "El servicio dara inicio.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, adelante!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        @this.call('empezarRutaServicios', contactId, serviciotipo);
+                    }
+                })
                 })
                 @this.on('terminar', (contactId) => {
 
@@ -822,7 +857,7 @@
                 }
                 console.log(i)
             }
-        </script>
+    </script>
     @endpush
 
 </div>

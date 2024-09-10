@@ -53,7 +53,7 @@
     <!-- Paginación -->
     @if ($serviciosTerinados && $serviciosTerinados->hasPages())
     <div class="col-md-12 text-center">
-        {{ $serviciosTerinados->links() }}
+        {{ $serviciosTerinados->links('pagination::bootstrap-4') }}
     </div>
 @endif
 </div>
