@@ -411,8 +411,15 @@ return [
             'text' => 'Operaciones',
             'url'  => '/operaciones',
             'icon' => 'fa fa-fw fa-car',
-            'can' => 'menu-operaciones'
-
+            'can' => 'menu-operaciones',
+            'submenu' => [
+                [
+                    'text' => 'Tablero Rutas Operaciones',
+                    'route'  => 'tablero.index',
+                    'icon' => 'fas fa-route',
+                    // 
+                ],
+            ]
         ],
         [
             'text' => 'cumplimiento',
@@ -455,6 +462,7 @@ return [
                     'route'  => 'boveda.cambio',
                     'icon' => 'fas fa-solid fa-money-bill',
                 ],
+               
             ]
         ],
 
