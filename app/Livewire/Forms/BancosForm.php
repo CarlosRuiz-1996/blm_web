@@ -44,8 +44,8 @@ class BancosForm extends Form
                 $query->orWhere('razon_social', 'ilike', '%' . $this->searchCliente . '%')
                     ->orWhere('rfc_cliente', 'ilike', '%' . $this->searchCliente . '%')
                 ;
-            })
-            ->paginate(10);
+            })->orderBy('id', 'ASC')
+            ->paginate(10, pageName:'clientes');
     }
 
     public function getCountResguadoClientes()
@@ -166,7 +166,7 @@ class BancosForm extends Form
                     });
                 });
             }
-        })->paginate(10);
+        })->orderBy('id', 'DESC')->paginate(10, pageName:'servicios');
     }
 
     public $fechaini_compra_search;
@@ -200,6 +200,6 @@ class BancosForm extends Form
             }
         })
             ->orderBy('id', 'DESC')
-            ->paginate(10);
+            ->paginate(10, pageName:'compras');
     }
 }

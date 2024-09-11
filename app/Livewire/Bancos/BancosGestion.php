@@ -6,11 +6,14 @@ use App\Models\Cliente;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Livewire\Forms\BancosForm;
+use App\Models\BancosServicioAcreditacion;
 use App\Models\BancosServicios;
 use App\Models\CompraEfectivo;
 use App\Models\CtgConsignatario;
 use App\Models\DetallesCompraEfectivo;
+use App\Models\MontoBlm;
 use App\Models\Servicios;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
@@ -23,8 +26,8 @@ class BancosGestion extends Component
     public $readyToLoad = false;
     public $readyToLoadModal = false;
 
-    public $activeNav = ['active', '', ''];
-    public $showNav = ['show', '', ''];
+    public $activeNav = ['active', '', '', ''];
+    public $showNav = ['show', '', '', ''];
 
 
     protected $queryString = [
@@ -55,17 +58,18 @@ class BancosGestion extends Component
             $servicios = $this->form->getAllBancosServicios();
             $compras = $this->form->getAllComprasEfectivo();
             // dd($clientes);
-
+            $acreditaciones = BancosServicioAcreditacion::orderBy('id', 'DESC')->paginate(5, pageName: 'acreditaciones');
         } else {
             $resguardototal = 0;
             $resguardototalCliente = 0;
             $clientes = [];
             $servicios = [];
             $compras = [];
+            $acreditaciones = [];
         }
         $clientes_activo = $this->form->getAllClientesActivo();
         $consignatarios = $this->form->getAllConsignatorio();
-        return view('livewire.bancos.bancos-gestion', compact('resguardototal', 'resguardototalCliente', 'clientes', 'servicios', 'compras', 'clientes_activo', 'consignatarios'));
+        return view('livewire.bancos.bancos-gestion', compact('acreditaciones', 'resguardototal', 'resguardototalCliente', 'clientes', 'servicios', 'compras', 'clientes_activo', 'consignatarios'));
     }
     public function loadClientes()
     {
@@ -86,22 +90,25 @@ class BancosGestion extends Component
     public function showDetail(Cliente $cliente)
     {
         $this->cliente_detail = $cliente;
-        // dd($this->cliente_detail->montos);
-        // $this->readyToLoadModal = true;
     }
 
     public function getMontosProperty()
     {
-        // if($this->cliente_detail && count($this->cliente_detail->montos)){
-        return $this->cliente_detail->montos()->paginate(10);
-        // }
+        return $this->cliente_detail->montos()->orderBy('id', 'DESC')->paginate(10, pageName: 'montos');
     }
 
     #[On('clean')]
     public function limpiarDatos()
     {
-            // 'form.ingresa_monto',
-        $this->reset('form.cliente', 'readyToLoadModal', 'form.actual_monto', 'form.nuevo_monto',  'cliente_detail');
+        $this->reset(
+            'form.cliente',
+            'readyToLoadModal',
+            'form.actual_monto',
+            'form.nuevo_monto',
+            'cliente_detail',
+            'acreditacion_detail',
+            'ticket'
+        );
     }
 
     public function updating($property, $value)
@@ -110,10 +117,8 @@ class BancosGestion extends Component
         if ($property === 'form.ingresa_monto') {
             if ($value != "") {
                 $this->form->nuevo_monto =  $value + $this->form->cliente->resguardo;
-
             } else {
                 $this->form->nuevo_monto = 0;
-
             }
         }
     }
@@ -336,6 +341,36 @@ class BancosGestion extends Component
         } catch (\Exception $e) {
             DB::rollBack();
             $this->dispatch('alert', [$e->getMessage(), 'error']);
+        }
+    }
+
+
+    // acreditaciones
+    public $acreditacion_detail;
+    public $ticket;
+    public function addTickect(BancosServicioAcreditacion $acreditacion)
+    {
+        $this->acreditacion_detail = $acreditacion;
+    }
+
+    public function finalizarAcreditacion(){
+        $this->validate(['ticket'=>'required'],['ticket.required'=>'El ticket es requerido']);
+
+        try{
+            DB::beginTransaction();
+            
+            $this->acreditacion_detail->folio = $this->ticket;
+            $this->acreditacion_detail->status_acreditacion = 2;
+            $this->acreditacion_detail->save();
+
+            MontoBlm::find(1)->increment('monto', $this->acreditacion_detail->envase->cantidad);
+
+            $this->dispatch('alert', ['El folio se guardo correctamente y el monto se sumo al monto total de blm.', 'success']);
+            DB::commit();
+        }catch(Exception $e){
+            DB::rollBack();
+            $this->dispatch('alert', ['Hubo un problema, intenta más tarde.', 'error']);
+
         }
     }
 }
