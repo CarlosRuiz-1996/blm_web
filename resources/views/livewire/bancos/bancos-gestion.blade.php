@@ -196,15 +196,7 @@
                             </div>
                         </div>
 
-                        {{-- <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="">Banco/Consignatario</label>
-
-                                <input type="text" class="form-control w-full" placeholder="Buscar banco"
-                                    wire:model.live='form.banco_compra_search'>
-                            </div>
-                        </div> --}}
-
+                       
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="">Fecha de inicio</label>
@@ -231,6 +223,12 @@
                                 </select>
                             </div>
 
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group" style="margin-top: 33px">
+                                <button wire:click='cleanFiltrerCompra' class="btn btn-info">Limpiar Filtros</button>
+                            </div>
                         </div>
                     </div>
                     @if (count($compras))
@@ -342,6 +340,11 @@
                                 </select>
                             </div>
 
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group" style="margin-top: 33px">
+                                <button wire:click='cleanFiltrerDotaciones' class="btn btn-info">Limpiar Filtros</button>
+                            </div>
                         </div>
                     </div>
                     @if (count($servicios))
@@ -463,6 +466,11 @@
                                 </select>
                             </div>
             
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group" style="margin-top: 33px">
+                                <button wire:click='cleanFiltrerAcreditacion' class="btn btn-info">Limpiar Filtros</button>
+                            </div>
                         </div>
                     </div> 
                     @if (count($acreditaciones))

@@ -353,12 +353,13 @@ class BancosGestion extends Component
         $this->acreditacion_detail = $acreditacion;
     }
 
-    public function finalizarAcreditacion(){
-        $this->validate(['ticket'=>'required'],['ticket.required'=>'El ticket es requerido']);
+    public function finalizarAcreditacion()
+    {
+        $this->validate(['ticket' => 'required'], ['ticket.required' => 'El ticket es requerido']);
 
-        try{
+        try {
             DB::beginTransaction();
-            
+
             $this->acreditacion_detail->folio = $this->ticket;
             $this->acreditacion_detail->status_acreditacion = 2;
             $this->acreditacion_detail->save();
@@ -367,10 +368,39 @@ class BancosGestion extends Component
 
             $this->dispatch('alert', ['El folio se guardo correctamente y el monto se sumo al monto total de blm.', 'success']);
             DB::commit();
-        }catch(Exception $e){
+        } catch (Exception $e) {
             DB::rollBack();
             $this->dispatch('alert', ['Hubo un problema, intenta más tarde.', 'error']);
-
         }
+    }
+
+
+    public function cleanFiltrerAcreditacion()
+    {
+        $this->form->monto_acreditacion_search = null;
+        $this->form->papeleta_acreditacion_search = null;
+        $this->form->fechai_acreditacion_search = null;
+        $this->form->fechaf_acreditacion_search = null;
+        $this->form->folio_acreditacion_search = null;
+        $this->form->status_acreditacion_search = null;
+    }
+
+    public function cleanFiltrerDotaciones()
+    {
+        $this->form->cliente_bancoServ_serach = null;
+        $this->form->papeleta_bancoServ_serach = null;
+        $this->form->fechaini_bancoServ_serach = null;
+        $this->form->fechafin_bancoServ_serach = null;
+        $this->form->tipoServ_bancoServ_serach = null;
+        $this->form->status_bancoServ_serach = null;
+    }
+
+    public function cleanFiltrerCompra()
+    {
+        $this->form->fechaini_compra_search = null;
+        $this->form->fechafin_compra_search = null;
+        $this->form->banco_compra_search = null;
+        $this->form->monto_compra_search = null;
+        $this->form->status_compra_search = null;
     }
 }
