@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\BancosServicioAcreditacion;
 use App\Models\BancosServicios;
 use App\Models\Cliente;
 use App\Models\ClienteMontos;
@@ -45,7 +46,7 @@ class BancosForm extends Form
                     ->orWhere('rfc_cliente', 'ilike', '%' . $this->searchCliente . '%')
                 ;
             })->orderBy('id', 'ASC')
-            ->paginate(10, pageName:'clientes');
+            ->paginate(10, pageName: 'clientes');
     }
 
     public function getCountResguadoClientes()
@@ -66,7 +67,7 @@ class BancosForm extends Form
                 $error = true;
                 throw new \Exception('No hay saldo suficiente en blm para surtir esta petición.');
             }
-            
+
 
             $cliente_monto = ClienteMontos::create([
                 'cliente_id' => $this->cliente->id,
@@ -166,7 +167,7 @@ class BancosForm extends Form
                     });
                 });
             }
-        })->orderBy('id', 'DESC')->paginate(10, pageName:'servicios');
+        })->orderBy('id', 'DESC')->paginate(10, pageName: 'servicios');
     }
 
     public $fechaini_compra_search;
@@ -200,6 +201,43 @@ class BancosForm extends Form
             }
         })
             ->orderBy('id', 'DESC')
-            ->paginate(10, pageName:'compras');
+            ->paginate(10, pageName: 'compras');
+    }
+
+
+    public $monto_acreditacion_search;
+    public $papeleta_acreditacion_search;
+    public $fechai_acreditacion_search;
+    public $fechaf_acreditacion_search;
+    public $folio_acreditacion_search;
+    public $status_acreditacion_search;
+    public function getAllAcreditaciones()
+    {
+        return BancosServicioAcreditacion::where(function ($query) {
+            if ($this->folio_acreditacion_search) {
+                $query->where('folio', 'ILIKE', '%' . $this->folio_acreditacion_search . '%');
+            }
+            if ($this->status_acreditacion_search) {
+                $query->where('status_acreditacion',  $this->status_acreditacion_search);
+            }
+            // Rango de fechas
+            if ($this->fechai_acreditacion_search && $this->fechaf_acreditacion_search) {
+                $query->whereBetween('created_at', [$this->fechai_acreditacion_search, $this->fechaf_acreditacion_search]);
+            } elseif ($this->fechai_acreditacion_search) {
+                $query->where('created_at', '=', $this->fechai_acreditacion_search);
+            } elseif ($this->fechaf_acreditacion_search) {
+                $query->where('created_at', '=', $this->fechaf_acreditacion_search);
+            }
+            if ($this->monto_acreditacion_search) {
+                $query->orWhereHas('envase', function ($query) {
+                    $query->where('cantidad', 'ILIKE', '%' . $this->monto_acreditacion_search . '%');
+                });
+            }
+            if ($this->papeleta_acreditacion_search) {
+                $query->orWhereHas('envase', function ($query) {
+                    $query->where('folio', 'ILIKE', '%' . $this->papeleta_acreditacion_search . '%');
+                });
+            }
+        })->orderBy('id', 'DESC')->paginate(5, pageName: 'acreditaciones');
     }
 }

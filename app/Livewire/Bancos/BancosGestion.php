@@ -58,7 +58,7 @@ class BancosGestion extends Component
             $servicios = $this->form->getAllBancosServicios();
             $compras = $this->form->getAllComprasEfectivo();
             // dd($clientes);
-            $acreditaciones = BancosServicioAcreditacion::orderBy('id', 'DESC')->paginate(5, pageName: 'acreditaciones');
+            $acreditaciones = $this->form->getAllAcreditaciones();
         } else {
             $resguardototal = 0;
             $resguardototalCliente = 0;

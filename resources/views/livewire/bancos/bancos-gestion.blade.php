@@ -412,12 +412,12 @@
                 aria-labelledby="acreditaciones-tab">
 
                 <div class="card col-md-12">
-                    {{-- <div class="row mt-3">
+                    <div class="row mt-3">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="">Cliente</label>
-                                <input type="text" class="form-control w-full" placeholder="Buscar cliente"
-                                    wire:model.live='form.cliente_bancoServ_serach'>
+                                <label for="">Monto</label>
+                                <input type="text" class="form-control w-full" placeholder="Buscar por monto"
+                                    wire:model.live='form.monto_acreditacion_search'>
                             </div>
                         </div>
             
@@ -425,8 +425,8 @@
                             <div class="form-group">
                                 <label for="">Papeleta</label>
             
-                                <input type="text" class="form-control w-full" placeholder="Buscar papeleta"
-                                    wire:model.live='form.papeleta_bancoServ_serach'>
+                                <input type="text" class="form-control w-full" placeholder="Buscar por papeleta de ruta"
+                                    wire:model.live='form.papeleta_acreditacion_search'>
                             </div>
                         </div>
             
@@ -434,30 +434,29 @@
                             <div class="form-group">
                                 <label for="">Fecha de inicio</label>
                                 <input type="date" class="form-control w-full"
-                                    wire:model.live='form.fechaini_bancoServ_serach'>
+                                    wire:model.live='form.fechai_acreditacion_search'>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="">Fecha de fin</label>
                                 <input type="date" class="form-control w-full"
-                                    wire:model.live='form.fechafin_bancoServ_serach'>
+                                    wire:model.live='form.fechaf_acreditacion_search'>
                             </div>
                         </div>
+                        
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label for="">Tipo de servicio</label>
-                                <select class="custom-select" wire:model.live='form.tipoServ_bancoServ_serach'>
-                                    <option value="" selected>Seleccione</option>
-                                    <option value="1">Entrega</option>
-                                    <option value="2">Recolecta</option>
-                                </select>
+                                <label for="">Folio/Ticket</label>
+            
+                                <input type="text" class="form-control w-full" placeholder="Buscar por ticket"
+                                    wire:model.live='form.folio_acreditacion_search'>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="">Estatus</label>
-                                <select class="custom-select" wire:model.live='form.status_bancoServ_serach'>
+                                <select class="custom-select" wire:model.live='form.status_acreditacion_search'>
                                     <option value="" selected>Seleccione</option>
                                     <option value="1">Pendiente</option>
                                     <option value="2">Finalizado</option>
@@ -465,7 +464,7 @@
                             </div>
             
                         </div>
-                    </div> --}}
+                    </div> 
                     @if (count($acreditaciones))
 
                         <table class="table table-bordered table-striped table-hover mt-3">
