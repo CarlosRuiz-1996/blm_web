@@ -2,6 +2,10 @@
 
 namespace App\Livewire\Bancos;
 
+use App\Exports\Bancos\Acreditaciones;
+use App\Exports\Bancos\CompraEfectivoExport;
+use App\Exports\Bancos\SaldoCliente;
+use App\Exports\Bancos\ServiciosBancos;
 use App\Models\Cliente;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -17,6 +21,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BancosGestion extends Component
 {
@@ -178,7 +183,6 @@ class BancosGestion extends Component
         ];
         $this->total += $this->monto_e;
         $this->reset(['cajero_id', 'monto_e']);
-        // $this->dispatch('resetSelect2');
     }
     public function removeCompra($index)
     {
@@ -242,7 +246,7 @@ class BancosGestion extends Component
 
     public function clean()
     {
-        $this->reset([
+        $this->form->reset([
             'cliente',
             'monto_e',
             'cajero_id',
@@ -402,5 +406,116 @@ class BancosGestion extends Component
         $this->form->banco_compra_search = null;
         $this->form->monto_compra_search = null;
         $this->form->status_compra_search = null;
+    }
+
+    //expórtaciones a excel
+    public function exportarCompras()
+    {
+        $compras = CompraEfectivo::where(function ($query) {
+            if ($this->form->monto_compra_search) {
+                $query->where('total', 'ILIKE', '%' . $this->form->monto_compra_search . '%');
+            }
+            if ($this->form->status_compra_search) {
+                $query->where('status_compra_efectivos',  $this->form->status_compra_search);
+            }
+            // Rango de fechas
+            if ($this->form->fechaini_compra_search && $this->form->fechafin_compra_search) {
+                $query->whereBetween('fecha_compra', [$this->form->fechaini_compra_search, $this->form->fechafin_compra_search]);
+            } elseif ($this->form->fechaini_compra_search) {
+                $query->where('fecha_compra', '=', $this->form->fechaini_compra_search);
+            } elseif ($this->form->fechafin_compra_search) {
+                $query->where('fecha_compra', '=', $this->form->fechafin_compra_search);
+            }
+            if ($this->form->banco_compra_search) {
+                $query->orWhereHas('consignatario', function ($query) {
+                    $query->where('name', 'ILIKE', '%' . $this->form->banco_compra_search . '%');
+                });
+            }
+        })
+            ->orderBy('id', 'DESC')
+            ->get();
+        return Excel::download(new CompraEfectivoExport($compras), 'compras.xlsx');
+    }
+
+    public function exportarSaldos()
+    {
+
+        $clientes =  Cliente::where('status_cliente', 1)
+            ->where(function ($query) {
+                $query->orWhere('razon_social', 'ilike', '%' . $this->form->searchCliente . '%')
+                    ->orWhere('rfc_cliente', 'ilike', '%' . $this->form->searchCliente . '%')
+                ;
+            })->orderBy('id', 'ASC')
+            ->get();
+
+        return Excel::download(new SaldoCliente($clientes), 'saldo_clientes.xlsx');
+    }
+
+    public function exportarServicios()
+    {
+
+        $servicios = BancosServicios::where(function ($query) {
+
+            if ($this->form->papeleta_bancoServ_serach) {
+                $query->where('papeleta', 'ILIKE', '%' . $this->form->papeleta_bancoServ_serach . '%');
+            }
+            // Rango de fechas
+            if ($this->form->fechaini_bancoServ_serach && $this->form->fechafin_bancoServ_serach) {
+                $query->whereBetween('fecha_entrega', [$this->form->fechaini_bancoServ_serach, $this->form->fechafin_bancoServ_serach]);
+            } elseif ($this->form->fechaini_bancoServ_serach) {
+                $query->where('fecha_entrega', '=', $this->form->fechaini_bancoServ_serach);
+            } elseif ($this->form->fechafin_bancoServ_serach) {
+                $query->where('fecha_entrega', '=', $this->form->fechafin_bancoServ_serach);
+            }
+
+            if ($this->form->tipoServ_bancoServ_serach) {
+
+                $query->where('tipo_servicio', $this->form->tipoServ_bancoServ_serach);
+            }
+            if ($this->form->status_bancoServ_serach) {
+                $query->where('status_bancos_servicios', $this->form->status_bancoServ_serach);
+            }
+
+            if ($this->form->cliente_bancoServ_serach) {
+                $query->orWhereHas('servicio', function ($query2) {
+                    $query2->whereHas('cliente', function ($query3) {
+                        $query3->where('razon_social', 'ILIKE', '%' . $this->form->cliente_bancoServ_serach . '%');
+                    });
+                });
+            }
+        })->orderBy('id', 'DESC')->get();
+        return Excel::download(new ServiciosBancos($servicios), 'servicios_bancos.xlsx');
+    }
+
+    public function exportarAcreditacion()
+    {
+
+        $acreditaciones = BancosServicioAcreditacion::where(function ($query) {
+            if ($this->form->folio_acreditacion_search) {
+                $query->where('folio', 'ILIKE', '%' . $this->form->folio_acreditacion_search . '%');
+            }
+            if ($this->form->status_acreditacion_search) {
+                $query->where('status_acreditacion',  $this->form->status_acreditacion_search);
+            }
+            // Rango de fechas
+            if ($this->form->fechai_acreditacion_search && $this->form->fechaf_acreditacion_search) {
+                $query->whereBetween('created_at', [$this->form->fechai_acreditacion_search, $this->form->fechaf_acreditacion_search]);
+            } elseif ($this->form->fechai_acreditacion_search) {
+                $query->where('created_at', '=', $this->form->fechai_acreditacion_search);
+            } elseif ($this->form->fechaf_acreditacion_search) {
+                $query->where('created_at', '=', $this->form->fechaf_acreditacion_search);
+            }
+            if ($this->form->monto_acreditacion_search) {
+                $query->orWhereHas('envase', function ($query) {
+                    $query->where('cantidad', 'ILIKE', '%' . $this->form->monto_acreditacion_search . '%');
+                });
+            }
+            if ($this->form->papeleta_acreditacion_search) {
+                $query->orWhereHas('envase', function ($query) {
+                    $query->where('folio', 'ILIKE', '%' . $this->form->papeleta_acreditacion_search . '%');
+                });
+            }
+        })->orderBy('id', 'DESC')->get();
+        return Excel::download(new Acreditaciones($acreditaciones), 'acreditaciones.xlsx');
     }
 }

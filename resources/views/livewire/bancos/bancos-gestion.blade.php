@@ -110,8 +110,12 @@
 
                 <div class="card col-md-12">
                     <div class="d-flex  mb-3 mt-3">
-                        <input type="text" class="form-control w-full"
+                        <input type="text" class="form-control w-full mr-3"
                             placeholder="Buscar cliente por razon social o RFC" wire:model.live='form.searchCliente'>
+
+                            <button wire:click='exportarSaldos' class="btn btn-success">
+                                Exportar
+                            </button>
                     </div>
 
                     @if (count($clientes))
@@ -137,8 +141,9 @@
                                             ${{ $cliente->resguardo > 0 ? number_format($cliente->resguardo, 2, '.', ',') : 0 }}
                                         </td>
                                         <td>
-                                            <button class="btn btn-info d-inline-block" title="detalles de movimientos"
-                                                data-toggle="modal" wire:click="showDetail({{ $cliente->id }})"
+                                            <button class="btn btn-info d-inline-block"
+                                                title="detalles de movimientos" data-toggle="modal"
+                                                wire:click="showDetail({{ $cliente->id }})"
                                                 data-target="#modalDetail">
                                                 <i class="fa fa-info-circle" aria-hidden="true"></i>
                                             </button>
@@ -196,7 +201,7 @@
                             </div>
                         </div>
 
-                       
+
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label for="">Fecha de inicio</label>
@@ -213,7 +218,7 @@
                         </div>
 
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="">Estatus</label>
                                 <select class="custom-select" wire:model.live='form.status_compra_search'>
@@ -225,9 +230,18 @@
 
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                             <div class="form-group" style="margin-top: 33px">
-                                <button wire:click='cleanFiltrerCompra' class="btn btn-info">Limpiar Filtros</button>
+                                <button wire:click='cleanFiltrerCompra' class="btn btn-info btn-sm">Limpiar Filtros</button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-1">
+                            <div class="form-group" style="margin-top: 33px">
+
+                                <button wire:click='exportarCompras' class="btn btn-success">
+                                    Exportar
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -343,7 +357,16 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" style="margin-top: 33px">
-                                <button wire:click='cleanFiltrerDotaciones' class="btn btn-info">Limpiar Filtros</button>
+                                <button wire:click='cleanFiltrerDotaciones' class="btn btn-info">Limpiar
+                                    Filtros</button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="form-group" style="margin-top: 33px">
+                                <button wire:click='exportarServicios' class="btn btn-success">
+                                    Exportar
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -423,16 +446,17 @@
                                     wire:model.live='form.monto_acreditacion_search'>
                             </div>
                         </div>
-            
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="">Papeleta</label>
-            
-                                <input type="text" class="form-control w-full" placeholder="Buscar por papeleta de ruta"
+
+                                <input type="text" class="form-control w-full"
+                                    placeholder="Buscar por papeleta de ruta"
                                     wire:model.live='form.papeleta_acreditacion_search'>
                             </div>
                         </div>
-            
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="">Fecha de inicio</label>
@@ -447,11 +471,11 @@
                                     wire:model.live='form.fechaf_acreditacion_search'>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="">Folio/Ticket</label>
-            
+
                                 <input type="text" class="form-control w-full" placeholder="Buscar por ticket"
                                     wire:model.live='form.folio_acreditacion_search'>
                             </div>
@@ -465,14 +489,22 @@
                                     <option value="2">Finalizado</option>
                                 </select>
                             </div>
-            
+
                         </div>
                         <div class="col-md-3">
                             <div class="form-group" style="margin-top: 33px">
-                                <button wire:click='cleanFiltrerAcreditacion' class="btn btn-info">Limpiar Filtros</button>
+                                <button wire:click='cleanFiltrerAcreditacion' class="btn btn-info">Limpiar
+                                    Filtros</button>
                             </div>
                         </div>
-                    </div> 
+                        <div class="col-md-3">
+                            <div class="form-group" style="margin-top: 33px">
+                                <button wire:click='exportarAcreditacion' class="btn btn-success">
+                                    Exportar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     @if (count($acreditaciones))
 
                         <table class="table table-bordered table-striped table-hover mt-3">
@@ -506,12 +538,12 @@
                                             </span>
                                         </td>
                                         <td>
-                                            @if($acreditacion->status_acreditacion==1)
-                                            <button class="btn btn-success d-inline-block" title="Ticket"
-                                                data-toggle="modal" wire:click="addTickect({{ $acreditacion }})"
-                                                data-target="#modalAcreditacion">
-                                                Ticket
-                                            </button>
+                                            @if ($acreditacion->status_acreditacion == 1)
+                                                <button class="btn btn-success d-inline-block" title="Ticket"
+                                                    data-toggle="modal" wire:click="addTickect({{ $acreditacion }})"
+                                                    data-target="#modalAcreditacion">
+                                                    Ticket
+                                                </button>
                                             @endif
                                         </td>
                                     </tr>

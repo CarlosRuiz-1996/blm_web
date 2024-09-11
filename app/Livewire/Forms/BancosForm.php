@@ -238,6 +238,6 @@ class BancosForm extends Form
                     $query->where('folio', 'ILIKE', '%' . $this->papeleta_acreditacion_search . '%');
                 });
             }
-        })->orderBy('id', 'DESC')->paginate(5, pageName: 'acreditaciones');
+        })->orderBy('id', 'DESC')->paginate(10, pageName: 'acreditaciones');
     }
 }
