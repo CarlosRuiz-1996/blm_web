@@ -225,7 +225,7 @@
 
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group" style="margin-top: 33px">
                                 <button wire:click='cleanFiltrerCompra' class="btn btn-info">Limpiar Filtros</button>
                             </div>
