@@ -95,7 +95,13 @@
                     a
                     rutas</a>
             </li>
-
+            <li class="nav-item">
+                <a class="nav-link {{ $activeNav[3] }}" wire:click='ActiveNav(3)' id="acreditaciones-tab"
+                    data-toggle="pill" href="#acreditaciones" role="tab" aria-controls="acreditaciones"
+                    aria-selected="true">
+                    Acreditaciones
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content" wire:ignore.self id="custom-tabs-one-tabContent">
@@ -104,8 +110,12 @@
 
                 <div class="card col-md-12">
                     <div class="d-flex  mb-3 mt-3">
-                        <input type="text" class="form-control w-full"
+                        <input type="text" class="form-control w-full mr-3"
                             placeholder="Buscar cliente por razon social o RFC" wire:model.live='form.searchCliente'>
+
+                            <button wire:click='exportarSaldos' class="btn btn-success">
+                                Exportar
+                            </button>
                     </div>
 
                     @if (count($clientes))
@@ -131,8 +141,9 @@
                                             ${{ $cliente->resguardo > 0 ? number_format($cliente->resguardo, 2, '.', ',') : 0 }}
                                         </td>
                                         <td>
-                                            <button class="btn btn-info d-inline-block" title="detalles de movimientos"
-                                                data-toggle="modal" wire:click="showDetail({{ $cliente->id }})"
+                                            <button class="btn btn-info d-inline-block"
+                                                title="detalles de movimientos" data-toggle="modal"
+                                                wire:click="showDetail({{ $cliente->id }})"
                                                 data-target="#modalDetail">
                                                 <i class="fa fa-info-circle" aria-hidden="true"></i>
                                             </button>
@@ -190,14 +201,6 @@
                             </div>
                         </div>
 
-                        {{-- <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="">Banco/Consignatario</label>
-
-                                <input type="text" class="form-control w-full" placeholder="Buscar banco"
-                                    wire:model.live='form.banco_compra_search'>
-                            </div>
-                        </div> --}}
 
                         <div class="col-md-2">
                             <div class="form-group">
@@ -215,7 +218,7 @@
                         </div>
 
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="">Estatus</label>
                                 <select class="custom-select" wire:model.live='form.status_compra_search'>
@@ -225,6 +228,21 @@
                                 </select>
                             </div>
 
+                        </div>
+
+                        <div class="col-md-1">
+                            <div class="form-group" style="margin-top: 33px">
+                                <button wire:click='cleanFiltrerCompra' class="btn btn-info btn-sm">Limpiar Filtros</button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-1">
+                            <div class="form-group" style="margin-top: 33px">
+
+                                <button wire:click='exportarCompras' class="btn btn-success">
+                                    Exportar
+                                </button>
+                            </div>
                         </div>
                     </div>
                     @if (count($compras))
@@ -337,6 +355,20 @@
                             </div>
 
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group" style="margin-top: 33px">
+                                <button wire:click='cleanFiltrerDotaciones' class="btn btn-info">Limpiar
+                                    Filtros</button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="form-group" style="margin-top: 33px">
+                                <button wire:click='exportarServicios' class="btn btn-success">
+                                    Exportar
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     @if (count($servicios))
 
@@ -401,6 +433,146 @@
                         @endif
                     @endif
                 </div>
+            </div>
+            <div class="tab-pane fade {{ $activeNav[3] }} {{ $showNav[3] }} " id="acreditaciones" role="tabpanel"
+                aria-labelledby="acreditaciones-tab">
+
+                <div class="card col-md-12">
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Monto</label>
+                                <input type="text" class="form-control w-full" placeholder="Buscar por monto"
+                                    wire:model.live='form.monto_acreditacion_search'>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Papeleta</label>
+
+                                <input type="text" class="form-control w-full"
+                                    placeholder="Buscar por papeleta de ruta"
+                                    wire:model.live='form.papeleta_acreditacion_search'>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Fecha de inicio</label>
+                                <input type="date" class="form-control w-full"
+                                    wire:model.live='form.fechai_acreditacion_search'>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Fecha de fin</label>
+                                <input type="date" class="form-control w-full"
+                                    wire:model.live='form.fechaf_acreditacion_search'>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Folio/Ticket</label>
+
+                                <input type="text" class="form-control w-full" placeholder="Buscar por ticket"
+                                    wire:model.live='form.folio_acreditacion_search'>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Estatus</label>
+                                <select class="custom-select" wire:model.live='form.status_acreditacion_search'>
+                                    <option value="" selected>Seleccione</option>
+                                    <option value="1">Pendiente</option>
+                                    <option value="2">Finalizado</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group" style="margin-top: 33px">
+                                <button wire:click='cleanFiltrerAcreditacion' class="btn btn-info">Limpiar
+                                    Filtros</button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group" style="margin-top: 33px">
+                                <button wire:click='exportarAcreditacion' class="btn btn-success">
+                                    Exportar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    @if (count($acreditaciones))
+
+                        <table class="table table-bordered table-striped table-hover mt-3">
+                            <thead class="table-info">
+                                <tr>
+                                    <th>Cantidad</th>
+                                    <th>Papeleta</th>
+                                    <th>Fecha de entrada</th>
+                                    <th>Folio/ticket</th>
+                                    <th>Estatus</th>
+                                    <th style="width: 180px">Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($acreditaciones as $acreditacion)
+                                    <tr>
+                                        <td>$ {{ number_format($acreditacion->envase->cantidad, 2, '.', ',') }}</td>
+                                        <td>
+                                            {{ $acreditacion->envase->folio }}
+                                        </td>
+                                        <td>
+                                            {{ $acreditacion->created_at }}
+                                        </td>
+                                        <td>
+                                            {{ $acreditacion->folio ?? 'Sin folio' }}
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="badge {{ $acreditacion->status_acreditacion == 2 ? 'bg-success' : 'bg-warning' }} mb-2">
+                                                {{ $acreditacion->status_acreditacion == 2 ? 'Finalizado' : 'Pendiente' }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if ($acreditacion->status_acreditacion == 1)
+                                                <button class="btn btn-success d-inline-block" title="Ticket"
+                                                    data-toggle="modal" wire:click="addTickect({{ $acreditacion }})"
+                                                    data-target="#modalAcreditacion">
+                                                    Ticket
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+
+                            </tbody>
+                        </table>
+
+
+                        @if ($acreditaciones->hasPages())
+                            <div class="col-md-12 text-center">
+                                {{ $acreditaciones->links() }}
+                            </div>
+                        @endif
+                    @else
+                        @if ($readyToLoad)
+                            <h3 class="col-md-12 text-center">No hay datos disponibles</h3>
+                        @else
+                            <!-- Muestra un spinner mientras los datos se cargan -->
+                            <div class="col-md-12 text-center">
+                                <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
+                                    role="status">
+                                </div>
+                            </div>
+                        @endif
+                    @endif
+                </div>
+
             </div>
         </div>
     </div>
@@ -468,6 +640,7 @@
                                     <th>Empleado que modifico</th>
                                     <th>Área que modifico</th>
                                     <th>Fecha</th>
+                                    <th>Estatus</th>
 
                                 </tr>
                             </thead>
@@ -489,6 +662,13 @@
                                             <td>{{ $monto->empleado->user->name ?? 'N/A' }}</td>
                                             <td>{{ $monto->area->name ?? 'N/A' }}</td>
                                             <td>{{ $monto->created_at ?? 'N/A' }}</td>
+                                            <td>
+                                                <span
+                                                    class="badge {{ $monto->status_cliente_monto == 2 ? 'bg-success' : 'bg-warning' }} mb-2">
+                                                    {{ $monto->status_cliente_monto == 2 ? 'Terminado' : 'Pendiente' }}
+                                                </span>
+
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @else
@@ -819,6 +999,39 @@
     </div>
 
 
+    {{-- acreditaciones --}}
+
+    <div class="modal fade" wire:ignore.self id="modalAcreditacion" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" id="exampleModalLabel">Ingresar Folio/Ticket</h5>
+                    <button type="button" wire:click='limpiarDatos' class="close" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label for="">Monto ingresado</label>
+                        <input disabled type="text" class="form-control"
+                            value="{{ isset($acreditacion_detail->envase->cantidad) ? '$ ' . number_format($acreditacion_detail->envase->cantidad, 2, '.', ',') : '' }}">
+
+
+
+                        <x-input-validado label="No. Ticket" placeholder="Ingresa el ticket" wire-model="ticket"
+                            type="text" />
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" wire:click='finalizarAcreditacion' class="btn btn-info">Aceptar</button>
+                    <button type="button" wire:click='limpiarDatos' class="btn btn-secondary"
+                        data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('js')
         <script>
             document.addEventListener('livewire:initialized', () => {
@@ -830,7 +1043,7 @@
                     }
                     $("#compraEfectivo").modal('hide');
                     $("#addServicio").modal('hide');
-
+                    $("#modalAcreditacion").modal('hide');
                     Swal.fire({
                         icon: message[1],
                         title: message[0],

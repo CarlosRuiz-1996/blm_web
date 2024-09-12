@@ -149,6 +149,9 @@ Route::middleware([
     //bancos
     Route::get('/bancos', [BancosController::class, 'index'])->name('bancos.index');
     //tablero
+    // Route::get('/tablero', [tableroController::class, 'index'])->name('tablero.index');
+
+    //tablero
     Route::get('/tablero', [tableroController::class, 'index'])->name('tablero.index');
 
 });

@@ -3,13 +3,17 @@
 namespace App\Livewire\Notifications;
 
 use App\Livewire\Forms\NotificationsForm;
+use App\Models\ClienteMontos;
 use App\Models\Empleado;
+use App\Models\MontoBlm;
 use App\Models\Notification;
 use App\Models\RutaFirma10M;
+use Exception;
 use Illuminate\Support\Facades\Notification as NotificationsNotification;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 
@@ -175,9 +179,69 @@ class NotificationNavBar extends Component
         $users = Empleado::whereIn('ctg_area_id', [9])->get();
         NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
     }
+
     public function deleteNotification($id)
     {
         $notificacion = Notification::find($id);
         $notificacion->delete();
+    }
+
+    //validar monto de bancos a clientes:
+    #[On('banco-validar')]
+    public function validarBanco($respuesta, $notification, $password)
+    {
+        // dd($respuesta.'-'. $notification.'-'.$password);
+
+        $user = Auth::user();
+
+        try {
+
+            DB::beginTransaction();
+            // Verificar si el password ingresado coincide con el password del usuario logueado
+            if (Hash::check($password, $user->password)) {
+                // Contraseña válida
+                $ntf = Notification::find($notification);
+
+                if ($ntf) {
+
+                    $cliente_monto = ClienteMontos::find($ntf->ruta_firma_id);
+                    $cliente_monto->status_cliente_monto = 2;
+                    $cliente_monto->save();
+
+                    $cliente_monto->cliente->resguardo = $cliente_monto->monto_new;
+                    $cliente_monto->cliente->save();
+
+
+                    MontoBlm::find(1)->decrement('monto', $cliente_monto->monto_in);
+
+                    //notifica a bancos que ya se acepto el monto para el clientre
+                    $rz = $cliente_monto->cliente->razon_social;
+                    $mnt = number_format($cliente_monto->monto_in, 2, '.', ',');
+                    $msg = "Se ha aprovado la cantidad de $mnt para el cliente $rz ";
+
+                    //notifica a direccion 
+                    Notification::create([
+                        'empleado_id_send' => Auth::user()->empleado->id,
+                        'ctg_area_id' => 19,
+                        'message' => $msg,
+                        'tipo' => 1,
+                    ]);
+
+                    $users = Empleado::whereIn('ctg_area_id', [19])->get();
+                    NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
+
+                    $this->deleteNotification($ntf->id);
+                }
+                $this->dispatch('alerta', ['success', 'Aprovación correcta.']);
+            } else {
+
+                $this->dispatch('alerta', ['error', 'Contraseña incorrecta']);
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $this->dispatch('alerta', ['error', 'Ha ocurrido un problema intenta más tarde']);
+        }
     }
 }

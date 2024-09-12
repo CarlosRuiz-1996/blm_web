@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\BancosServicioAcreditacion;
 use App\Models\BancosServicios;
 use App\Models\Cliente;
 use App\Models\ClienteMontos;
@@ -44,8 +45,8 @@ class BancosForm extends Form
                 $query->orWhere('razon_social', 'ilike', '%' . $this->searchCliente . '%')
                     ->orWhere('rfc_cliente', 'ilike', '%' . $this->searchCliente . '%')
                 ;
-            })
-            ->paginate(10);
+            })->orderBy('id', 'ASC')
+            ->paginate(10, pageName: 'clientes');
     }
 
     public function getCountResguadoClientes()
@@ -66,10 +67,9 @@ class BancosForm extends Form
                 $error = true;
                 throw new \Exception('No hay saldo suficiente en blm para surtir esta petición.');
             }
-            // $this->cliente->resguardo = $this->nuevo_monto;
-            // $this->cliente->save();
 
-            ClienteMontos::create([
+
+            $cliente_monto = ClienteMontos::create([
                 'cliente_id' => $this->cliente->id,
                 'monto_old' => $this->actual_monto,
                 'monto_in' => $this->ingresa_monto,
@@ -80,24 +80,27 @@ class BancosForm extends Form
 
             $rz = $this->cliente->razon_social;
             $mnt = number_format($this->ingresa_monto, 2, '.', ',');
-            $msg = "Se solicita aprovación para darle saldo al cliente $rz la cantidad de $mnt";
+            $msg = "Se solicita aprovación para darle saldo al cliente: $rz la cantidad de $mnt";
 
             //notifica a direccion 
             Notification::create([
                 'empleado_id_send' => Auth::user()->empleado->id,
                 'ctg_area_id' => 9,
                 'message' => $msg,
-                'tipo' => 3
+                'tipo' => 3,
+                'ruta_firma_id' => $cliente_monto->id
             ]);
             Notification::create([
                 'empleado_id_send' => Auth::user()->empleado->id,
                 'ctg_area_id' => 12,
                 'message' => $msg,
-                'tipo' => 3
+                'tipo' => 3,
+                'ruta_firma_id' => $cliente_monto->id
+
             ]);
             $users = Empleado::whereIn('ctg_area_id', [9, 12])->get();
             NotificationsNotification::send($users, new \App\Notifications\newNotification($msg));
-            
+
             //descontar monto al saldo de bancos. 
             // MontoBlm::find(1)->decrement('monto', $this->ingresa_monto);
             DB::commit();
@@ -164,7 +167,7 @@ class BancosForm extends Form
                     });
                 });
             }
-        })->paginate(10);
+        })->orderBy('id', 'DESC')->paginate(10, pageName: 'servicios');
     }
 
     public $fechaini_compra_search;
@@ -198,6 +201,43 @@ class BancosForm extends Form
             }
         })
             ->orderBy('id', 'DESC')
-            ->paginate(10);
+            ->paginate(10, pageName: 'compras');
+    }
+
+
+    public $monto_acreditacion_search;
+    public $papeleta_acreditacion_search;
+    public $fechai_acreditacion_search;
+    public $fechaf_acreditacion_search;
+    public $folio_acreditacion_search;
+    public $status_acreditacion_search;
+    public function getAllAcreditaciones()
+    {
+        return BancosServicioAcreditacion::where(function ($query) {
+            if ($this->folio_acreditacion_search) {
+                $query->where('folio', 'ILIKE', '%' . $this->folio_acreditacion_search . '%');
+            }
+            if ($this->status_acreditacion_search) {
+                $query->where('status_acreditacion',  $this->status_acreditacion_search);
+            }
+            // Rango de fechas
+            if ($this->fechai_acreditacion_search && $this->fechaf_acreditacion_search) {
+                $query->whereBetween('created_at', [$this->fechai_acreditacion_search, $this->fechaf_acreditacion_search]);
+            } elseif ($this->fechai_acreditacion_search) {
+                $query->where('created_at', '=', $this->fechai_acreditacion_search);
+            } elseif ($this->fechaf_acreditacion_search) {
+                $query->where('created_at', '=', $this->fechaf_acreditacion_search);
+            }
+            if ($this->monto_acreditacion_search) {
+                $query->orWhereHas('envase', function ($query) {
+                    $query->where('cantidad', 'ILIKE', '%' . $this->monto_acreditacion_search . '%');
+                });
+            }
+            if ($this->papeleta_acreditacion_search) {
+                $query->orWhereHas('envase', function ($query) {
+                    $query->where('folio', 'ILIKE', '%' . $this->papeleta_acreditacion_search . '%');
+                });
+            }
+        })->orderBy('id', 'DESC')->paginate(10, pageName: 'acreditaciones');
     }
 }
