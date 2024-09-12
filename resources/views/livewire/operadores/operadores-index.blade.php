@@ -1,215 +1,192 @@
 <div>
-    <div class="container-fluid pt-5">
+    <div class="container-fluid pt-5" x-data="{ openRuta: null, openServicio: null, openCompra: null }">
         @if ($identificado)
         <h3 class="ml-2">Operador-<span class="text-info">{{ $nombreUsuario }}</span></h3>
-        <div class="card">
-            <div class="card-body">
+        <div class="">
+            <div class="">
                 @if (count($rutaEmpleados) > 0)
-                <div class="accordion" id="accordionExample">
+                <div class="accordion">
                     @foreach ($rutaEmpleados as $index => $rutaServicio)
                     <div class="card">
-                        <div class="card-header bg-gray" id="heading{{ $index }}">
+                        <div class="card-header bg-gray">
                             <h2 class="mb-0">
-                                <button class="btn btn-block text-center bg-gray" data-toggle="collapse"
-                                    data-target="#collapse{{ $index }}" aria-expanded="false"
-                                    aria-controls="collapse{{ $index }}">
+                                <button class="btn btn-block text-center bg-gray"
+                                    @click="openRuta === {{ $index }} ? openRuta = null : openRuta = {{ $index }}"
+                                    :aria-expanded="openRuta === {{ $index }} ? 'true' : 'false'"
+                                    aria-controls="collapseRuta{{ $index }}">
                                     Ruta {{ $rutaServicio->nombre->name . '-' . $rutaServicio->dia->name }}
                                 </button>
                             </h2>
                         </div>
-
-                        <div id="collapse{{ $index }}" class="collapse" aria-labelledby="heading{{ $index }}"
-                            data-parent="#accordionExample">
-                            <div class="card-body">
-                                <div class="d-table table-info mt-0 pt-0" style="width:100%">
-                                    <div class="d-table-row" style="width:100%">
-                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Hora Inicio : <p class="text-bold">{{ $rutaServicio->hora_inicio }}</p>
-                                        </div>
-                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Hora Termino : <p class="text-bold">{{ $rutaServicio->hora_fin ??
-                                            'N/A' }}</p></div>
-                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Dia : <p class="text-bold">{{ $rutaServicio->dia->name }}</p></div>
-                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Riesgo : <p class="text-bold">{{ $rutaServicio->riesgo->name }}</p>
-                                        </div>
-                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Estado : <p class="text-bold">{{ $rutaServicio->estado->name }}</p>
-                                        </div>
+    
+                        <div x-show="openRuta === {{ $index }}" x-collapse id="collapseRuta{{ $index }}">
+                            <div class="card-body p-0">
+                                <div class="d-table table-info mt-0 pt-0 bg-gray" style="width:100%" >
+                                    <div class="d-table-row text-sm" style="width:100%">
+                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Hora Inicio : <p class="text-bold mb-0">{{ $rutaServicio->hora_inicio }}</p></div>
+                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Hora Termino : <p class="text-bold mb-0">{{ $rutaServicio->hora_fin ?? 'N/A' }}</p></div>
+                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Dia : <p class="text-bold mb-0">{{ $rutaServicio->dia->name }}</p></div>
+                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Riesgo : <p class="text-bold mb-0">{{ $rutaServicio->riesgo->name }}</p></div>
+                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0">Estado : <p class="text-bold mb-0">{{ $rutaServicio->estado->name }}</p></div>
                                         <div class="d-block d-md-table-cell text-center pt-1 pb-0">Iniciar/Terminar :
                                             <p>
-                                            @if ($rutaServicio->status_ruta == 1)
-                                            <button type="button"
-                                                    wire:click="$dispatch('confirm',{{ $rutaServicio->id }})"
-                                                    class="btn btn-primary btn-sm text-xs"><i class="fas fa-play mr-1"></i>
-                                                    Iniciar</button>
-                                            @elseif($rutaServicio->status_ruta == 2)
-                                                <button type="button"
-                                                    wire:click="$dispatch('terminar',{{ $rutaServicio->id }})"
-                                                    class="btn btn-danger btn-sm text-xs"><i class="fas fa-stop mr-1"></i>
-                                                    Terminar</button>
-                                            @elseif($rutaServicio->status_ruta == 3)
-                                                <span style="color: green;"><i class="fas fa-check-circle"></i> Ruta
-                                                    completada</span>
-                                            @endif
-                                        </p>
+                                                @if ($rutaServicio->status_ruta == 1)
+                                                <button type="button" wire:click="$dispatch('confirm', {{ $rutaServicio->id }})" class="btn btn-primary btn-sm text-xs">
+                                                    <i class="fas fa-play mr-1"></i> Iniciar
+                                                </button>
+                                                @elseif($rutaServicio->status_ruta == 2)
+                                                <button type="button" wire:click="$dispatch('terminar', {{ $rutaServicio->id }})" class="btn btn-danger btn-sm text-xs">
+                                                    <i class="fas fa-stop mr-1"></i> Terminar
+                                                </button>
+                                                @elseif($rutaServicio->status_ruta == 3)
+                                                <span style="color: green;"><i class="fas fa-check-circle"></i> Ruta completada</span>
+                                                @endif
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
-
+    
                                 <!--Servicios rutas inicio-->
                                 @if ($rutaServicio->status_ruta != 1)
-                                <div id="accordionServicios">
-                                    @foreach ($rutaServicio->rutaServicios as $servicio)
-                                    <div class="card m-0">
-                                      <div class="card-header p-0" id="headingServicio{{$servicio->id}}{{$servicio->tipo_servicio}}">
-                                          <button class="btn btn-block text-center text-xs" data-toggle="collapse" data-target="#collapseServicio{{$servicio->id}}{{$servicio->tipo_servicio}}" aria-expanded="false" aria-controls="collapseServicio{{$servicio->id}}{{$servicio->tipo_servicio}}">
-                                            <p class="mb-0 text-success text-bold">{{ $servicio->servicio->ctg_servicio->descripcion }}</p>
-                                            <p class="mb-0 text-danger">
-                                                {{$servicio->servicio->cliente->razon_social}} 
-                                             </p>
-                                            <p class="mb-0 text-info"> {{ $servicio->servicio->sucursal->sucursal->sucursal .
-                                                ', ' .
-                                                $servicio->servicio->sucursal->sucursal->direccion .
-                                                ', ' .
-                                                $servicio->servicio->sucursal->sucursal->cp->cp .
-                                                '' .
-                                                $servicio->servicio->sucursal->sucursal->cp->estado->name }}</p>
+                                <div x-data="{ openServicio: null }">
+                                    @foreach ($rutaServicio->rutaServicios->sortByDesc('updated_at') as $servicio)
+                                    <div class="card m-0 text-xs">
+                                        <div class="card-header p-0">
+                                            <button class="btn btn-block text-center text-xs"
+                                                :style="openServicio === {{ $servicio->id }} ? 'background-color:#bee5eb' : 'bg-light'"
+                                                @click="openServicio === {{ $servicio->id }} ? openServicio = null : openServicio = {{ $servicio->id }}"
+                                                :aria-expanded="openServicio === {{ $servicio->id }} ? 'true' : 'false'"
+                                                aria-controls="collapseServicio{{ $servicio->id }}">
+                                                <p class="mb-0 text-success text-bold">{{ $servicio->servicio->ctg_servicio->descripcion }}</p>
+                                                <p class="mb-0 text-danger">{{ $servicio->servicio->cliente->razon_social }}</p>
+                                                <p class="mb-0 text-info">
+                                                    {{ $servicio->servicio->sucursal->sucursal->sucursal }},
+                                                    {{ $servicio->servicio->sucursal->sucursal->direccion }},
+                                                    {{ $servicio->servicio->sucursal->sucursal->cp->cp }},
+                                                    {{ $servicio->servicio->sucursal->sucursal->cp->estado->name }}
+                                                </p>
                                                 <p class="mb-0 text-danger">{{ $servicio->tipo_servicio == 1 ? 'Entrega' : ($servicio->tipo_servicio == 2 ? 'Recolección' : 'Otro') }}</p>
-                                                
-                                          </button>
-                                      </div>
-                                  
-                                      <div id="collapseServicio{{$servicio->id}}{{$servicio->tipo_servicio}}" class="collapse" aria-labelledby="headingServicio{{$servicio->id}}{{$servicio->tipo_servicio}}" data-parent="#accordionServicios">
-                                        <div class="card-body p-0">
-                                            <div class="d-table table-info mt-0 pt-0" style="width:100%">
-                                                <div class="d-table-row" style="width:100%">
-                                            <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Papeleta : <p class="text-bold">{{ $servicio->folio }}</p>
-                                            </div>
-                                            <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Envases : <p class="text-bold">{{ $servicio->envases }}</p>
-                                            </div>
-                                            <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Acción : 
-                                               
-                                                @if ($servicio->status_ruta_servicios == 4)
-                                                <p>
-                                                <button type="button"
-                                                wire:click="$dispatch('confirmarservicio', { contactId: {{ $servicio->id }}, serviciotipo: {{ $servicio->tipo_servicio }} })"
-                                                class="btn mb-2 btn-primary btn-sm text-xs">
-                                                <i class="fas fa-play mr-1"></i> Iniciar Servicio
                                             </button>
-                                        </p>
-                                            
-
-                                                @elseif ($servicio->status_ruta_servicios == 2)
-                                                 <p class="mb-0">    
-                                                <button type="button" class="btn mb-2 btn-primary btn-sm text-xs"
-                                                        wire:click="ModalEntregaRecolecta('{{ $servicio->id }}','{{ $servicio->tipo_servicio }}')"
-                                                        data-toggle="modal"
-                                                        data-target="#ModalEntregarRecolectar">
-                                                        <i class="fas fa-play mr-1"></i>
-                                                        {{ $servicio->tipo_servicio == 1 ? 'Entregar' : ($servicio->tipo_servicio == 2 ? 'Recolectar' : 'Otro') }}
-                                                    </button>
-                                                 </p>
-                                                     <p class="mb-0">
-                                                    <button type="button" class="btn mb-2 btn-danger btn-sm text-xs"
-                                                        wire:click="ModalReprogramarServicio('{{ $servicio->id }}')"
-                                                        data-toggle="modal"
-                                                        data-target="#ModalReprogramarServicio"><i
-                                                            class="fas fa-clock mr-1"></i>
-                                                        Reprogramar</button>
-                                                     </p>
-                                                @else
-                                                <p>
-                                                    <span
-                                                        class="badge {{ $servicio->status_ruta_servicios == 3 ? 'bg-success' : 'bg-warning' }} mb-2">
-                                                        {{ $servicio->status_ruta_servicios == 3 ? 'Terminado' : 'Reprogramado' }}
-                                                    </span>
-                                                </p>
-                                                @endif
-                                                </p>
-                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                      </div>
-                                    </div>
-                                    @endforeach
-                                  </div>
-                                <!--Servicios rutas fin-->
-                                <!--COMPRAS BANCOS-->
-                                @if ($rutaServicio->ruta_compra->isNotEmpty() && $rutaServicio->ruta_compra->where('status_ruta_compra_efectivos', '!=', 5)->count() > 0)
-                                <div id="accordionCompras">
-                                    @foreach ($rutaServicio->ruta_compra as $ruta_compra)
-
-                                     @if ($ruta_compra->status_ruta_compra_efectivos != 5)
-                                    <div class="card m-0">
-                                      <div class="card-header p-0" id="headingCompras{{$ruta_compra->compra_efectivo_id}}">
-                                        <h5 class="mb-0">
-                                          <button class="btn btn-block text-center text-md" data-toggle="collapse" data-target="#collapseCompras{{$ruta_compra->compra_efectivo_id}}" aria-expanded="true" aria-controls="collapseCompras{{$ruta_compra->compra_efectivo_id}}">
-                                            <p class="mb-0 text-success text-bold"> Compra efectivo</p>
-                                          </button>
-                                        </h5>
-                                      </div>
-                                  
-                                      <div id="collapseCompras{{$ruta_compra->compra_efectivo_id}}" class="collapse show" aria-labelledby="headingCompras{{$ruta_compra->compra_efectivo_id}}" data-parent="#accordionCompras">
-                                        <div class="card-body p-0">
-                                            <div class="d-table table-info mt-0 pt-0" style="width:100%">
-                                                <div class="d-table-row" style="width:100%">
-                                                    <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Monto de la compra : <p class="text-bold"> ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }} </p>
-                                                    </div>
-                                                    <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Fecha de la compra : <p class="text-bold"> {{ $ruta_compra->compra->fecha_compra }} </p>
-                                                    </div>
-                                                    <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Estatus de la compra : <p class="text-bold"> 
-                                                        <span
-                                                        class="badge {{ $ruta_compra->compra->status_compra_efectivos == 2 ? 'bg-warning' : 'bg-success' }}">
-                                                        {{ $ruta_compra->compra->status_compra_efectivos == 2 ? 'Pendiente' : 'Finalizada' }}
-                                                    </span>
-                                                    </p>
-                                                    </div>
-                                                    <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Detalles de la compra : <p class="text-bold"> 
-                                                        <button class="btn btn-info" data-toggle="modal"
-                                                        wire:click="showCompraDetail({{ $ruta_compra->compra }})"
-                                                        data-target="#modalDetailCompra">Detalles</button>    
-                                                    </p>
+                                        <div x-show="openServicio === {{ $servicio->id }}" x-collapse id="collapseServicio{{ $servicio->id }}">
+                                            <div class="card-body p-0">
+                                                <div class="d-table table-info mt-0 pt-0" style="width:100%">
+                                                    <div class="d-table-row text-sm" style="width:100%">
+                                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0 mt-0 mb-0" colspan="3">Papeleta : <p class="text-bold">{{ $servicio->folio }}</p></div>
+                                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0 mt-0 mb-0" colspan="3">Envases : <p class="text-bold">{{ $servicio->envases }}</p></div>
+                                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0 mt-0 mb-0" colspan="3">Acción :
+                                                            @if ($servicio->status_ruta_servicios == 4)
+                                                            <p>
+                                                                <button type="button" wire:click="$dispatch('confirmarservicio', { contactId: {{ $servicio->id }}, serviciotipo: {{ $servicio->tipo_servicio }} })" class="btn mb-2 btn-primary btn-sm text-xs">
+                                                                    <i class="fas fa-play mr-1"></i> Iniciar Servicio
+                                                                </button>
+                                                            </p>
+                                                            @elseif ($servicio->status_ruta_servicios == 2)
+                                                            <p class="mb-0">
+                                                                <button type="button" class="btn mb-2 btn-primary btn-sm text-xs" wire:click="ModalEntregaRecolecta('{{ $servicio->id }}', '{{ $servicio->tipo_servicio }}')" data-toggle="modal" data-target="#ModalEntregarRecolectar">
+                                                                    <i class="fas fa-play mr-1"></i>
+                                                                    {{ $servicio->tipo_servicio == 1 ? 'Entregar' : ($servicio->tipo_servicio == 2 ? 'Recolectar' : 'Otro') }}
+                                                                </button>
+                                                            </p>
+                                                            <p class="mb-0">
+                                                                <button type="button" class="btn mb-2 btn-danger btn-sm text-xs" wire:click="ModalReprogramarServicio('{{ $servicio->id }}')" data-toggle="modal" data-target="#ModalReprogramarServicio">
+                                                                    <i class="fas fa-clock mr-1"></i> Reprogramar
+                                                                </button>
+                                                            </p>
+                                                            @else
+                                                            <p>
+                                                                <span class="badge {{ $servicio->status_ruta_servicios == 3 ? 'bg-success' : 'bg-warning' }} mb-2">
+                                                                    {{ $servicio->status_ruta_servicios == 3 ? 'Terminado' : 'Reprogramado' }}
+                                                                </span>
+                                                            </p>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                      </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                                
+                                @endif
+                                <!--Servicios rutas fin-->
+    
+                                <!--COMPRAS BANCOS-->
+                                @if ($rutaServicio->ruta_compra->isNotEmpty() && $rutaServicio->ruta_compra->where('status_ruta_compra_efectivos', '!=', 5)->count() > 0)
+                                <div x-data="{ openCompra: null }">
+                                    @foreach ($rutaServicio->ruta_compra as $ruta_compra)
+                                    @if ($ruta_compra->status_ruta_compra_efectivos != 5)
+                                    <div class="card m-0">
+                                        <div class="card-header p-0">
+                                            <h5 class="mb-0">
+                                                <button class="btn btn-block text-center text-md"
+                                                    :style="openCompra === {{ $ruta_compra->compra_efectivo_id }} ? 'background-color:#bee5eb' : 'bg-light'"
+                                                    @click="openCompra === {{ $ruta_compra->compra_efectivo_id }} ? openCompra = null : openCompra = {{ $ruta_compra->compra_efectivo_id }}"
+                                                    :aria-expanded="openCompra === {{ $ruta_compra->compra_efectivo_id }} ? 'true' : 'false'"
+                                                    aria-controls="collapseCompra{{ $ruta_compra->compra_efectivo_id }}">
+                                                   
+                                                    <p class="mb-0 text-success text-bold"> Compra efectivo</p>
+                                                </button>
+                                            </h5>
+                                        </div>
+                                        <div x-show="openCompra === {{ $ruta_compra->compra_efectivo_id }}" x-collapse id="collapseCompra{{ $ruta_compra->compra_efectivo_id }}">
+                                            <div class="card-body p-0">
+                                                <div class="d-table table-info mt-0 pt-0" style="width:100%">
+                                                    <div class="d-table-row" style="width:100%">
+                                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Monto de la compra : <p class="text-bold"> ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }} </p>
+                                                        </div>
+                                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Fecha de la compra : <p class="text-bold"> {{ $ruta_compra->compra->fecha_compra }} </p>
+                                                        </div>
+                                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Estatus de la compra : <p class="text-bold"> 
+                                                            <span
+                                                            class="badge {{ $ruta_compra->compra->status_compra_efectivos == 2 ? 'bg-warning' : 'bg-success' }}">
+                                                            {{ $ruta_compra->compra->status_compra_efectivos == 2 ? 'Pendiente' : 'Finalizada' }}
+                                                        </span>
+                                                        </p>
+                                                        </div>
+                                                        <div class="d-block d-md-table-cell text-center pt-1 pb-0" colspan="3">Detalles de la compra : <p class="text-bold"> 
+                                                            <button class="btn btn-info" data-toggle="modal"
+                                                            wire:click="showCompraDetail({{ $ruta_compra->compra }})"
+                                                            data-target="#modalDetailCompra">Detalles</button>    
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     @endif
                                     @endforeach
                                 </div>
                                 @endif
-                                @else
-                                <div class="card bg-warning">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-text text-center">Sin iniciar ruta</h5>
-                                        <p class="card-text text-center">Iniciar Ruta para ver
-                                            Servicios</p>
-                                    </div>
-                                </div>
-                                @endif
-                                <!--COMPRAS BANCOS-->
+                                <!--COMPRAS BANCOS FIN-->
+    
                             </div>
                         </div>
                     </div>
                     @endforeach
                 </div>
                 @else
-                <div class="card bg-info">
-                    <div class="card-body text-center">
-                        <h5 class="card-text text-center">Sin Rutas Asignadas</h5>
-                    </div>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No hay rutas asignadas para el operador.
                 </div>
                 @endif
             </div>
         </div>
-        @else
-        <div class="card bg-danger">
-            <div class="card-body text-center">
-                <h5 class="card-text text-center">No autorizado</h5>
-                <p class="card-text text-center">Área no apta para visualizar datos del operador.</p>
-            </div>
-        </div>
         @endif
     </div>
+    
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('collapsible', () => ({
+                open: false,
+                toggle() {
+                    this.open = !this.open;
+                }
+            }));
+        });
+    </script>
+    
     <style>
         #message {
             display: none;
