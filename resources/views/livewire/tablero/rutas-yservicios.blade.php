@@ -1,4 +1,22 @@
 <div>
+    <style>
+        .modal-lg {
+            max-width: 80% !important; /* Ajusta el tamaño máximo del modal */
+        }
+
+        /* Contenedor de la imagen para manejar la imagen responsiva */
+        .img-container {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
+
+        /* Imagen responsiva */
+        .img-fluid {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
     <div class="container-fluid">
         <h1 class="text-center mb-4">Tablero de Rutas</h1>
 
@@ -67,11 +85,13 @@
         <div class="container-fluid">
             <h1 class="text-center mb-4">Estado de Rutas</h1>
 
-            <table class="table table-striped">
-                <thead class="table-dark">
+            <table class="table table-striped text-xs">
+                <thead class="table-dark ">
                     <tr>
                         <th scope="col"><i class="fas fa-road me-2"></i> Ruta</th>
-                        <th scope="col"><i class="fas fa-road me-2"></i> Servicio</th>
+                        <th scope="col"><i class="fas fa-truck"></i> Servicio</th>
+                        <th scope="col"><i class="fas fa-user me-2"></i> Cliente</th>
+                        <th scope="col"><i class="fas fa-round me-2"></i>Sucursal</th>
                         <th scope="col"><i class="fas fa-tachometer-alt me-2"></i> Hora inicio</th>
                         <th scope="col"><i class="fas fa-tachometer-alt me-2"></i> Hora fin</th>
                         <th scope="col">Proceso</th>
@@ -88,6 +108,13 @@
 
                         <td>{{$servicios->ruta->nombre->name}}</td>
                         <td>{{$servicios->servicio->ctg_servicio->descripcion}}</td>
+                        <td>{{ $servicios->servicio->cliente->razon_social }}</td>
+                        <td> 
+                                {{ $servicios->servicio->sucursal->sucursal->sucursal }},
+                                {{ $servicios->servicio->sucursal->sucursal->direccion }},
+                                {{ $servicios->servicio->sucursal->sucursal->cp->cp }},
+                                {{ $servicios->servicio->sucursal->sucursal->cp->estado->name }}
+                            </td>
                         @if($servicios->status_ruta_servicios==4)
                         <td>Sin iniciar</td>
                         <td>Sin iniciar</td>
@@ -154,7 +181,18 @@
                     @if ($ruta_compra->status_ruta_compra_efectivos != 5)
                     <tr>
                         <td>{{$ruta_compra->ruta->nombre->name}}</td>
-                        <td>COMPRA DE EFECTIVO BANCOS</td>
+                        <td colspan="2">COMPRA DE EFECTIVO BANCOS</td>
+                        <td>
+                            @if ($ruta_compra && count($ruta_compra->compra->detalles))
+                            
+                            @foreach($ruta_compra->compra->detalles as $detallesa)
+                            {{ $detallesa->consignatario->name }}
+                            @php
+                            $detalleaaa = $detallesa;
+                            @endphp
+                            @endforeach
+                            @endif
+                        </td>
                         <td>{{$ruta_compra->created_at->format('H:i:s')}}</td>
                         <td>{{$ruta_compra->created_at->format('H:i:s')}}</td>
                         <td><div class="progress">
@@ -164,7 +202,7 @@
                         <td>Terminado</td>
                         <td>
                             <button class="btn btn-primary" data-toggle="modal"data-target="#evidenciaModal"
-                                        wire:click='evidenciaCompra({{ $ruta_compra->compra->detalles }})'>
+                                        wire:click='evidenciaCompra({{ $detalleaaa }})'>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
                                             <path
@@ -188,7 +226,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="evidenciaModal" wire:ignore.self tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="imageModalLabel">Evidencia</h5>
@@ -203,7 +241,7 @@
                         <div class="carousel-inner">
                             @foreach ($evidencia_foto as $index => $foto)
                                 <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                                    <img src="{{ asset('storage/' . $foto) }}" class="d-block w-100" alt="Evidencia" style="width: 300px; height: 350px;">
+                                    <img src="{{ asset('storage/' . $foto) }}" class="d-block w-100 h-100" alt="Evidencia" style="width: 300px; height: 350px;">
                                 </div>
                             @endforeach
                         </div>

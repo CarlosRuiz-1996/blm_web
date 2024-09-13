@@ -33,7 +33,7 @@ class RutasYservicios extends Component
     public function render()
     {
         $dia=$this->obtenerDia();
-        $rutaEmpleados = Ruta::where('ctg_ruta_dia_id', $dia)
+        $rutaEmpleados = Ruta::where('ctg_ruta_dia_id', 3)
         ->whereIn('ctg_rutas_estado_id', [3, 4])
         ->get();
         //dd($rutaEmpleados);
@@ -115,6 +115,8 @@ class RutasYservicios extends Component
 
     public function evidenciaCompra(DetallesCompraEfectivo $detalle)
     {
+        $detalles=$detalle;
+        $detallesencva=$detalles->envase;
         $this->readyToLoadModal = false;
         $this->evidencia_foto = [];
         $this->evidencia_foto[] =  'evidencias/CompraEfectivo/compra_efectivo_detalle_' . $detalle->envase->id . '.png';
