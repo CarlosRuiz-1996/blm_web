@@ -142,7 +142,7 @@ class Index extends Component
         $compra_efectivo = RutaCompraEfectivo::where('ruta_id', $this->ruta_id)
         ->where('status_ruta_compra_efectivos', 1)->count();
 
-        $serviciosRutaAll = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios','!=',3)->count();
+        $serviciosRutaAll = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios','!=',6)->count();
        
         // $today = Carbon::today();
         $servicioRutastatus2 = RutaServicio::where('ruta_id', $this->ruta_id)
