@@ -28,7 +28,7 @@ use Livewire\WithFileUploads;
 
 class OperadoresIndex extends   Component
 {
-    
+
     public $idrecolecta;
     public $cantidadEnvases;
     public $idserviorutaEnvases;
@@ -162,8 +162,9 @@ class OperadoresIndex extends   Component
                 $servicioRuta->status_ruta_servicios = 3;
                 $servicioRuta->envase_cargado = 0;
                 $servicioRuta->save();
-                // Log::info('RutaServicioReporte: ');
-
+                //pasar servicio a 3 para poderlo seleccionar:
+                $servicioRuta->servicio->status_servicio = 3;
+                $servicioRuta->servicio->save();
                 RutaServicioReporte::where('ruta_servicio_id', $servicioRuta->id)
                     ->where('status_ruta_servicio_reportes', 2)->update(['status_ruta_servicio_reportes' => 3]);
 
@@ -179,7 +180,7 @@ class OperadoresIndex extends   Component
                 }
 
                 //$this->photo->storeAs(path: 'evidencias/', name: 'avatar.png');
-                $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+                $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
                 NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
                 $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Entrega realizada con exito.'], ['tipomensaje' => 'success'], ['op' => 1]);
             } else {
@@ -278,12 +279,14 @@ class OperadoresIndex extends   Component
             $servicioruta->status_ruta_servicios = 3;
             $servicioruta->save();
 
-            // dd($servicioruta);
 
             $ruta = Ruta::find($servicioruta->ruta_id);
             $ruta->total_ruta = $ruta->total_ruta + $this->MontoRecolecta;
             $ruta->save();
 
+            //pasar servicio a 3 para poderlo seleccionar:
+            $servicioruta->servicio->status_servicio = 3;
+            $servicioruta->servicio->save();
 
             foreach ($this->inputs as $index => $input) {
 
@@ -317,7 +320,7 @@ class OperadoresIndex extends   Component
 
 
             // $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La recolecta se completo correctamente'], ['tipomensaje' => 'success']);
-            $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+            $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
             NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La recolecta se completo correctamente.'], ['tipomensaje' => 'success'], ['op' => 1]);
 
@@ -337,17 +340,17 @@ class OperadoresIndex extends   Component
         $ruta = Ruta::find($id);
         $ruta->status_ruta = 2;
         $ruta->save();
-        $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+        $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
         NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
         $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La ruta a iniciado'], ['tipomensaje' => 'success']);
     }
     public function empezarRutaServicios($contactId, $serviciotipo)
     {
-        $servicioRuta = RutaServicio::where('id',$contactId)->where('tipo_servicio',$serviciotipo)->first();
+        $servicioRuta = RutaServicio::where('id', $contactId)->where('tipo_servicio', $serviciotipo)->first();
         $servicioRuta->status_ruta_servicios = 2;
         $servicioRuta->created_at = now();
         $servicioRuta->save();
-        $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+        $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
         NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
         $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio a iniciado'], ['tipomensaje' => 'success']);
     }
@@ -405,7 +408,7 @@ class OperadoresIndex extends   Component
 
 
             // Envía un mensaje de éxito
-            $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+            $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
             NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La ruta ha sido terminada'], ['tipomensaje' => 'success']);
             DB::commit();
@@ -439,7 +442,7 @@ class OperadoresIndex extends   Component
 
 
         $this->photorepro->storeAs(path: 'evidencias/reprogramacion/', name: 'avatar.png');
-        $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+        $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
         NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
         $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio Sera reprogramado'], ['tipomensaje' => 'success'], ['op' => 1]);
     }
@@ -607,7 +610,7 @@ class OperadoresIndex extends   Component
 
             $this->limpiarDatosDetalleCompra();
             $this->showCompraDetail($detalle_compra->compra_efectivo);
-            $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+            $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
             NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
             $this->dispatch('success-compra-detalle', ['nombreArchivo' => 'Detalle de la compra finalizada.'], ['tipomensaje' => 'success']);
 
@@ -637,7 +640,7 @@ class OperadoresIndex extends   Component
 
             $compra->ruta_compra->status_ruta_compra_efectivos = 3;
             $compra->ruta_compra->save();
-            $users = Empleado::whereIn('ctg_area_id', [9,2,3,18])->get();
+            $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
             NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La Compra de efectivo se completo correctamente.'], ['tipomensaje' => 'success'], ['op' => 1]);
 
