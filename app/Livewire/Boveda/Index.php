@@ -62,7 +62,7 @@ class Index extends Component
     public function llenarmodalservicios($idruta)
     {
         $this->ruta_id = $idruta;
-        $this->serviciosRuta = RutaServicio::where('ruta_id', $idruta)->where('status_ruta_servicios','!=',3)->get();
+        $this->serviciosRuta = RutaServicio::where('ruta_id', $idruta)->where('status_ruta_servicios','!=',6)->get();
         //compra de efectivo
         $this->compra_efectivo = RutaCompraEfectivo::where('ruta_id', $idruta)->where('status_ruta_compra_efectivos', '<', 3)->get()
             ?: collect();
