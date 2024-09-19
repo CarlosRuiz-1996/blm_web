@@ -173,7 +173,8 @@
                                     <td>
                                         <input type="checkbox" wire:model='selectServicios.{{ $servicio->id }}'
                                             x-model="checkServicio" wire:click="resetError('{{ $servicio->id }}')"
-                                            @change="updateCheckboxes" />
+                                            @change="updateCheckboxes" 
+                                            name="selectServicios.{{ $servicio->id }}" id="selectServicios.{{ $servicio->id }}"/>
 
 
 
