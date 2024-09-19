@@ -85,14 +85,13 @@ class RutaProcesar extends Component
             'monto_envases.*.cantidad.min' => 'La cantidad no debe ser al menos 0',
         ]);
 
-        // dd($this->monto_envases);
+        
         try {
             DB::beginTransaction();
 
             $monto_total_envases = 0;
 
-            // dd($this->servicio_e); //139-monto_envases
-            //reviso so hay diferencia de valores
+                        //reviso so hay diferencia de valores
             foreach ($this->servicio_e as $s) {
                 if (isset($this->monto_envases[$s->id])) {
                     $input = $this->monto_envases[$s->id];
@@ -104,7 +103,6 @@ class RutaProcesar extends Component
                 }
             }
             $diferencia = "";
-            // dd($this->form->monto .'--'. $monto_total_envases);
             //cuando hay diferencia de valores
             if ($this->form->monto != $monto_total_envases) {
                 foreach ($this->servicio_e as $s) {
@@ -164,8 +162,8 @@ class RutaProcesar extends Component
             DB::beginTransaction();
 
             //actualizar la informacion de ruta servicio
-            // $servicio->status_ruta_servicios = 1;
-            // $servicio->save();
+            $servicio->status_ruta_servicios = 5;
+            $servicio->save();
 
             //registra movimiento en el historial
             ClienteMontos::create([
@@ -203,10 +201,7 @@ class RutaProcesar extends Component
             Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
 
             $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
-            // $this->dispatch('diferencia', [$e->getMessage()]);
 
-
-            Log::info('Info: ' . $e);
         }
     }
 
@@ -217,7 +212,7 @@ class RutaProcesar extends Component
         try {
             DB::beginTransaction();
             $serviciosPendientes = RutaServicio::where('ruta_id', $this->ruta->id)
-                ->where('status_ruta_servicios', '>', 1)
+                ->where('status_ruta_servicios', '<',5)
                 ->count();
 
             $comprasPendientes = RutaCompraEfectivo::where('ruta_id', $this->ruta->id)
@@ -242,6 +237,9 @@ class RutaProcesar extends Component
             $this->ruta->save();
 
 
+            //termino los servicios
+            RutaServicio::where('ruta_id', $this->ruta->id)
+                ->where('status_ruta_servicios',5)->update(['status_ruta_servicios'=>6]);
 
 
             //actualizo ruta vehiculo
@@ -375,10 +373,8 @@ class RutaProcesar extends Component
             'ctg_area_id' => Auth::user()->empleado->ctg_area_id,
         ]);
         //actualizar la informacion de ruta servicio
-        // $this->form->servicio->status_ruta_servicios = 1;
-        // $this->form->servicio->monto = 0;
-        // $this->form->servicio->envases = 0;
-        // $this->form->servicio->save();
+        $this->form->servicio->status_ruta_servicios = 5;
+        $this->form->servicio->save();
         //actualiza monto
         $this->form->servicio->servicio->cliente->resguardo = $monto_new;
         $this->form->servicio->servicio->cliente->save();

@@ -101,7 +101,7 @@
                     </thead>
                     <tbody>
 
-                        @foreach ($ruta->rutaServicios as $servicio)
+                        @foreach ($ruta->rutaServicios->where('status_ruta_servicios','>=',3)->where('status_ruta_servicios','<=',5) as $servicio)
                             <tr x-show="servicio">
 
                                 <td>{{ $servicio->servicio->cliente->razon_social }}</td>
@@ -111,7 +111,7 @@
                                     {{ $servicio->folio }}
                                 </td>
                                 <td>
-                                    @if ($servicio->status_ruta_servicios != 1)
+                                    @if ($servicio->status_ruta_servicios != 5)
                                         @if ($servicio->tipo_servicio == 2)
                                             <button class="btn btn-info" data-toggle="modal"
                                                 wire:click='opernModal({{ $servicio }})'

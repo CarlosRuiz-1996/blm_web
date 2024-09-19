@@ -273,7 +273,7 @@ class RutaForm extends Form
     public $searchServicio;
     public function getRutaServicios()
     {
-        return RutaServicio::where('ruta_id', $this->ruta->id)->where('status_ruta_servicios','<',3)
+        return RutaServicio::where('ruta_id', $this->ruta->id)->where('status_ruta_servicios','<',6)
             ->where(function ($query) {
                 $query->where('folio', 'ilike', '%' . $this->searchServicio . '%')
                     ->orWhere('monto', 'ilike', '%' . $this->searchServicio . '%')
