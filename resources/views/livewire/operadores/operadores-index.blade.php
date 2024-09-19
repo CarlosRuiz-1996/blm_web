@@ -326,13 +326,13 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     @if ($tiposervicio == 'Entrega')
-                    <button type="button" class="btn btn-primary" wire:loading.remove
-                        wire:click='ModalAceptar'>Aceptar</button>
+                        <button type="button" class="btn btn-primary" wire:loading.remove
+                            wire:click='ModalAceptar'>Aceptar</button>
                     @elseif($tiposervicio == 'Recolección')
-                    <button type="button" class="btn btn-primary" wire:loading.remove
-                        wire:click='ModalAceptarRecolecta'>Aceptar</button>
+                        <button type="button" class="btn btn-primary" wire:loading.remove
+                            wire:click='ModalAceptarRecolecta'>Aceptar</button>
                     @endif
 
                 </div>

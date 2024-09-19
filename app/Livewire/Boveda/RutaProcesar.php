@@ -164,8 +164,8 @@ class RutaProcesar extends Component
             DB::beginTransaction();
 
             //actualizar la informacion de ruta servicio
-            $servicio->status_ruta_servicios = 1;
-            $servicio->save();
+            // $servicio->status_ruta_servicios = 1;
+            // $servicio->save();
 
             //registra movimiento en el historial
             ClienteMontos::create([
@@ -375,10 +375,10 @@ class RutaProcesar extends Component
             'ctg_area_id' => Auth::user()->empleado->ctg_area_id,
         ]);
         //actualizar la informacion de ruta servicio
-        $this->form->servicio->status_ruta_servicios = 1;
-        $this->form->servicio->monto = 0;
-        $this->form->servicio->envases = 0;
-        $this->form->servicio->save();
+        // $this->form->servicio->status_ruta_servicios = 1;
+        // $this->form->servicio->monto = 0;
+        // $this->form->servicio->envases = 0;
+        // $this->form->servicio->save();
         //actualiza monto
         $this->form->servicio->servicio->cliente->resguardo = $monto_new;
         $this->form->servicio->servicio->cliente->save();

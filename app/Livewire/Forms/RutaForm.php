@@ -251,13 +251,13 @@ class RutaForm extends Form
 
 
         return Servicios::where('status_servicio', '=', 3)
-            ->whereDoesntHave('rutas', function ($query) {
-                $dia_semana_ruta = $this->ruta->ctg_ruta_dia_id;
+            // ->whereDoesntHave('rutas', function ($query) {
+            //     $dia_semana_ruta = $this->ruta->ctg_ruta_dia_id;
 
-                $query->whereHas('dia', function ($subquery) use ($dia_semana_ruta) {
-                    $subquery->where('id', $dia_semana_ruta);
-                });
-            })
+            //     $query->whereHas('dia', function ($subquery) use ($dia_semana_ruta) {
+            //         $subquery->where('id', $dia_semana_ruta);
+            //     });
+            // })
             ->whereHas('cliente', function ($subquerycliente) {
                 $subquerycliente->where(function ($query) {
                     $query->where('rfc_cliente', 'ilike', '%' . $this->searchClienteModal . '%')
@@ -273,7 +273,7 @@ class RutaForm extends Form
     public $searchServicio;
     public function getRutaServicios()
     {
-        return RutaServicio::where('ruta_id', $this->ruta->id)
+        return RutaServicio::where('ruta_id', $this->ruta->id)->where('status_ruta_servicios','<',3)
             ->where(function ($query) {
                 $query->where('folio', 'ilike', '%' . $this->searchServicio . '%')
                     ->orWhere('monto', 'ilike', '%' . $this->searchServicio . '%')
