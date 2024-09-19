@@ -215,6 +215,7 @@ class AgregarServicio extends Component
         $res = $this->form->deleteServicio($servicio);
         if ($res == 1) {
             $this->dispatch('success-servicio', 'Servicio eliminado con exito');
+            $this->render();
         } else {
             $this->dispatch('error-servicio', ['Ha ocurrido un problema, intenta mas tarde']);
         }

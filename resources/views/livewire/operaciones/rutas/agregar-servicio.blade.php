@@ -368,10 +368,12 @@
                         icon: 'success',
                         title: message,
                         showConfirmButton: false,
-                    }).then(() => {
-                        location.reload();
                     });
-                    location.reload();
+                    
+                    // .then(() => {
+                    //     location.reload();
+                    // });
+                    // location.reload();
 
                 });
 
