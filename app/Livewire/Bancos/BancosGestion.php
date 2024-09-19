@@ -21,12 +21,13 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
+use Livewire\WithoutUrlPagination;
 use Maatwebsite\Excel\Facades\Excel;
 
 class BancosGestion extends Component
 {
 
-    use WithPagination;
+    use WithPagination,WithoutUrlPagination;
     public BancosForm $form;
     public $readyToLoad = false;
     public $readyToLoadModal = false;

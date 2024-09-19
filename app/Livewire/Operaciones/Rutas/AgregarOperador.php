@@ -9,12 +9,13 @@ use App\Models\Ruta;
 use App\Models\RutaEmpleados;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
+use Livewire\WithoutUrlPagination;
 
 class AgregarOperador extends Component
 {
 
     public RutaForm $form;
-    use WithPagination;
+    use WithPagination,WithoutUrlPagination;
     public $selectPersonalOperador = [];
     public $readyToLoadOperador = false;
 

@@ -8,10 +8,11 @@ use App\Models\Ruta;
 use App\Models\RutaServicio;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
+use Livewire\WithoutUrlPagination;
 
 class AgregarServicio extends Component
 {
-    use WithPagination;
+    use WithPagination,WithoutUrlPagination;
     public RutaForm $form;
     public $selectServicios = [];
     public $selectServiciosRecolecta = [];

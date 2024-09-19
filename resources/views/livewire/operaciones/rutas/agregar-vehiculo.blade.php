@@ -127,7 +127,9 @@
                     @foreach ($vehiculos as $vehiculo)
                         <tr>
                             <td>
-                                <input type="checkbox" wire:model.live="selectVehiculos.{{ $vehiculo->id }}" />
+                                <input type="checkbox" wire:model.live="selectVehiculos.{{ $vehiculo->id }}" 
+                                name="selectVehiculos.{{ $vehiculo->id }}" id="selectVehiculos.{{ $vehiculo->id }}"
+                                />
                             </td>
                             <td>{{ $vehiculo->id }}</td>
                             <td>{{ $vehiculo->placas }}</td>

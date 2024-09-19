@@ -8,11 +8,13 @@ use App\Models\Ruta;
 use App\Models\RutaEmpleados;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
+use Livewire\WithoutUrlPagination;
+
 class AgregarCajero extends Component
 {
 
     public RutaForm $form;
-    use WithPagination;
+    use WithPagination,WithoutUrlPagination;
     public $selectPersonalCajero = [];
     public $readyToLoadCajero = false;
 

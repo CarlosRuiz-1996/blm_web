@@ -8,10 +8,11 @@ use App\Models\Ruta;
 use App\Models\RutaVehiculo;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
+use Livewire\WithoutUrlPagination;
 
 class AgregarVehiculo extends Component
 {
-    use WithPagination;
+    use WithPagination,WithoutUrlPagination;
 
     public RutaForm $form;
     public $selectVehiculos = [];

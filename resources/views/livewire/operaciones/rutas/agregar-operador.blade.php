@@ -111,7 +111,9 @@
                         <tr>
                             <td>
                                 <input type="checkbox"
-                                    wire:model.live="selectPersonalOperador.{{ $empleadoOperador->id }}" />
+                                    wire:model.live="selectPersonalOperador.{{ $empleadoOperador->id }}" 
+                                    name="selectPersonalOperador.{{ $empleadoOperador->id }}" id="selectPersonalOperador.{{ $empleadoOperador->id }}"
+                                    />
                             </td>
                             <td>{{ $empleadoOperador->id }}</td>
                             <td>{{ $empleadoOperador->user->name . ' ' . $empleadoOperador->user->paterno . ' ' . $empleadoOperador->user->materno }}
@@ -189,7 +191,7 @@
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            @this.dispatch('delete-personal', {
+                            @this.dispatch('delete-personal-Operador', {
                                 personal: personal
                             });
                         }

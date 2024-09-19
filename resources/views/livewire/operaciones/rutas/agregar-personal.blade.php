@@ -116,7 +116,9 @@
                 @foreach ($empleados as $empleado)
                     <tr>
                         <td>
-                            <input type="checkbox" wire:model.live="selectPersonal.{{ $empleado->id }}" />
+                            <input type="checkbox" wire:model.live="selectPersonal.{{ $empleado->id }}"
+                            name="selectPersonal.{{ $empleado->id }}" id="selectPersonal.{{ $empleado->id }}"
+                            />
                         </td>
                         <td>{{ $empleado->id }}</td>
                         <td>{{ $empleado->user->name.' '.$empleado->user->paterno.' '.$empleado->user->materno }}</td>
