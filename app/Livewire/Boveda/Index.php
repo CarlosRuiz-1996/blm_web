@@ -62,7 +62,7 @@ class Index extends Component
     public function llenarmodalservicios($idruta)
     {
         $this->ruta_id = $idruta;
-        $this->serviciosRuta = RutaServicio::where('ruta_id', $idruta)->get();
+        $this->serviciosRuta = RutaServicio::where('ruta_id', $idruta)->where('status_ruta_servicios','<',3)->get();
         //compra de efectivo
         $this->compra_efectivo = RutaCompraEfectivo::where('ruta_id', $idruta)->where('status_ruta_compra_efectivos', '<', 3)->get()
             ?: collect();
@@ -139,9 +139,10 @@ class Index extends Component
     public function finailzar()
     {
 
-        $compra_efectivo = RutaCompraEfectivo::where('ruta_id', $this->ruta_id)->where('status_ruta_compra_efectivos', 1)->count();
+        $compra_efectivo = RutaCompraEfectivo::where('ruta_id', $this->ruta_id)
+        ->where('status_ruta_compra_efectivos', 1)->count();
 
-        $serviciosRutaAll = RutaServicio::where('ruta_id', $this->ruta_id)->count();
+        $serviciosRutaAll = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios','<',3)->count();
        
         // $today = Carbon::today();
         $servicioRutastatus2 = RutaServicio::where('ruta_id', $this->ruta_id)
