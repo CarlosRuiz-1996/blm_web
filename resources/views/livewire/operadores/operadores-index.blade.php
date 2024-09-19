@@ -49,7 +49,7 @@
                                 <!--Servicios rutas inicio-->
                                 @if ($rutaServicio->status_ruta != 1)
                                 <div x-data="{ openServicio: null }">
-                                    @foreach ($rutaServicio->rutaServicios->where('status_ruta_servicios','!=',5)->sortByDesc('updated_at') as $servicio)
+                                    @foreach ($rutaServicio->rutaServicios->where('status_ruta_servicios','!=',6)->sortByDesc('updated_at') as $servicio)
                                     <div class="card m-0 text-xs">
                                         <div class="card-header p-0">
                                             <button class="btn btn-block text-center text-xs"
