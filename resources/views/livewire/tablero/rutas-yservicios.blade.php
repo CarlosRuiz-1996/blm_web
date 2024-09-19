@@ -45,7 +45,7 @@
                         </p>
                         @php
                         // Contar total de servicios en la ruta
-                        $totalServicios = $rutas->rutaServicios->count();
+                        $totalServicios = $rutas->rutaServicios->where('status_ruta_servicios', '<',6)->count();
 
                         // Contar servicios que están completados (por ejemplo, status_ruta_servicios = 2)
                         $serviciosCompletados = $rutas->rutaServicios->where('status_ruta_servicios', 3)->count();
@@ -102,7 +102,7 @@
                 <tbody>
                     @if($rutaEmpleados)
                     @foreach ($rutaEmpleados as $rutas)
-                    @foreach ($rutas->rutaServicios as $servicios)
+                    @foreach ($rutas->rutaServicios->where('status_ruta_servicios','!=',6) as $servicios)
                     
                     <tr>
 

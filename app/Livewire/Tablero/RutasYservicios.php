@@ -17,7 +17,7 @@ class RutasYservicios extends Component
 
     // detalles de la comrpa
     public $readyToLoadModal = false;
-    public $evidencia_foto=[];
+    public $evidencia_foto = [];
     protected $listeners = ['modalCerrado'];
 
     public function getListeners()
@@ -32,18 +32,18 @@ class RutasYservicios extends Component
 
     public function render()
     {
-        $dia=$this->obtenerDia();
-        $rutaEmpleados = Ruta::where('ctg_ruta_dia_id', 3)
-        ->whereIn('ctg_rutas_estado_id', [3, 4])
-        ->get();
+        $dia = $this->obtenerDia();
+        $rutaEmpleados = Ruta::where('ctg_ruta_dia_id', 1)
+            ->whereIn('ctg_rutas_estado_id', [3, 4])
+            ->get();
         //dd($rutaEmpleados);
-        return view('livewire.tablero.rutas-yservicios',compact('rutaEmpleados'));
+        return view('livewire.tablero.rutas-yservicios', compact('rutaEmpleados'));
     }
 
-    public function obtenerservicio(){
-    }
+    public function obtenerservicio() {}
 
-    public function obtenerDia(){
+    public function obtenerDia()
+    {
         $dayOfWeek = Carbon::now()->dayOfWeek; // Obtiene el día de la semana (0 para Domingo, 1 para Lunes, etc.)
         $id = 0;
         switch ($dayOfWeek) {
@@ -78,45 +78,45 @@ class RutasYservicios extends Component
         $this->readyToLoadModal = false;
         $this->evidencia_foto = [];
         $servicio_envases = ServicioRutaEnvases::where('ruta_servicios_id', $id)
-        ->where('status_envases', 1)
-        ->get();
+            ->where('status_envases', 1)
+            ->get();
 
         // Asegúrate de que evidencia_foto sea un array para almacenar múltiples rutas
-        
+
         // Itera sobre los resultados y construye las rutas de evidencia para cada uno
         foreach ($servicio_envases as $servicio_envase) {
-            $this->evidencia_foto[] = 'evidencias/EntregasRecolectas/Servicio_'. $servicio_envase->ruta_servicios_id. '_entrega_'. $servicio_envase->evidencia_entrega->id. '_evidencia.png';
+            $this->evidencia_foto[] = 'evidencias/EntregasRecolectas/Servicio_' . $servicio_envase->ruta_servicios_id . '_entrega_' . $servicio_envase->evidencia_entrega->id . '_evidencia.png';
         }
 
         $this->readyToLoadModal = true;
     }
-        public function evidenciaRecolecta($id)
-        {
-            $this->readyToLoadModal = false;
-            $this->evidencia_foto = [];
-            $servicio_envases = ServicioRutaEnvases::where('ruta_servicios_id', $id)
-                                ->where('status_envases', 1)
-                                ->get();
+    public function evidenciaRecolecta($id)
+    {
+        $this->readyToLoadModal = false;
+        $this->evidencia_foto = [];
+        $servicio_envases = ServicioRutaEnvases::where('ruta_servicios_id', $id)
+            ->where('status_envases', 1)
+            ->get();
 
-            // Asegúrate de que evidencia_foto sea un array para almacenar múltiples rutas
-            
+        // Asegúrate de que evidencia_foto sea un array para almacenar múltiples rutas
 
-            // Itera sobre los resultados y construye las rutas de evidencia para cada uno
-            foreach ($servicio_envases as $servicio_envase) {
-                $this->evidencia_foto[] = 'evidencias/EntregasRecolectas/Servicio_' 
-                    . $servicio_envase->ruta_servicios_id 
-                    . '_recolecta_' 
-                    . $servicio_envase->evidencia_recolecta->id 
-                    . '_evidencia.png';
-            }
 
-            $this->readyToLoadModal = true;
+        // Itera sobre los resultados y construye las rutas de evidencia para cada uno
+        foreach ($servicio_envases as $servicio_envase) {
+            $this->evidencia_foto[] = 'evidencias/EntregasRecolectas/Servicio_'
+                . $servicio_envase->ruta_servicios_id
+                . '_recolecta_'
+                . $servicio_envase->evidencia_recolecta->id
+                . '_evidencia.png';
         }
+
+        $this->readyToLoadModal = true;
+    }
 
     public function evidenciaCompra(DetallesCompraEfectivo $detalle)
     {
-        $detalles=$detalle;
-        $detallesencva=$detalles->envase;
+        $detalles = $detalle;
+        $detallesencva = $detalles->envase;
         $this->readyToLoadModal = false;
         $this->evidencia_foto = [];
         $this->evidencia_foto[] =  'evidencias/CompraEfectivo/compra_efectivo_detalle_' . $detalle->envase->id . '.png';
@@ -130,5 +130,4 @@ class RutasYservicios extends Component
         $this->evidencia_foto = [];
         $this->readyToLoadModal = false;
     }
-
 }
