@@ -250,7 +250,7 @@ class RutaForm extends Form
     {
 
 
-        return Servicios::where('status_servicio', '=', 3)
+        return Servicios::where('status_servicio', '>=', 3)
             // ->whereDoesntHave('rutas', function ($query) {
             //     $dia_semana_ruta = $this->ruta->ctg_ruta_dia_id;
 

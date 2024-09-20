@@ -92,6 +92,7 @@
                         <th scope="col"><i class="fas fa-truck"></i> Servicio</th>
                         <th scope="col"><i class="fas fa-user me-2"></i> Cliente</th>
                         <th scope="col"><i class="fas fa-round me-2"></i>Sucursal</th>
+                        <th scope="col"><i class="fas fa-round me-2"></i>Monto</th>
                         <th scope="col"><i class="fas fa-tachometer-alt me-2"></i> Hora inicio</th>
                         <th scope="col"><i class="fas fa-tachometer-alt me-2"></i> Hora fin</th>
                         <th scope="col">Proceso</th>
@@ -115,6 +116,10 @@
                                 {{ $servicios->servicio->sucursal->sucursal->cp->cp }},
                                 {{ $servicios->servicio->sucursal->sucursal->cp->estado->name }}
                             </td>
+                        <td>
+                            <button >
+                            ${{ number_format($servicios->monto, 2, '.', ',') }}</td>
+                            </button>
                         @if($servicios->status_ruta_servicios==4)
                         <td>Sin iniciar</td>
                         <td>Sin iniciar</td>
@@ -267,4 +272,7 @@
         </div>
     </div>
 </div>
+
+
+
     </div>
