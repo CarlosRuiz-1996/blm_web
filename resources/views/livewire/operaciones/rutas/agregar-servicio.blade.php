@@ -258,11 +258,11 @@
                     </table>
                 </div>
 
-                {{-- @if ($servicios->hasPages())
+                @if ($servicios->hasPages())
                     <div class="d-flex justify-content-center">
                         {{ $servicios->links() }}
                     </div>
-                @endif --}}
+                @endif
 
 
                 <div class="text-center col-md-12 mb-3">
