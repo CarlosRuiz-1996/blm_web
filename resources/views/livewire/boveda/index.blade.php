@@ -215,6 +215,7 @@
                                 <thead class="table-info">
                                     <tr>
                                         <th>Cliente</th>
+                                        <th>Sucursal</th>
                                         <th>Dirección</th>
                                         {{-- <th>Llaves</th> --}}
                                         <th>Servicio</th>
@@ -228,10 +229,9 @@
                                     @foreach ($serviciosRuta as $rutaserv)
                                         <tr>
                                             <td>{{ $rutaserv->servicio->cliente->razon_social }}</td>
+                                            <td>{{ $rutaserv->servicio->sucursal->sucursal->sucursal }}</td>
                                             <td>Calle 
-                                                {{ $rutaserv->servicio->sucursal->sucursal->sucursal .
-                                                    ', ' .
-                                                    $rutaserv->servicio->sucursal->sucursal->direccion .
+                                                {{  $rutaserv->servicio->sucursal->sucursal->direccion .
                                                     ', CP.' .
                                                     $rutaserv->servicio->sucursal->sucursal->cp->cp .
                                                     ', ' .
