@@ -174,7 +174,8 @@
                                         <input type="checkbox" wire:model='selectServicios.{{ $servicio->id }}'
                                             x-model="checkServicio" wire:click="resetError('{{ $servicio->id }}')"
                                             @change="updateCheckboxes" 
-                                            name="selectServicios.{{ $servicio->id }}" id="selectServicios.{{ $servicio->id }}"/>
+                                            name="selectServicios.{{ $servicio->id }}"
+                                             id="selectServicios.{{ $servicio->id }}"/>
 
 
 
@@ -199,7 +200,10 @@
                                                     x-bind:disabled="!checkServicio" x-model="checkbox1"
                                                     wire:model='selectServiciosRecolecta.{{ $servicio->id }}'
                                                     @change="if (!checkbox1) {  monto = ''; folio = '';   }"
-                                                    wire:click="resetError('{{ $servicio->id }}')" />
+                                                    wire:click="resetError('{{ $servicio->id }}')" 
+                                                    name="selectServiciosRecolecta.{{ $servicio->id }}"
+                                                    id="selectServiciosRecolecta.{{ $servicio->id }}"
+                                                    />
                                                 <label class="form-check-label"
                                                     for="selectServiciosRecolecta.{{ $servicio->id }}">Recolección</label>
                                             </div>
@@ -209,7 +213,10 @@
                                                     x-bind:disabled="!checkServicio" x-model="checkbox2"
                                                     @change="if (!checkbox2) { monto2 = ''; folio2 = '';  }"
                                                     wire:model='selectServiciosEntrega.{{ $servicio->id }}'
-                                                    wire:click="resetError('{{ $servicio->id }}')" />
+                                                    wire:click="resetError('{{ $servicio->id }}')"
+                                                    name="selectServiciosEntrega.{{ $servicio->id }}"
+                                                    id="selectServiciosEntrega.{{ $servicio->id }}"
+                                                    />
                                                 <label class="form-check-label"
                                                     for="selectServiciosEntrega.{{ $servicio->id }}">Entrega</label>
                                             </div>
