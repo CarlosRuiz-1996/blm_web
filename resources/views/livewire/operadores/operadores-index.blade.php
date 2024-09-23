@@ -136,8 +136,7 @@
                                                                                             Iniciar Servicio
                                                                                         </button>
                                                                                     </p>
-                                                                                    @elseif
-                                                                                    ($servicio->status_ruta_servicios == 2)
+                                                                                    @elseif($servicio->status_ruta_servicios == 2)
                                                                                     <p class="mb-0">
                                                                                         <button type="button"
                                                                                             class="btn mb-2 btn-primary btn-sm text-xs"

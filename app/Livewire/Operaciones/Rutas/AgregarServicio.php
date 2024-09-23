@@ -53,6 +53,7 @@ class AgregarServicio extends Component
     }
     public function loadServicios()
     {
+        
         $this->readyToLoad = true;
     }
 
@@ -198,6 +199,8 @@ class AgregarServicio extends Component
                 $this->clean();
                 $seleccionados = [];
                 $seleccionadosRecolecta = [];
+                $this->selectServiciosEntrega=[];
+                $this->selectServicios=[];
                 // $selectServicios = [];
                 // $selectServiciosRecolecta = [];
                 $this->dispatch('total-ruta');

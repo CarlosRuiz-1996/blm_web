@@ -11,7 +11,16 @@
 </head>
 <style>
     .small-text {
-        font-size: 0.8em;
+        font-size: 8px;
+        /* Ajusta este valor según lo necesites */
+    }
+    .small-text-md {
+        font-size: 10px;
+        /* Ajusta este valor según lo necesites */
+    }
+    .small-texta{
+        font-size: 8px;
+        text-align: center;
         /* Ajusta este valor según lo necesites */
     }
 </style>
@@ -20,10 +29,10 @@
     <div class="row">
         <div class="col-md-2 col-1">
             <img src="{{ public_path() . '/img/logospdf.png' }}" alt="Nombre alternativo" class="mb-3"
-                style="max-width: 100px; float: left;">
+                style="max-width: 70px; float: left;">
         </div>
         <div class="col-md-12 col-12">
-            <h2 class="text-center mt-3">Servicios Integrados PRO-BLM de México S.A. de C.V.</h2>
+            <h4 class="text-center mt-3">Servicios Integrados PRO-BLM de México S.A. de C.V.</h4>
         </div>
         <div class="col-md-12 col-12">
             @php
@@ -32,12 +41,12 @@
                 $dia = $fecha_creacion->format('d');
                 $anio = $fecha_creacion->format('Y');
             @endphp
-            <h6 class="text-dark text-right mt-3 mr-8">CIUDAD DE MÉXICO, A {{ $dia }} DE {{ $nombre_mes }}
+            <h6 class="text-dark text-right mt-1 mr-8 pr-3">CIUDAD DE MÉXICO, A {{ $dia }} DE {{ $nombre_mes }}
                 DEL {{ $anio }}.</h6>
         </div>
         <div class="col-md-2 col-4">
-            <table class="table table-bordered border-dark small-text mt-3">
-                <th class="text-center">Hoja de ruta</th>
+            <table class="table table-bordered border-dark small-text m-1">
+                <th class="text-center p-0">Hoja de ruta</th>
             </table>
         </div>
         <div class="col-md-2 col-4">
@@ -52,70 +61,70 @@
         </div>
     </div>
 
-    <table class="table table-bordered small-text mt-4">
-        <thead>
-            <tr>
-                <th rowspan="2">#</th>
-                <th rowspan="2">CLIENTE</th>
-                <th rowspan="2">DIRECCÓN</th>
-                <th rowspan="2">T/SERV.</th>
-                <th rowspan="2">LLAVES</th>
-                <th colspan="3" class="text-center">HORARIOS</th>
-                <th colspan="1" class="text-center">RUTA</th>
-                <th rowspan="2">FIRMA</th>
-                <th rowspan="2">E/B</th>
-                <th rowspan="2">E/D</th>
-                <th rowspan="2">C/V</th>
-                <th rowspan="2">I/V</th>
-            </tr>
-            <tr>
-                <th>SERVICIO</th>
-                <th>INICIO</th>
-                <th>TERMINO</th>
-                <th>CONSIGNATARIO</th>
-            </tr>
-        </thead>
-        <tbody>
-            @php $i=1; @endphp
-            @foreach ($ruta->rutaServicios as $servicio)
+    <div class="table-responsive">
+        <table class="table table-bordered table-xs small text-xs mt-4">
+            <thead class="thead-light">
                 <tr>
-                    <td>{{$i}}</td>
-                    <td>{{$servicio->servicio->cliente->razon_social}}</td>
-                    <td>
-                        {{ $servicio->servicio->sucursal->sucursal->direccion .
-                            ' ' .
-                            $servicio->servicio->sucursal->sucursal->cp->cp .
-                            '' .
-                            $servicio->servicio->sucursal->sucursal->cp->estado->name }}
-                       
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <th class="p-1 small-texta" rowspan="2">#</th>
+                    <th class="p-1 small-texta" rowspan="2" style="width: 60px;">CLIENTE</th>
+                    <th class="p-1 small-texta" rowspan="2" style="width: 60px;">DIRECCIÓN</th>
+                    <th class="p-1 small-texta" rowspan="2">T/SERV.</th>
+                    <th class="p-1 small-texta" rowspan="2">LLAVES</th>
+                    <th colspan="3" class="p-1 small-texta">HORARIOS</th>
+                    <th class="p-1 small-texta" colspan="1">RUTA</th>
+                    <th class="p-1 small-texta" rowspan="2">FIRMA</th>
+                    <th class="p-1 small-texta" rowspan="2">E/B</th>
+                    <th class="p-1 small-texta" rowspan="2">E/D</th>
+                    <th class="p-1 small-texta" rowspan="2">C/V</th>
+                    <th class="p-1 small-texta" rowspan="2">I/V</th>
                 </tr>
-                @php
-                    $i++;
-                @endphp
-            @endforeach
-            <tr>
-                
-                <td colspan="9"></td>
-                <td>total</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
+                <tr>
+                    <th class="p-1 small-texta">SERVICIO</th>
+                    <th class="p-1 small-texta">INICIO</th>
+                    <th class="p-1 small-texta">TÉRMINO</th>
+                    <th class="p-1 small-texta">CONSIGNATARIO</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php $i=1; @endphp
+                @foreach ($ruta->rutaServicios as $servicio)
+                    <tr>
+                        <td class="p-1 small-text-md">{{ $i }}</td>
+                        <td class="p-1 small-text-md">{{ ucwords(strtolower($servicio->servicio->cliente->razon_social)) }}</td>
+                        <td class="p-1 small-text-md">
+                            {{ ucwords(strtolower(
+                                $servicio->servicio->sucursal->sucursal->direccion . ' ' . 
+                                $servicio->servicio->sucursal->sucursal->cp->cp . ' ' . 
+                                $servicio->servicio->sucursal->sucursal->cp->estado->name
+                            )) }}
+                        </td>
+                        
+                        <td class="p-1"></td>
+                        <td class="p-1"></td>
+                        <td class="p-1"></td>
+                        <td class="p-1"></td>
+                        <td class="p-1"></td>
+                        <td class="p-1"></td>
+                        <td class="p-1"></td>
+                        <td class="p-1"></td>
+                        <td class="p-1"></td>
+                        <td class="p-1"></td>
+                        <td class="p-1"></td>
+                    </tr>
+                    @php $i++; @endphp
+                @endforeach
+                <tr>
+                    <td class="p-1" colspan="9"></td>
+                    <td class="p-1 small-text-md">Total</td>
+                    <td class="p-1"></td>
+                    <td class="p-1"></td>
+                    <td class="p-1"></td>
+                    <td class="p-1"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
 
 
     <div class="col-md-2 col-4">
