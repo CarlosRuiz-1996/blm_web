@@ -13,6 +13,7 @@ use App\Models\Ruta;
 use App\Models\RutaCompraEfectivo;
 use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
+use App\Models\ServicioKey;
 use App\Models\ServicioRutaEnvases;
 use App\Models\Servicios;
 use Carbon\Carbon;
@@ -62,7 +63,7 @@ class Index extends Component
     public function llenarmodalservicios($idruta)
     {
         $this->ruta_id = $idruta;
-        $this->serviciosRuta = RutaServicio::where('ruta_id', $idruta)->where('status_ruta_servicios','!=',6)->get();
+        $this->serviciosRuta = RutaServicio::where('ruta_id', $idruta)->where('status_ruta_servicios', '!=', 6)->get();
         //compra de efectivo
         $this->compra_efectivo = RutaCompraEfectivo::where('ruta_id', $idruta)->where('status_ruta_compra_efectivos', '<', 3)->get()
             ?: collect();
@@ -140,20 +141,20 @@ class Index extends Component
     {
 
         $compra_efectivo = RutaCompraEfectivo::where('ruta_id', $this->ruta_id)
-        ->where('status_ruta_compra_efectivos', 1)->count();
+            ->where('status_ruta_compra_efectivos', 1)->count();
 
-        $serviciosRutaAll = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios','!=',6)->count();
-       
+        $serviciosRutaAll = RutaServicio::where('ruta_id', $this->ruta_id)->where('status_ruta_servicios', '!=', 6)->count();
+
         // $today = Carbon::today();
         $servicioRutastatus2 = RutaServicio::where('ruta_id', $this->ruta_id)
-            ->where(function ($query)  {
-            $query->where('status_ruta_servicios', 4)
-                ->orWhere(function ($query){
-                    $query->where('status_ruta_servicios', 0);
+            ->where(function ($query) {
+                $query->where('status_ruta_servicios', 4)
+                    ->orWhere(function ($query) {
+                        $query->where('status_ruta_servicios', 0);
                         // ->whereDate('updated_at', $today)
-                })
+                    })
                 ;
-        })->count();
+            })->count();
         //revisar si ya trae los envases y no contempla las de reprogramacion
         $entregas =  RutaServicio::where('ruta_id', $this->ruta_id)->where('tipo_servicio', 1)
             ->where(function ($query) {
@@ -407,5 +408,45 @@ class Index extends Component
             DB::rollBack();
             $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
         }
+    }
+
+    public $keys;
+
+    public $ruta_servicio;
+    public function showKeys(RutaServicio $ServicioRuta)
+    {
+        $this->ruta_servicio = $ServicioRuta;
+        $this->razon_social = $ServicioRuta->servicio->cliente->razon_social;
+        $this->getKeys();
+    }
+
+    public function getKeys()
+    {
+        $this->keys = ServicioKey::where('ruta_servicio_id', $this->ruta_servicio->id)->get();
+    }
+
+    public $key;
+    public $razon_social;
+    public function AddKeys()
+    {
+        $this->validate(['key' => 'required'], ['key.required' => 'Campo obligatorio']);
+
+        ServicioKey::create([
+            'ruta_servicio_id' => $this->ruta_servicio->id,
+            'key' => $this->key
+        ]);
+
+        $this->getKeys();
+    }
+
+
+    public function removeKey(ServicioKey $key)
+    {
+        $key->delete();
+        $this->getKeys();
+    }
+    public function cleanKeys()
+    {
+        $this->reset('keys', 'razon_social', 'ruta_servicio');
     }
 }

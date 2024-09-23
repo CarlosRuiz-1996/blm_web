@@ -17,7 +17,8 @@ class RutaServicio extends Model
         'envases', 
         'tipo_servicio', 
         'status_ruta_servicios',
-        'envase_cargado'
+        'envase_cargado',
+        'keys'
     ];
 
 
@@ -38,4 +39,8 @@ class RutaServicio extends Model
     // public function envase_servicio(){
     //     return $this->hasOne(ServicioRutaEnvases::class, 'ruta_servicios_id');
     // }
+
+    public function keys(){
+        return $this->hasMany(ServicioKey::class, 'ruta_servicio_id');
+    }
 }

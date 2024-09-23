@@ -83,11 +83,10 @@
                 <table class="table" x-data="{ servicio: false, compra: false }">
                     <thead>
                         <tr @click="servicio = ! servicio">
-                            <th colspan="5" class="text-center table-secondary">
+                            <th colspan="6" class="text-center table-secondary">
                                 <h2>Servicios
                                     <i :class="servicio === false ? 'fas fa-chevron-up' :
-                                        'fas fa-chevron-down'"
-                                        class="ml-2"></i>
+                                        'fas fa-chevron-down'" class="ml-2"></i>
                                 </h2>
                             </th>
                         </tr>
@@ -96,50 +95,59 @@
                             <th>Servicio</th>
                             <th>Tipo</th>
                             <th>Folio/Papeleta</th>
+                            <th>Llaves</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
 
-                        @foreach ($ruta->rutaServicios->where('status_ruta_servicios','>=',3)->where('status_ruta_servicios','<=',5) as $servicio)
-                            <tr x-show="servicio">
-
-                                <td>{{ $servicio->servicio->cliente->razon_social }}</td>
-                                <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
-                                <td>{{ $servicio->tipo_servicio == 1 ? 'Entrega' : 'Recolecta' }}</td>
-                                <td>
-                                    {{ $servicio->folio }}
-                                </td>
-                                <td>
-                                    @if ($servicio->status_ruta_servicios != 5)
-                                        @if ($servicio->tipo_servicio == 2)
-                                            <button class="btn btn-info" data-toggle="modal"
-                                                wire:click='opernModal({{ $servicio }})'
-                                                data-target="#terminar_servicio">Verificar monto</button>
-                                        @else
-                                            <button class="btn btn-info" data-toggle="modal"
-                                                wire:click='detallesEntrega({{ $servicio }})'
-                                                data-target="#ModalDetalleEntregar">Finalizar
-                                                Entrega</button>
-                                        @endif
-                                    @else
-                                        <span class="badge bg-success" style="font-weight: bold;"> Finalizado.</span>
-                                    @endif
-
-                                </td>
-                            </tr>
-                        @endforeach
-
-
-                        @if ($ruta->ruta_compra->isNotEmpty() &&
-                                $ruta->ruta_compra->where('status_ruta_compra_efectivos', '!=', 5)->count() > 0)
+                        @foreach($ruta->rutaServicios->where('status_ruta_servicios','>=',3)->where('status_ruta_servicios','<=',5) as $servicio) 
                         
+                        <tr x-show="servicio">
+
+                            <td>{{ $servicio->servicio->cliente->razon_social }}</td>
+                            <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+                            <td>{{ $servicio->tipo_servicio == 1 ? 'Entrega' : 'Recolecta' }}</td>
+                            <td>
+                                {{ $servicio->folio }}
+                            </td>
+                            <td>
+                                <button type="button" class="btn mb-2 btn-warning btn-sm text-xs"
+                                    wire:click="showKeys('{{ $servicio->id }}')" data-toggle="modal"
+                                    data-target="#keyModal">
+
+                                    <i class="fa fa-key"></i>
+                                </button>
+                            </td>
+                            <td>
+                                @if ($servicio->status_ruta_servicios != 5)
+                                @if ($servicio->tipo_servicio == 2)
+                                <button class="btn btn-info" data-toggle="modal"
+                                    wire:click='opernModal({{ $servicio }})' data-target="#terminar_servicio">Verificar
+                                    monto</button>
+                                @else
+                                <button class="btn btn-info" data-toggle="modal"
+                                    wire:click='detallesEntrega({{ $servicio }})'
+                                    data-target="#ModalDetalleEntregar">Finalizar
+                                    Entrega</button>
+                                @endif
+                                @else
+                                <span class="badge bg-success" style="font-weight: bold;"> Finalizado.</span>
+                                @endif
+
+                            </td>
+                            </tr>
+                            @endforeach
+
+
+                            @if ($ruta->ruta_compra->isNotEmpty() &&
+                            $ruta->ruta_compra->where('status_ruta_compra_efectivos', '!=', 5)->count() > 0)
+
                             <tr @click="compra = ! compra">
                                 <th colspan="5" class="text-center table-secondary">
                                     <h2>Compra de efectivo
                                         <i :class="compra === false ? 'fas fa-chevron-up' :
-                                            'fas fa-chevron-down'"
-                                            class="ml-2"></i>
+                                            'fas fa-chevron-down'" class="ml-2"></i>
                                     </h2>
                                 </th>
                             </tr>
@@ -150,36 +158,36 @@
                                 <th colspan="2" class="text-center">Acciones</th>
                             </tr>
                             @foreach ($ruta->ruta_compra as $ruta_compra)
-                                @if ($ruta_compra->status_ruta_compra_efectivos < 5)
-                                    <tr x-show="compra">
-                                        <td>
-                                            ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
+                            @if ($ruta_compra->status_ruta_compra_efectivos < 5) <tr x-show="compra">
+                                <td>
+                                    ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
 
 
-                                        </td>
-                                        <td>{{ $ruta_compra->compra->fecha_compra }}</td>
-                                        <td>
-                                            <span
-                                                class="badge {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'bg-warning' : 'bg-success' }}">
-                                                {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'Pendiente' : 'Finalizada' }}
-                                            </span>
-                                        </td>
-                                        <td colspan="2" class="text-center">
-                                            <button class="btn btn-info" data-toggle="modal"
-                                                wire:click="showCompraDetail({{ $ruta_compra->compra }})"
-                                                data-target="#modalDetailCompra">Detalles
-                                            </button>
-                                            @if ($ruta_compra->compra->status_compra_efectivos == 3)
-                                                <button class="btn btn-danger"
-                                                    wire:click="$dispatch('finalizar-compra',{{ $ruta_compra }})">
-                                                    Finalizar
-                                                </button>
-                                            @endif
-                                        </td>
-                                    </tr>
+                                </td>
+                                <td>{{ $ruta_compra->compra->fecha_compra }}</td>
+                                <td>
+                                    <span
+                                        class="badge {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'bg-warning' : 'bg-success' }}">
+                                        {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'Pendiente' :
+                                        'Finalizada' }}
+                                    </span>
+                                </td>
+                                <td colspan="2" class="text-center">
+                                    <button class="btn btn-info" data-toggle="modal"
+                                        wire:click="showCompraDetail({{ $ruta_compra->compra }})"
+                                        data-target="#modalDetailCompra">Detalles
+                                    </button>
+                                    @if ($ruta_compra->compra->status_compra_efectivos == 3)
+                                    <button class="btn btn-danger"
+                                        wire:click="$dispatch('finalizar-compra',{{ $ruta_compra }})">
+                                        Finalizar
+                                    </button>
+                                    @endif
+                                </td>
+                                </tr>
                                 @endif
-                            @endforeach
-                        @endif
+                                @endforeach
+                                @endif
                     </tbody>
                 </table>
             </div>
@@ -204,84 +212,85 @@
                 <div class="modal-body">
                     <div class="row" wire:init='loadServicios'>
                         @if ($form->servicio)
-                            <div class="col-md-6 mb-3">
-                                <x-input-validado label="Papeleta:" placeholder="Papeleta" wire-model="form.folio"
-                                    wire-attribute="folios" type="text" :readonly='true' />
+                        <div class="col-md-6 mb-3">
+                            <x-input-validado label="Papeleta:" placeholder="Papeleta" wire-model="form.folio"
+                                wire-attribute="folios" type="text" :readonly='true' />
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+                            <x-input-validado label="Monto total del servicio:" placeholder="Envase"
+                                wire-model="monto_calculado" id="monto_total" type="text" :readonly='true' />
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="alert alert-info" id="message" role="alert">
+                                <span class="styled-text"> Ingresa el monto de cada en vase para revisar que todo
+                                    este correcto.</span>
                             </div>
+                        </div>
 
 
-                            <div class="col-md-6 mb-3">
-                                <x-input-validado label="Monto total del servicio:" placeholder="Envase"
-                                    wire-model="monto_calculado" id="monto_total" type="text" :readonly='true' />
-                            </div>
-                            <div class="col-md-12 mb-3">
-                                <div class="alert alert-info" id="message" role="alert">
-                                    <span class="styled-text"> Ingresa el monto de cada en vase para revisar que todo
-                                        este correcto.</span>
-                                </div>
-                            </div>
+                        @foreach ($servicio_e as $envases)
+                        <div class="col-md-3 mb-3">
+                            <label for="">Sello</label>
+                            <input class="form-control" value="{{ $envases->sello_seguridad }}" disabled
+                                placeholder="Sello de seguridad" type="text" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="">Papeleta</label>
+                            <input class="form-control" value="{{ $envases->folio }}" placeholder="Folio" disabled
+                                type="text" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="">
+                                Monto:
+                                {{-- ${{ number_format((float) $monto_envases[$envases->id]['cantidad'] ?? 0, 2, '.',
+                                ',') }} --}}
+                                ${{ number_format((float) ($monto_envases[$envases->id]['cantidad'] ?? 0), 2, '.', ',')
+                                }}
+
+                            </label>
+                            <input
+                                class="form-control {{ $errors->has('monto_envases.' . $envases->id . '.cantidad') ? 'is-invalid' : '' }}"
+                                wire:model.live="monto_envases.{{ $envases->id }}.cantidad" placeholder="Monto"
+                                type="number" onkeyup="monto(this,{{ $envases->id }})" />
 
 
-                            @foreach ($servicio_e as $envases)
-                                <div class="col-md-3 mb-3">
-                                    <label for="">Sello</label>
-                                    <input class="form-control" value="{{ $envases->sello_seguridad }}" disabled
-                                        placeholder="Sello de seguridad" type="text" />
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="">Papeleta</label>
-                                    <input class="form-control" value="{{ $envases->folio }}" placeholder="Folio"
-                                        disabled type="text" />
-                                </div>
-                                <div class="col-md-3 mb-3">
-                                    <label for="">
-                                        Monto:
-                                        {{-- ${{ number_format((float) $monto_envases[$envases->id]['cantidad'] ?? 0, 2, '.', ',') }} --}}
-                                        ${{ number_format((float) ($monto_envases[$envases->id]['cantidad'] ?? 0), 2, '.', ',') }}
+                            @error('monto_envases.' . $envases->id . '.cantidad')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="col-md-1 mb-3">
+                            <label style="display: block;">Violado</label>
+                            <input {{ $envases->evidencia_recolecta->violate ? 'checked' : '' }}
+                            type="checkbox" class="large-checkbox" disabled />
+                        </div>
 
-                                    </label>
-                                    <input
-                                        class="form-control {{ $errors->has('monto_envases.' . $envases->id . '.cantidad') ? 'is-invalid' : '' }}"
-                                        wire:model.live="monto_envases.{{ $envases->id }}.cantidad"
-                                        placeholder="Monto" type="number" onkeyup="monto(this,{{ $envases->id }})" />
-
-
-                                    @error('monto_envases.' . $envases->id . '.cantidad')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-md-1 mb-3">
-                                    <label style="display: block;">Violado</label>
-                                    <input {{ $envases->evidencia_recolecta->violate ? 'checked' : '' }}
-                                        type="checkbox" class="large-checkbox" disabled />
-                                </div>
-
-                                <div class="col-md-1 mb-3">
-                                    <Label>Evidencia</Label>
-                                    <button class="btn btn-primary" data-toggle="modal"data-target="#evidenciaModal"
-                                        wire:click='evidenciaRecolecta({{ $envases }})'>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
-                                            <path
-                                                d="M13.002 1H2.998C2.447 1 2 1.447 2 2.002v11.996C2 14.553 2.447 15 2.998 15h11.004c.551 0 .998-.447.998-.998V2.002A1.002 1.002 0 0 0 13.002 1zM3 2h10a1 1 0 0 1 1 1v8.586l-3.293-3.293a1 1 0 0 0-1.414 0L7 10.586 5.707 9.293a1 1 0 0 0-1.414 0L3 10.586V3a1 1 0 0 1 1-1z" />
-                                            <path
-                                                d="M10.707 9.293a1 1 0 0 1 1.414 0L15 12.172V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-.828l3.293-3.293a1 1 0 0 1 1.414 0L7 10.586l3.707-3.707zM10 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="col-md-1 mb-3">
-                                    <label style="display: block;">Acreditación</label>
-                                    <input type="checkbox"
-                                        wire:model="monto_envases.{{ $envases->id }}.acreditacion"
-                                        class="large-checkbox" />
-                                </div>
-                            @endforeach
+                        <div class="col-md-1 mb-3">
+                            <Label>Evidencia</Label>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#evidenciaModal"
+                                wire:click='evidenciaRecolecta({{ $envases }})'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                    class="bi bi-image" viewBox="0 0 16 16">
+                                    <path
+                                        d="M13.002 1H2.998C2.447 1 2 1.447 2 2.002v11.996C2 14.553 2.447 15 2.998 15h11.004c.551 0 .998-.447.998-.998V2.002A1.002 1.002 0 0 0 13.002 1zM3 2h10a1 1 0 0 1 1 1v8.586l-3.293-3.293a1 1 0 0 0-1.414 0L7 10.586 5.707 9.293a1 1 0 0 0-1.414 0L3 10.586V3a1 1 0 0 1 1-1z" />
+                                    <path
+                                        d="M10.707 9.293a1 1 0 0 1 1.414 0L15 12.172V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-.828l3.293-3.293a1 1 0 0 1 1.414 0L7 10.586l3.707-3.707zM10 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="col-md-1 mb-3">
+                            <label style="display: block;">Acreditación</label>
+                            <input type="checkbox" wire:model="monto_envases.{{ $envases->id }}.acreditacion"
+                                class="large-checkbox" />
+                        </div>
+                        @endforeach
                         @else
-                            <div class="col-md-12 text-center">
-                                <div class="spinner-border" role="status">
-                                    {{-- <span class="visually-hidden">Loading...</span> --}}
-                                </div>
+                        <div class="col-md-12 text-center">
+                            <div class="spinner-border" role="status">
+                                {{-- <span class="visually-hidden">Loading...</span> --}}
                             </div>
+                        </div>
                         @endif
                     </div>
 
@@ -304,8 +313,7 @@
             <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title" id="exampleModalLabel">Formato de diferencia de valores.</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                        wire:click='limpiar'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" wire:click='limpiar'>
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -329,10 +337,10 @@
 
                             <div class="col-md-12 col-12">
                                 @php
-                                    $fecha_creacion = \Carbon\Carbon::parse(now());
-                                    $nombre_mes = Str::upper($fecha_creacion->translatedFormat('F'));
-                                    $dia = $fecha_creacion->format('d');
-                                    $anio = $fecha_creacion->format('Y');
+                                $fecha_creacion = \Carbon\Carbon::parse(now());
+                                $nombre_mes = Str::upper($fecha_creacion->translatedFormat('F'));
+                                $dia = $fecha_creacion->format('d');
+                                $anio = $fecha_creacion->format('Y');
                                 @endphp
                                 <h6 class="text-dark text-right" style="margin-top: 15px;margin-right: 8%">EN LA
                                     CIUDAD DE MÉXICO, A
@@ -350,82 +358,85 @@
                             <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                                 <div class="carousel-inner card" style="padding-left: 30px">
                                     @foreach ($diferencias as $index => $diferencia)
-                                        <div class="carousel-item  {{ $index == 0 ? 'active' : '' }}">
-                                            <div class="d-block w-100 p-4">
-                                                <div class="col-md-8 mb-3">
-                                                    <p>
-                                                        FECHA DEL COMPROBANTE:
-                                                        <span
-                                                            class="font-weight-bold checkbox">{{ $diferencia['servicio']['updated_at'] }}</span>
-                                                    </p>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <p>
-                                                        ORIGEN DEL DEPÓSITO: (CLIENTE)
-                                                        <span
-                                                            class="font-weight-bold checkbox">{{ $diferencia['servicio']['rutaServicios']['servicio']['cliente']['rfc_cliente'] }}</span>
-                                                    </p>
-                                                </div>
-
-                                                <div class="col-md-6 mb-3">
-                                                    <p>
-                                                        NÚMERO DE FOLIO DE PAPELETA:
-                                                        <span
-                                                            class="font-weight-bold checkbox">{{ $diferencia['servicio']['folio'] }}</span>
-                                                    </p>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <p>
-                                                        Sello de seguridad:
-                                                        <span
-                                                            class="font-weight-bold checkbox">{{ $diferencia['servicio']['sello_seguridad'] }}</span>
-                                                    </p>
-                                                </div>
-
-                                                <div class="col-md-8 mb-3">
-                                                    <p>
-                                                        IMPORTE QUE DICE CONTENER: $
-                                                        <span class="font-weight-bold checkbox">
-                                                            {{ number_format($diferencia['monto'], 2, '.', ',') }} MXN
-                                                        </span>
-                                                    </p>
-                                                </div>
-
-                                                <div class="col-md-8 mb-3">
-                                                    <p>
-                                                        IMPORTE COMPROBADO: $
-                                                        <span class="font-weight-bold checkbox">
-
-
-                                                            {{ number_format($diferencia['cantidad_ingresada'], 2, '.', ',') }}
-                                                            MXN
-                                                        </span>
-                                                    </p>
-                                                </div>
-
-                                                <div class="col-md-8 mb-3">
-                                                    <p>DIFERENCIA</p>
-                                                    <p>
-                                                        FALTANTE <span
-                                                            class="checkbox">{{ $diferencia['tipo_dif'] == 0 ? '_X_' : '___' }}</span>
-                                                        SOBRANTE <span
-                                                            class="checkbox">{{ $diferencia['tipo_dif'] != 1 ? '___' : '_X_' }}</span>
-                                                        DE <span class="amount">
-                                                            $
-                                                            {{ number_format($diferencia['diferencia'], 2, '.', ',') }}
-                                                            MXN
-                                                        </span>
-                                                    </p>
-                                                </div>
-                                                <div class="col-md-12 mb-3">
-                                                    <p>OBSERVACIONES:</p>
-
-                                                    <textarea class="form-control w-full" cols="3" rows="2" wire:model='observaciones.{{ $index }}'>
-                                                </textarea>
-                                                </div>
-
+                                    <div class="carousel-item  {{ $index == 0 ? 'active' : '' }}">
+                                        <div class="d-block w-100 p-4">
+                                            <div class="col-md-8 mb-3">
+                                                <p>
+                                                    FECHA DEL COMPROBANTE:
+                                                    <span class="font-weight-bold checkbox">{{
+                                                        $diferencia['servicio']['updated_at'] }}</span>
+                                                </p>
                                             </div>
+                                            <div class="col-md-6 mb-3">
+                                                <p>
+                                                    ORIGEN DEL DEPÓSITO: (CLIENTE)
+                                                    <span class="font-weight-bold checkbox">{{
+                                                        $diferencia['servicio']['rutaServicios']['servicio']['cliente']['rfc_cliente']
+                                                        }}</span>
+                                                </p>
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <p>
+                                                    NÚMERO DE FOLIO DE PAPELETA:
+                                                    <span class="font-weight-bold checkbox">{{
+                                                        $diferencia['servicio']['folio'] }}</span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <p>
+                                                    Sello de seguridad:
+                                                    <span class="font-weight-bold checkbox">{{
+                                                        $diferencia['servicio']['sello_seguridad'] }}</span>
+                                                </p>
+                                            </div>
+
+                                            <div class="col-md-8 mb-3">
+                                                <p>
+                                                    IMPORTE QUE DICE CONTENER: $
+                                                    <span class="font-weight-bold checkbox">
+                                                        {{ number_format($diferencia['monto'], 2, '.', ',') }} MXN
+                                                    </span>
+                                                </p>
+                                            </div>
+
+                                            <div class="col-md-8 mb-3">
+                                                <p>
+                                                    IMPORTE COMPROBADO: $
+                                                    <span class="font-weight-bold checkbox">
+
+
+                                                        {{ number_format($diferencia['cantidad_ingresada'], 2, '.', ',')
+                                                        }}
+                                                        MXN
+                                                    </span>
+                                                </p>
+                                            </div>
+
+                                            <div class="col-md-8 mb-3">
+                                                <p>DIFERENCIA</p>
+                                                <p>
+                                                    FALTANTE <span class="checkbox">{{ $diferencia['tipo_dif'] == 0 ?
+                                                        '_X_' : '___' }}</span>
+                                                    SOBRANTE <span class="checkbox">{{ $diferencia['tipo_dif'] != 1 ?
+                                                        '___' : '_X_' }}</span>
+                                                    DE <span class="amount">
+                                                        $
+                                                        {{ number_format($diferencia['diferencia'], 2, '.', ',') }}
+                                                        MXN
+                                                    </span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-12 mb-3">
+                                                <p>OBSERVACIONES:</p>
+
+                                                <textarea class="form-control w-full" cols="3" rows="2"
+                                                    wire:model='observaciones.{{ $index }}'>
+                                                </textarea>
+                                            </div>
+
                                         </div>
+                                    </div>
                                     @endforeach
                                 </div>
 
@@ -461,8 +472,8 @@
 
 
     {{-- detalle de la compra --}}
-    <div class="modal fade" wire:ignore.self id="modalDetailCompra" tabindex="-1"
-        aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" wire:ignore.self id="modalDetailCompra" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-info">
@@ -483,46 +494,45 @@
                         <tbody>
                             @if ($readyToLoadModal)
 
-                                @if ($compra_detalle && count($compra_detalle->detalles))
-                                    @foreach ($compra_detalle->detalles as $detalle)
-                                        <tr>
-                                            <td>{{ $detalle->consignatario->name }}</td>
-                                            <td>${{ number_format($detalle->monto, 2, '.', ',') }}</td>
-                                            <td>
-                                                <button class="btn btn-info"
-                                                    data-toggle="modal"data-target="#evidenciaModal"
-                                                    wire:click='evidenciaCompra({{ $detalle }})'>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" fill="currentColor" class="bi bi-image"
-                                                        viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M13.002 1H2.998C2.447 1 2 1.447 2 2.002v11.996C2 14.553 2.447 15 2.998 15h11.004c.551 0 .998-.447.998-.998V2.002A1.002 1.002 0 0 0 13.002 1zM3 2h10a1 1 0 0 1 1 1v8.586l-3.293-3.293a1 1 0 0 0-1.414 0L7 10.586 5.707 9.293a1 1 0 0 0-1.414 0L3 10.586V3a1 1 0 0 1 1-1z" />
-                                                        <path
-                                                            d="M10.707 9.293a1 1 0 0 1 1.414 0L15 12.172V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-.828l3.293-3.293a1 1 0 0 1 1.414 0L7 10.586l3.707-3.707zM10 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                                    </svg>
-                                                </button>
-                                            </td>
-                                            <td>
+                            @if ($compra_detalle && count($compra_detalle->detalles))
+                            @foreach ($compra_detalle->detalles as $detalle)
+                            <tr>
+                                <td>{{ $detalle->consignatario->name }}</td>
+                                <td>${{ number_format($detalle->monto, 2, '.', ',') }}</td>
+                                <td>
+                                    <button class="btn btn-info" data-toggle="modal" data-target="#evidenciaModal"
+                                        wire:click='evidenciaCompra({{ $detalle }})'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                                            <path
+                                                d="M13.002 1H2.998C2.447 1 2 1.447 2 2.002v11.996C2 14.553 2.447 15 2.998 15h11.004c.551 0 .998-.447.998-.998V2.002A1.002 1.002 0 0 0 13.002 1zM3 2h10a1 1 0 0 1 1 1v8.586l-3.293-3.293a1 1 0 0 0-1.414 0L7 10.586 5.707 9.293a1 1 0 0 0-1.414 0L3 10.586V3a1 1 0 0 1 1-1z" />
+                                            <path
+                                                d="M10.707 9.293a1 1 0 0 1 1.414 0L15 12.172V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-.828l3.293-3.293a1 1 0 0 1 1.414 0L7 10.586l3.707-3.707zM10 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                        </svg>
+                                    </button>
+                                </td>
+                                <td>
 
-                                                <span
-                                                    class="badge {{ $detalle->status_detalles_compra_efectivos == 2 ? 'bg-success' : 'bg-danger' }}">
-                                                    {{ $detalle->status_detalles_compra_efectivos == 2 ? 'Finalizada' : 'Reprogramada' }}
-                                                </span>
+                                    <span
+                                        class="badge {{ $detalle->status_detalles_compra_efectivos == 2 ? 'bg-success' : 'bg-danger' }}">
+                                        {{ $detalle->status_detalles_compra_efectivos == 2 ? 'Finalizada' :
+                                        'Reprogramada' }}
+                                    </span>
 
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @else
-                                    <tr class="text-center">
-                                        <td colspan="8"> No hay movimientos</td>
-                                    </tr>
-                                @endif
+                                </td>
+                            </tr>
+                            @endforeach
                             @else
-                                <tr class="text-center">
-                                    <td colspan="8">
-                                        <div class="spinner-border" role="status"></div>
-                                    </td>
-                                </tr>
+                            <tr class="text-center">
+                                <td colspan="8"> No hay movimientos</td>
+                            </tr>
+                            @endif
+                            @else
+                            <tr class="text-center">
+                                <td colspan="8">
+                                    <div class="spinner-border" role="status"></div>
+                                </td>
+                            </tr>
 
                             @endif
                         </tbody>
@@ -558,49 +568,48 @@
 
 
 
-                            <table class="table table-bordered table-striped table-hover">
-                                <thead class="table-info">
-                                    <th>Monto</th>
-                                    <th>Papeleta/Folio</th>
-                                    <th>Sello de seguridad</th>
-                                    <th>Evidencia</th>
-                                </thead>
-                                <tbody>
-                                    @foreach ($inputs as $index => $input)
-                                        <tr>
-                                            <td>
-                                                {{ number_format((float) $input['cantidad'], 2, '.', ',') }}
-                                            </td>
-                                            <td>
-                                                {{ $input['folio'] }}
-                                            </td>
-                                            <td>
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="table-info">
+                                <th>Monto</th>
+                                <th>Papeleta/Folio</th>
+                                <th>Sello de seguridad</th>
+                                <th>Evidencia</th>
+                            </thead>
+                            <tbody>
+                                @foreach ($inputs as $index => $input)
+                                <tr>
+                                    <td>
+                                        {{ number_format((float) $input['cantidad'], 2, '.', ',') }}
+                                    </td>
+                                    <td>
+                                        {{ $input['folio'] }}
+                                    </td>
+                                    <td>
 
-                                                {{ $input['sello'] }}
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-info"
-                                                    data-toggle="modal"data-target="#evidenciaModal"
-                                                    wire:click='evidenciaEntrega({{ $index }})'>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" fill="currentColor" class="bi bi-image"
-                                                        viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M13.002 1H2.998C2.447 1 2 1.447 2 2.002v11.996C2 14.553 2.447 15 2.998 15h11.004c.551 0 .998-.447.998-.998V2.002A1.002 1.002 0 0 0 13.002 1zM3 2h10a1 1 0 0 1 1 1v8.586l-3.293-3.293a1 1 0 0 0-1.414 0L7 10.586 5.707 9.293a1 1 0 0 0-1.414 0L3 10.586V3a1 1 0 0 1 1-1z" />
-                                                        <path
-                                                            d="M10.707 9.293a1 1 0 0 1 1.414 0L15 12.172V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-.828l3.293-3.293a1 1 0 0 1 1.414 0L7 10.586l3.707-3.707zM10 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                                                    </svg>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                        {{ $input['sello'] }}
+                                    </td>
+
+                                    <td>
+                                        <button class="btn btn-info" data-toggle="modal" data-target="#evidenciaModal"
+                                            wire:click='evidenciaEntrega({{ $index }})'>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M13.002 1H2.998C2.447 1 2 1.447 2 2.002v11.996C2 14.553 2.447 15 2.998 15h11.004c.551 0 .998-.447.998-.998V2.002A1.002 1.002 0 0 0 13.002 1zM3 2h10a1 1 0 0 1 1 1v8.586l-3.293-3.293a1 1 0 0 0-1.414 0L7 10.586 5.707 9.293a1 1 0 0 0-1.414 0L3 10.586V3a1 1 0 0 1 1-1z" />
+                                                <path
+                                                    d="M10.707 9.293a1 1 0 0 1 1.414 0L15 12.172V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-.828l3.293-3.293a1 1 0 0 1 1.414 0L7 10.586l3.707-3.707zM10 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                         @else
-                            <div class="col-md-12 text-center">
-                                <div class="spinner-border" role="status">
-                                </div>
+                        <div class="col-md-12 text-center">
+                            <div class="spinner-border" role="status">
                             </div>
+                        </div>
                         @endif
                     </div>
                 </div>
@@ -616,36 +625,105 @@
     </div>
 
 
-<!-- Modal -->
-<div class="modal fade" id="evidenciaModal" wire:ignore.self tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl"> <!-- Tamaño del modal -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Evidencia</h5>
-            </div>
-            <div class="modal-body text-center">
-                @if ($readyToLoadModal)
+    <!-- Modal -->
+    <div class="modal fade" id="evidenciaModal" wire:ignore.self tabindex="-1" aria-labelledby="imageModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <!-- Tamaño del modal -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Evidencia</h5>
+                </div>
+                <div class="modal-body text-center">
+                    @if ($readyToLoadModal)
                     <div class="img-container">
                         <img src="{{ asset('storage/' . $evidencia_foto) }}" alt="Evidencia" class="img-fluid">
                     </div>
-                @else
+                    @else
                     <div class="col-md-12 text-center">
                         <div class="spinner-border" role="status"></div>
                     </div>
-                @endif
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
+    <div class="modal fade" id="keyModal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1"
+        wire:ignore.self>
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" id="exampleModalLabel">Llaves del servicio</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" wire:click='cleanKeys'>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
 
+                    @if ($keys)
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            @if (count($keys))
+                            <table class="table table-striped">
+                                <thead class="table-info">
+                                    <th>Llave</th>
+                                    <th>Entregar</th>
+                                </thead>
+                                <tbody>
+
+                                    @foreach ($keys as $key)
+                                    <tr>
+                                        <td>{{ $key->key }}</td>
+                                        <td>
+                                            @if($key->status_servicio_keys ==1)
+                                            <button class="btn btn-primary" wire:click='updateKeys({{$key}})'
+                                                wire:loading.attr="disabled" wire:target="updateKeys({{ $key }})">
+                                                Entregar
+                                            </button>
+                                            <span style="color: rgb(6, 125, 2)" wire:loading
+                                                wire:target="updateKeys({{ $key}})">Entregando...</span>
+
+                                            @else
+                                            <span class="badge bg-success" style="font-weight: bold;"> Entregado.</span>
+
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            @else
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> No hay llaves para este servicio.
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                    @else
+                    <div class="text-center">
+
+                        <div class="spinner-border text-center" role="status"></div>
+                    </div>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    @if($ruta_servicio && $ruta_servicio->keys==1)
+                    <button class="btn btn-primary" wire:click='endKeysRutaServices'
+                        wire:loading.remove>Finalizar</button>
+                    @endif
+                    <button class="btn btn-secondary" data-dismiss="modal" wire:click='cleanKeys'>Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @push('js')
-        <script>
-            var array_monto = [];
+    <script>
+        var array_monto = [];
 
             const monto = (input, index) => {
 
@@ -730,6 +808,9 @@
                     $('#terminar_servicio').modal('hide');
                     $('#diferencia_mdl').modal('hide');
 
+                    if(tipomensaje != 'error'){
+                    $('#keyModal').modal('hide');
+                    }
                     Swal.fire({
                         position: 'center',
                         icon: tipomensaje,
@@ -804,8 +885,12 @@
                             });
                         }
                     })
-                })
+                });
+
+                $('#keyModal').on('hidden.bs.modal', function() {
+                    @this.call('cleanKeys');
+                });
             });
-        </script>
+    </script>
     @endpush
 </div>

@@ -16,6 +16,7 @@ use App\Models\RutaVehiculo;
 use App\Models\RutaVehiculoReporte;
 use App\Models\ServicioEvidenciaEntrega;
 use App\Models\ServicioEvidenciaRecolecta;
+use App\Models\ServicioKey;
 use App\Models\ServicioRutaEnvases;
 use Illuminate\Support\Facades\Notification as NotificationsNotification;
 use Exception;
@@ -216,7 +217,7 @@ class OperadoresIndex extends   Component
         $this->MontoEntregado = null;
         $this->photo = null;
 
-        $this->reset('tiposervicio', 'inputs', 'idrecolecta', 'envasescantidad', 'MontoRecolecta');
+        $this->reset('tiposervicio', 'inputs', 'idrecolecta', 'envasescantidad', 'MontoRecolecta','readyToLoadModal');
     }
     public function modalCerradoReprogramar()
     {
@@ -650,5 +651,14 @@ class OperadoresIndex extends   Component
             Log::info($e->getMessage());
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => $e->getMessage() ?? 'Ha ocurrido un problema'], ['tipomensaje' => 'error']);
         }
+    }
+
+    public $keys;
+    public function showKeys(RutaServicio $ruta_servicio){
+        $this->keys = ServicioKey::where('ruta_servicio_id', $ruta_servicio->id)->get();
+    }
+    public function cleanKeys()
+    {
+        $this->reset('keys');
     }
 }

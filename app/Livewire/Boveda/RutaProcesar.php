@@ -18,6 +18,7 @@ use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
 use App\Models\RutaVehiculo;
 use App\Models\RutaVehiculoReporte;
+use App\Models\ServicioKey;
 use App\Models\ServicioRutaEnvases;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -85,13 +86,13 @@ class RutaProcesar extends Component
             'monto_envases.*.cantidad.min' => 'La cantidad no debe ser al menos 0',
         ]);
 
-        
+
         try {
             DB::beginTransaction();
 
             $monto_total_envases = 0;
 
-                        //reviso so hay diferencia de valores
+            //reviso so hay diferencia de valores
             foreach ($this->servicio_e as $s) {
                 if (isset($this->monto_envases[$s->id])) {
                     $input = $this->monto_envases[$s->id];
@@ -201,7 +202,6 @@ class RutaProcesar extends Component
             Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
 
             $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
-
         }
     }
 
@@ -212,11 +212,22 @@ class RutaProcesar extends Component
         try {
             DB::beginTransaction();
             $serviciosPendientes = RutaServicio::where('ruta_id', $this->ruta->id)
-                ->where('status_ruta_servicios', '<',5)
+                ->where('status_ruta_servicios', '<', 5)
                 ->count();
 
             $comprasPendientes = RutaCompraEfectivo::where('ruta_id', $this->ruta->id)
                 ->where('status_ruta_compra_efectivos', 3)->count();
+
+
+
+            $keys = RutaServicio::where('ruta_id', $this->ruta->id)
+                ->whereHas('keys', function ($query) {
+                    $query->where('status_servicio_keys', 1);
+                })
+                ->count();
+            if ($keys > 0) {
+                throw new \Exception('No se puede terminar la ruta porque aún tiene Llaves por entregar.');
+            }
             if ($serviciosPendientes > 0) {
                 throw new \Exception('No se puede terminar la ruta porque aún tiene servicios pendientes.');
             }
@@ -239,7 +250,7 @@ class RutaProcesar extends Component
 
             //termino los servicios
             RutaServicio::where('ruta_id', $this->ruta->id)
-                ->where('status_ruta_servicios',5)->update(['status_ruta_servicios'=>6]);
+                ->where('status_ruta_servicios', 5)->update(['status_ruta_servicios' => 6]);
 
 
             //actualizo ruta vehiculo
@@ -482,5 +493,37 @@ class RutaProcesar extends Component
         $this->evidencia_foto =  'evidencias/EntregasRecolectas/Servicio_' . $ruta_servicio->ruta_servicios_id .
             '_entrega_' . $ruta_servicio->evidencia_entrega->id . '_evidencia.png';
         $this->readyToLoadModal = true;
+    }
+
+    public $keys;
+    public $ruta_servicio;
+    public function showKeys(RutaServicio $rutaServicio)
+    {
+        $this->ruta_servicio = $rutaServicio;
+        $this->keys = ServicioKey::where('ruta_servicio_id', $rutaServicio->id)->get();
+    }
+
+    public function updateKeys(ServicioKey $key)
+    {
+        $key->status_servicio_keys = 2;
+        $key->save();
+        $this->keys = ServicioKey::where('ruta_servicio_id', $key->ruta_servicio_id)->get();
+    }
+    public function cleanKeys()
+    {
+
+        $this->reset('keys', 'ruta_servicio');
+    }
+
+    public function endKeysRutaServices()
+    {
+        $keys = ServicioKey::where('ruta_servicio_id', $this->ruta_servicio->id)->where('status_servicio_keys', 1)->count();
+        if ($keys == 0) {
+            $this->ruta_servicio->keys = 1;
+            $this->ruta_servicio->save();
+            $this->dispatch('agregarArchivocre', ['msg' => 'Las llaves del servicio fueron entregados'], ['tipomensaje' => 'success']);
+        } else {
+            $this->dispatch('agregarArchivocre', ['msg' => 'Aun faltan por entregar llaves'], ['tipomensaje' => 'error']);
+        }
     }
 }
