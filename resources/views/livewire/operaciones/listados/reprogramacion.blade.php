@@ -20,7 +20,6 @@
                                     <th>Tipo</th>
                                     <th>Motivo</th>
                                     <th>Estatus</th>
-                                    {{-- <th>Fecha</th> --}}
                                     <th>Detalles</th>
                                 </thead>
                                 <tbody>
@@ -45,12 +44,13 @@
                                             <td>{{ $repro->ruta_servicio->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECTA' }}
                                             </td>
                                             <td>{{ $repro->motivo }}</td>
-                                            {{-- <td>{{ $repro->ruta_servicio->updated_at }}</td> --}}
                                             <td>
-                                                {{ $repro->status_reprogramacions == 1 ? 'PENDIENTE' : '' }}
-                                                {{ $repro->status_reprogramacions == 2 ? 'PROCESO/ASIGNADA' : '' }}
-                                                {{ $repro->status_reprogramacions == 3 ? 'FINALIZADA' : '' }}
+                                                <span class="badge bg-success" style="font-weight: bold;"> 
 
+                                                    {{ $repro->status_reprogramacions == 1 ? 'PENDIENTE' : '' }}
+                                                    {{ $repro->status_reprogramacions == 2 ? 'PROCESO/ASIGNADA' : '' }}
+                                                    {{ $repro->status_reprogramacions == 3 ? 'FINALIZADA' : '' }}
+                                                </span>
                                             </td>
                                             <td>
                                                 @if ($repro->status_reprogramacions == 1)

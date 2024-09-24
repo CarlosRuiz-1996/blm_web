@@ -711,7 +711,9 @@
                     @endif
                 </div>
                 <div class="modal-footer">
-                    @if($ruta_servicio && $ruta_servicio->keys==1)
+
+                    
+                    @if($ruta_servicio && $ruta_servicio->keys==0)
                     <button class="btn btn-primary" wire:click='endKeysRutaServices'
                         wire:loading.remove>Finalizar</button>
                     @endif

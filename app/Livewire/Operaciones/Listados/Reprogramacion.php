@@ -51,22 +51,22 @@ class Reprogramacion extends Component
         if ($property === 'form.ctg_ruta_dia_id') {
 
             if ($value != "") {
-                $this->resetValidation('form.ctg_ruta_dia_id');
-
+                $this->resetValidation();
+                Log::info('entra:');
                 //traer las rutas dependiendo si es entrega o recoleccion
                 $baseQuery = Ruta::where('ctg_ruta_dia_id', '=', $value)
                     ->where('id', '!=', $this->repro_detail->ruta_servicio->ruta_id);
-
+                      
                 if ($this->repro_detail->ruta_servicio->tipo_servicio == 1) {
                     $baseQuery->where('status_ruta', '=', 1); //entrega
                 } else {
-                    $baseQuery->where('status_ruta', '<', 3); //recoleccion
+                    $baseQuery->where('status_ruta', '!=', 3); //recoleccion
                 }
-
+                             
                 $this->rutas_dia = $baseQuery->get();
             } else {
 
-                $this->addError('form.ctg_ruta_dia_id', 'La fecha de evaluación debe ser menor a la fecha de inicio de servicio.');
+                $this->addError('form.ctg_ruta_dia_id', 'Debe de seleccionar un dia.');
             }
         }
     }
@@ -84,11 +84,15 @@ class Reprogramacion extends Component
         ]);
         try {
             DB::beginTransaction();
-            $this->repro_detail->ruta_servicio_id_new = $this->form->ruta_id;
+
+            $this->repro_detail->ruta_servicio->ruta_id= $this->form->ruta_id;
+            $this->repro_detail->ruta_servicio->status_ruta_servicios= 1;
+            $this->repro_detail->ruta_servicio->save();
+
+            $this->repro_detail->ruta_id_old = $this->form->ruta_id;
             $this->repro_detail->status_reprogramacions = 2;
             $this->repro_detail->save();
             $this->dispatch('alert', ['msg' => 'El servicio fue asignado correctamente.'], ['tipo' => 'success']);
-            // $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Entrega realizada con exito.'], ['tipomensaje' => 'success'], ['op' => 1]);
 
             DB::commit();
         } catch (\Exception $e) {

@@ -212,9 +212,8 @@ class RutaProcesar extends Component
         try {
             DB::beginTransaction();
             $serviciosPendientes = RutaServicio::where('ruta_id', $this->ruta->id)
-                ->where('status_ruta_servicios', '<', 5)
+                ->whereBetween('status_ruta_servicios', [1, 4])
                 ->count();
-
             $comprasPendientes = RutaCompraEfectivo::where('ruta_id', $this->ruta->id)
                 ->where('status_ruta_compra_efectivos', 3)->count();
 
