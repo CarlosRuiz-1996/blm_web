@@ -38,12 +38,49 @@ class Index extends Component
     public $inputs = [];
     public $sellos = [];
     public $readyToLoad = false;
+    public $filtroRuta;
+    public $filtroServicio;
+    public $filtroRFC;
+    public $filtroTipoServicio;
+    public $filtroEstatus;
+    public $filtroFecha;
 
     public function render()
     {
         if ($this->readyToLoad) {
             $resguardototal = Cliente::where('status_cliente', 1)->sum('resguardo');
-            $Movimientos =  RutaServicioReporte::paginate(10);
+        // Aplicar filtros
+        $query = RutaServicioReporte::query();
+
+        // Aplicar filtros
+        if ($this->filtroRuta) {
+            $query->whereHas('ruta.nombre', function ($q) {
+                $q->where('name', 'like', '%' . $this->filtroRuta . '%');
+            });
+        }
+
+        if ($this->filtroServicio) {
+            $query->whereHas('servicio.ctg_servicio', function ($q) {
+                $q->where('descripcion', 'like', '%' . $this->filtroServicio . '%');
+            });
+        }
+
+        if ($this->filtroRFC) {
+            $query->whereHas('servicio.cliente', function ($q) {
+                $q->where('rfc_cliente', 'like', '%' . $this->filtroRFC . '%');
+            });
+        }
+
+        if ($this->filtroTipoServicio) {
+            $query->where('tipo_servicio', $this->filtroTipoServicio);
+        }
+        if ($this->filtroFecha) {
+            $query->whereDate('created_at', $this->filtroFecha);
+        }
+
+        // Paginación de resultados
+        $Movimientos = $query->paginate(10);
+
             $servicios = Ruta::where('ctg_rutas_estado_id', 2)->paginate(10);
         } else {
             $resguardototal = 0;

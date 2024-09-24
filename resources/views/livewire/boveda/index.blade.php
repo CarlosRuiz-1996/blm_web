@@ -116,6 +116,29 @@
                     </div>
                     <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab"
                         wire:ignore.self>
+                        <div class="mb-3 mt-3">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" placeholder="Filtrar por Ruta" wire:model.live="filtroRuta">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" placeholder="Filtrar por Servicio" wire:model.live="filtroServicio">
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" placeholder="Filtrar por RFC Cliente" wire:model.live="filtroRFC">
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-control" wire:model.live="filtroTipoServicio">
+                                        <option value="">Tipo de Servicio</option>
+                                        <option value="1">Entrega</option>
+                                        <option value="2">Recolección</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="date" class="form-control" wire:model.live="filtroFecha">
+                                </div>
+                            </div>
+                        </div>                        
                         <div class="table-responsive">
                             <table class="table">
                                 <thead class="table-info">

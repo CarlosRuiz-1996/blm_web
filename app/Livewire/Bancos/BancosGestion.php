@@ -516,6 +516,11 @@ class BancosGestion extends Component
                     $query->where('folio', 'ILIKE', '%' . $this->form->papeleta_acreditacion_search . '%');
                 });
             }
+            if ($this->form->cliente_acreditacion_search) {
+                $query->orWhereHas('envase.rutaServicios.servicio.cliente', function ($query) {
+                    $query->where('razon_social', 'ILIKE', '%' . $this->form->cliente_acreditacion_search . '%');
+                });
+            }
         })->orderBy('id', 'DESC')->get();
         return Excel::download(new Acreditaciones($acreditaciones), 'acreditaciones.xlsx');
     }
