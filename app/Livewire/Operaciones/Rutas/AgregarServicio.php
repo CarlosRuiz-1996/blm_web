@@ -45,6 +45,15 @@ class AgregarServicio extends Component
         if ($this->readyToLoad) {
             $servicios = $this->form->getServicios();
             $ruta_servicios = $this->form->getRutaServicios();
+            foreach ($servicios as $servicio) {
+                if (!isset($this->selectServicios[$servicio->id])) {
+                    // Limpiar valores de monto y folio si el servicio no está seleccionado
+                    $this->montoArray[$servicio->id] = null;
+                    $this->folioArray[$servicio->id] = null;
+                    $this->montoArrayRecolecta[$servicio->id] = null;
+                    $this->folioArrayRecolecta[$servicio->id] = null;
+                }
+            }
         } else {
             $servicios = [];
             $ruta_servicios = [];
@@ -53,6 +62,7 @@ class AgregarServicio extends Component
     }
     public function loadServicios()
     {
+        
         $this->readyToLoad = true;
     }
 
@@ -72,6 +82,98 @@ class AgregarServicio extends Component
             $this->form->searchClienteModal = "";
         }
     }
+    public function handleCheckboxChange($servicioId)
+    {
+        if ($this->selectServicios[$servicioId]) {
+            // Checkbox está marcado, agregar lógica si es necesario
+            $this->selectServicios[$servicioId] = true;
+        } else {
+            // Checkbox está desmarcado, limpiar los montos y folios
+            $this->selectServicios[$servicioId] = false;
+    
+            // Deshabilitar y limpiar valores
+            $this->montoArray[$servicioId] = null;
+            $this->folioArray[$servicioId] = null;
+            $this->montoArrayRecolecta[$servicioId] = null;
+            $this->folioArrayRecolecta[$servicioId] = null;
+        }
+    }
+    
+    
+        public function handleCheckboxChangeRecolecta($servicioId)
+        {
+            // Verificar si el checkbox de recolección fue desmarcado
+            if (!$this->selectServiciosRecolecta[$servicioId]) {
+                // El checkbox está desmarcado, deshabilitar y limpiar los campos
+                $this->montoArrayRecolecta[$servicioId] = null;
+                $this->folioArrayRecolecta[$servicioId] = null;
+            }
+        }
+        
+        public function handleCheckboxChangeEntrega($servicioId)
+        {
+            // Verificar si el checkbox de entrega fue desmarcado
+            if (!$this->selectServiciosEntrega[$servicioId]) {
+                // El checkbox está desmarcado, deshabilitar y limpiar los campos
+                $this->montoArray[$servicioId] = null;
+                $this->folioArray[$servicioId] = null;
+                
+            }
+        }
+
+        public function updatedMontoArray()
+        {
+            // Iterar sobre el array para aplicar lógica a cada elemento
+            foreach ($this->montoArray as $servicioId => $value) {
+                if ($value < 0) {
+                    $this->montoArray[$servicioId] = 0; // o cualquier lógica que necesites
+                } else {
+                    $this->montoArray[$servicioId] = $value;
+                }
+            }
+        }
+
+
+        public function updatedFolioArray()
+        {
+            // Iterar sobre el array para aplicar lógica a cada elemento
+            foreach ($this->folioArray as $servicioId => $value) {
+                if (empty($value)) {
+                    $this->folioArray[$servicioId] = ''; // Asegúrate de que el valor sea una cadena vacía si es necesario
+                } else {
+                    $this->folioArray[$servicioId] = $value;
+                }
+            }
+        }
+        public function updatedMontoArrayRecolecta()
+        {
+            // Iterar sobre el array de montos recolecta
+            foreach ($this->montoArrayRecolecta as $servicioId => $value) {
+                if ($value < 0) {
+                    $this->montoArrayRecolecta[$servicioId] = 0; // Establecer a 0 si es negativo
+                } else {
+                    $this->montoArrayRecolecta[$servicioId] = $value; // Mantener el valor si es válido
+                }
+            }
+        }
+        public function updatedFolioArrayRecolecta()
+        {
+            // Iterar sobre el array de montos recolecta
+            foreach ($this->folioArrayRecolecta as $servicioId => $value) {
+                if ($value < 0) {
+                    $this->folioArrayRecolecta[$servicioId] = 0; // Establecer a 0 si es negativo
+                } else {
+                    $this->folioArrayRecolecta[$servicioId] = $value; // Mantener el valor si es válido
+                }
+            }
+        }
+
+
+        
+
+
+        
+
 
     public function limpiarFiltro()
     {
@@ -198,6 +300,8 @@ class AgregarServicio extends Component
                 $this->clean();
                 $seleccionados = [];
                 $seleccionadosRecolecta = [];
+                $this->selectServiciosEntrega=[];
+                $this->selectServicios=[];
                 // $selectServicios = [];
                 // $selectServiciosRecolecta = [];
                 $this->dispatch('total-ruta');

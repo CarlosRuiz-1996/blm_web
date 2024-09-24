@@ -492,24 +492,25 @@
 
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group" style="margin-top: 33px">
-                                <button wire:click='cleanFiltrerAcreditacion' class="btn btn-info">Limpiar
-                                    Filtros</button>
+                            <div class="form-group">
+                                <label for="">Cliente</label>
+                                <input type="text" class="form-control w-full"
+                                    wire:model.live='form.cliente_acreditacion_search'>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="form-group" style="margin-top: 33px">
-                                <button wire:click='exportarAcreditacion' class="btn btn-success">
-                                    Exportar
-                                </button>
+                            <div class="form-group d-flex" style="margin-top: 33px">
+                                <button wire:click='cleanFiltrerAcreditacion' class="btn btn-info btn-block m-0">Limpiar Filtros</button>
+                                <button wire:click='exportarAcreditacion' class="btn btn-success btn-block m-0">Exportar</button>
                             </div>
-                        </div>
+                        </div>                        
                     </div>
                     @if (count($acreditaciones))
 
                         <table class="table table-bordered table-striped table-hover mt-3">
                             <thead class="table-info">
                                 <tr>
+                                    <th>Cliente</th>
                                     <th>Cantidad</th>
                                     <th>Papeleta</th>
                                     <th>Fecha de entrada</th>
@@ -521,6 +522,7 @@
                             <tbody>
                                 @foreach ($acreditaciones as $acreditacion)
                                     <tr>
+                                        <td>{{$acreditacion->envase->rutaServicios->servicio->cliente->razon_social}}</td>
                                         <td>$ {{ number_format($acreditacion->envase->cantidad, 2, '.', ',') }}</td>
                                         <td>
                                             {{ $acreditacion->envase->folio }}

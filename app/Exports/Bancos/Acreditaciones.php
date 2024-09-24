@@ -36,7 +36,7 @@ class Acreditaciones implements FromView,WithStyles, ShouldAutoSize
                 ],
             ],
             // Estilo para todas las celdas de la tabla
-            'A2:E1000' => [
+            'A2:F1000' => [
                 'borders' => [
                     'allBorders' => [
                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,

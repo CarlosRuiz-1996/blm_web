@@ -136,6 +136,7 @@ class BancosForm extends Form
     public $fechafin_bancoServ_serach;
     public $tipoServ_bancoServ_serach;
     public $status_bancoServ_serach;
+    
     public function getAllBancosServicios()
     {
         return BancosServicios::where(function ($query) {
@@ -211,6 +212,7 @@ class BancosForm extends Form
     public $fechaf_acreditacion_search;
     public $folio_acreditacion_search;
     public $status_acreditacion_search;
+    public $cliente_acreditacion_search;
     public function getAllAcreditaciones()
     {
         return BancosServicioAcreditacion::where(function ($query) {
@@ -236,6 +238,11 @@ class BancosForm extends Form
             if ($this->papeleta_acreditacion_search) {
                 $query->orWhereHas('envase', function ($query) {
                     $query->where('folio', 'ILIKE', '%' . $this->papeleta_acreditacion_search . '%');
+                });
+            }
+            if ($this->cliente_acreditacion_search) {
+                $query->orWhereHas('envase.rutaServicios.servicio.cliente', function ($query) {
+                    $query->where('razon_social', 'ILIKE', '%' . $this->cliente_acreditacion_search . '%');
                 });
             }
         })->orderBy('id', 'DESC')->paginate(10, pageName: 'acreditaciones');
