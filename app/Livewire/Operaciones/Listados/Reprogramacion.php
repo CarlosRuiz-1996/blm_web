@@ -100,4 +100,16 @@ class Reprogramacion extends Component
             $this->dispatch('alert-repro', ['msg' => 'Ha ocurrido un error.'], ['tipo' => 'error']);
         }
     }
+
+    public  $evidencia_foto;
+    public  $readyToLoadModal;
+    public function evidenciaRepro(ModelsReprogramacion $repro)
+    {
+        $this->evidencia_foto =  'evidencias/reprogramacion/reprogramacion_' . $repro->id . '.png';
+        $this->readyToLoadModal = true;
+    }
+
+    public function clean(){
+        $this->readyToLoadModal = false;
+    }
 }

@@ -11,6 +11,7 @@ class Reprogramacion extends Model
     protected $table="reprogramacions";
     protected $fillable=[
         'motivo',
+        'evidencia',
         'ruta_servicio_id',
         'status_reprogramacions',
         'area_id',

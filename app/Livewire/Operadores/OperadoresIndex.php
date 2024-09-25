@@ -449,7 +449,7 @@ class OperadoresIndex extends   Component
             'ruta_id_old'=>$servicioRuta->ruta->id
         ]);
 
-        $nombreEvidenciaRepro = 'reprogramacion' . $repro->id . '.png';
+        $nombreEvidenciaRepro = 'reprogramacion_' . $repro->id . '.png';
         $this->photorepro->storeAs(path: 'evidencias/reprogramacion/', name: $nombreEvidenciaRepro);
         $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
         NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
