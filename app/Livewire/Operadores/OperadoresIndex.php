@@ -6,6 +6,7 @@ use App\Models\CompraEfectivo;
 use App\Models\CompraEfectivoEnvases;
 use App\Models\DetallesCompraEfectivo;
 use App\Models\Empleado;
+use App\Models\Reprogramacion;
 use App\Models\Ruta;
 use App\Models\RutaCompraEfectivo;
 use App\Models\RutaEmpleadoReporte;
@@ -217,7 +218,7 @@ class OperadoresIndex extends   Component
         $this->MontoEntregado = null;
         $this->photo = null;
 
-        $this->reset('tiposervicio', 'inputs', 'idrecolecta', 'envasescantidad', 'MontoRecolecta','readyToLoadModal');
+        $this->reset('tiposervicio', 'inputs', 'idrecolecta', 'envasescantidad', 'MontoRecolecta', 'readyToLoadModal');
     }
     public function modalCerradoReprogramar()
     {
@@ -441,11 +442,20 @@ class OperadoresIndex extends   Component
             ->where('status_ruta_servicio_reportes', 2)->update(['status_ruta_servicio_reportes' => 3]);
 
 
+        $repro = Reprogramacion::create([
+            'motivo'=>$this->motivoReprogramarConcepto,
+            'ruta_servicio_id'=>$servicioRuta->id,
+            'area_id'=>18,
+            'ruta_id_old'=>$servicioRuta->ruta->id
+        ]);
 
-        $this->photorepro->storeAs(path: 'evidencias/reprogramacion/', name: 'avatar.png');
+        $nombreEvidenciaRepro = 'reprogramacion' . $repro->id . '.png';
+        $this->photorepro->storeAs(path: 'evidencias/reprogramacion/', name: $nombreEvidenciaRepro);
         $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
         NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
-        $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio Sera reprogramado'], ['tipomensaje' => 'success'], ['op' => 1]);
+
+        $this->reset('photorepro','IdservicioReprogramar','motivoReprogramarConcepto');
+        $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio sera reprogramado'], ['tipomensaje' => 'success'], ['op' => 1]);
     }
 
 
@@ -654,7 +664,8 @@ class OperadoresIndex extends   Component
     }
 
     public $keys;
-    public function showKeys(RutaServicio $ruta_servicio){
+    public function showKeys(RutaServicio $ruta_servicio)
+    {
         $this->keys = ServicioKey::where('ruta_servicio_id', $ruta_servicio->id)->get();
     }
     public function cleanKeys()

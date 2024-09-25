@@ -49,7 +49,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
-    })->name('dashboard');
+    })->middleware('role.redirect')->name('dashboard');
 
     Route::get('/usuarios', [UsuariosController::class, 'index'])->name('user.index');
     Route::get('/usuarios/nuevo', [UsuariosController::class, 'nuevousuario'])->name('user.create');
@@ -153,7 +153,6 @@ Route::middleware([
 
     //tablero
     Route::get('/tablero', [tableroController::class, 'index'])->name('tablero.index');
-
 });
 
 Livewire::setUpdateRoute(function ($handle) {
