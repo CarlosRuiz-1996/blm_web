@@ -10,6 +10,7 @@ use App\Models\CompraEfectivo;
 use App\Models\DetallesCompraEfectivo;
 use App\Models\Inconsistencias;
 use App\Models\MontoBlm;
+use App\Models\Reprogramacion;
 use App\Models\Ruta;
 use App\Models\RutaCompraEfectivo;
 use App\Models\RutaEmpleadoReporte;
@@ -191,7 +192,7 @@ class RutaProcesar extends Component
                 $envase->evidencia_entrega->save();
             }
 
-
+            $this->finalizarReprogramacion($servicio);
             $this->limpiar();
             $this->dispatch('agregarArchivocre', ['msg' => 'El servicio de entrega ha sido termiando'], ['tipomensaje' => 'success']);
 
@@ -382,6 +383,8 @@ class RutaProcesar extends Component
             'empleado_id' => Auth::user()->empleado->id,
             'ctg_area_id' => Auth::user()->empleado->ctg_area_id,
         ]);
+
+        $this->finalizarReprogramacion($this->form->servicio->id);
         //actualizar la informacion de ruta servicio
         $this->form->servicio->status_ruta_servicios = 5;
         $this->form->servicio->save();
@@ -524,5 +527,10 @@ class RutaProcesar extends Component
         } else {
             $this->dispatch('agregarArchivocre', ['msg' => 'Aun faltan por entregar llaves'], ['tipomensaje' => 'error']);
         }
+    }
+
+
+    public function finalizarReprogramacion(RutaServicio $serv){
+        Reprogramacion::where('ruta_servicio_id', $serv->id)->update(['status_reprogramacions'=>3]);
     }
 }
