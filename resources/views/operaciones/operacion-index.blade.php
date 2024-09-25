@@ -52,12 +52,12 @@
                             <div class="tab-pane fade" id="bancos" role="tabpanel"
                                 aria-labelledby="bancos-tab">
 
-                                <livewire:operaciones.listados.bancos-rutas />
+                                {{-- <livewire:operaciones.listados.bancos-rutas /> --}}
 
                             </div>
                             <div class="tab-pane fade" id="validacion-memo" role="tabpanel"
                                 aria-labelledby="validacion-memo-tab">
-                                <livewire:memorandum-validacion.validacion-listados :area="2" /> n
+                                {{-- <livewire:memorandum-validacion.validacion-listados :area="2" /> n --}}
 
 
                             </div>

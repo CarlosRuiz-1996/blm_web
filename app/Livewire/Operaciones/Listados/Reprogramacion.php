@@ -37,11 +37,11 @@ class Reprogramacion extends Component
     public $repro_detail;
     public function DetalleServicio(ModelsReprogramacion $repro)
     {
+
         $this->repro_detail = $repro;
         // dd($repro->ruta_servicio);
         $this->form->monto = '$ ' . number_format($repro->ruta_servicio->monto, 2, '.', ',') . 'MXN';
         $this->form->folio =  $repro->ruta_servicio->folio;
-        // $this->form->envases =  $repro->ruta_servicio->envases;
     }
 
     public $ctg_ruta_dia_id;
@@ -52,11 +52,10 @@ class Reprogramacion extends Component
 
             if ($value != "") {
                 $this->resetValidation();
-                Log::info('entra:');
                 //traer las rutas dependiendo si es entrega o recoleccion
                 $baseQuery = Ruta::where('ctg_ruta_dia_id', '=', $value)
                     ->where('id', '!=', $this->repro_detail->ruta_servicio->ruta_id);
-                      
+                   
                 if ($this->repro_detail->ruta_servicio->tipo_servicio == 1) {
                     $baseQuery->where('status_ruta', '=', 1); //entrega
                 } else {
@@ -89,15 +88,16 @@ class Reprogramacion extends Component
             $this->repro_detail->ruta_servicio->status_ruta_servicios= 1;
             $this->repro_detail->ruta_servicio->save();
 
-            $this->repro_detail->ruta_id_old = $this->form->ruta_id;
+            $this->repro_detail->ruta_id_new = $this->form->ruta_id;
             $this->repro_detail->status_reprogramacions = 2;
             $this->repro_detail->save();
-            $this->dispatch('alert', ['msg' => 'El servicio fue asignado correctamente.'], ['tipo' => 'success']);
+            $this->reset('form.ruta_id','form.ctg_ruta_dia_id','ctg_ruta_dia_id','rutas_dia' );
+            $this->dispatch('alert-repro', ['msg' => 'El servicio fue asignado correctamente.'], ['tipo' => 'success']);
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->dispatch('alert', ['msg' => 'Ha ocurrido un error.'], ['tipo' => 'error']);
+            $this->dispatch('alert-repro', ['msg' => 'Ha ocurrido un error.'], ['tipo' => 'error']);
         }
     }
 }

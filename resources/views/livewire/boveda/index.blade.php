@@ -43,7 +43,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="diferencia-tab" data-toggle="tab" href="#diferencia" role="tab"
-                            aria-controls="diferencia" wire:ignore.self aria-selected="false">Diferencias de Valores</a>
+                            aria-controls="diferencia" wire:ignore.self aria-selected="false">Acta de Diferencia</a>
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">

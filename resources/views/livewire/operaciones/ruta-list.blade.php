@@ -38,7 +38,7 @@
 
         <div class="tab-content" wire:ignore.self id="custom-tabs-one-tabContent">
             <!-- Contenido de la pestaña "anexo1coti" -->
-            <div class="tab-pane fade show active " id="rutas-all" role="tabpanel" aria-labelledby="rutas-all-tab">
+            {{-- <div class="tab-pane fade show active " id="rutas-all" role="tabpanel" aria-labelledby="rutas-all-tab">
                 <div class="row">
 
                     <div class="col-md-12">
@@ -100,12 +100,12 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
 
 
             <!-- Contenido de la pestaña "Otra Pestaña 2" -->
-            <div class="tab-pane fade" id="rutas-dia" role="tabpanel" aria-labelledby="rutas-dia-tab">
+            {{-- <div class="tab-pane fade" id="rutas-dia" role="tabpanel" aria-labelledby="rutas-dia-tab">
 
 
                 <div class="col-md-12">
@@ -147,12 +147,12 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <!-- Puedes copiar y pegar el contenido de la pestaña "Servicios" aquí y hacer las modificaciones necesarias -->
 
 
             <!-- Contenido de la pestaña "anexo1coti" -->
-            <div class="tab-pane fade " id="servicios-new" role="tabpanel" aria-labelledby="servicios-new-tab">
+            {{-- <div class="tab-pane fade " id="servicios-new" role="tabpanel" aria-labelledby="servicios-new-tab">
                 <div class="row">
 
                     <div class="col-md-12">
@@ -193,10 +193,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Contenido de la pestaña "anexo1coti" -->
-            <div class="tab-pane fade " id="servicios-all" role="tabpanel" aria-labelledby="servicios-all-tab">
+            {{-- <div class="tab-pane fade " id="servicios-all" role="tabpanel" aria-labelledby="servicios-all-tab">
                 <div class="row">
 
                     <div class="col-md-12">
@@ -210,7 +210,6 @@
                                                 <th>Cliente</th>
                                                 <th>RFC</th>
                                                 <th>Cantidad</th>
-                                                {{-- <th>Detalles</th> --}}
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -219,15 +218,7 @@
                                                     <td>{{ $cliente->razon_social }}</td>
                                                     <td>{{ $cliente->rfc_cliente }}</td>
                                                     <td>{{ $cliente->servicios_count }}</td>
-                                                    {{-- <td>
-                                                        <button class="btn btn-xs btn-default text-primary mx-1 shadow"
-                                                            title="Detalles de la sucursal" data-toggle="modal"
-                                                            wire:click='DetalleServicioCliente({{ $cliente->id }})'
-                                                            data-target="#modalDetalles">
-                                                            <i class="fa fa-lg fa-fw fa-info-circle"></i>
-                                                        </button>
-
-                                                    </td> --}}
+                                                  
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -237,7 +228,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             
             <div class="tab-pane fade " id="reprogramacion-all" role="tabpanel" aria-labelledby="reprogramacion-tab">

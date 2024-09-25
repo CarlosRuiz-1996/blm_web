@@ -180,15 +180,17 @@
                     })
                 });
 
-                Livewire.on('alert', function(data) {
-                    console.log(data);
+                Livewire.on('alert-repro', function(data) {
+                    $('#addServicioRuta').modal('hide');
+
                     Swal.fire({
                         icon: data[1].tipo,
                         title: data[0].msg,
                         showConfirmButton: false,
                         timer: 3000
                     });
-                    $('#addServicioRuta').modal('hide');
+
+                  
                     // Al ocultar el modal
                     $('#addServicioRuta').on('hide.bs.modal', function(e) {
                         $(this).attr('aria-hidden', 'true');
