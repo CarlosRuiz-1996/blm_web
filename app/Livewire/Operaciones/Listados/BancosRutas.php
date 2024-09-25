@@ -25,8 +25,8 @@ class BancosRutas extends Component
     {
         if ($this->readyToLoad) {
 
-            $servicio_bancos = BancosServicios::orderBy('id', 'DESC')->paginate();
-            $compras = CompraEfectivo::orderBy('id', 'DESC')->paginate(); //where('status_compra_efectivos', 1)->
+            $servicio_bancos = BancosServicios::orderBy('id', 'DESC')->paginate(10);
+            $compras = CompraEfectivo::orderBy('id', 'DESC')->paginate(10); //where('status_compra_efectivos', 1)->
             $dias = CtgRutaDias::all();
         } else {
             $servicio_bancos = [];

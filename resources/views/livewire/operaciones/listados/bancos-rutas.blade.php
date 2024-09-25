@@ -18,7 +18,6 @@
         <div class="tab-content" wire:ignore.self id="custom-tabs-one-tabContent">
             {{-- servicios --}}
             <div class="tab-pane fade show active " id="serv_banc" role="tabpanel" aria-labelledby="serv_banc-tab">
-                <div class="row">
 
                     <div class="card col-md-12">
 
@@ -85,6 +84,7 @@
                             </table>
 
 
+
                             @if ($servicio_bancos->hasPages())
                                 <div class="col-md-12 text-center">
                                     {{ $servicio_bancos->links() }}
@@ -94,17 +94,14 @@
                             @if ($readyToLoad)
                                 <h3 class="col-md-12 text-center">No hay datos disponibles</h3>
                             @else
-                                <!-- Muestra un spinner mientras los datos se cargan -->
                                 <div class="col-md-12 text-center">
                                     <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
                                         role="status">
-                                        {{-- <span class="visually-hidden">Loading...</span> --}}
                                     </div>
                                 </div>
                             @endif
                         @endif
                     </div>
-                </div>
             </div>
 
             {{-- compra --}}
@@ -129,7 +126,8 @@
                                 @foreach ($compras as $compra)
                                     <tr>
                                         <td>$ {{ number_format($compra->total, 2, '.', ',') }}
-                                            {{-- <td>{{ $compra->consignatario->name }}</td> --}}
+                                            {{--
+                                <td>{{ $compra->consignatario->name }}</td> --}}
                                         <td>{{ $compra->fecha_compra }}
                                         </td>
                                         <td>
@@ -198,7 +196,7 @@
                             value="$ {{ number_format($compra->total, 2, '.', ',') }}" />
 
                         {{-- <label for="">Consignatario/Banco</label>
-                        <input class="form-control" disabled value="{{ $compra->consignatario->name }}" /> --}}
+                    <input class="form-control" disabled value="{{ $compra->consignatario->name }}" /> --}}
 
                         <label for="">Fecha solicitud</label>
                         <input class="form-control" disabled value="{{ $compra->fecha_compra }}" />
@@ -330,17 +328,17 @@
                                 <input class="form-control" disabled
                                     value="{{ $banco_servicio->tipo_servicio == 1 ? 'Entrega' : 'Recolecta' }}" />
                             </div>
-                            @if($banco_servicio->servicio->ruta_servicio->status_ruta_servicios < 6)
-                            <div class="col-3">
+                            @if ($banco_servicio->servicio->ruta_servicio->status_ruta_servicios < 6)
+                                <div class="col-3">
 
-                                <label for="">Ruta actual</label>
-                                <input class="form-control" disabled
-                                    value="{{ $banco_servicio->servicio->ruta_servicio
-                                        ? $banco_servicio->servicio->ruta_servicio->ruta->dia->name .
-                                            ' - ' .
-                                            $banco_servicio->servicio->ruta_servicio->ruta->nombre->name
-                                        : 'Sin ruta asignada' }}" />
-                            </div>
+                                    <label for="">Ruta actual</label>
+                                    <input class="form-control" disabled
+                                        value="{{ $banco_servicio->servicio->ruta_servicio
+                                            ? $banco_servicio->servicio->ruta_servicio->ruta->dia->name .
+                                                ' - ' .
+                                                $banco_servicio->servicio->ruta_servicio->ruta->nombre->name
+                                            : 'Sin ruta asignada' }}" />
+                                </div>
                             @endif
                             <div class="col-4">
 
