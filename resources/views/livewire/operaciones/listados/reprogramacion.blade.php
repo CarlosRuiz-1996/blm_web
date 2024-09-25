@@ -45,7 +45,12 @@
                                             </td>
                                             <td>{{ $repro->motivo }}</td>
                                             <td>
-                                                <span class="badge bg-success" style="font-weight: bold;"> 
+                                                <span class="badge 
+                                                 {{ $repro->status_reprogramacions == 1 ? 'bg-secondary' : '' }}
+                                                    {{ $repro->status_reprogramacions == 2 ? 'bg-warning' : '' }}
+                                                    {{ $repro->status_reprogramacions == 3 ? 'bg-success' : '' }}
+                                                
+                                                " style="font-weight: bold;"> 
 
                                                     {{ $repro->status_reprogramacions == 1 ? 'PENDIENTE' : '' }}
                                                     {{ $repro->status_reprogramacions == 2 ? 'PROCESO/ASIGNADA' : '' }}

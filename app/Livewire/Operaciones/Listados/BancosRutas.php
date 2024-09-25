@@ -51,14 +51,40 @@ class BancosRutas extends Component
     {
         if ($property === 'ctg_ruta_dia_id') {
 
-            if ($value != "") {
-                $this->resetValidation('ctg_ruta_dia_id');
-                $this->rutas_dia = Ruta::where('ctg_ruta_dia_id', '=', $value)->where('status_ruta', '!=', 3)->get();
 
+            if ($value != "") {
+                $this->resetValidation();
+                $baseQuery = Ruta::where('ctg_ruta_dia_id', '=', $value);
+                $ruta = $this->banco_servicio->servicio->ruta_servicio->ruta;
+
+                //si esta asignado a una ruta
+                if ($ruta) {
+                    $statusRuta = $ruta->status_ruta;
+                    $tipoServicio = $this->banco_servicio->tipo_servicio;
+                    //revisa si el status de la ruta es planeacion o proceso/ruta
+                    if ($statusRuta == 1) {
+                        $baseQuery->where('status_ruta', '!=', 3); //recoleccion
+
+                        if ($tipoServicio  == 1) {
+                            $baseQuery->where('status_ruta', '=', 1); //entrega
+                        }
+                    } elseif ($statusRuta  > 1) {
+                        $baseQuery->where('status_ruta', 1); //entrega
+                        if ($tipoServicio  == 2) {
+                            $baseQuery->where('status_ruta', '!=', 3); //recoleccion
+                        }
+                    }
+
+                    //que no traiga la ruta que ya tiene
+                    if ($this->banco_servicio->servicio->ruta_servicio->status_ruta_servicios < 6) {
+                        $baseQuery->where('id', '!=', $this->banco_servicio->servicio->ruta_servicio->ruta->id);
+                    }
+                }
+                $this->rutas_dia = $baseQuery->get();
                 $this->ruta_id = "";
             } else {
 
-                $this->addError('ctg_ruta_dia_id', 'La fecha de evaluación debe ser menor a la fecha de inicio de servicio.');
+                $this->addError('ctg_ruta_dia_id', 'El dia es obligatorio.');
 
                 $this->ruta_id = "";
             }
@@ -150,30 +176,24 @@ class BancosRutas extends Component
                 if ($ruta->status_ruta == 2 && $this->banco_servicio->servicio->tipo_servicio == 1) {
                     throw new \Exception('Ya no se puede agregar servicios de entrega a esta ruta.');
                 }
-                RutaServicio::where('servicio_id', $this->banco_servicio->servicio->id)->update([
-                    'ruta_id' => $this->ruta_id,
-                    'monto' => $this->banco_servicio->monto,
-                    'folio' => $this->banco_servicio->papeleta,
-                    'tipo_servicio' => $this->banco_servicio->tipo_servicio,
-                    'status_ruta_servicios' => 1,
-                    'envase_cargado' => 0
-                ]);
-            } else {
-                RutaServicio::create([
-                    'servicio_id' => $this->banco_servicio->servicio_id,
-                    'ruta_id' => $this->ruta_id,
-                    'monto' => $this->banco_servicio->monto,
-                    'folio' => $this->banco_servicio->papeleta,
-                    'tipo_servicio' => $this->banco_servicio->tipo_servicio,
-
-                ]);
             }
+
+            RutaServicio::create([
+                'servicio_id' => $this->banco_servicio->servicio_id,
+                'ruta_id' => $this->ruta_id,
+                'monto' => $this->banco_servicio->monto,
+                'folio' => $this->banco_servicio->papeleta,
+                'tipo_servicio' => $this->banco_servicio->tipo_servicio,
+
+            ]);
+
 
             $this->banco_servicio->status_bancos_servicios = 2;
             $this->banco_servicio->save();
-            DB::commit();
+            
             $this->clean();
             $this->dispatch('alert', ['El servicio fue asignado a la ruta con exito', 'success']);
+            DB::commit();
         } catch (Exception $e) {
 
             DB::rollBack();

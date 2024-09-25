@@ -63,10 +63,10 @@
                                             </td>
                                             <td>
                                                 @if ($servicio->status_bancos_servicios == 1)
-                                                    <button class="btn btn-info"
+                                                    <button class="btn btn-info btn-sm"
                                                         wire:click='findRutaServicio({{ $servicio }})'
                                                         data-target="#modalAddServicio" data-toggle="modal">
-                                                        Agregar servicio
+                                                        Agregar a ruta
                                                     </button>
                                                 @else
                                                     <button class="btn btn-info"
@@ -330,6 +330,7 @@
                                 <input class="form-control" disabled
                                     value="{{ $banco_servicio->tipo_servicio == 1 ? 'Entrega' : 'Recolecta' }}" />
                             </div>
+                            @if($banco_servicio->servicio->ruta_servicio->status_ruta_servicios < 6)
                             <div class="col-3">
 
                                 <label for="">Ruta actual</label>
@@ -340,6 +341,7 @@
                                             $banco_servicio->servicio->ruta_servicio->ruta->nombre->name
                                         : 'Sin ruta asignada' }}" />
                             </div>
+                            @endif
                             <div class="col-4">
 
                                 <x-select-validadolive label="Dia de la ruta:"
@@ -370,10 +372,12 @@
                                             @endforeach
                                         </x-select-validadolive>
                                     @else
-                                        <p>No hay rutas disponibles para este dia.
-                                            <a href="{{ route('ruta.gestion', 1) }}">Agregar
-                                                Ruta</a>
-                                        </p>
+                                        <div style="margin-top: 30px">
+                                            <p>No hay rutas disponibles para este dia.
+                                                <a href="{{ route('ruta.gestion', 1) }}">Agregar
+                                                    Ruta</a>
+                                            </p>
+                                        </div>
                                     @endif
                                 @endif
                             </div>
