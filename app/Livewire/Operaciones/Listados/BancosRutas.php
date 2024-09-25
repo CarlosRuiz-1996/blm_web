@@ -164,7 +164,7 @@ class BancosRutas extends Component
             if ($this->banco_servicio->servicio->ruta_servicio) {
 
 
-                if ($this->banco_servicio->servicio->ruta_servicio->status_ruta_servicios != 1) {
+                if ($this->banco_servicio->servicio->ruta_servicio->status_ruta_servicios < 6) {
                     throw new \Exception('El servicio esta en ruta y no se puede modificar hasta que termine.');
                 }
                 //validar la ruta
