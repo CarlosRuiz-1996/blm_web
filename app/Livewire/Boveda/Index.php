@@ -256,6 +256,7 @@ class Index extends Component
             Reprogramacion::create([
                 'motivo' => $this->motivoNo,
                 'ruta_servicio_id' => $servicioRuta->id,
+                'ruta_id_old' => $servicioRuta->ruta_id,
                 'area_id' => 3
             ]);
 
