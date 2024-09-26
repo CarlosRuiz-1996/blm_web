@@ -5,12 +5,12 @@
 
         <h1 class="ml-3">Servicios</h1>
         @if ($this->form->ruta->ctg_rutas_estado_id == 1)
-            <button title="Agrega una nueva ruta al catalogo" class="btn btn-primary m-2" data-toggle="modal"
-                data-target="#servicios" wire:click='getServicios()'>
-                Agregar Servicio
-                <i class="fa fa-plus" aria-hidden="true"></i>
+        <button title="Agrega una nueva ruta al catalogo" class="btn btn-primary m-2" data-toggle="modal"
+            data-target="#servicios" wire:click='getServicios()'>
+            Agregar Servicio
+            <i class="fa fa-plus" aria-hidden="true"></i>
 
-            </button>
+        </button>
         @endif
     </div>
     <div class="row">
@@ -31,69 +31,79 @@
                         <div class="col-md-12">
 
                             @if ($ruta_servicios && count($ruta_servicios))
-                                <table class="table table-hover table-striped">
-                                    <thead class="table-info">
-                                        <th>ID</th>
-                                        <th>Cliente</th>
-                                        <th>Servicio</th>
-                                        <th>Dirección</th>
-                                        <th>Sucursal</th>
-                                        <th>Monto</th>
-                                        <th>Folio</th>
-                                        <th>Tipo servicio</th>
-                                        @if ($this->form->ruta->ctg_rutas_estado_id == 1)
-                                            <th>Acciones</th>
+                            <table class="table table-hover table-striped">
+                                <thead class="table-info">
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Servicio</th>
+                                    <th>Dirección</th>
+                                    <th>Sucursal</th>
+                                    <th>Monto</th>
+                                    <th>Folio</th>
+                                    <th>Tipo servicio</th>
+                                    @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+                                    <th>Acciones</th>
+                                    @endif
+                                </thead>
+                                <tbody>
+                                    @foreach ($ruta_servicios as $servicio)
+                                    <tr>
+
+                                        <td>{{ $servicio->id }}</td>
+                                        <td>{{ $servicio->servicio->cliente->razon_social }}</td>
+                                        <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+
+                                        <td>Calle {{ $servicio->servicio->sucursal->sucursal->direccion .
+                                            ', CP. ' .
+                                            $servicio->servicio->sucursal->sucursal->cp->cp .
+                                            ' ' .
+                                            $servicio->servicio->sucursal->sucursal->cp->estado->name }}
+                                        </td>
+                                        <td>{{$servicio->servicio->sucursal->sucursal->sucursal}}</td>
+                                        <td>{{ $servicio->monto }}</td>
+                                        <td>{{ $servicio->folio }}</td>
+                                        <td>{{ $servicio->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECCIÓN' }}</td>
+                                        @if ($this->form->ruta->ctg_rutas_estado_id == 1 &&
+                                        $servicio->status_ruta_servicios!=0)
+                                        <td>
+                                            <button class="btn text-danger" title="Eliminar"
+                                                wire:click="$dispatch('confirm-delete-servicio',{{ $servicio }})">
+                                                <i class="fa fa-lg fa-fw fa-trash"></i>
+                                            </button>
+
+
+                                            <button class="btn text-success" title="Editar"
+                                                wire:click="servicioEdit({{ $servicio }})" data-toggle="modal"
+                                                data-target="#servicios_edit">
+                                                <i class="fa fa-lg fa-fw fa-pen" aria-hidden="true"></i>
+                                            </button>
+                                        </td>
                                         @endif
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($ruta_servicios as $servicio)
-                                            <tr>
 
-                                                <td>{{ $servicio->id }}</td>
-                                                <td>{{ $servicio->servicio->cliente->razon_social }}</td>
-                                                <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+                                        @if($servicio->status_ruta_servicios==0)
+                                        <td>
+                                        <span
+                                            class="badge bg-success bg-danger mb-2">
+                                            Reprogramado
+                                        </span>
+                                    </td>
+                                        @endif
 
-                                                <td>Calle {{ $servicio->servicio->sucursal->sucursal->direccion .
-                                                    ', CP. ' .
-                                                    $servicio->servicio->sucursal->sucursal->cp->cp .
-                                                    ' ' .
-                                                    $servicio->servicio->sucursal->sucursal->cp->estado->name }}
-                                                </td>
-                                                <td>{{$servicio->servicio->sucursal->sucursal->sucursal}}</td>
-                                                <td>{{ $servicio->monto }}</td>
-                                                <td>{{ $servicio->folio }}</td>
-                                                <td>{{ $servicio->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECCIÓN' }}</td>
-                                                @if ($this->form->ruta->ctg_rutas_estado_id == 1)
-                                                    <td>
-                                                        <button class="btn text-danger" title="Eliminar"
-                                                            wire:click="$dispatch('confirm-delete-servicio',{{ $servicio }})">
-                                                            <i class="fa fa-lg fa-fw fa-trash"></i>
-                                                        </button>
-
-
-                                                        <button class="btn text-success" title="Editar"
-                                                            wire:click="servicioEdit({{ $servicio }})"
-                                                            data-toggle="modal" data-target="#servicios_edit">
-                                                            <i class="fa fa-lg fa-fw fa-pen" aria-hidden="true"></i>
-                                                        </button>
-                                                    </td>
-                                                @endif
-
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                             @else
-                                @if ($readyToLoad)
-                                    <div class="alert alert-secondary" role="alert">
-                                        No hay datos disponibles </div>
-                                @else
-                                    <div class="text-center">
-                                        <div class="spinner-border" role="status">
-                                            {{-- <span class="visually-hidden">Loading...</span> --}}
-                                        </div>
-                                    </div>
-                                @endif
+                            @if ($readyToLoad)
+                            <div class="alert alert-secondary" role="alert">
+                                No hay datos disponibles </div>
+                            @else
+                            <div class="text-center">
+                                <div class="spinner-border" role="status">
+                                    {{-- <span class="visually-hidden">Loading...</span> --}}
+                                </div>
+                            </div>
+                            @endif
                             @endif
                         </div>
                     </div>
@@ -105,8 +115,8 @@
 
 
     {{-- Modal servicios --}}
-    <x-adminlte-modal wire:ignore.self id="servicios" title="Agregar servicios a la ruta" theme="info"
-        icon="fas fa-car" size='xl' disable-animations>
+    <x-adminlte-modal wire:ignore.self id="servicios" title="Agregar servicios a la ruta" theme="info" icon="fas fa-car"
+        size='xl' disable-animations>
 
 
         <div class="d-flex mb-3">
@@ -120,8 +130,8 @@
             <select class="form-control ml-2" wire:model.live='form.searchClienteSelect'>
                 <option value="">Selecciona un cliente</option>
                 @foreach ($clientes as $cliente)
-                    <option value="{{ $cliente->id }}">{{ $cliente->razon_social . '-' . $cliente->rfc_cliente }}
-                    </option>
+                <option value="{{ $cliente->id }}">{{ $cliente->razon_social . '-' . $cliente->rfc_cliente }}
+                </option>
                 @endforeach
             </select>
             <button title="Limpiar Filtros" wire:click='limpiarFiltro' class="btn btn-sm btn-primary ml-2"><i
@@ -130,134 +140,124 @@
 
         <div>
             @if ($servicios && count($servicios))
-                <div class="table-responsive">
-                    <table id="dataTable" class="table table-hover table-striped">
-                        <thead class="table-info">
-                            <tr>
-                                <th></th>
-                                <th>Servicio</th>
-                                <th>Cliente</th>
-                                <th>Dirección</th>
-                                <th>Sucursal</th>
-                                <th>Tipo Servicio</th>
-                                <th>Monto</th>
-                                <th>Papeleta</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <div class="table-responsive">
+                <table id="dataTable" class="table table-hover table-striped">
+                    <thead class="table-info">
+                        <tr>
+                            <th></th>
+                            <th>Servicio</th>
+                            <th>Cliente</th>
+                            <th>Dirección</th>
+                            <th>Sucursal</th>
+                            <th>Tipo Servicio</th>
+                            <th>Monto</th>
+                            <th>Papeleta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                            @foreach ($servicios as $servicio)
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" wire:model.live='selectServicios.{{ $servicio->id }}'
-                                             wire:change="handleCheckboxChange({{ $servicio->id }})"
-                                            wire:click="resetError('{{ $servicio->id }}')"
-                                            name="selectServicios.{{ $servicio->id }}"
-                                            id="selectServicios.{{ $servicio->id }}"/>
-                                    </td>
-                                    <td>{{ $servicio->ctg_servicio->descripcion }}</td>
-                                    <td>{{ $servicio->cliente->razon_social }}</td>
-                                    <td>
-                                    Calle {{ $servicio->sucursal->sucursal->direccion .', CP. ' .$servicio->sucursal->sucursal->cp->cp .' '.$servicio->sucursal->sucursal->cp->estado->name }}
-                                    </td>
-                                    <td>{{$servicio->sucursal->sucursal->sucursal}}</td>
+                        @foreach ($servicios as $servicio)
+                        <tr>
+                            <td>
+                                <input type="checkbox" wire:model.live='selectServicios.{{ $servicio->id }}'
+                                    wire:change="handleCheckboxChange({{ $servicio->id }})"
+                                    wire:click="resetError('{{ $servicio->id }}')"
+                                    name="selectServicios.{{ $servicio->id }}"
+                                    id="selectServicios.{{ $servicio->id }}" />
+                            </td>
+                            <td>{{ $servicio->ctg_servicio->descripcion }}</td>
+                            <td>{{ $servicio->cliente->razon_social }}</td>
+                            <td>
+                                Calle {{ $servicio->sucursal->sucursal->direccion .', CP. '
+                                .$servicio->sucursal->sucursal->cp->cp .'
+                                '.$servicio->sucursal->sucursal->cp->estado->name }}
+                            </td>
+                            <td>{{$servicio->sucursal->sucursal->sucursal}}</td>
 
-                                    <td>
-                                        <div class="d-flex flex-column">
-                                            <div class="form-check mt-2">
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <div class="form-check mt-2">
 
-                                                <input class="form-check-input" type="checkbox"
-                                                    wire:model='selectServiciosRecolecta.{{ $servicio->id }}'
-                                                     wire:change="handleCheckboxChangeRecolecta({{ $servicio->id }})"
-                                                    wire:click="resetError('{{ $servicio->id }}')" 
-                                                    {{ empty($selectServicios[$servicio->id]) ? 'disabled' : '' }}
-                                                    name="selectServiciosRecolecta.{{ $servicio->id }}"
-                                                    id="selectServiciosRecolecta.{{ $servicio->id }}"
-                                                    />
-                                                <label class="form-check-label"
-                                                    for="selectServiciosRecolecta.{{ $servicio->id }}">Recolección</label>
-                                            </div>
-                                            <div class="form-check mt-4">
-                                                <input class="form-check-input" type="checkbox"
-                                                    wire:model='selectServiciosEntrega.{{ $servicio->id }}'
-                                                     wire:change="handleCheckboxChangeEntrega({{ $servicio->id }})"
-                                                    wire:click="resetError('{{ $servicio->id }}')"
-                                                    {{ empty($selectServicios[$servicio->id]) ? 'disabled' : '' }} 
-                                                    name="selectServiciosEntrega.{{ $servicio->id }}"
-                                                    id="selectServiciosEntrega.{{ $servicio->id }}"
-                                                    />
-                                                <label class="form-check-label"
-                                                    for="selectServiciosEntrega.{{ $servicio->id }}">Entrega</label>
-                                            </div>
-                                        </div>
-                                        @error('selectValidacion.' . $servicio->id)
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-column">
-                                            <x-input-validado
-                                                style="margin-top: -20%"
-                                                placeholder="Monto"
-                                                wire:model='montoArrayRecolecta.{{ $servicio->id }}'
-                                                type="number"
-                                                readonly="{{ empty($selectServiciosRecolecta[$servicio->id]) ? 'readonly' : '' }}" />
-                                            <x-input-validado
-                                                style="margin-top: -25%"
-                                                placeholder="Monto"
-                                                wire:model='montoArray.{{ $servicio->id }}'
-                                                type="number"
-                                                readonly="{{ empty($selectServiciosEntrega[$servicio->id]) ? 'readonly' : '' }}" />
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-column">
-                                            <x-input-validado
-                                                style="margin-top: -19%"
-                                                placeholder="Papeleta"
-                                                wire:model='folioArrayRecolecta.{{ $servicio->id }}'
-                                                type="text"
-                                                readonly="{{ empty($selectServiciosRecolecta[$servicio->id]) ? 'readonly' : '' }}" />
-                                            <x-input-validado
-                                                style="margin-top: -22%"
-                                                placeholder="Papeleta"
-                                                wire:model='folioArray.{{ $servicio->id }}'
-                                                type="text"
-                                                readonly="{{ empty($selectServiciosEntrega[$servicio->id]) ? 'readonly' : '' }}" />
-                                        </div>
-                                    </td>
-                                    
+                                        <input class="form-check-input" type="checkbox"
+                                            wire:model='selectServiciosRecolecta.{{ $servicio->id }}'
+                                            wire:change="handleCheckboxChangeRecolecta({{ $servicio->id }})"
+                                            wire:click="resetError('{{ $servicio->id }}')" {{
+                                            empty($selectServicios[$servicio->id]) ? 'disabled' : '' }}
+                                        name="selectServiciosRecolecta.{{ $servicio->id }}"
+                                        id="selectServiciosRecolecta.{{ $servicio->id }}"
+                                        />
+                                        <label class="form-check-label"
+                                            for="selectServiciosRecolecta.{{ $servicio->id }}">Recolección</label>
+                                    </div>
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input" type="checkbox"
+                                            wire:model='selectServiciosEntrega.{{ $servicio->id }}'
+                                            wire:change="handleCheckboxChangeEntrega({{ $servicio->id }})"
+                                            wire:click="resetError('{{ $servicio->id }}')" {{
+                                            empty($selectServicios[$servicio->id]) ? 'disabled' : '' }}
+                                        name="selectServiciosEntrega.{{ $servicio->id }}"
+                                        id="selectServiciosEntrega.{{ $servicio->id }}"
+                                        />
+                                        <label class="form-check-label"
+                                            for="selectServiciosEntrega.{{ $servicio->id }}">Entrega</label>
+                                    </div>
+                                </div>
+                                @error('selectValidacion.' . $servicio->id)
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <x-input-validado style="margin-top: -20%" placeholder="Monto"
+                                        wire:model='montoArrayRecolecta.{{ $servicio->id }}' type="number"
+                                        readonly="{{ empty($selectServiciosRecolecta[$servicio->id]) ? 'readonly' : '' }}" />
+                                    <x-input-validado style="margin-top: -25%" placeholder="Monto"
+                                        wire:model='montoArray.{{ $servicio->id }}' type="number"
+                                        readonly="{{ empty($selectServiciosEntrega[$servicio->id]) ? 'readonly' : '' }}" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <x-input-validado style="margin-top: -19%" placeholder="Papeleta"
+                                        wire:model='folioArrayRecolecta.{{ $servicio->id }}' type="text"
+                                        readonly="{{ empty($selectServiciosRecolecta[$servicio->id]) ? 'readonly' : '' }}" />
+                                    <x-input-validado style="margin-top: -22%" placeholder="Papeleta"
+                                        wire:model='folioArray.{{ $servicio->id }}' type="text"
+                                        readonly="{{ empty($selectServiciosEntrega[$servicio->id]) ? 'readonly' : '' }}" />
+                                </div>
+                            </td>
 
 
 
-                                </tr>
-                            @endforeach
 
-                        </tbody>
-                    </table>
-                </div>
+                        </tr>
+                        @endforeach
 
-                @if ($servicios->hasPages())
-                    <div class="d-flex justify-content-center">
-                        {{ $servicios->links() }}
-                    </div>
-                @endif
+                    </tbody>
+                </table>
+            </div>
+
+            @if ($servicios->hasPages())
+            <div class="d-flex justify-content-center">
+                {{ $servicios->links() }}
+            </div>
+            @endif
 
 
-                <div class="text-center col-md-12 mb-3">
-                    <button class="btn btn-info btn-xl " wire:click='$dispatch("confirm-servicio")'>Guardar</button>
-                </div>
+            <div class="text-center col-md-12 mb-3">
+                <button class="btn btn-info btn-xl " wire:click='$dispatch("confirm-servicio")'>Guardar</button>
+            </div>
             @else
-                @if ($readyToLoad)
-                    <div class="alert alert-secondary" role="alert">
-                        No hay datos disponibles </div>
-                @else
-                    <div class="text-center">
-                        <div class="spinner-border" role="status">
-                            {{-- <span class="visually-hidden">Loading...</span> --}}
-                        </div>
-                    </div>
-                @endif
+            @if ($readyToLoad)
+            <div class="alert alert-secondary" role="alert">
+                No hay datos disponibles </div>
+            @else
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    {{-- <span class="visually-hidden">Loading...</span> --}}
+                </div>
+            </div>
+            @endif
             @endif
 
 
@@ -275,7 +275,8 @@
 
             <x-input-validado label="Monto:" placeholder="Monto" wire-model='form.monto' type="number" />
             <x-input-validado label="Papeleta:" placeholder="Papeleta" wire-model='form.folio' type="text" />
-            {{-- <x-input-validado label="Envases:" placeholder="Envases" wire-model='form.envases' type="number" /> --}}
+            {{--
+            <x-input-validado label="Envases:" placeholder="Envases" wire-model='form.envases' type="number" /> --}}
 
             <div class="text-center col-md-12 mb-3">
                 <button class="btn btn-info btn-xl " wire:click='$dispatch("confirm-edit-servicio")'>Guardar</button>
@@ -284,8 +285,8 @@
         </div>
     </x-adminlte-modal>
     @push('js')
-        <script>
-            document.addEventListener('livewire:initialized', () => {
+    <script>
+        document.addEventListener('livewire:initialized', () => {
 
                 @this.on('confirm-servicio', () => {
 
@@ -379,7 +380,7 @@
                     @this.dispatch('clean-servicios');
                 });
             });
-        </script>
+    </script>
     @endpush
 
 </div>

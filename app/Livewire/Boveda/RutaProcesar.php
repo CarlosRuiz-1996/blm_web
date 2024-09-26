@@ -384,7 +384,7 @@ class RutaProcesar extends Component
             'ctg_area_id' => Auth::user()->empleado->ctg_area_id,
         ]);
 
-        $this->finalizarReprogramacion($this->form->servicio->id);
+        $this->finalizarReprogramacion($this->form->servicio);
         //actualizar la informacion de ruta servicio
         $this->form->servicio->status_ruta_servicios = 5;
         $this->form->servicio->save();

@@ -49,37 +49,37 @@ class Index extends Component
     {
         if ($this->readyToLoad) {
             $resguardototal = Cliente::where('status_cliente', 1)->sum('resguardo');
-        // Aplicar filtros
-        $query = RutaServicioReporte::query();
+            // Aplicar filtros
+            $query = RutaServicioReporte::query();
 
-        // Aplicar filtros
-        if ($this->filtroRuta) {
-            $query->whereHas('ruta.nombre', function ($q) {
-                $q->where('name', 'like', '%' . $this->filtroRuta . '%');
-            });
-        }
+            // Aplicar filtros
+            if ($this->filtroRuta) {
+                $query->whereHas('ruta.nombre', function ($q) {
+                    $q->where('name', 'like', '%' . $this->filtroRuta . '%');
+                });
+            }
 
-        if ($this->filtroServicio) {
-            $query->whereHas('servicio.ctg_servicio', function ($q) {
-                $q->where('descripcion', 'like', '%' . $this->filtroServicio . '%');
-            });
-        }
+            if ($this->filtroServicio) {
+                $query->whereHas('servicio.ctg_servicio', function ($q) {
+                    $q->where('descripcion', 'like', '%' . $this->filtroServicio . '%');
+                });
+            }
 
-        if ($this->filtroRFC) {
-            $query->whereHas('servicio.cliente', function ($q) {
-                $q->where('rfc_cliente', 'like', '%' . $this->filtroRFC . '%');
-            });
-        }
+            if ($this->filtroRFC) {
+                $query->whereHas('servicio.cliente', function ($q) {
+                    $q->where('rfc_cliente', 'like', '%' . $this->filtroRFC . '%');
+                });
+            }
 
-        if ($this->filtroTipoServicio) {
-            $query->where('tipo_servicio', $this->filtroTipoServicio);
-        }
-        if ($this->filtroFecha) {
-            $query->whereDate('created_at', $this->filtroFecha);
-        }
+            if ($this->filtroTipoServicio) {
+                $query->where('tipo_servicio', $this->filtroTipoServicio);
+            }
+            if ($this->filtroFecha) {
+                $query->whereDate('created_at', $this->filtroFecha);
+            }
 
-        // Paginación de resultados
-        $Movimientos = $query->paginate(10);
+            // Paginación de resultados
+            $Movimientos = $query->paginate(10);
 
             $servicios = Ruta::where('ctg_rutas_estado_id', 2)->paginate(10);
         } else {
@@ -96,11 +96,15 @@ class Index extends Component
     }
     public $ruta_id;
     public $compra_efectivo;
-
+    public $total_keys=0;
     public function llenarmodalservicios($idruta)
     {
         $this->ruta_id = $idruta;
         $this->serviciosRuta = RutaServicio::where('ruta_id', $idruta)->where('status_ruta_servicios', '!=', 6)->get();
+
+        foreach ($this->serviciosRuta as $servicio) {
+            $this->total_keys += ServicioKey::where('ruta_servicio_id', $servicio->id)->count();
+        }
         //compra de efectivo
         $this->compra_efectivo = RutaCompraEfectivo::where('ruta_id', $idruta)->where('status_ruta_compra_efectivos', '<', 3)->get()
             ?: collect();
@@ -267,6 +271,7 @@ class Index extends Component
             // Eliminar el registro de RutaServicio
             $servicioRuta->status_ruta_servicios = 0;
             $servicioRuta->save();
+            $this->llenarmodalservicios($servicioRuta->ruta_id); // Actualiza los datos
 
             $this->dispatch('successservicioEnvases', ['Servicio mandado a reprogramación', 'success']);
 
@@ -274,8 +279,6 @@ class Index extends Component
         } catch (\Exception $e) {
             DB::rollBack();
             $this->dispatch('successservicioEnvases', ['Ocurrio un error intenta mas tarde.', 'error']);
-            // Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-            // Log::info('Info: ' . $e);
         }
     }
 
@@ -315,9 +318,6 @@ class Index extends Component
             } catch (\Exception $e) {
                 DB::rollBack();
                 $this->dispatch('successservicioEnvases', ['Ocurrio un error intenta mas tarde.', 'error']);
-
-                // Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-                // Log::info('Info: ' . $e);
             }
         } else {
             $this->dispatch('successservicioEnvases', ['Ocurrio un error intenta mas tarde.', 'error']);
@@ -469,11 +469,25 @@ class Index extends Component
     {
         $this->validate(['key' => 'required'], ['key.required' => 'Campo obligatorio']);
 
-        ServicioKey::create([
-            'ruta_servicio_id' => $this->ruta_servicio->id,
-            'key' => $this->key
-        ]);
+        try {
+            DB::beginTransaction();
+            ServicioKey::create([
+                'ruta_servicio_id' => $this->ruta_servicio->id,
+                'key' => $this->key
+            ]);
 
+            $rutaserv = RutaServicio::find($this->ruta_servicio->id);
+            $rutaserv->keys =  1;
+            $rutaserv->save();
+
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
+        }
+
+        $this->reset('key');
         $this->getKeys();
     }
 
@@ -481,7 +495,13 @@ class Index extends Component
     public function removeKey(ServicioKey $key)
     {
         $key->delete();
+
+        $keys = ServicioKey::where('ruta_servicio_id', $key->ruta_servicio_id)->count();
+        $rutaserv = RutaServicio::find($this->ruta_servicio->id);
+        $rutaserv->keys = $keys > 0 ? 1 : 0;
+        $rutaserv->save();
         $this->getKeys();
+
     }
     public function cleanKeys()
     {
