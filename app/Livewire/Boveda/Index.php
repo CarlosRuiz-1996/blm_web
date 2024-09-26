@@ -480,7 +480,7 @@ class Index extends Component
             $rutaserv->keys =  1;
             $rutaserv->save();
 
-            $this->llenarmodalservicios($this->ruta_servicio->id);
+            $this->llenarmodalservicios($rutaserv->ruta_id);
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -502,7 +502,7 @@ class Index extends Component
             $rutaserv = RutaServicio::find($this->ruta_servicio->id);
             $rutaserv->keys = $keys > 0 ? 1 : 0;
             $rutaserv->save();
-            $this->llenarmodalservicios($this->ruta_servicio->id);
+            $this->llenarmodalservicios($rutaserv->ruta_id);
         } catch (Exception $e) {
             DB::rollBack();
             $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
