@@ -479,7 +479,7 @@ class Index extends Component
             $rutaserv = RutaServicio::find($this->ruta_servicio->id);
             $rutaserv->keys =  1;
             $rutaserv->save();
-
+            $this->total_keys = 0;
             $this->llenarmodalservicios($rutaserv->ruta_id);
             DB::commit();
         } catch (Exception $e) {
