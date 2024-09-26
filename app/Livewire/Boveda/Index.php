@@ -496,12 +496,14 @@ class Index extends Component
     {
         try {
             DB::beginTransaction();
-            $key->delete();
+           
 
             $keys = ServicioKey::where('ruta_servicio_id', $key->ruta_servicio_id)->count();
             $rutaserv = RutaServicio::find($this->ruta_servicio->id);
             $rutaserv->keys = $keys > 0 ? 1 : 0;
             $rutaserv->save();
+
+            $key->delete();
             $this->llenarmodalservicios($rutaserv->ruta_id);
         } catch (Exception $e) {
             DB::rollBack();
