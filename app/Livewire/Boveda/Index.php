@@ -505,12 +505,14 @@ class Index extends Component
             $rutaserv->save();
 
             $key->delete();
+            $this->getKeys();
+            $this->llenarmodalservicios($rutaserv->ruta_id);
+            DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
             $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
         }
-        $this->getKeys();
-        $this->llenarmodalservicios($rutaserv->ruta_id);
+       
 
     }
     public function cleanKeys()
