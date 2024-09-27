@@ -44,6 +44,7 @@ class Index extends Component
     public $filtroTipoServicio;
     public $filtroEstatus;
     public $filtroFecha;
+    public $canje = false; 
 
     public function render()
     {
@@ -332,7 +333,17 @@ class Index extends Component
     {
         // Verificar duplicados en el conjunto proporcionado
         $this->resetValidation();
-
+        if($this->canje){
+            $this->validate([
+                'MontoRecolecta' => 'required|numeric',
+                'papeleta' => 'required',
+            ], [
+                'MontoRecolecta.required' => 'El monto es requerida',
+                'MontoRecolecta.numeric' => 'El monto debe ser numérico',
+                'papeleta.required' => 'El campo papeleta es requerido',
+                
+            ]);
+        }
 
         $this->validate([
             'inputs.*' => 'required|numeric',
@@ -343,6 +354,8 @@ class Index extends Component
             'sellos.*.required' => 'El campo de sello es requerido',
             'sellos.*.unique' => 'Este sello ya ha sido regristrado',
         ]);
+
+        
 
 
         $duplicatedSellos = array_diff_assoc($this->sellos, array_unique($this->sellos));

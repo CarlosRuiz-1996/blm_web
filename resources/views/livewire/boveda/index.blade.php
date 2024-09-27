@@ -115,7 +115,7 @@
                     </div>
                     <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab"
                         wire:ignore.self>
-                        <div class="mb-3 mt-3">
+                        {{-- <div class="mb-3 mt-3">
                             <div class="row">
                                 <div class="col-md-3">
                                     <input type="text" class="form-control" placeholder="Filtrar por Ruta"
@@ -212,15 +212,15 @@
                             <div class="col-md-12 text-center">
                                 {{ $Movimientos->links() }}
                             </div>
-                        @endif
+                        @endif --}}
                     </div>
                     <div class="tab-pane fade" id="rutaRecoleccion" role="tabpanel"
                         aria-labelledby="rutaRecoleccion-tab" wire:ignore.self>
-                        @livewire('boveda.ruta-recolecta')
+                        {{-- @livewire('boveda.ruta-recolecta') --}}
                     </div>
                     <div class="tab-pane fade" id="diferencia" role="tabpanel" aria-labelledby="diferencia-tab"
                         wire:ignore.self>
-                        @livewire('boveda.diferecia-valores')
+                        {{-- @livewire('boveda.diferecia-valores') --}}
                     </div>
                 </div>
             </div>
@@ -555,7 +555,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <x-input-validadolive label="Papeleta/folio:" :readonly="true"
+                            <x-input-validadolive label="Papeleta/folio:" :readonly="!$canje?true:false"
                                 placeholder="Papeleta/folio" wire-model="papeleta" wire-attribute="papeleta"
                                 type="text" />
                         </div>
@@ -563,9 +563,21 @@
 
 
                             <div class="form-group">
-                                <label for="">Monto</label>
+                                <label for="">Monto {{ number_format($MontoRecolecta, 2, '.', ',') }}</label>
                                 <input type="text" class="form-control w-full" placeholder="Monto total"
-                                    value="$ {{ number_format($MontoRecolecta, 2, '.', ',') }}" readonly>
+                                    wire:model='MontoRecolecta'
+                                    {{!$canje?'readonly':''}}
+                                    >
+                            </div>
+                        </div>
+                        <div class="col-md-1 mb-3">
+
+
+                            <div class="form-group">
+                                <label for="">Canjear</label>
+                                <input type="checkbox" class="form-control w-full" placeholder="Monto total"
+                                    wire:model.live='canje'    
+                                >
                             </div>
                         </div>
                         <div class="col-md-3 mb-1">
@@ -574,7 +586,7 @@
                                 wire-attribute="envasescantidad" type="text" />
 
                         </div>
-                        <div class="col-md-2" style="margin-top: 32px">
+                        <div class="col-md-1" style="margin-top: 32px">
 
                             <button class="btn btn-info" wire:loading.remove
                                 wire:click='envase_recolecta'>Agregar</button>

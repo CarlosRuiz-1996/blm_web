@@ -220,7 +220,7 @@ class RutaProcesar extends Component
 
 
 
-            $keys = RutaServicio::where('ruta_id', $this->ruta->id)
+            $keys = RutaServicio::where('ruta_id', $this->ruta->id)->where('status_ruta_servicios','!=',0)
                 ->whereHas('keys', function ($query) {
                     $query->where('status_servicio_keys', 1);
                 })
