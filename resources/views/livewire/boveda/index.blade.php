@@ -565,7 +565,7 @@
                             <div class="form-group">
                                 <label for="">Monto {{ number_format($MontoRecolecta, 2, '.', ',') }}</label>
                                 <input type="text" class="form-control w-full" placeholder="Monto total"
-                                    wire:model='MontoRecolecta'
+                                    wire:model.live='MontoRecolecta'
                                     {{!$canje?'readonly':''}}
                                     >
                             </div>
