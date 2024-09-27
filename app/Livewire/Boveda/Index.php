@@ -242,6 +242,8 @@ class Index extends Component
             $servicioRuta = RutaServicio::findOrFail($id);
             // $rutaId = $servicioRuta->ruta_id;
 
+            //eliminar keys:
+            ServicioKey::where('ruta_servicio_id',$servicioRuta->id)->delete();
             // Crear un nuevo objeto RutaServicioReporte
             $rutaServicioReporte = new RutaServicioReporte();
 
