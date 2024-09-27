@@ -521,7 +521,7 @@ class RutaProcesar extends Component
     {
         $keys = ServicioKey::where('ruta_servicio_id', $this->ruta_servicio->id)->where('status_servicio_keys', 1)->count();
         if ($keys == 0) {
-            $this->ruta_servicio->keys = 1;
+            $this->ruta_servicio->keys = 2;
             $this->ruta_servicio->save();
             $this->dispatch('agregarArchivocre', ['msg' => 'Las llaves del servicio fueron entregados'], ['tipomensaje' => 'success']);
         } else {
