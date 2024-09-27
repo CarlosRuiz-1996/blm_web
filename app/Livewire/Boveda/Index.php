@@ -331,6 +331,7 @@ class Index extends Component
 
     public function GuardarEnvases()
     {
+        dd($this->canje);
         // Verificar duplicados en el conjunto proporcionado
         $this->resetValidation();
         if($this->canje){
