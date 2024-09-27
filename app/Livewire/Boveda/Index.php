@@ -375,6 +375,9 @@ class Index extends Component
         try {
             DB::beginTransaction();
             $servicioRuta = RutaServicio::find($this->idserviorutaEnvases);
+            $servicioRuta->monto = $this->MontoRecolecta;
+            $servicioRuta->folio = $this->papeleta;
+            $servicioRuta->save();
             $ClienteResguardo = $servicioRuta->servicio->cliente->resguardo;
             $totalinputs = array_sum($this->inputs);
             if (empty($this->inputs)) {
