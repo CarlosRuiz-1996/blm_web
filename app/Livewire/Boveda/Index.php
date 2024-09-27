@@ -383,20 +383,20 @@ class Index extends Component
 
             if ($ClienteResguardo >= $servicioRuta->monto) {
                 if ($servicioRuta->monto == $totalinputs) {
-                    foreach ($this->inputs as $index => $input) {
-                        ServicioRutaEnvases::create([
-                            'ruta_servicios_id' => $this->idserviorutaEnvases,
-                            'tipo_servicio' => 1,
-                            'cantidad' => $this->inputs[$index],
-                            'sello_seguridad' => $this->sellos[$index],
-                            'folio' => $servicioRuta->folio,
+                    // foreach ($this->inputs as $index => $input) {
+                    //     ServicioRutaEnvases::create([
+                    //         'ruta_servicios_id' => $this->idserviorutaEnvases,
+                    //         'tipo_servicio' => 1,
+                    //         'cantidad' => $this->inputs[$index],
+                    //         'sello_seguridad' => $this->sellos[$index],
+                    //         'folio' => $servicioRuta->folio,
 
-                            'status_envases' => 1,
-                        ]);
-                    }
-                    $servicioRuta->envase_cargado = 1;
-                    $servicioRuta->envases = $this->envasescantidad;
-                    $servicioRuta->save();
+                    //         'status_envases' => 1,
+                    //     ]);
+                    // }
+                    // $servicioRuta->envase_cargado = 1;
+                    // $servicioRuta->envases = $this->envasescantidad;
+                    // $servicioRuta->save();
                     $this->llenarmodalservicios($servicioRuta->ruta_id);
                     $this->dispatch('successservicioEnvases', ['Los envases han sido almacenados correctamente', 'success']);
                 } else {
