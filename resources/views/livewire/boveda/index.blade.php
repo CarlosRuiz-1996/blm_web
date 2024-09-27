@@ -115,7 +115,7 @@
                     </div>
                     <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab"
                         wire:ignore.self>
-                        {{-- <div class="mb-3 mt-3">
+                        <div class="mb-3 mt-3">
                             <div class="row">
                                 <div class="col-md-3">
                                     <input type="text" class="form-control" placeholder="Filtrar por Ruta"
@@ -212,15 +212,15 @@
                             <div class="col-md-12 text-center">
                                 {{ $Movimientos->links() }}
                             </div>
-                        @endif --}}
+                        @endif
                     </div>
                     <div class="tab-pane fade" id="rutaRecoleccion" role="tabpanel"
                         aria-labelledby="rutaRecoleccion-tab" wire:ignore.self>
-                        {{-- @livewire('boveda.ruta-recolecta') --}}
+                        @livewire('boveda.ruta-recolecta')
                     </div>
                     <div class="tab-pane fade" id="diferencia" role="tabpanel" aria-labelledby="diferencia-tab"
                         wire:ignore.self>
-                        {{-- @livewire('boveda.diferecia-valores') --}}
+                        @livewire('boveda.diferecia-valores')
                     </div>
                 </div>
             </div>
