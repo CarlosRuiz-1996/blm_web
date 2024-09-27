@@ -80,19 +80,33 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($rutas as $ruta)
-                                                <tr>
-                                                    <td>{{ $ruta->id }}</td>
-                                                    <td>{{ $ruta->nombre->name }}</td>
-                                                    <td>{{ $ruta->dia->name }}</td>
-                                                    <td>{{ $ruta->riesgo->name }}</td>
-                                                    <td>{{ $ruta->estado->name }}</td>
-                                                    <td>{{ $ruta->hora_inicio }}</td>
-                                                    <td>{{ $ruta->hora_fin }}</td>
-                                                    <td>
-                                                        <a href="{{ route('ruta.gestion', [2, $ruta]) }}">Detalles</a>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                            @php
+                                                $marcarRojo = false;
+                                                $diaActual = now()->dayOfWeekIso; // ISO 8601, donde 1 es Lunes y 7 es Domingo
+                                        
+                                                // Itera sobre todos los servicios asociados a la ruta
+                                                foreach ($ruta->rutaServicios as $serviciosa) {
+                                                    // Condiciones: estatus 1, fecha menor a la actual y día diferente al actual
+                                                    if (($serviciosa->status_ruta_servicios != 6) && $serviciosa->created_at < now() && $ruta->dia->id != $diaActual && ($ruta->estado->id !=4 && $ruta->estado->id !=5)) {
+                                                        $marcarRojo = true;
+                                                        break; // Si alguna condición se cumple, no es necesario seguir verificando más servicios
+                                                    }
+                                                }
+                                            @endphp
+                                        
+                                        <tr class="{{ $marcarRojo ? 'bg-danger' : '' }}"> <!-- Clase CSS para marcar en rojo -->
+                                            <td>{{ $ruta->id }}</td>
+                                            <td>{{ $ruta->nombre->name }}</td>
+                                            <td>{{ $ruta->dia->name }}</td>
+                                            <td>{{ $ruta->riesgo->name }}</td>
+                                            <td>{{ $ruta->estado->name }}</td>
+                                            <td>{{ $ruta->hora_inicio }}</td>
+                                            <td>{{ $ruta->hora_fin }}</td>
+                                            <td>
+                                                <a href="{{ route('ruta.gestion', [2, $ruta]) }}" class="{{ $marcarRojo ? 'text-white' : 'text-info' }}">Detalles</a>
+                                            </td>
+                                        </tr>                                        
+                                        @endforeach                                        
                                         </tbody>
                                     </table>
                                 </div>

@@ -87,6 +87,17 @@ class CambioEfectivo extends Component
             $this->sumaTotalbolsas = 0;
             $this->sumaIncorrecta = false;
         }
+        public function clean(){
+            $this->form->from_change='';
+            $this->cantidadTotal=0;
+            $this->tipoCambio='';
+            $this->tipoCambioMonedas='';
+            $this->denominacionesPermitidas = [];
+            $this->cambioBolsas = [];
+            $this->sumaTotal = 0;
+            $this->sumaTotalbolsas = 0;
+            $this->sumaIncorrecta = false;
+        }
 
 
     private function calcularSumaMonedas()
