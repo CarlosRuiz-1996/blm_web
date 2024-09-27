@@ -55,7 +55,7 @@ class BancosRutas extends Component
             if ($value != "") {
                 $this->resetValidation();
                 $baseQuery = Ruta::where('ctg_ruta_dia_id', '=', $value);
-                $ruta = $this->banco_servicio->servicio->ruta_servicio->ruta;
+                $ruta = $this->banco_servicio->servicio->ruta_servicio?->ruta;
 
                 //si esta asignado a una ruta
                 if ($ruta) {
