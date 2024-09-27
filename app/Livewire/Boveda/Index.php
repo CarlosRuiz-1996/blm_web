@@ -44,7 +44,7 @@ class Index extends Component
     public $filtroTipoServicio;
     public $filtroEstatus;
     public $filtroFecha;
-    public $canje = false; 
+    public $canje = false;
 
     public function render()
     {
@@ -331,33 +331,36 @@ class Index extends Component
 
     public function GuardarEnvases()
     {
-       
+
         // Verificar duplicados en el conjunto proporcionado
         $this->resetValidation();
-        if($this->canje){
-            dd('entra');
-            $this->validate([
-                'MontoRecolecta' => 'required|numeric',
-                'papeleta' => 'required',
-            ], [
-                'MontoRecolecta.required' => 'El monto es requerida',
-                'MontoRecolecta.numeric' => 'El monto debe ser numérico',
-                'papeleta.required' => 'El campo papeleta es requerido',
-                
-            ]);
-        }
-
-        $this->validate([
+        $rules = [
             'inputs.*' => 'required|numeric',
             'sellos.*' => 'required|unique:servicios_envases_rutas,sello_seguridad',
-        ], [
+        ];
+
+        $messages = [
             'inputs.*.required' => 'La cantidad es requerida',
             'inputs.*.numeric' => 'La cantidad debe ser numérico',
             'sellos.*.required' => 'El campo de sello es requerido',
-            'sellos.*.unique' => 'Este sello ya ha sido regristrado',
-        ]);
+            'sellos.*.unique' => 'Este sello ya ha sido registrado',
+        ];
 
-        
+        // Si canje está activo, añadimos las reglas adicionales
+        if ($this->canje) {
+            $rules['MontoRecolecta'] = 'required|numeric';
+            $rules['papeleta'] = 'required';
+
+            $messages['MontoRecolecta.required'] = 'El monto es requerido';
+            $messages['MontoRecolecta.numeric'] = 'El monto debe ser numérico';
+            $messages['papeleta.required'] = 'El campo papeleta es requerido';
+        }
+
+        // Validar todo en una sola llamada
+        $this->validate($rules, $messages);
+
+
+
 
 
         $duplicatedSellos = array_diff_assoc($this->sellos, array_unique($this->sellos));
@@ -368,13 +371,16 @@ class Index extends Component
             }
             return;
         }
+
         try {
             DB::beginTransaction();
             $servicioRuta = RutaServicio::find($this->idserviorutaEnvases);
             $ClienteResguardo = $servicioRuta->servicio->cliente->resguardo;
             $totalinputs = array_sum($this->inputs);
+            if (empty($this->inputs)) {
+                throw new \Exception('Aun no cuentas con evases...');
+            }
 
-            // dd($servicioRuta->servicio->cliente);
             if ($ClienteResguardo >= $servicioRuta->monto) {
                 if ($servicioRuta->monto == $totalinputs) {
                     foreach ($this->inputs as $index => $input) {
@@ -403,9 +409,8 @@ class Index extends Component
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->dispatch('successservicioEnvases', ['Ocurrio un error intenta mas tarde.', 'error']);
-            // Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-            // Log::info('Info: ' . $e);
+            $this->dispatch('successservicioEnvases', [$e->getMessage() ?? 'Ocurrio un error intenta mas tarde.', 'error']);
+
         }
     }
 
@@ -515,9 +520,9 @@ class Index extends Component
         $rutaserv = RutaServicio::find($this->ruta_servicio->id);
         try {
             DB::beginTransaction();
-           
 
-          
+
+
             $rutaserv->keys = $keys > 0 ? 1 : 0;
             $rutaserv->save();
 
@@ -529,8 +534,6 @@ class Index extends Component
             DB::rollBack();
             $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
         }
-       
-
     }
     public function cleanKeys()
     {
