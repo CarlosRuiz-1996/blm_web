@@ -44,42 +44,43 @@ class Index extends Component
     public $filtroTipoServicio;
     public $filtroEstatus;
     public $filtroFecha;
+    public $canje = false;
 
     public function render()
     {
         if ($this->readyToLoad) {
             $resguardototal = Cliente::where('status_cliente', 1)->sum('resguardo');
-        // Aplicar filtros
-        $query = RutaServicioReporte::query();
+            // Aplicar filtros
+            $query = RutaServicioReporte::query();
 
-        // Aplicar filtros
-        if ($this->filtroRuta) {
-            $query->whereHas('ruta.nombre', function ($q) {
-                $q->where('name', 'like', '%' . $this->filtroRuta . '%');
-            });
-        }
+            // Aplicar filtros
+            if ($this->filtroRuta) {
+                $query->whereHas('ruta.nombre', function ($q) {
+                    $q->where('name', 'like', '%' . $this->filtroRuta . '%');
+                });
+            }
 
-        if ($this->filtroServicio) {
-            $query->whereHas('servicio.ctg_servicio', function ($q) {
-                $q->where('descripcion', 'like', '%' . $this->filtroServicio . '%');
-            });
-        }
+            if ($this->filtroServicio) {
+                $query->whereHas('servicio.ctg_servicio', function ($q) {
+                    $q->where('descripcion', 'like', '%' . $this->filtroServicio . '%');
+                });
+            }
 
-        if ($this->filtroRFC) {
-            $query->whereHas('servicio.cliente', function ($q) {
-                $q->where('rfc_cliente', 'like', '%' . $this->filtroRFC . '%');
-            });
-        }
+            if ($this->filtroRFC) {
+                $query->whereHas('servicio.cliente', function ($q) {
+                    $q->where('rfc_cliente', 'like', '%' . $this->filtroRFC . '%');
+                });
+            }
 
-        if ($this->filtroTipoServicio) {
-            $query->where('tipo_servicio', $this->filtroTipoServicio);
-        }
-        if ($this->filtroFecha) {
-            $query->whereDate('created_at', $this->filtroFecha);
-        }
+            if ($this->filtroTipoServicio) {
+                $query->where('tipo_servicio', $this->filtroTipoServicio);
+            }
+            if ($this->filtroFecha) {
+                $query->whereDate('created_at', $this->filtroFecha);
+            }
 
-        // Paginación de resultados
-        $Movimientos = $query->paginate(10);
+            // Paginación de resultados
+            $Movimientos = $query->paginate(10);
 
             $servicios = Ruta::where('ctg_rutas_estado_id', 2)->paginate(10);
         } else {
@@ -96,11 +97,16 @@ class Index extends Component
     }
     public $ruta_id;
     public $compra_efectivo;
-
+    public $total_keys = 0;
     public function llenarmodalservicios($idruta)
     {
+        $this->total_keys = 0;
         $this->ruta_id = $idruta;
         $this->serviciosRuta = RutaServicio::where('ruta_id', $idruta)->where('status_ruta_servicios', '!=', 6)->get();
+
+        foreach ($this->serviciosRuta as $servicio) {
+            $this->total_keys += ServicioKey::where('ruta_servicio_id', $servicio->id)->count();
+        }
         //compra de efectivo
         $this->compra_efectivo = RutaCompraEfectivo::where('ruta_id', $idruta)->where('status_ruta_compra_efectivos', '<', 3)->get()
             ?: collect();
@@ -236,6 +242,8 @@ class Index extends Component
             $servicioRuta = RutaServicio::findOrFail($id);
             // $rutaId = $servicioRuta->ruta_id;
 
+            //eliminar keys:
+            ServicioKey::where('ruta_servicio_id',$servicioRuta->id)->delete();
             // Crear un nuevo objeto RutaServicioReporte
             $rutaServicioReporte = new RutaServicioReporte();
 
@@ -256,6 +264,7 @@ class Index extends Component
             Reprogramacion::create([
                 'motivo' => $this->motivoNo,
                 'ruta_servicio_id' => $servicioRuta->id,
+                'ruta_id_old' => $servicioRuta->ruta_id,
                 'area_id' => 3
             ]);
 
@@ -266,6 +275,7 @@ class Index extends Component
             // Eliminar el registro de RutaServicio
             $servicioRuta->status_ruta_servicios = 0;
             $servicioRuta->save();
+            $this->llenarmodalservicios($servicioRuta->ruta_id); // Actualiza los datos
 
             $this->dispatch('successservicioEnvases', ['Servicio mandado a reprogramación', 'success']);
 
@@ -273,8 +283,6 @@ class Index extends Component
         } catch (\Exception $e) {
             DB::rollBack();
             $this->dispatch('successservicioEnvases', ['Ocurrio un error intenta mas tarde.', 'error']);
-            // Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-            // Log::info('Info: ' . $e);
         }
     }
 
@@ -314,9 +322,6 @@ class Index extends Component
             } catch (\Exception $e) {
                 DB::rollBack();
                 $this->dispatch('successservicioEnvases', ['Ocurrio un error intenta mas tarde.', 'error']);
-
-                // Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-                // Log::info('Info: ' . $e);
             }
         } else {
             $this->dispatch('successservicioEnvases', ['Ocurrio un error intenta mas tarde.', 'error']);
@@ -328,20 +333,38 @@ class Index extends Component
 
     public function GuardarEnvases()
     {
+
         // Verificar duplicados en el conjunto proporcionado
         $this->resetValidation();
-
-
-
-        $this->validate([
+        $rules = [
             'inputs.*' => 'required|numeric',
             'sellos.*' => 'required|unique:servicios_envases_rutas,sello_seguridad',
-        ], [
+        ];
+
+        $messages = [
             'inputs.*.required' => 'La cantidad es requerida',
             'inputs.*.numeric' => 'La cantidad debe ser numérico',
             'sellos.*.required' => 'El campo de sello es requerido',
-            'sellos.*.unique' => 'Este sello ya ha sido regristrado',
-        ]);
+            'sellos.*.unique' => 'Este sello ya ha sido registrado',
+        ];
+
+        // Si canje está activo, añadimos las reglas adicionales
+        if ($this->canje) {
+            $rules['MontoRecolecta'] = 'required|numeric';
+            $rules['papeleta'] = 'required';
+
+            $messages['MontoRecolecta.required'] = 'El monto es requerido';
+            $messages['MontoRecolecta.numeric'] = 'El monto debe ser numérico';
+            $messages['papeleta.required'] = 'El campo papeleta es requerido';
+        }
+
+        // Validar todo en una sola llamada
+        $this->validate($rules, $messages);
+
+
+
+
+
         $duplicatedSellos = array_diff_assoc($this->sellos, array_unique($this->sellos));
         if (!empty($duplicatedSellos)) {
             // Marcar cada folio duplicado individualmente
@@ -350,13 +373,19 @@ class Index extends Component
             }
             return;
         }
+
         try {
             DB::beginTransaction();
             $servicioRuta = RutaServicio::find($this->idserviorutaEnvases);
+            $servicioRuta->monto = $this->MontoRecolecta;
+            $servicioRuta->folio = $this->papeleta;
+            $servicioRuta->save();
             $ClienteResguardo = $servicioRuta->servicio->cliente->resguardo;
             $totalinputs = array_sum($this->inputs);
+            if (empty($this->inputs)) {
+                throw new \Exception('Aun no cuentas con evases...');
+            }
 
-            // dd($servicioRuta->servicio->cliente);
             if ($ClienteResguardo >= $servicioRuta->monto) {
                 if ($servicioRuta->monto == $totalinputs) {
                     foreach ($this->inputs as $index => $input) {
@@ -371,8 +400,10 @@ class Index extends Component
                         ]);
                     }
                     $servicioRuta->envase_cargado = 1;
+                    $servicioRuta->envases = $this->envasescantidad;
                     $servicioRuta->save();
                     $this->llenarmodalservicios($servicioRuta->ruta_id);
+                    $this->reset('MontoRecolecta','papeleta','inputs','sellos','envasescantidad','canje');
                     $this->dispatch('successservicioEnvases', ['Los envases han sido almacenados correctamente', 'success']);
                 } else {
                     $this->dispatch('error', ['Las Cantidades no coinciden con el monto total de entrega.']);
@@ -384,9 +415,8 @@ class Index extends Component
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->dispatch('successservicioEnvases', ['Ocurrio un error intenta mas tarde.', 'error']);
-            // Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-            // Log::info('Info: ' . $e);
+            $this->dispatch('successservicioEnvases', [$e->getMessage() ?? 'Ocurrio un error intenta mas tarde.', 'error']);
+
         }
     }
 
@@ -468,19 +498,48 @@ class Index extends Component
     {
         $this->validate(['key' => 'required'], ['key.required' => 'Campo obligatorio']);
 
-        ServicioKey::create([
-            'ruta_servicio_id' => $this->ruta_servicio->id,
-            'key' => $this->key
-        ]);
+        try {
+            DB::beginTransaction();
+            ServicioKey::create([
+                'ruta_servicio_id' => $this->ruta_servicio->id,
+                'key' => $this->key
+            ]);
 
+            $rutaserv = RutaServicio::find($this->ruta_servicio->id);
+            $rutaserv->keys =  1;
+            $rutaserv->save();
+            $this->llenarmodalservicios($rutaserv->ruta_id);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
+        }
+
+        $this->reset('key');
         $this->getKeys();
     }
 
 
     public function removeKey(ServicioKey $key)
     {
-        $key->delete();
-        $this->getKeys();
+        $keys = ServicioKey::where('ruta_servicio_id', $key->ruta_servicio_id)->count();
+        $rutaserv = RutaServicio::find($this->ruta_servicio->id);
+        try {
+            DB::beginTransaction();
+
+
+
+            $rutaserv->keys = $keys > 0 ? 1 : 0;
+            $rutaserv->save();
+
+            $key->delete();
+            $this->getKeys();
+            $this->llenarmodalservicios($rutaserv->ruta_id);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
+        }
     }
     public function cleanKeys()
     {

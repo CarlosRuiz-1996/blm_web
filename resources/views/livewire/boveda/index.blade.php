@@ -43,7 +43,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="diferencia-tab" data-toggle="tab" href="#diferencia" role="tab"
-                            aria-controls="diferencia" wire:ignore.self aria-selected="false">Diferencias de Valores</a>
+                            aria-controls="diferencia" wire:ignore.self aria-selected="false">Acta de Diferencia</a>
                     </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
@@ -96,7 +96,6 @@
                                                     <div class="spinner-border"
                                                         style="width: 5rem; height: 5rem; border-width: 0.5em;"
                                                         role="status">
-                                                        {{-- <span class="visually-hidden">Loading...</span> --}}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -119,13 +118,16 @@
                         <div class="mb-3 mt-3">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <input type="text" class="form-control" placeholder="Filtrar por Ruta" wire:model.live="filtroRuta">
+                                    <input type="text" class="form-control" placeholder="Filtrar por Ruta"
+                                        wire:model.live="filtroRuta">
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="text" class="form-control" placeholder="Filtrar por Servicio" wire:model.live="filtroServicio">
+                                    <input type="text" class="form-control" placeholder="Filtrar por Servicio"
+                                        wire:model.live="filtroServicio">
                                 </div>
                                 <div class="col-md-2">
-                                    <input type="text" class="form-control" placeholder="Filtrar por RFC Cliente" wire:model.live="filtroRFC">
+                                    <input type="text" class="form-control" placeholder="Filtrar por RFC Cliente"
+                                        wire:model.live="filtroRFC">
                                 </div>
                                 <div class="col-md-2">
                                     <select class="form-control" wire:model.live="filtroTipoServicio">
@@ -138,7 +140,7 @@
                                     <input type="date" class="form-control" wire:model.live="filtroFecha">
                                 </div>
                             </div>
-                        </div>                        
+                        </div>
                         <div class="table-responsive">
                             <table class="table">
                                 <thead class="table-info">
@@ -169,12 +171,18 @@
                                                     @if ($movimiento->tipo_servicio == 1)
                                                         <span
                                                             class="badge {{ $movimiento->status_ruta_servicio_reportes == 4 ? 'bg-success' : 'bg-danger' }}">
-                                                            {{ $movimiento->status_ruta_servicio_reportes == 4 ? 'Servicio cargado' : 'Servicio eliminado para esta ruta (reprogramar)' }}
+                                                            {{ $movimiento->status_ruta_servicio_reportes == 4
+                                                                ? 'Servicio cargado'
+                                                                : 'Servicio eliminado para esta ruta (reprogramar)' }}
                                                         </span>
                                                     @else
                                                         <span
                                                             class="badge {{ $movimiento->status_ruta_servicio_reportes == 4 ? 'bg-success' : 'bg-danger' }}">
-                                                            {{ $movimiento->status_ruta_servicio_reportes == 4 ? 'Servicio Autorizado para recolectar' : 'Servicio no autorizado para esta ruta (reprogramar)' }}
+                                                            {{ $movimiento->status_ruta_servicio_reportes == 4
+                                                                ? 'Servicio
+                                                                                                            Autorizado para recolectar'
+                                                                : 'Servicio no autorizado para esta ruta
+                                                                                                            (reprogramar)' }}
                                                         </span>
                                                     @endif
                                                 </td>
@@ -262,9 +270,15 @@
 
                                             </td>
                                             <td>
-                                                <a href="#" data-toggle="modal" class="btn btn-warning"
-                                                    data-target="#keyModal"
-                                                    wire:click='showKeys({{ $rutaserv->id }})'>Llaves</a>
+                                                @if ($rutaserv->status_ruta_servicios != 0)
+                                                    <a href="#" data-toggle="modal" class="btn btn-warning"
+                                                        data-target="#keyModal"
+                                                        wire:click='showKeys({{ $rutaserv->id }})'>Llaves</a>
+                                                @else
+                                                    <span class="badge bg-secondary">
+                                                        REPROGRAMADO
+                                                    </span>
+                                                @endif
                                             </td>
                                             <td>{{ $rutaserv->servicio->ctg_servicio->descripcion }}</td>
                                             <td>{{ $rutaserv->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECCIÓN' }}</td>
@@ -315,6 +329,7 @@
                                                                 : ($rutaserv->status_ruta_servicios == 0
                                                                     ? 'EN REPROGRAMACIÓN'
                                                                     : 'ERROR EN EL SERVICIO') }}
+
                                                         </span>
                                                     @endif
                                                 @else
@@ -327,8 +342,12 @@
                                                             class="btn btn-danger">Rechazar</button>
                                                     @else
                                                         <span
-                                                            class="badge {{ $rutaserv->status_ruta_servicios == 4 ? 'bg-success' : 'bg-danger' }}">
-                                                            {{ $rutaserv->status_ruta_servicios == 4 ? 'Servicio Autorizado para recolecta' : 'Error en el servicio' }}
+                                                            class="badge {{ $rutaserv->status_ruta_servicios == 4 ? 'bg-success' : ($rutaserv->status_ruta_servicios == 0 ? 'bg-secondary' : 'bg-danger') }}">
+                                                            {{ $rutaserv->status_ruta_servicios == 4
+                                                                ? 'Servicio Autorizado para recolecta'
+                                                                : ($rutaserv->status_ruta_servicios == 0
+                                                                    ? 'EN REPROGRAMACIÓN'
+                                                                    : 'ERROR EN EL SERVICIO')}}
                                                         </span>
                                                     @endif
                                                 @endif
@@ -393,12 +412,18 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     @if ($serviciosRuta)
+
+                    <div>
+                        <span class="badge bg-success" style="font-weight: bold;"> Total de llaves: {{$total_keys}}</span>
+                    </div>
+
                         {{-- $dispatch('confirm-serv',3) --}}
                         <button type="button" class="btn btn-info" wire:click="finailzar" wire:loading.remove>Mandar
                             a ruta</button>
                     @endif
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
 
                 </div>
             </div>
@@ -530,7 +555,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <x-input-validadolive label="Papeleta/folio:" :readonly="true"
+                            <x-input-validadolive label="Papeleta/folio:" :readonly="!$canje?true:false"
                                 placeholder="Papeleta/folio" wire-model="papeleta" wire-attribute="papeleta"
                                 type="text" />
                         </div>
@@ -538,9 +563,21 @@
 
 
                             <div class="form-group">
-                                <label for="">Monto</label>
+                                <label for="">Monto {{ number_format($MontoRecolecta, 2, '.', ',') }}</label>
                                 <input type="text" class="form-control w-full" placeholder="Monto total"
-                                    value="$ {{ number_format($MontoRecolecta, 2, '.', ',') }}" readonly>
+                                    wire:model.live='MontoRecolecta'
+                                    {{!$canje?'readonly':''}}
+                                    >
+                            </div>
+                        </div>
+                        <div class="col-md-1 mb-3">
+
+
+                            <div class="form-group">
+                                <label for="">Canjear</label>
+                                <input type="checkbox" class="form-control w-full" placeholder="Monto total"
+                                    wire:model.live='canje'    
+                                >
                             </div>
                         </div>
                         <div class="col-md-3 mb-1">
@@ -549,7 +586,7 @@
                                 wire-attribute="envasescantidad" type="text" />
 
                         </div>
-                        <div class="col-md-2" style="margin-top: 32px">
+                        <div class="col-md-1" style="margin-top: 32px">
 
                             <button class="btn btn-info" wire:loading.remove
                                 wire:click='envase_recolecta'>Agregar</button>
@@ -557,11 +594,13 @@
 
                         @foreach ($inputs as $index => $input)
                             <div class="col-md-6 mb-3">
-                               
-                                <div class="form-group">
-                                    <label for="">Monto del envase: {{ number_format((float) $input, 2, '.', ',') }}</label>
 
-                                    <input type="number" class="form-control w-full @error('inputs.' . $index) is-invalid @enderror"
+                                <div class="form-group">
+                                    <label for="">Monto del envase:
+                                        {{ number_format((float) $input, 2, '.', ',') }}</label>
+
+                                    <input type="number"
+                                        class="form-control w-full @error('inputs.' . $index) is-invalid @enderror"
                                         placeholder="Monto del envase {{ $index + 1 }}"
                                         wire:model.live="inputs.{{ $index }}">
                                     @error('inputs.' . $index)

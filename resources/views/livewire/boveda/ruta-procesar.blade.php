@@ -711,8 +711,10 @@
                     @endif
                 </div>
                 <div class="modal-footer">
+
+                    
                     @if($ruta_servicio && $ruta_servicio->keys==1)
-                    <button class="btn btn-primary" wire:click='endKeysRutaServices'
+                    <button class="btn btn-info" wire:click='endKeysRutaServices'
                         wire:loading.remove>Finalizar</button>
                     @endif
                     <button class="btn btn-secondary" data-dismiss="modal" wire:click='cleanKeys'>Cerrar</button>

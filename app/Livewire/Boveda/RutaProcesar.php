@@ -10,6 +10,7 @@ use App\Models\CompraEfectivo;
 use App\Models\DetallesCompraEfectivo;
 use App\Models\Inconsistencias;
 use App\Models\MontoBlm;
+use App\Models\Reprogramacion;
 use App\Models\Ruta;
 use App\Models\RutaCompraEfectivo;
 use App\Models\RutaEmpleadoReporte;
@@ -191,7 +192,7 @@ class RutaProcesar extends Component
                 $envase->evidencia_entrega->save();
             }
 
-
+            $this->finalizarReprogramacion($servicio);
             $this->limpiar();
             $this->dispatch('agregarArchivocre', ['msg' => 'El servicio de entrega ha sido termiando'], ['tipomensaje' => 'success']);
 
@@ -212,15 +213,14 @@ class RutaProcesar extends Component
         try {
             DB::beginTransaction();
             $serviciosPendientes = RutaServicio::where('ruta_id', $this->ruta->id)
-                ->where('status_ruta_servicios', '<', 5)
+                ->whereBetween('status_ruta_servicios', [1, 4])
                 ->count();
-
             $comprasPendientes = RutaCompraEfectivo::where('ruta_id', $this->ruta->id)
                 ->where('status_ruta_compra_efectivos', 3)->count();
 
 
 
-            $keys = RutaServicio::where('ruta_id', $this->ruta->id)
+            $keys = RutaServicio::where('ruta_id', $this->ruta->id)->where('status_ruta_servicios','!=',0)
                 ->whereHas('keys', function ($query) {
                     $query->where('status_servicio_keys', 1);
                 })
@@ -383,6 +383,8 @@ class RutaProcesar extends Component
             'empleado_id' => Auth::user()->empleado->id,
             'ctg_area_id' => Auth::user()->empleado->ctg_area_id,
         ]);
+
+        $this->finalizarReprogramacion($this->form->servicio);
         //actualizar la informacion de ruta servicio
         $this->form->servicio->status_ruta_servicios = 5;
         $this->form->servicio->save();
@@ -519,11 +521,16 @@ class RutaProcesar extends Component
     {
         $keys = ServicioKey::where('ruta_servicio_id', $this->ruta_servicio->id)->where('status_servicio_keys', 1)->count();
         if ($keys == 0) {
-            $this->ruta_servicio->keys = 1;
+            $this->ruta_servicio->keys = 2;
             $this->ruta_servicio->save();
             $this->dispatch('agregarArchivocre', ['msg' => 'Las llaves del servicio fueron entregados'], ['tipomensaje' => 'success']);
         } else {
             $this->dispatch('agregarArchivocre', ['msg' => 'Aun faltan por entregar llaves'], ['tipomensaje' => 'error']);
         }
+    }
+
+
+    public function finalizarReprogramacion(RutaServicio $serv){
+        Reprogramacion::where('ruta_servicio_id', $serv->id)->update(['status_reprogramacions'=>3]);
     }
 }

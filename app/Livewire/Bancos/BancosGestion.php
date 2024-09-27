@@ -235,12 +235,12 @@ class BancosGestion extends Component
                     'consignatario_id' => $compra['cajero'],
                 ]);
             }
-            DB::commit();
             $this->clean();
             $this->dispatch('alert', ['La compra de efectivo se mando a operaciones', 'success']);
+            DB::commit();
+
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
             $this->dispatch('alert', [$e->getMessage(), 'error']);
         }
     }
