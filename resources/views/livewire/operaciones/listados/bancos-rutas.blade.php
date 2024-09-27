@@ -328,7 +328,7 @@
                                 <input class="form-control" disabled
                                     value="{{ $banco_servicio->tipo_servicio == 1 ? 'Entrega' : 'Recolecta' }}" />
                             </div>
-                            @if ($banco_servicio->servicio->ruta_servicio->status_ruta_servicios < 6)
+                            @if ($banco_servicio->servicio->ruta_servicio && $banco_servicio->servicio->ruta_servicio->status_ruta_servicios < 6)
                                 <div class="col-3">
 
                                     <label for="">Ruta actual</label>
