@@ -334,7 +334,6 @@ class Index extends Component
         $this->resetValidation();
 
 
-
         $this->validate([
             'inputs.*' => 'required|numeric',
             'sellos.*' => 'required|unique:servicios_envases_rutas,sello_seguridad',
@@ -344,6 +343,8 @@ class Index extends Component
             'sellos.*.required' => 'El campo de sello es requerido',
             'sellos.*.unique' => 'Este sello ya ha sido regristrado',
         ]);
+
+
         $duplicatedSellos = array_diff_assoc($this->sellos, array_unique($this->sellos));
         if (!empty($duplicatedSellos)) {
             // Marcar cada folio duplicado individualmente
@@ -373,6 +374,7 @@ class Index extends Component
                         ]);
                     }
                     $servicioRuta->envase_cargado = 1;
+                    $servicioRuta->envases = $this->envasescantidad;
                     $servicioRuta->save();
                     $this->llenarmodalservicios($servicioRuta->ruta_id);
                     $this->dispatch('successservicioEnvases', ['Los envases han sido almacenados correctamente', 'success']);

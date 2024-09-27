@@ -330,7 +330,6 @@
                                                                     ? 'EN REPROGRAMACIÓN'
                                                                     : 'ERROR EN EL SERVICIO') }}
 
-                                                                    {{$rutaserv->status_ruta_servicios}}
                                                         </span>
                                                     @endif
                                                 @else
