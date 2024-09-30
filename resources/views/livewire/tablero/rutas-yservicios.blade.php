@@ -117,9 +117,11 @@
                                 {{ $servicios->servicio->sucursal->sucursal->cp->estado->name }}
                             </td>
                         <td>
-                            <button >
-                            ${{ number_format($servicios->monto, 2, '.', ',') }}</td>
+                            <button data-toggle="modal" class="btn btn-warning" data-target="#showModalMontos"
+                                wire:click="rutamonto({{$servicios->id}})">
+                                ${{ number_format($servicios->monto, 2, '.', ',') }}
                             </button>
+                        </td>
                         @if($servicios->status_ruta_servicios==4)
                         <td>Sin iniciar</td>
                         <td>Sin iniciar</td>
@@ -186,7 +188,7 @@
                     @if ($ruta_compra->status_ruta_compra_efectivos != 5)
                     <tr>
                         <td>{{$ruta_compra->ruta->nombre->name}}</td>
-                        <td colspan="2">COMPRA DE EFECTIVO BANCOS</td>
+                        <td colspan="3">COMPRA DE EFECTIVO BANCOS</td>
                         <td>
                             @if ($ruta_compra && count($ruta_compra->compra->detalles))
                             
@@ -272,6 +274,50 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal fuera del div x-data -->
+<!-- Modal -->
+<div class="modal fade" id="showModalMontos" wire:ignore.self tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">MONTOS</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <form wire:submit.prevent="updateService"> <!-- Usar wire:submit para manejar el envío del formulario -->
+                    <div class="modal-body">
+                        <div class="row">
+                        @foreach($serviciosRutasevidencias as $index => $servicio)
+                            <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="cantidad-{{ $index }}">Cantidad</label>
+                                <input type="number" class="form-control" id="cantidad-{{ $index }}" wire:model="serviciosRutasevidencias.{{ $index }}.cantidad">
+                            </div>
+                        </div>
+                            <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="sello_seguridad-{{ $index }}">Sello de Seguridad</label>
+                                <input type="text" class="form-control" id="sello_seguridad-{{ $index }}" wire:model="serviciosRutasevidencias.{{ $index }}.sello_seguridad" readonly>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 
