@@ -15,14 +15,23 @@ class BovedaForm extends Form
     public $folio;
     public $monto = 0;
     public $servicio;
-
+    public $morralla =false;
+    public $billetes =false;
     public $from_change;
     public $cambios = [];
 
 
     public function getDenominaciones()
     {
-        return ctgDenominacion::orderBy('id', 'DESC')->get();
+        $consulta= $consulta=ctgDenominacion::orderBy('id', 'DESC')->get();
+        if($this->morralla && $this->billetes ){
+        $consulta=ctgDenominacion::orderBy('id', 'DESC')->get();
+        }elseif(!$this->morralla && $this->billetes){
+            $consulta=ctgDenominacion::where('ctg_tipo_moneda_id',2)->orderBy('id', 'DESC')->get();
+        }elseif($this->morralla && !$this->billetes){
+            $consulta=ctgDenominacion::where('ctg_tipo_moneda_id',3)->orderBy('id', 'DESC')->get();
+        }
+        return  $consulta;
     }
 
 

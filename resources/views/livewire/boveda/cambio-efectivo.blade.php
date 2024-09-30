@@ -102,45 +102,152 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12 mb-3">
+                        <div class="col-md-6 mb-3">
                             <x-input-validadolive label="Cambio para:" :readonly="false"
                                 placeholder="Ingresa a quien se le cambia el monto" wire-model="form.from_change"
                                 wire-attribute="form.from_change" type="text" />
 
                         </div>
-                        <div class="col-md-10 mb-3">
+                        <div class="col-md-6 mb-3">
                             <x-input-validadolive
-                                label="Monto a cambiar: $ {{ number_format($form->monto ? $form->monto : 0, 2, '.', ',') }} MXN"
-                                :readonly="false" placeholder="Ingresa monto a cambiar" wire-model="form.monto"
-                                wire-attribute="form.monto" type="number" />
+                                label="Cantidad Total a Cambiar:$ {{ number_format($cantidadTotal ? $cantidadTotal : 0, 2, '.', ',') }} MXN"
+                                :readonly="false" placeholder="Ingrese la cantidad total a cambiar" wire-model="cantidadTotal"
+                                wire-attribute="cantidadTotal" type="number" />
 
                         </div>
+                                <!-- Tipo de Cambio (Billetes o Monedas) -->
+                                    <div class="col-md-12">
+                                        <label for="tipoCambio">Tipo de Cambio:</label>
+                                        <select id="tipoCambio" wire:model.live="tipoCambio" class="form-control">
+                                            <option value="">Seleccione el tipo de cambio</option>
+                                            <option value="moneda_a_billete">Moneda a Billete</option>
+                                            <option value="moneda_a_bolsas">Moneda a Bolsas</option>
+                                            <option value="moneda_a_menor_denominacion">Moneda a Menor Denominación</option>
+                                            <option value="billete_a_moneda">Billete a Moneda</option>
+                                            <option value="billete_a_menor_denominacion">Billete a Billete de Menor Denominación</option>
+                                        </select>
+                                    </div>
+                        
+                                <!-- Tipo de Cambio de Monedas a Bolsas -->
+                                @if($tipoCambio == 'moneda_a_bolsas')
+                                        <div class="col-md-12 mt-2">
+                                            <label for="tipoCambioMonedas">Cambio de Monedas a:</label>
+                                            <select id="tipoCambioMonedas" wire:model.live="tipoCambioMonedas" class="form-control">
+                                                <option value="">Seleccione el cambio</option>
+                                                <option value="billetes">Billetes</option>
+                                            </select>
+                                        </div>
+                        
+                                    <!-- Cantidad por Denominación Ingresada Manualmente para Bolsas -->
+                                    @if($tipoCambioMonedas == 'bolsas')
+                                            <div class="col-md-12 mt-2">
+                                                <label for="denominaciones">Denominaciones para Bolsas:</label>
+                                                @foreach($bolsasDisponibles as $bolsa)
+                                                    <div class="row mb-2">
+                                                        <div class="col-md-6 mt-1">
+                                                            <label>{{ $bolsa->denominacion }}</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <input type="number" wire:model.live="cambioBolsas.{{ $bolsa->id }}" class="form-control" placeholder="Cantidad" min="0">
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                    @endif
+                                    @if($tipoCambioMonedas == 'monedas')
+                                            <div class="col-md-12 mt-2">
+                                                <label for="denominaciones">Denominaciones:</label>
+                                                @foreach($monedasDisponibles as $moneda)
+                                                    <div class="row mb-2">
+                                                        <div class="col-md-6 mt-1">
+                                                            <label>{{ $moneda->denominacion }} (Moneda)</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <input type="number" wire:model.live="denominacionesPermitidas.{{ $moneda->id }}" class="form-control" placeholder="Cantidad de monedas" min="0">
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                    @endif
+                                    @if($tipoCambioMonedas == 'billetes')
+                                            <div class="col-md-12 mt-2">
+                                                <label for="denominaciones">Denominaciones:</label>
+                                                @foreach($monedasDisponibles as $moneda)
+                                                    <div class="row mb-2">
+                                                        <div class="col-md-6 mt-1">
+                                                            <label>{{ $moneda->denominacion }} (Moneda)</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <input type="number" wire:model.live="cambioBolsas.{{ $moneda->id }}" class="form-control" placeholder="Cantidad de bolsas" min="0">
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                                 <!-- Suma de las denominaciones -->
+                                                <h3 class="mt-4">Suma Total Calculada de bolsas: ${{ number_format($sumaTotalbolsas, 2) }}</h3>
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                 <!-- Suma de las denominaciones -->
+                                                <h3 class="mt-4">Cambiar por:</h3>
+                                                <label for="billetes">Denominaciones de Billetes:</label>
+                                                @foreach($billetesDisponibles as $billete)
+                                                    <div class="row mb-2">
+                                                        <div class="col-md-6 mt-1">
+                                                            <label>{{ $billete->denominacion }} (Billete)</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <input type="number" wire:model.live="denominacionesPermitidas.{{ $billete->id }}" class="form-control" placeholder="Cantidad de billetes" min="0">
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                    @endif
+                                @elseif($tipoCambio == 'billete_a_moneda' || $tipoCambio == 'moneda_a_menor_denominacion')
+                                    <!-- Cantidad por Denominación Ingresada Manualmente para Monedas -->
+                                        <div class="col-md-12 mt-2">
+                                            <label for="denominaciones">Denominaciones:</label>
+                                            @foreach($monedasDisponibles as $moneda)
+                                                <div class="row mb-2">
+                                                    <div class="col-md-6 mt-1">
+                                                        <label>{{ $moneda->denominacion }} (Moneda)</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="number" wire:model.live="denominacionesPermitidas.{{ $moneda->id }}" class="form-control" placeholder="Cantidad de moneda" min="0">
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                @elseif($tipoCambio == 'moneda_a_billete' || $tipoCambio == 'billete_a_menor_denominacion')
+                                    <!-- Cantidad por Denominación Ingresada Manualmente para Billetes -->
+                                        <div class="col-md-12 mt-2">
+                                            <label for="denominaciones">Denominaciones:</label>
+                                            @foreach($billetesDisponibles as $billete)
+                                                <div class="row mb-2">
+                                                    <div class="col-md-6 mt-1">
+                                                        <label>{{ $billete->denominacion }} (Billete)</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input type="number" wire:model.live="denominacionesPermitidas.{{ $billete->id }}" class="form-control" placeholder="Cantidad de billetes" min="0">
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                @endif
 
-                        <div class="col-md-2 mt-3">
-                            <button class="btn btn-info" wire:click='add'>
-                                agregar cambio
-                            </button>
+                                <!-- Mensaje de error si la suma no es correcta -->
+                                @if($sumaIncorrecta)
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger mt-3">
+                                        La suma de los billetes o monedas no coincide con la cantidad total ingresada.
+                                    </div>
+                                </div>
+                                @endif
+                            </form>
+                        
+                            <!-- Suma de las denominaciones -->
+                            <h3 class="mt-4">Suma Total Calculada: ${{ number_format($sumaTotal, 2) }}</h3>
                         </div>
-                        @foreach ($form->cambios as $index => $cambio)
-                            <div class="col-md-6 mb-3">
-                                <x-select-validadolive label="Tipo de moneda:" placeholder="Seleccione"
-                                    :readonly="true" wire-model="form.cambios.{{ $index }}.denominacion"
-                                    required>
-                                    @foreach ($denominaciones as $denominacion)
-                                        <option value="{{ $denominacion->id }}">{{ $denominacion->denominacion }}
-                                        </option>
-                                    @endforeach
-                                </x-select-validadolive>
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <x-input-validadolive label="Monto:"
-                                    wire-model="form.cambios.{{ $index }}.monto" type="number" />
-
-                            </div>
-                        @endforeach
+                        
                     </div>
-                </div>
                 <div class="modal-footer">
                     <button class="btn btn-dark" wire:click='clean' data-dismiss="modal">Cerrar</button>
                     <button class="btn btn-primary" wire:click="guardar">Aceptar</button>
