@@ -94,7 +94,7 @@
                             <th>Cliente</th>
                             <th>Servicio</th>
                             <th>Tipo</th>
-                            <th>Folio/Papeleta</th>
+                            <th>No. Servicio</th>
                             <th>Llaves</th>
                             <th>Acciones</th>
                         </tr>
@@ -213,7 +213,7 @@
                     <div class="row" wire:init='loadServicios'>
                         @if ($form->servicio)
                         <div class="col-md-6 mb-3">
-                            <x-input-validado label="Papeleta:" placeholder="Papeleta" wire-model="form.folio"
+                            <x-input-validado label="No. Servicio:" placeholder="No. Servicio" wire-model="form.folio"
                                 wire-attribute="folios" type="text" :readonly='true' />
                         </div>
 
@@ -237,7 +237,7 @@
                                 placeholder="Sello de seguridad" type="text" />
                         </div>
                         <div class="col-md-3 mb-3">
-                            <label for="">Papeleta</label>
+                            <label for="">No. Servicio</label>
                             <input class="form-control" value="{{ $envases->folio }}" placeholder="Folio" disabled
                                 type="text" />
                         </div>
@@ -378,7 +378,7 @@
 
                                             <div class="col-md-6 mb-3">
                                                 <p>
-                                                    NÚMERO DE FOLIO DE PAPELETA:
+                                                    NÚMERO DE SERVICIO:
                                                     <span class="font-weight-bold checkbox">{{
                                                         $diferencia['servicio']['folio'] }}</span>
                                                 </p>

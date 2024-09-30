@@ -555,8 +555,8 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <x-input-validadolive label="Papeleta/folio:" :readonly="!$canje?true:false"
-                                placeholder="Papeleta/folio" wire-model="papeleta" wire-attribute="papeleta"
+                            <x-input-validadolive label="No. Servicio:" :readonly="!$canje?true:false"
+                                placeholder="No. Servicio" wire-model="papeleta" wire-attribute="papeleta"
                                 type="text" />
                         </div>
                         <div class="col-md-3 mb-3">

@@ -18,7 +18,8 @@ class RutaServicio extends Model
         'tipo_servicio', 
         'status_ruta_servicios',
         'envase_cargado',
-        'keys'
+        'keys',
+        'morralla'
     ];
 
 

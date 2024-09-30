@@ -104,7 +104,7 @@
                                                                         <div class="d-table-row text-sm"
                                                                             style="width:100%">
                                                                             <div class="d-block d-md-table-cell text-center pt-1 pb-0 mt-0 mb-0"
-                                                                                colspan="3">Papeleta : <p
+                                                                                colspan="3">No. Servicio: <p
                                                                                     class="text-bold">
                                                                                     {{ $servicio->folio }}</p>
                                                                             </div>
@@ -136,7 +136,7 @@
                                                                                             Iniciar Servicio
                                                                                         </button>
                                                                                     </p>
-                                                                                    @elseif($servicio->status_ruta_servicios == 2)
+                                                                                @elseif($servicio->status_ruta_servicios == 2)
                                                                                     <p class="mb-0">
                                                                                         <button type="button"
                                                                                             class="btn mb-2 btn-primary btn-sm text-xs"
@@ -323,7 +323,7 @@
                             </div>
                             @if ($tiposervicio)
                                 <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-12' }} mb-3">
-                                    <x-input-validado label="Papeleta:" :readonly="true" placeholder="Papeleta"
+                                    <x-input-validado label="No. Servicio:" :readonly="true" placeholder="No. Servicio"
                                         wire-model="papeleta" type="text" />
                                 </div>
                             @endif
@@ -347,7 +347,11 @@
                                         wire-attribute="envasescantidad" type="text" />
 
                                 </div>
-                                <div class="col-md-2" style="margin-top: 32px">
+                                <div class="col-md-1">
+                                    <x-label>Morralla</x-label>
+                                    <input type="checkbox" class="form-control" wire:model.live='morralla'>
+                                </div>
+                                <div class="col-md-1" style="margin-top: 32px">
 
                                     <button class="btn btn-info" wire:loading.remove
                                         wire:click='envase_recolecta'>Agregar</button>
@@ -362,35 +366,33 @@
 
 
                             @foreach ($inputs as $index => $input)
-                                <div class="col-md-1 mb-3" {{ $tiposervicio == 'Entrega' ? 'hidden' : '' }}>
-                                    <Label>Violado</Label>
-                                    <input label="Cantidad:" id="violado.{{ $index }}"
-                                        onclick="select_violado(this)"
-                                        wire:model="inputs.{{ $index }}.violado" type="checkbox" />
+                                @if ($input['morralla']==false)
+                                    <div class="col-md-1 mb-3" {{ $tiposervicio == 'Entrega' ? 'hidden' : '' }}>
+                                        <Label>Violado</Label>
+                                        <input label="Cantidad:" id="violado.{{ $index }}"
+                                            onclick="select_violado(this)"
+                                            wire:model="inputs.{{ $index }}.violado" type="checkbox" />
 
-                                </div>
+                                    </div>
+                                
+                                    <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
 
+                                        <label for="">Monto: $
+                                            {{ number_format((float) $input['cantidad'], 2, '.', ',') }}
+                                        </label>
+                                        <input type="number"
+                                            class="form-control @error('inputs.' . $index . '.cantidad') is-invalid @enderror"
+                                            wire:model.live="inputs.{{ $index }}.cantidad">
+                                        @error('inputs.' . $index . '.cantidad')
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
 
-                                <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
-                                    {{--
-                            <x-input-validado label="Cantidad:" :readonly="$tiposervicio == 'Entrega'"
-                                placeholder="Envase" wire-model="inputs.{{ $index }}.cantidad" wire-attribute="inputs"
-                                type="text" /> --}}
-                                    <label for="">Monto: $
-                                        {{ number_format((float) $input['cantidad'], 2, '.', ',') }}
-                                    </label>
-                                    <input type="number"
-                                        class="form-control @error('inputs.' . $index . '.cantidad') is-invalid @enderror"
-                                        wire:model.live="inputs.{{ $index }}.cantidad">
-                                    @error('inputs.' . $index . '.cantidad')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
-
-                                </div>
+                                    </div>
+                                @endif
 
                                 @if ($tiposervicio == 'Recolección')
                                     <div class="col-md-2 mb-3">
-                                        <x-input-validado label="Papeleta:" :readonly="false" placeholder="Papeleta"
+                                        <x-input-validado label="No. Servicio:" :readonly="false" placeholder="No. Servicio"
                                             wire-model="inputs.{{ $index }}.folio" wire-attribute="folios"
                                             type="text" />
                                     </div>
@@ -402,7 +404,7 @@
                                 </div>
                                 <div class="col-md-2 mb-3">
                                     <x-input-validado label="Evidencia:" :readonly="false" placeholder="Evidencia"
-                                        wire:model="inputs.{{ $index }}.photo" type="file" />
+                                        wire-model="inputs.{{ $index }}.photo" type="file" />
                                 </div>
                                 <div class="col-md-3 d-flex justify-content-center align-items-center">
                                     <!-- Muestra la imagen cargada si existe -->
@@ -628,8 +630,8 @@
                                     value="{{ $detalle_compra->compra_efectivo->fecha_compra }}">
                             </div>
                             <div class="col-md-3 mb-3">
-                                <x-input-validado :readonly="false" label="Folio/Papeleta:"
-                                    placeholder="Ingresa papeleta/folio" wire-model="folio_compra"
+                                <x-input-validado :readonly="false" label="No. Servicio:"
+                                    placeholder="Ingresa No. Servicio" wire-model="folio_compra"
                                     wire-attribute="folio_compra" type="text" />
                             </div>
 
@@ -676,7 +678,7 @@
 
 
                                 <label for="">Monto: $
-                                    {{ number_format((float) $input['cantidad'], 2, '.', ',') }}
+                                    {{ number_format((float) $input['cantidad']??0, 2, '.', ',') }}
                                 </label>
                                 <input type="number"
                                     class="form-control @error('inputs.' . $index . '.cantidad') is-invalid @enderror"
@@ -688,7 +690,7 @@
                             </div>
 
                             <div class="col-md-3 mb-3">
-                                <x-input-validado label="Papeleta:" :readonly="false" placeholder="Papeleta"
+                                <x-input-validado label="No. Servicio:" :readonly="false" placeholder="No. Servicio"
                                     wire-model="inputs.{{ $index }}.folio" wire-attribute="folios"
                                     type="text" />
                             </div>

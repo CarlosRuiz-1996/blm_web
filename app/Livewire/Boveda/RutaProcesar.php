@@ -79,6 +79,7 @@ class RutaProcesar extends Component
 
     public function validar()
     {
+
         $this->validate([
             'monto_envases.*.cantidad' => 'required|numeric|min:1',
         ], [
@@ -134,8 +135,6 @@ class RutaProcesar extends Component
                 }
                 throw new \Exception('Existe una diferencia  si continuas se generará el acta administrativa  de diferencias, Deseas continuar...');
             }
-
-
             $this->finalizar_recolecta();
             $this->dispatch('agregarArchivocre', ['msg' => 'El servicio de recolecta ha sido termiando'], ['tipomensaje' => 'success']);
             $this->limpiar();
