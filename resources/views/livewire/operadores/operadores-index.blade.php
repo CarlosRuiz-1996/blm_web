@@ -165,8 +165,7 @@
                                                                                             wire:click="addComision('{{ $servicio->id }}')"
                                                                                             data-toggle="modal"
                                                                                             data-target="#comisionModal">
-                                                                                            <i
-                                                                                                class="fa fa-plus"></i>
+                                                                                            <i class="fa fa-plus"></i>
                                                                                             Agregar Comisión
                                                                                         </button>
                                                                                     </p>
@@ -334,15 +333,13 @@
                             </div>
                             @if ($tiposervicio)
                                 <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-12' }} mb-3">
-                                    <x-input-validado label="No. Servicio:" :readonly="true" placeholder="No. Servicio"
-                                        wire-model="papeleta" type="text" />
+                                    <x-input-validado label="No. Servicio:" :readonly="true"
+                                        placeholder="No. Servicio" wire-model="papeleta" type="text" />
                                 </div>
                             @endif
                             @if ($tiposervicio == 'Recolección')
                                 <div class="col-md-4 mb-3">
-                                    {{--
-                            <x-input-validado :readonly="false" label="Monto:" placeholder="Ingrese Monto total"
-                                wire-model="MontoRecolecta" wire-attribute="MontoRecolecta" type="text" /> --}}
+
                                     <label for="">Monto de la recolecta: $
                                         {{ number_format($MontoRecolecta, 2, '.', ',') }}</label>
                                     <input type="number"
@@ -377,15 +374,15 @@
 
 
                             @foreach ($inputs as $index => $input)
-                                @if (isset($input['morralla']) && $input['morralla']==false)
-                                    <div class="col-md-1 mb-3" {{ $tiposervicio == 'Entrega' ? 'hidden' : '' }}>
+                                @if ($input['morralla'] == false)
+                                    <div class="col-md-1 mb-3">
                                         <Label>Violado</Label>
                                         <input label="Cantidad:" id="violado.{{ $index }}"
                                             onclick="select_violado(this)"
                                             wire:model="inputs.{{ $index }}.violado" type="checkbox" />
 
                                     </div>
-                                
+
                                     <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
 
                                         <label for="">Monto: $
@@ -400,12 +397,11 @@
 
                                     </div>
                                 @endif
-
                                 @if ($tiposervicio == 'Recolección')
                                     <div class="col-md-2 mb-3">
-                                        <x-input-validado label="No. Servicio:" :readonly="false" placeholder="No. Servicio"
-                                            wire-model="inputs.{{ $index }}.folio" wire-attribute="folios"
-                                            type="text" />
+                                        <x-input-validado label="No. Servicio:" :readonly="false"
+                                            placeholder="No. Servicio" wire-model="inputs.{{ $index }}.folio"
+                                            wire-attribute="folios" type="text" />
                                     </div>
                                 @endif
                                 <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-3' }} mb-3">
@@ -689,7 +685,7 @@
 
 
                                 <label for="">Monto: $
-                                    {{ number_format((float) $input['cantidad']??0, 2, '.', ',') }}
+                                    {{ number_format((float) $input['cantidad'] ?? 0, 2, '.', ',') }}
                                 </label>
                                 <input type="number"
                                     class="form-control @error('inputs.' . $index . '.cantidad') is-invalid @enderror"
@@ -815,73 +811,66 @@
                     <div class="row" wire:init='loadServicios'>
                         @if ($readyToLoadModal)
 
-                        <div class="col-md-3 mb-4">
-                            <x-input-validado label="Cliente:" :readonly="true"
-                                wire-model="cliente_comision" type="text" />
-                        </div>
-                        <div class="col-md-8 mb-4">
-                            <x-input-validado label="Dirección:" :readonly="true"
-                                wire-model="direccion_comision" type="text" />
-                        </div>
-
-
-                        <div class="col-md-3 mb-3">
-                            <x-input-validado label="Papeleta:" :readonly="false"
-                                placeholder="Ingresa papeleta:"
-                                wire-model="papeleta_comision" type="text" />
-                        </div>
-
-                        
-                        <div class="col-md-4 mb-3">
-                          
-                            <label for="">Monto de la comisión: $
-                                {{ number_format($monto_comision, 2, '.', ',') }}</label>
-                            <input type="number"
-                                class="form-control @error('monto_comision') is-invalid @enderror"
-                                wire:model.live='monto_comision'>
-                            @error('monto_comision')
-                                <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                       
-                        <div class="col-md-2 mb-3" style="margin-top: 33px">
-                            <label for="file-upload" class="btn btn-primary btn-sm" 
-                             wire:loading.class="btn-secondary"
-                            wire:loading.class.remove="btn-primary"
-                            >
-                                Subir evidencia
-                            </label>
-                            <input type="file" id="file-upload" wire:model="evidencia_comision"
-                            wire:loading.attr="disabled"
-                           
-                            style="display: none;">
-                        </div>
-                        
-                        <div class="col-md-3 d-flex justify-content-center align-items-center">
-                            <div wire:loading wire:target="evidencia_comision">  
-                                Cargando evidencia...
+                            <div class="col-md-3 mb-4">
+                                <x-input-validado label="Cliente:" :readonly="true" wire-model="cliente_comision"
+                                    type="text" />
                             </div>
-                            @if (isset($evidencia_comision) && $evidencia_comision)
-                                <img src="{{ $evidencia_comision->temporaryUrl() }}" alt="Foto Tomada"
-                                    class="img-fluid" style="max-width: 100px; height: auto;">
-                            @endif
-                        </div>
+                            <div class="col-md-8 mb-4">
+                                <x-input-validado label="Dirección:" :readonly="true"
+                                    wire-model="direccion_comision" type="text" />
+                            </div>
+
+
+                            <div class="col-md-3 mb-3">
+                                <x-input-validado label="Papeleta:" :readonly="false" placeholder="Ingresa papeleta:"
+                                    wire-model="papeleta_comision" type="text" />
+                            </div>
+
+
+                            <div class="col-md-4 mb-3">
+
+                                <label for="">Monto de la comisión: $
+                                    {{ number_format($monto_comision, 2, '.', ',') }}</label>
+                                <input type="number"
+                                    class="form-control @error('monto_comision') is-invalid @enderror"
+                                    wire:model.live='monto_comision'>
+                                @error('monto_comision')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+
+                            <div class="col-md-2 mb-3" style="margin-top: 33px">
+                                <label for="file-upload" class="btn btn-primary btn-sm"
+                                    wire:loading.class="btn-secondary" wire:loading.class.remove="btn-primary">
+                                    Subir evidencia
+                                </label>
+                                <input type="file" id="file-upload" wire:model="evidencia_comision"
+                                    wire:loading.attr="disabled" style="display: none;">
+                            </div>
+
+                            <div class="col-md-3 d-flex justify-content-center align-items-center">
+                                <div wire:loading wire:target="evidencia_comision">
+                                    Cargando evidencia...
+                                </div>
+                                @if (isset($evidencia_comision) && $evidencia_comision)
+                                    <img src="{{ $evidencia_comision->temporaryUrl() }}" alt="Foto Tomada"
+                                        class="img-fluid" style="max-width: 100px; height: auto;">
+                                @endif
+                            </div>
                         @else
-                        <div class="col-md-12 text-center">
-                            <div class="spinner-border" role="status">
+                            <div class="col-md-12 text-center">
+                                <div class="spinner-border" role="status">
+                                </div>
                             </div>
-                        </div>
                         @endif
                     </div>
 
-                   
+
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" data-dismiss="modal" wire:click='cleanComision'>Cerrar</button>
-                    <button class="btn btn-info" wire:click='saveComision'
-                    wire:loading.remove
-                    >Guardar</button>
+                    <button class="btn btn-info" wire:click='saveComision' wire:loading.remove>Guardar</button>
 
                 </div>
             </div>
@@ -1060,7 +1049,9 @@
                 $('#ModalReprogramarServicio').on('hidden.bs.modal', function() {
                     Livewire.dispatch('modalCerradoReprogramar');
                 });
-
+                $('#comisionModal').on('hidden.bs.modal', function() {
+                    @this.call('cleanComision');
+                });
 
                 // Ocultar el primer modal cuando se muestra el segundo modal
                 $('#modalDetailCompra').on('show.bs.modal', function() {

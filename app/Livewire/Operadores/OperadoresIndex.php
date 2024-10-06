@@ -111,6 +111,7 @@ class OperadoresIndex extends   Component
                     'photo' => '',
                     'sello' => $item->sello_seguridad,
                     'violado' => false,
+                    'morralla' =>false
                 ]];
             })->toArray();
         } else {
