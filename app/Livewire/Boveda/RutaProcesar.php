@@ -19,6 +19,7 @@ use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
 use App\Models\RutaVehiculo;
 use App\Models\RutaVehiculoReporte;
+use App\Models\ServicioComision;
 use App\Models\ServicioKey;
 use App\Models\ServicioRutaEnvases;
 use Exception;
@@ -37,10 +38,19 @@ class RutaProcesar extends Component
     {
         $this->readyToLoad = true;
     }
+
+    public $comisiones;
     public function mount(Ruta $ruta)
     {
 
         $this->ruta = $ruta;
+        $this->comisiones = collect(); // Inicializar como colección vacía
+
+        $ruta_serv = RutaServicio::where('ruta_id', $ruta->id)->get();
+        foreach ($ruta_serv as $serv) {
+            $this->comisiones = $this->comisiones->merge(ServicioComision::where('ruta_servicio_id', $serv->id)->get());
+        }
+
     }
     public function render()
     {
@@ -219,7 +229,7 @@ class RutaProcesar extends Component
 
 
 
-            $keys = RutaServicio::where('ruta_id', $this->ruta->id)->where('status_ruta_servicios','!=',0)
+            $keys = RutaServicio::where('ruta_id', $this->ruta->id)->where('status_ruta_servicios', '!=', 0)
                 ->whereHas('keys', function ($query) {
                     $query->where('status_servicio_keys', 1);
                 })
@@ -529,7 +539,8 @@ class RutaProcesar extends Component
     }
 
 
-    public function finalizarReprogramacion(RutaServicio $serv){
-        Reprogramacion::where('ruta_servicio_id', $serv->id)->update(['status_reprogramacions'=>3]);
+    public function finalizarReprogramacion(RutaServicio $serv)
+    {
+        Reprogramacion::where('ruta_servicio_id', $serv->id)->update(['status_reprogramacions' => 3]);
     }
 }
