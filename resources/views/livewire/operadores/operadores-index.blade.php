@@ -377,7 +377,7 @@
 
 
                             @foreach ($inputs as $index => $input)
-                                @if ($input['morralla'] && $input['morralla']==false)
+                                @if (isset($input['morralla']) && $input['morralla']==false)
                                     <div class="col-md-1 mb-3" {{ $tiposervicio == 'Entrega' ? 'hidden' : '' }}>
                                         <Label>Violado</Label>
                                         <input label="Cantidad:" id="violado.{{ $index }}"
