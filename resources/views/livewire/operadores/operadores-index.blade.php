@@ -159,6 +159,17 @@
                                                                                             Reprogramar
                                                                                         </button>
                                                                                     </p>
+                                                                                    <p class="mb-0">
+                                                                                        <button type="button"
+                                                                                            class="btn mb-2 btn-secondary btn-sm text-xs"
+                                                                                            wire:click="addComision('{{ $servicio->id }}')"
+                                                                                            data-toggle="modal"
+                                                                                            data-target="#comisionModal">
+                                                                                            <i
+                                                                                                class="fa fa-plus"></i>
+                                                                                            Agregar Comisión
+                                                                                        </button>
+                                                                                    </p>
                                                                                 @else
                                                                                     <p>
                                                                                         <span
@@ -366,7 +377,7 @@
 
 
                             @foreach ($inputs as $index => $input)
-                                @if ($input['morralla']==false)
+                                @if ($input['morralla'] && $input['morralla']==false)
                                     <div class="col-md-1 mb-3" {{ $tiposervicio == 'Entrega' ? 'hidden' : '' }}>
                                         <Label>Violado</Label>
                                         <input label="Cantidad:" id="violado.{{ $index }}"
@@ -787,6 +798,97 @@
             </div>
         </div>
     </div>
+
+    <!--comision-->
+    <div class="modal fade" id="comisionModal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+        tabindex="-1" wire:ignore.self>
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" id="exampleModalLabel">Agregar comisión</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        wire:click='cleanComision'>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" wire:init='loadServicios'>
+                        @if ($readyToLoadModal)
+
+                        <div class="col-md-3 mb-4">
+                            <x-input-validado label="Cliente:" :readonly="true"
+                                wire-model="cliente_comision" type="text" />
+                        </div>
+                        <div class="col-md-8 mb-4">
+                            <x-input-validado label="Dirección:" :readonly="true"
+                                wire-model="direccion_comision" type="text" />
+                        </div>
+
+
+                        <div class="col-md-3 mb-3">
+                            <x-input-validado label="Papeleta:" :readonly="false"
+                                placeholder="Ingresa papeleta:"
+                                wire-model="papeleta_comision" type="text" />
+                        </div>
+
+                        
+                        <div class="col-md-4 mb-3">
+                          
+                            <label for="">Monto de la comisión: $
+                                {{ number_format($monto_comision, 2, '.', ',') }}</label>
+                            <input type="number"
+                                class="form-control @error('monto_comision') is-invalid @enderror"
+                                wire:model.live='monto_comision'>
+                            @error('monto_comision')
+                                <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                       
+                        <div class="col-md-2 mb-3" style="margin-top: 33px">
+                            <label for="file-upload" class="btn btn-primary btn-sm" 
+                             wire:loading.class="btn-secondary"
+                            wire:loading.class.remove="btn-primary"
+                            >
+                                Subir evidencia
+                            </label>
+                            <input type="file" id="file-upload" wire:model="evidencia_comision"
+                            wire:loading.attr="disabled"
+                           
+                            style="display: none;">
+                        </div>
+                        
+                        <div class="col-md-3 d-flex justify-content-center align-items-center">
+                            <div wire:loading wire:target="evidencia_comision">  
+                                Cargando evidencia...
+                            </div>
+                            @if (isset($evidencia_comision) && $evidencia_comision)
+                                <img src="{{ $evidencia_comision->temporaryUrl() }}" alt="Foto Tomada"
+                                    class="img-fluid" style="max-width: 100px; height: auto;">
+                            @endif
+                        </div>
+                        @else
+                        <div class="col-md-12 text-center">
+                            <div class="spinner-border" role="status">
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+
+                   
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal" wire:click='cleanComision'>Cerrar</button>
+                    <button class="btn btn-info" wire:click='saveComision'
+                    wire:loading.remove
+                    >Guardar</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     @push('js')
         <script>
             document.addEventListener('livewire:initialized', () => {
@@ -912,6 +1014,7 @@
                         $('#ModalEntregarRecolectar').modal('hide');
                         $('#ModalReprogramarServicio').modal('hide');
                         $('#modalDetailCompra').modal('hide');
+                        $('#comisionModal').modal('hide');
                     }
 
                 });

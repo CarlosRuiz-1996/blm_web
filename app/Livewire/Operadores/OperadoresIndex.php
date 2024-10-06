@@ -15,6 +15,7 @@ use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
 use App\Models\RutaVehiculo;
 use App\Models\RutaVehiculoReporte;
+use App\Models\ServicioComision;
 use App\Models\ServicioEvidenciaEntrega;
 use App\Models\ServicioEvidenciaRecolecta;
 use App\Models\ServicioKey;
@@ -290,7 +291,7 @@ class OperadoresIndex extends   Component
             $servicioruta->monto = $this->MontoRecolecta;
             $servicioruta->envases = $this->envasescantidad;
             $servicioruta->status_ruta_servicios = 3;
-            $servicioruta->morralla=$this->morralla;
+            $servicioruta->morralla = $this->morralla;
             $servicioruta->save();
 
 
@@ -307,7 +308,7 @@ class OperadoresIndex extends   Component
                 $servicio_envases =  ServicioRutaEnvases::create([
                     'ruta_servicios_id' => $servicioruta->id,
                     'tipo_servicio' => 2,
-                    'cantidad' => $this->morralla?$this->MontoRecolecta:$input['cantidad'],
+                    'cantidad' => $this->morralla ? $this->MontoRecolecta : $input['cantidad'],
                     'folio' => $input['folio'],
                     'sello_seguridad' => $input['sello'],
                 ]);
@@ -683,5 +684,76 @@ class OperadoresIndex extends   Component
     public function cleanKeys()
     {
         $this->reset('keys');
+    }
+
+    // comisiones
+    public $ruta_servicio_comision;
+    public $cliente_comision;
+    public $direccion_comision;
+    public $papeleta_comision;
+    public $monto_comision;
+    public $evidencia_comision;
+    public function addComision(RutaServicio $ruta_servicio)
+    {
+        $this->readyToLoadModal = true;
+        $this->ruta_servicio_comision  = $ruta_servicio;
+        $this->cliente_comision = $ruta_servicio->servicio->cliente->razon_social;
+        $this->direccion_comision = $ruta_servicio->servicio->sucursal->sucursal->sucursal .
+            ' Calle ' . $ruta_servicio->servicio->sucursal->sucursal->direccion .
+            ' CP.' . $ruta_servicio->servicio->sucursal->sucursal->cp->cp .
+            ' ' . $ruta_servicio->servicio->sucursal->sucursal->cp->estado->name;
+    }
+    public function cleanComision()
+    {
+        $this->reset(
+            'ruta_servicio_comision',
+            'cliente_comision',
+            'direccion_comision',
+            'papeleta_comision',
+            'monto_comision',
+            'evidencia_comision',
+            'readyToLoadModal'
+        );
+    }
+
+    public function saveComision()
+    {
+        $this->validate(
+            [
+                'papeleta_comision' => 'required',
+                'monto_comision' => 'required',
+                'evidencia_comision' => 'required|image|max:1024000'
+            ],
+            [
+                'papeleta_comision.required' => 'El campo es Obligatorio',
+                'monto_comision.required' => 'El campo es Obligatorio',
+                'evidencia_comision.required' => 'El campo es Obligatorio',
+                'evidencia_comision.image' => 'El archivo debe de ser imagen',
+                'evidencia_comision.max' => 'Tamaño maximo es de 1GB'
+            ]
+        );
+        try {
+
+            DB::transaction(function () {
+
+
+                $comision = ServicioComision::create([
+                    'papeleta' => $this->papeleta_comision,
+                    'monto' => $this->monto_comision,
+                    'ruta_servicio_id' => $this->ruta_servicio_comision->id,
+                ]);
+
+                $evidenciaComisionName = 'comision_' . $comision->id . '_evidencia.png';
+
+                $this->evidencia_comision->storeAs(path: 'evidencias/ComisionesServicios/', name: $evidenciaComisionName);
+                
+
+                $this->cleanComision();
+            });
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La comision se guardo correctamente.'], ['tipomensaje' => 'success'], ['op' => 1]);
+        } catch (Exception $e) {
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Hubo un error intenta más tarde.'], ['tipomensaje' => 'error']);
+
+        }
     }
 }
