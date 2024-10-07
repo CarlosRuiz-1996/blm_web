@@ -241,7 +241,6 @@ class AgregarServicio extends Component
             $this->validate();
             $this->resetValidation();
 
-            dd('entra');
 
             $bandera = 0;
             $seleccionados = [];
@@ -287,6 +286,7 @@ class AgregarServicio extends Component
                 $bandera++;
             }
 
+            dd($seleccionados);
 
             $res = $this->form->storeRutaServicio($seleccionados, $seleccionadosRecolecta);
 
