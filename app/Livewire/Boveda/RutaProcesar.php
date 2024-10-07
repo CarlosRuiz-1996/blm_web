@@ -543,4 +543,11 @@ class RutaProcesar extends Component
     {
         Reprogramacion::where('ruta_servicio_id', $serv->id)->update(['status_reprogramacions' => 3]);
     }
+
+    //comisiones
+
+    public function evidenciaComision(ServicioComision $comision){
+        $this->evidencia_foto =  'evidencias/ComisionesServicios/comision_' . $comision->id . '_evidencia.png';
+        $this->readyToLoadModal = true;
+    }
 }
