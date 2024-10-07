@@ -286,7 +286,6 @@ class AgregarServicio extends Component
                 $bandera++;
             }
 
-            dd($seleccionados);
 
             $res = $this->form->storeRutaServicio($seleccionados, $seleccionadosRecolecta);
 
