@@ -288,30 +288,58 @@
                 </button>
             </div>
             <div class="modal-body text-center">
-                <form wire:submit.prevent="updateService"> <!-- Usar wire:submit para manejar el envío del formulario -->
+                <form wire:submit.prevent="updateService"> 
                     <div class="modal-body">
                         <div class="row">
-                        @foreach($serviciosRutasevidencias as $index => $servicio)
-                            <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="cantidad-{{ $index }}">Cantidad</label>
-                                <input type="number" class="form-control" id="cantidad-{{ $index }}" wire:model="serviciosRutasevidencias.{{ $index }}.cantidad">
-                            </div>
+                            @foreach($serviciosRutasevidencias as $index => $servicio)
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="cantidad-{{ $index }}">Cantidad</label>
+                                        <input type="number" class="form-control" id="cantidad-{{ $index }}" wire:model="serviciosRutasevidencias.{{ $index }}.cantidad">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="sello_seguridad-{{ $index }}">Sello de Seguridad</label>
+                                        <input type="text" class="form-control" id="sello_seguridad-{{ $index }}" wire:model="serviciosRutasevidencias.{{ $index }}.sello_seguridad" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @if($servicio['tipo_servicio'] == "2") 
+                                        <img src="{{ asset('storage/evidencias/EntregasRecolectas/Servicio_' . $servicio['ruta_servicios']['id'] . '_recolecta_' . $servicio['evidencia_recolecta']['id'] . '_evidencia.png?v=' . time()) }}" alt="Evidencia" class="img-fluid mb-2" style="width: 150px; height: 150px;">
+                                    @else
+                                        <img src="{{ asset('storage/evidencias/EntregasRecolectas/Servicio_' . $servicio['ruta_servicios']['id'] . '_entrega_' . $servicio['evidencia_entrega']['id'] . '_evidencia.png?v=' . time()) }}" alt="Evidencia" class="img-fluid mb-2" style="width: 150px; height: 150px;">
+                                    @endif                                    
+                                    </div>
+                                </div>                               
+                                
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="evidencianueva-{{ $index }}">Cargar Nueva Evidencia</label>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="evidencianueva-{{ $index }}" wire:model.live="serviciosRutasevidencias.{{ $index }}.evidencianueva" accept="image/*">
+                                            <label class="custom-file-label text-left" placeholder="Cargar" for="evidencianueva-{{ $index }}">Archivo</label>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        @if (isset($servicio['evidencianueva']))
+                                        <img src="{{ $servicio['evidencianueva']->temporaryUrl() }}" alt="Vista Previa" class="img-fluid mb-2" style="width: 150px; height: 150px;">
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                            <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="sello_seguridad-{{ $index }}">Sello de Seguridad</label>
-                                <input type="text" class="form-control" id="sello_seguridad-{{ $index }}" wire:model="serviciosRutasevidencias.{{ $index }}.sello_seguridad" readonly>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                     </div>
                 </form>
+                
+                
             </div>
         </div>
     </div>
