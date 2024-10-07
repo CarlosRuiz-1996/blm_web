@@ -80,7 +80,7 @@
     <div class="card-outline card-info info-box">
         <div class="info-box-content">
             <div class="table-responsive">
-                <table class="table" x-data="{ servicio: false, compra: false }">
+                <table class="table" x-data="{ servicio: false, compra: false,comision:false }">
                     <thead>
                         <tr @click="servicio = ! servicio">
                             <th colspan="6" class="text-center table-secondary">
@@ -94,7 +94,7 @@
                             <th>Cliente</th>
                             <th>Servicio</th>
                             <th>Tipo</th>
-                            <th>Folio/Papeleta</th>
+                            <th>No. Servicio</th>
                             <th>Llaves</th>
                             <th>Acciones</th>
                         </tr>
@@ -188,6 +188,52 @@
                                 @endif
                                 @endforeach
                                 @endif
+
+                        @if (!$comisiones->isEmpty())
+                            <tr @click="comision = ! comision">
+                                <th colspan="6" class="text-center table-secondary">
+                                    <h2>Comisiones Extra
+                                        <i :class="comision === false ? 'fas fa-chevron-up' :
+                                        'fas fa-chevron-down'" class="ml-2"></i>
+                                    </h2>
+                                </th>
+                            </tr>
+                            <tr class="table-success" x-show="comision">
+                                <th >Cliente</th>
+                                <th >Sucursal</th>
+                                <th>Total</th>
+                                <th>Papeleta</th>
+                                <th>Evidencia</th>
+                                <th>Estatus</th>
+                                {{-- <th colspan="2" class="text-center">Acciones</th> --}}
+                            </tr>
+
+                            @foreach ($comisiones as $comision)
+                                    
+                                <tr x-show="comision">
+                                    <td>{{$comision->ruta_servicio->servicio->cliente->razon_social}}</td>
+                                    <td>{{$comision->ruta_servicio->servicio->sucursal->sucursal->sucursal}}</td>
+                                    <td>
+                                        $ {{ number_format($comision->monto, 2, '.', ',') }} MXN
+                                    </td>
+                                    <td>{{$comision->papeleta}}</td>
+                                    <td>
+                                        <button class="btn btn-info" data-toggle="modal" data-target="#evidenciaModal"
+                                        wire:click='evidenciaComision({{ $comision }})'>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                                            <path
+                                                d="M13.002 1H2.998C2.447 1 2 1.447 2 2.002v11.996C2 14.553 2.447 15 2.998 15h11.004c.551 0 .998-.447.998-.998V2.002A1.002 1.002 0 0 0 13.002 1zM3 2h10a1 1 0 0 1 1 1v8.586l-3.293-3.293a1 1 0 0 0-1.414 0L7 10.586 5.707 9.293a1 1 0 0 0-1.414 0L3 10.586V3a1 1 0 0 1 1-1z" />
+                                            <path
+                                                d="M10.707 9.293a1 1 0 0 1 1.414 0L15 12.172V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-.828l3.293-3.293a1 1 0 0 1 1.414 0L7 10.586l3.707-3.707zM10 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                        </svg>
+                                    </button>
+                                    </td>
+                                    <td>{{$comision->status_servicio_comisions==1?'PENDIENTE':'PROCESADO'}}</td>
+                                </tr>
+
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -213,7 +259,7 @@
                     <div class="row" wire:init='loadServicios'>
                         @if ($form->servicio)
                         <div class="col-md-6 mb-3">
-                            <x-input-validado label="Papeleta:" placeholder="Papeleta" wire-model="form.folio"
+                            <x-input-validado label="No. Servicio:" placeholder="No. Servicio" wire-model="form.folio"
                                 wire-attribute="folios" type="text" :readonly='true' />
                         </div>
 
@@ -237,7 +283,7 @@
                                 placeholder="Sello de seguridad" type="text" />
                         </div>
                         <div class="col-md-3 mb-3">
-                            <label for="">Papeleta</label>
+                            <label for="">No. Servicio</label>
                             <input class="form-control" value="{{ $envases->folio }}" placeholder="Folio" disabled
                                 type="text" />
                         </div>
@@ -378,7 +424,7 @@
 
                                             <div class="col-md-6 mb-3">
                                                 <p>
-                                                    NÚMERO DE FOLIO DE PAPELETA:
+                                                    NÚMERO DE SERVICIO:
                                                     <span class="font-weight-bold checkbox">{{
                                                         $diferencia['servicio']['folio'] }}</span>
                                                 </p>

@@ -877,7 +877,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row g-3">
-                        <div class="form-group  col-md-4" wire:ignore>
+                        <div class="form-group  col-md-6" wire:ignore>
 
                             <x-select-select2 label="Clientes:" placeholder="" wire-model="cliente" required
                                 classSelect2="cliente_servicio" modalName='addServicio'>
@@ -892,26 +892,29 @@
                                 @endif
                             </x-select-select2>
                         </div>
-                        <div class="form-group  col-md-4">
+                        <div class="form-group  col-md-3">
+
+                            <x-input-validado-date label="Fecha" placeholder="Fecha" wire-model="fecha"
+                                type="date" />
+
+                        </div>
+                        <div class="form-group  col-md-12">
 
                             <x-select-validadolive label="Servicio:" placeholder="" wire-model="servicio" required>
                                 @if ($servicios_cliente && count($servicios_cliente) > 0)
                                     @foreach ($servicios_cliente as $servicio)
                                         <option value="{{ $servicio->id }}">
 
-                                            {{ $servicio->ctg_servicio->descripcion }}</option>
+                                            {{ $servicio->ctg_servicio->descripcion  }}
+                                            - {{ $servicio->sucursal->sucursal->sucursal }}
+                                        </option>
                                     @endforeach
                                 @else
                                     <option value="">Sin Servicios</option>
                                 @endif
                             </x-select-validadolive>
                         </div>
-                        <div class="form-group  col-md-4">
-
-                            <x-input-validado-date label="Fecha" placeholder="Fecha" wire-model="fecha"
-                                type="date" />
-
-                        </div>
+                        
                         <div class="form-group  col-md-12">
                             <x-input-validadolive label="Direccion:" placeholder="Direccion del servicio"
                                 wire-model="direccion" type="text" :readonly='true' />

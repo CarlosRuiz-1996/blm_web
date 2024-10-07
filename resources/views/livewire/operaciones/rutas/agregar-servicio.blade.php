@@ -41,9 +41,9 @@
                                     <th>Monto</th>
                                     <th>Folio</th>
                                     <th>Tipo servicio</th>
-                                    @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+                                    {{-- @if ($this->form->ruta->ctg_rutas_estado_id == 1) --}}
                                     <th>Acciones</th>
-                                    @endif
+                                    {{-- @endif --}}
                                 </thead>
                                 <tbody>
                                     @foreach ($ruta_servicios as $servicio)
@@ -82,11 +82,11 @@
 
                                         @if($servicio->status_ruta_servicios==0)
                                         <td>
-                                        <span
-                                            class="badge bg-success bg-danger mb-2">
-                                            Reprogramado
-                                        </span>
-                                    </td>
+                                            <span
+                                                class="badge bg-danger mb-2">
+                                                Reprogramado
+                                            </span>
+                                        </td>
                                         @endif
 
                                     </tr>
@@ -151,7 +151,7 @@
                             <th>Sucursal</th>
                             <th>Tipo Servicio</th>
                             <th>Monto</th>
-                            <th>Papeleta</th>
+                            <th>No. Servicio</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -218,10 +218,10 @@
                             </td>
                             <td>
                                 <div class="d-flex flex-column">
-                                    <x-input-validado style="margin-top: -19%" placeholder="Papeleta"
+                                    <x-input-validado style="margin-top: -19%" placeholder="No. Servicio"
                                         wire:model='folioArrayRecolecta.{{ $servicio->id }}' type="text"
                                         readonly="{{ empty($selectServiciosRecolecta[$servicio->id]) ? 'readonly' : '' }}" />
-                                    <x-input-validado style="margin-top: -22%" placeholder="Papeleta"
+                                    <x-input-validado style="margin-top: -22%" placeholder="No. Servicio"
                                         wire:model='folioArray.{{ $servicio->id }}' type="text"
                                         readonly="{{ empty($selectServiciosEntrega[$servicio->id]) ? 'readonly' : '' }}" />
                                 </div>
@@ -274,7 +274,7 @@
                 wire-model='form.servicio_desc' type="text" />
 
             <x-input-validado label="Monto:" placeholder="Monto" wire-model='form.monto' type="number" />
-            <x-input-validado label="Papeleta:" placeholder="Papeleta" wire-model='form.folio' type="text" />
+            <x-input-validado label="No. Servicio:" placeholder="No. Servicio" wire-model='form.folio' type="text" />
             {{--
             <x-input-validado label="Envases:" placeholder="Envases" wire-model='form.envases' type="number" /> --}}
 

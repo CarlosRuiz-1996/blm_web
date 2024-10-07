@@ -15,6 +15,7 @@ use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
 use App\Models\RutaVehiculo;
 use App\Models\RutaVehiculoReporte;
+use App\Models\ServicioComision;
 use App\Models\ServicioEvidenciaEntrega;
 use App\Models\ServicioEvidenciaRecolecta;
 use App\Models\ServicioKey;
@@ -43,6 +44,7 @@ class OperadoresIndex extends   Component
     public $MontoEntrega;
     public $MontoRecolecta;
     public $readyToLoad = false;
+    public $morralla = false;
     public function loadServicios()
     {
         $this->readyToLoad = true;
@@ -109,22 +111,29 @@ class OperadoresIndex extends   Component
                     'photo' => '',
                     'sello' => $item->sello_seguridad,
                     'violado' => false,
+                    'morralla' =>false
                 ]];
             })->toArray();
         } else {
             $this->inputs = [];
             if ($this->envasescantidad) {
-                for ($i = 0; $i < $this->envasescantidad; $i++) {
+                $limit = 1;
+                if (!$this->morralla) {
+                    $limit = $this->envasescantidad;
+                }
+                for ($i = 0; $i < $limit; $i++) {
                     $this->inputs[] = [
                         'cantidad' => '',
                         'folio' => $this->papeleta,
                         'photo' => '',
                         'sello' => '',
                         'violado' => false,
+                        'morralla' => $this->morralla
                     ];
                 }
             }
         }
+        // dd($this->inputs);
     }
 
     public function envase_recolecta()
@@ -230,55 +239,60 @@ class OperadoresIndex extends   Component
 
     public function ModalAceptarRecolecta()
     {
-
-        $this->validate([
+        $rules = [
             'idrecolecta' => 'required',
             'envasescantidad' => 'required',
             'MontoRecolecta' => 'required',
-            'inputs.*.cantidad' => 'required', // Máximo 1MB
-            'inputs.*.folio' => 'required', // Máximo 1MB
-            'inputs.*.sello' => 'required', // Máximo 1MB
-            'inputs.*.photo' => 'required|image|max:1024000', // Máximo 1MB
-        ], [
+            'inputs.*.folio' => 'required',
+            'inputs.*.sello' => 'required',
+            'inputs.*.photo' => 'required|image|max:1024000',
+        ];
+        $messages = [
             'inputs.*.photo.required' => 'La imagen es obligatoria',
-            'inputs.*.cantidad.required' => 'La cantidad es obligatoria',
             'inputs.*.folio.required' => 'El folio es obligatoria',
             'inputs.*.sello.required' => 'El sello es obligatoria',
-            'MontoRecolecta.required' => 'Debe ingresar el monto total',
+            'MontoRecolecta.required' => 'El monto es requerido',
             'envasescantidad.required' => 'La cantidad de envases es obligatoria',
+        ];
 
-        ]);
+        if (!$this->morralla) {
+            $rules['inputs.*.cantidad'] = 'required';
+            $messages['inputs.*.cantidad.required'] = 'El monto es requerido';
+        }
+        $this->validate($rules, $messages);
+
         try {
             DB::beginTransaction();
 
             if (!count($this->inputs)) {
                 throw new \Exception('No hay envases para guardar');
             }
+            if (!$this->morralla) {
+                //acumulo la cantidad de los envase
+                $MontoEnvases = 0;
+                $montoEnvaseViolado = 0;
+                foreach ($this->inputs as $index => $input) {
 
-            //acumulo la cantidad de los envase
-            $MontoEnvases = 0;
-            $montoEnvaseViolado = 0;
-            foreach ($this->inputs as $index => $input) {
-
-                $MontoEnvases  += (float)$input['cantidad'];
-                //si esta el monto violado se acumula para despues descontar este valor 
-                if ($input['violado']) {
-                    $montoEnvaseViolado  += (float)$input['cantidad'];
+                    $MontoEnvases  += (float)$input['cantidad'];
+                    //si esta el monto violado se acumula para despues descontar este valor 
+                    if ($input['violado']) {
+                        $montoEnvaseViolado  += (float)$input['cantidad'];
+                    }
                 }
+
+                if ($MontoEnvases != $this->MontoRecolecta) {
+                    throw new \Exception('La suma de los envases no coinside con el monto ingresado');
+                }
+
+                //si hay violado se resta porque no se llevara.
+                $this->MontoRecolecta = $MontoEnvases - $montoEnvaseViolado;
             }
-
-            if ($MontoEnvases != $this->MontoRecolecta) {
-                throw new \Exception('La suma de los envases no coinside con el monto ingresado');
-            }
-
-            //si hay violado se resta porque no se llevara.
-            $this->MontoRecolecta = $MontoEnvases - $montoEnvaseViolado;
-
             //completo datos del servicio en la ruta
             $servicioruta = RutaServicio::find($this->idrecolecta);
             $servicioruta->monto = $this->MontoRecolecta;
             $servicioruta->envases = $this->envasescantidad;
             $servicioruta->status_ruta_servicios = 3;
+            $servicioruta->morralla = $this->morralla;
             $servicioruta->save();
 
 
@@ -295,7 +309,7 @@ class OperadoresIndex extends   Component
                 $servicio_envases =  ServicioRutaEnvases::create([
                     'ruta_servicios_id' => $servicioruta->id,
                     'tipo_servicio' => 2,
-                    'cantidad' => $input['cantidad'],
+                    'cantidad' => $this->morralla ? $this->MontoRecolecta : $input['cantidad'],
                     'folio' => $input['folio'],
                     'sello_seguridad' => $input['sello'],
                 ]);
@@ -320,7 +334,7 @@ class OperadoresIndex extends   Component
             ]);
 
 
-
+            $this->reset('morralla');
             // $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La recolecta se completo correctamente'], ['tipomensaje' => 'success']);
             $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
             NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
@@ -443,10 +457,10 @@ class OperadoresIndex extends   Component
 
 
         $repro = Reprogramacion::create([
-            'motivo'=>$this->motivoReprogramarConcepto,
-            'ruta_servicio_id'=>$servicioRuta->id,
-            'area_id'=>18,
-            'ruta_id_old'=>$servicioRuta->ruta->id
+            'motivo' => $this->motivoReprogramarConcepto,
+            'ruta_servicio_id' => $servicioRuta->id,
+            'area_id' => 18,
+            'ruta_id_old' => $servicioRuta->ruta->id
         ]);
 
         $nombreEvidenciaRepro = 'reprogramacion_' . $repro->id . '.png';
@@ -454,7 +468,7 @@ class OperadoresIndex extends   Component
         $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
         NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
 
-        $this->reset('photorepro','IdservicioReprogramar','motivoReprogramarConcepto');
+        $this->reset('photorepro', 'IdservicioReprogramar', 'motivoReprogramarConcepto');
         $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio sera reprogramado'], ['tipomensaje' => 'success'], ['op' => 1]);
     }
 
@@ -671,5 +685,76 @@ class OperadoresIndex extends   Component
     public function cleanKeys()
     {
         $this->reset('keys');
+    }
+
+    // comisiones
+    public $ruta_servicio_comision;
+    public $cliente_comision;
+    public $direccion_comision;
+    public $papeleta_comision;
+    public $monto_comision;
+    public $evidencia_comision;
+    public function addComision(RutaServicio $ruta_servicio)
+    {
+        $this->readyToLoadModal = true;
+        $this->ruta_servicio_comision  = $ruta_servicio;
+        $this->cliente_comision = $ruta_servicio->servicio->cliente->razon_social;
+        $this->direccion_comision = $ruta_servicio->servicio->sucursal->sucursal->sucursal .
+            ' Calle ' . $ruta_servicio->servicio->sucursal->sucursal->direccion .
+            ' CP.' . $ruta_servicio->servicio->sucursal->sucursal->cp->cp .
+            ' ' . $ruta_servicio->servicio->sucursal->sucursal->cp->estado->name;
+    }
+    public function cleanComision()
+    {
+        $this->reset(
+            'ruta_servicio_comision',
+            'cliente_comision',
+            'direccion_comision',
+            'papeleta_comision',
+            'monto_comision',
+            'evidencia_comision',
+            'readyToLoadModal'
+        );
+    }
+
+    public function saveComision()
+    {
+        $this->validate(
+            [
+                'papeleta_comision' => 'required',
+                'monto_comision' => 'required',
+                'evidencia_comision' => 'required|image|max:1024000'
+            ],
+            [
+                'papeleta_comision.required' => 'El campo es Obligatorio',
+                'monto_comision.required' => 'El campo es Obligatorio',
+                'evidencia_comision.required' => 'El campo es Obligatorio',
+                'evidencia_comision.image' => 'El archivo debe de ser imagen',
+                'evidencia_comision.max' => 'Tamaño maximo es de 1GB'
+            ]
+        );
+        try {
+
+            DB::transaction(function () {
+
+
+                $comision = ServicioComision::create([
+                    'papeleta' => $this->papeleta_comision,
+                    'monto' => $this->monto_comision,
+                    'ruta_servicio_id' => $this->ruta_servicio_comision->id,
+                ]);
+
+                $evidenciaComisionName = 'comision_' . $comision->id . '_evidencia.png';
+
+                $this->evidencia_comision->storeAs(path: 'evidencias/ComisionesServicios/', name: $evidenciaComisionName);
+                
+
+                $this->cleanComision();
+            });
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La comision se guardo correctamente.'], ['tipomensaje' => 'success'], ['op' => 1]);
+        } catch (Exception $e) {
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Hubo un error intenta más tarde.'], ['tipomensaje' => 'error']);
+
+        }
     }
 }
