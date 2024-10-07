@@ -190,15 +190,15 @@ class AgregarServicio extends Component
             foreach ($this->selectServicios as $id => $selected) {
 
                 if ($selected) {
-                    if (array_key_exists($id, $this->selectServiciosRecolecta)) {
-                        if ($this->selectServiciosRecolecta[$id] === true) {
-                            $rules["folioArrayRecolecta.$id"] = 'required';
-                        }
-                    }
+                    // if (array_key_exists($id, $this->selectServiciosRecolecta)) {
+                    //     if ($this->selectServiciosRecolecta[$id] === true) {
+                    //         $rules["folioArrayRecolecta.$id"] = 'required';
+                    //     }
+                    // }
                     if (array_key_exists($id, $this->selectServiciosEntrega)) {
                         if ($this->selectServiciosEntrega[$id] === true) {
                             $rules["montoArray.$id"] = 'required';
-                            $rules["folioArray.$id"] = 'required';
+                            // $rules["folioArray.$id"] = 'required';
                         }
                     }
 
@@ -248,6 +248,8 @@ class AgregarServicio extends Component
 
             $this->validate();
             $this->resetValidation();
+
+            dd('entra');
 
             $bandera = 0;
             $seleccionados = [];

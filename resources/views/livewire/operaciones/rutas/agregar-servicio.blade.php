@@ -41,9 +41,9 @@
                                     <th>Monto</th>
                                     <th>Folio</th>
                                     <th>Tipo servicio</th>
-                                    @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+                                    {{-- @if ($this->form->ruta->ctg_rutas_estado_id == 1) --}}
                                     <th>Acciones</th>
-                                    @endif
+                                    {{-- @endif --}}
                                 </thead>
                                 <tbody>
                                     @foreach ($ruta_servicios as $servicio)
@@ -82,11 +82,11 @@
 
                                         @if($servicio->status_ruta_servicios==0)
                                         <td>
-                                        <span
-                                            class="badge bg-success bg-danger mb-2">
-                                            Reprogramado
-                                        </span>
-                                    </td>
+                                            <span
+                                                class="badge bg-danger mb-2">
+                                                Reprogramado
+                                            </span>
+                                        </td>
                                         @endif
 
                                     </tr>
