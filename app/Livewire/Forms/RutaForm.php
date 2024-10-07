@@ -323,7 +323,7 @@ class RutaForm extends Form
                             'servicio_id' => $data['servicio_id'],
                             'ruta_id' => $this->ruta->id,
                             'monto' => $data['monto'],
-                            'folio' => $data['folio'],
+                            'folio' => $data['folio']??'',
                             // 'envases' => $data['envases'],
                             'tipo_servicio' => 1,
                         ]);
@@ -343,7 +343,7 @@ class RutaForm extends Form
                             'servicio_id' => $data['servicio_id'],
                             'ruta_id' => $this->ruta->id,
                             'monto' => $data['monto'],
-                            'folio' => $data['folio'],
+                            'folio' => $data['folio']??'',
                             // 'envases' => $data['envases'],
                             'tipo_servicio' => 2,
                         ]);
