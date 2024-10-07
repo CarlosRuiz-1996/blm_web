@@ -123,7 +123,7 @@ class CambioEfectivo extends Component
         $this->sumaTotalbolsas=0;
         foreach ($this->bolsasDisponibles as $bolsa) {
             $cantidad = $this->cambioBolsas[$bolsa->id] ?? 0;
-            $this->sumaTotalbolsas += (int)$cantidad *  (float)$bolsa->piezas;
+            $this->sumaTotalbolsas += (int)$cantidad *  ((float)$bolsa->piezas * (float)$bolsa->cantidad);
         }
     } 
 

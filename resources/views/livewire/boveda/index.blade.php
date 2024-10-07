@@ -45,6 +45,10 @@
                         <a class="nav-link" id="diferencia-tab" data-toggle="tab" href="#diferencia" role="tab"
                             aria-controls="diferencia" wire:ignore.self aria-selected="false">Acta de Diferencia</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="serviciostotales-tab" data-toggle="tab" href="#serviciostotales" role="tab"
+                            aria-controls="serviciostotales" wire:ignore.self aria-selected="false">Servicios Totales</a>
+                    </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab"
@@ -221,6 +225,10 @@
                     <div class="tab-pane fade" id="diferencia" role="tabpanel" aria-labelledby="diferencia-tab"
                         wire:ignore.self>
                         @livewire('boveda.diferecia-valores')
+                    </div>
+                    <div class="tab-pane fade" id="serviciostotales" role="tabpanel" aria-labelledby="serviciostotales-tab"
+                        wire:ignore.self>
+                        @livewire('boveda.totales-servicios')
                     </div>
                 </div>
             </div>
