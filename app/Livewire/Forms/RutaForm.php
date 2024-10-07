@@ -324,7 +324,6 @@ class RutaForm extends Form
                             'ruta_id' => $this->ruta->id,
                             'monto' => $data['monto'],
                             'folio' => $data['folio']??'',
-                            // 'envases' => $data['envases'],
                             'tipo_servicio' => 1,
                         ]);
 
@@ -344,7 +343,6 @@ class RutaForm extends Form
                             'ruta_id' => $this->ruta->id,
                             'monto' => $data['monto'],
                             'folio' => $data['folio']??'',
-                            // 'envases' => $data['envases'],
                             'tipo_servicio' => 2,
                         ]);
 
@@ -363,7 +361,9 @@ class RutaForm extends Form
             $this->ruta->ctg_rutas_riesgo_id = $riesgo;
             Log::info('Entra al save: ');
             $this->ruta->save();
+            Log::info('commit: ');
             DB::commit();
+            Log::info('commit fin: ');
             return 1;
         } catch (\Exception $e) {
             DB::rollBack();
