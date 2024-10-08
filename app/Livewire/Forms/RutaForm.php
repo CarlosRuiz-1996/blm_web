@@ -318,7 +318,7 @@ class RutaForm extends Form
             Log::info('Entra al array seleccionados: ');
             if (count($seleccionados)) {
                 foreach ($seleccionados as $data) {
-                    if ($data['folio']) {
+                    // if ($data['folio']) {
                         $servicio_ruta = RutaServicio::create([
                             'servicio_id' => $data['servicio_id'],
                             'ruta_id' => $this->ruta->id,
@@ -331,13 +331,13 @@ class RutaForm extends Form
                         $servicio_ruta->servicio->save();
 
                         $totalRuta += $data['monto'];
-                    }
+                    // }
                 }
             }
             Log::info('Entra al array seleccionadosRecolecta: ');
             if (count($seleccionadosRecolecta)) {
                 foreach ($seleccionadosRecolecta as $data) {
-                    if ($data['folio']) {
+                    // if ($data['folio']) {
                         $servicio_ruta = RutaServicio::create([
                             'servicio_id' => $data['servicio_id'],
                             'ruta_id' => $this->ruta->id,
@@ -348,7 +348,7 @@ class RutaForm extends Form
 
                         $servicio_ruta->servicio->status_servicio = 4;
                         $servicio_ruta->servicio->save();
-                    }
+                    // }
                 }
             }
 
