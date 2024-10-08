@@ -9,6 +9,8 @@ use App\Models\RutaServicio;
 use Livewire\WithPagination;
 use Livewire\Attributes\On;
 use Livewire\WithoutUrlPagination;
+use Illuminate\Validation\Rule;
+
 
 class AgregarServicio extends Component
 {
@@ -206,6 +208,7 @@ class AgregarServicio extends Component
                 }
             }
         }
+        
         return $rules;
     }
     public function messages()
@@ -237,8 +240,12 @@ class AgregarServicio extends Component
 
             $this->dispatch('error-servicio', ['Falta seleccionar servicios']);
         } else {
+           if($this->selectServiciosRecolecta && !$this->selectServiciosEntrega){
 
+           }else{
             $this->validate();
+           }
+            
             $this->resetValidation();
 
 
