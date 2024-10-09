@@ -63,32 +63,46 @@
                                         <td>{{ $servicio->monto }}</td>
                                         <td>{{ $servicio->folio }}</td>
                                         <td>{{ $servicio->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECCIÓN' }}</td>
-                                        @if ($this->form->ruta->ctg_rutas_estado_id == 1 &&
-                                        $servicio->status_ruta_servicios!=0)
                                         <td>
-                                            <button class="btn text-danger" title="Eliminar"
-                                                wire:click="$dispatch('confirm-delete-servicio',{{ $servicio }})">
-                                                <i class="fa fa-lg fa-fw fa-trash"></i>
-                                            </button>
+                                            @if ($this->form->ruta->ctg_rutas_estado_id == 1 &&
+                                                $servicio->status_ruta_servicios!=0)
+                                            
+                                                <button class="btn text-danger" title="Eliminar"
+                                                    wire:click="$dispatch('confirm-delete-servicio',{{ $servicio }})">
+                                                    <i class="fa fa-lg fa-fw fa-trash"></i>
+                                                </button>
 
 
-                                            <button class="btn text-success" title="Editar"
-                                                wire:click="servicioEdit({{ $servicio }})" data-toggle="modal"
-                                                data-target="#servicios_edit">
-                                                <i class="fa fa-lg fa-fw fa-pen" aria-hidden="true"></i>
-                                            </button>
+                                                <button class="btn text-success" title="Editar"
+                                                    wire:click="servicioEdit({{ $servicio }})" data-toggle="modal"
+                                                    data-target="#servicios_edit">
+                                                    <i class="fa fa-lg fa-fw fa-pen" aria-hidden="true"></i>
+                                                </button>
+                                            
+                                            @endif
+
+                                            @if($servicio->status_ruta_servicios==0)
+                                                <span
+                                                    class="badge bg-danger mb-2">
+                                                    Reprogramado
+                                                </span>
+                                            
+                                            @endif
+
+                                            @if ($servicio->puerta == 1)
+                                                <span
+                                                    class="badge bg-primary mb-2">
+                                                    Puerta en puerta
+                                                </span>
+                                            @endif
+
+                                            @if ($servicio->puerta == 0 && $servicio->status_ruta_servicios>1)
+                                                <span
+                                                    class="badge bg-success mb-2">
+                                                    Servicio Normal
+                                                </span>
+                                            @endif
                                         </td>
-                                        @endif
-
-                                        @if($servicio->status_ruta_servicios==0)
-                                        <td>
-                                            <span
-                                                class="badge bg-danger mb-2">
-                                                Reprogramado
-                                            </span>
-                                        </td>
-                                        @endif
-
                                     </tr>
                                     @endforeach
                                 </tbody>
