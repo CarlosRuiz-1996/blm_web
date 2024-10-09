@@ -4,10 +4,10 @@
     <div class="d-sm-flex align-items-center justify-content-between">
 
         <h1 class="ml-3">Servicios</h1>
-        @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+        @if ($this->form->ruta->status_ruta != 3)
         <button title="Agrega una nueva ruta al catalogo" class="btn btn-primary m-2" data-toggle="modal"
             data-target="#servicios" wire:click='getServicios()'>
-            Agregar Servicio
+            {{$this->form->ruta->ctg_rutas_estado_id ==1?'Agregar Servicio':'Agregar Servicio de puerta en puerta'}}
             <i class="fa fa-plus" aria-hidden="true"></i>
 
         </button>
@@ -63,32 +63,46 @@
                                         <td>{{ $servicio->monto }}</td>
                                         <td>{{ $servicio->folio }}</td>
                                         <td>{{ $servicio->tipo_servicio == 1 ? 'ENTREGA' : 'RECOLECCIÓN' }}</td>
-                                        @if ($this->form->ruta->ctg_rutas_estado_id == 1 &&
-                                        $servicio->status_ruta_servicios!=0)
                                         <td>
-                                            <button class="btn text-danger" title="Eliminar"
-                                                wire:click="$dispatch('confirm-delete-servicio',{{ $servicio }})">
-                                                <i class="fa fa-lg fa-fw fa-trash"></i>
-                                            </button>
+                                            @if ($this->form->ruta->ctg_rutas_estado_id == 1 &&
+                                                $servicio->status_ruta_servicios!=0)
+                                            
+                                                <button class="btn text-danger" title="Eliminar"
+                                                    wire:click="$dispatch('confirm-delete-servicio',{{ $servicio }})">
+                                                    <i class="fa fa-lg fa-fw fa-trash"></i>
+                                                </button>
 
 
-                                            <button class="btn text-success" title="Editar"
-                                                wire:click="servicioEdit({{ $servicio }})" data-toggle="modal"
-                                                data-target="#servicios_edit">
-                                                <i class="fa fa-lg fa-fw fa-pen" aria-hidden="true"></i>
-                                            </button>
+                                                <button class="btn text-success" title="Editar"
+                                                    wire:click="servicioEdit({{ $servicio }})" data-toggle="modal"
+                                                    data-target="#servicios_edit">
+                                                    <i class="fa fa-lg fa-fw fa-pen" aria-hidden="true"></i>
+                                                </button>
+                                            
+                                            @endif
+
+                                            @if($servicio->status_ruta_servicios==0)
+                                                <span
+                                                    class="badge bg-danger mb-2">
+                                                    Reprogramado
+                                                </span>
+                                            
+                                            @endif
+
+                                            @if ($servicio->puerta == 1)
+                                                <span
+                                                    class="badge bg-primary mb-2">
+                                                    Puerta en puerta
+                                                </span>
+                                            @endif
+
+                                            @if ($servicio->puerta == 0 && $servicio->status_ruta_servicios>1)
+                                                <span
+                                                    class="badge bg-success mb-2">
+                                                    Servicio Normal
+                                                </span>
+                                            @endif
                                         </td>
-                                        @endif
-
-                                        @if($servicio->status_ruta_servicios==0)
-                                        <td>
-                                            <span
-                                                class="badge bg-danger mb-2">
-                                                Reprogramado
-                                            </span>
-                                        </td>
-                                        @endif
-
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -186,6 +200,7 @@
                                             empty($selectServicios[$servicio->id]) ? 'disabled' : '' }}
                                         name="selectServiciosRecolecta.{{ $servicio->id }}"
                                         id="selectServiciosRecolecta.{{ $servicio->id }}"
+                                        
                                         />
                                         <label class="form-check-label"
                                             for="selectServiciosRecolecta.{{ $servicio->id }}">Recolección</label>
@@ -199,6 +214,7 @@
                                             empty($selectServicios[$servicio->id]) ? 'disabled' : '' }}
                                         name="selectServiciosEntrega.{{ $servicio->id }}"
                                         id="selectServiciosEntrega.{{ $servicio->id }}"
+                                        @if ($this->form->ruta->ctg_rutas_estado_id != 1) disabled @endif
                                         />
                                         <label class="form-check-label"
                                             for="selectServiciosEntrega.{{ $servicio->id }}">Entrega</label>
