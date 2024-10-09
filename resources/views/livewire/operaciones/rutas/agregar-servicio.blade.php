@@ -179,6 +179,7 @@
                                     <div class="form-check mt-2">
 
                                         <input class="form-check-input" type="checkbox"
+                                            wireModel='selectServiciosRecolecta.{{ $servicio->id }}'
                                             wire:model='selectServiciosRecolecta.{{ $servicio->id }}'
                                             wire:change="handleCheckboxChangeRecolecta({{ $servicio->id }})"
                                             wire:click="resetError('{{ $servicio->id }}')" {{
@@ -191,6 +192,7 @@
                                     </div>
                                     <div class="form-check mt-4">
                                         <input class="form-check-input" type="checkbox"
+                                            wireModel='selectServiciosEntrega.{{ $servicio->id }}'
                                             wire:model='selectServiciosEntrega.{{ $servicio->id }}'
                                             wire:change="handleCheckboxChangeEntrega({{ $servicio->id }})"
                                             wire:click="resetError('{{ $servicio->id }}')" {{
@@ -209,9 +211,11 @@
                             <td>
                                 <div class="d-flex flex-column">
                                     <x-input-validado style="margin-top: -20%" placeholder="Monto"
+                                        wireModel='montoArrayRecolecta.{{ $servicio->id }}'
                                         wire:model='montoArrayRecolecta.{{ $servicio->id }}' type="number"
                                         readonly="{{ empty($selectServiciosRecolecta[$servicio->id]) ? 'readonly' : '' }}" />
                                     <x-input-validado style="margin-top: -25%" placeholder="Monto"
+                                        wireModel='montoArray.{{ $servicio->id }}'
                                         wire:model='montoArray.{{ $servicio->id }}' type="number"
                                         readonly="{{ empty($selectServiciosEntrega[$servicio->id]) ? 'readonly' : '' }}" />
                                 </div>
@@ -219,9 +223,11 @@
                             <td>
                                 <div class="d-flex flex-column">
                                     <x-input-validado style="margin-top: -19%" placeholder="No. Servicio"
+                                         wireModel='folioArrayRecolecta.{{ $servicio->id }}'
                                         wire:model='folioArrayRecolecta.{{ $servicio->id }}' type="text"
                                         readonly="{{ empty($selectServiciosRecolecta[$servicio->id]) ? 'readonly' : '' }}" />
                                     <x-input-validado style="margin-top: -22%" placeholder="No. Servicio"
+                                        wireModel='folioArray.{{ $servicio->id }}'
                                         wire:model='folioArray.{{ $servicio->id }}' type="text"
                                         readonly="{{ empty($selectServiciosEntrega[$servicio->id]) ? 'readonly' : '' }}" />
                                 </div>
