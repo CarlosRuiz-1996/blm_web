@@ -315,10 +315,8 @@ class RutaForm extends Form
             DB::beginTransaction();
             $totalRuta = 0;
 
-            Log::info('Entra al array seleccionados: ');
             if (count($seleccionados)) {
                 foreach ($seleccionados as $data) {
-                    // if ($data['folio']) {
                         $servicio_ruta = RutaServicio::create([
                             'servicio_id' => $data['servicio_id'],
                             'ruta_id' => $this->ruta->id,
@@ -331,13 +329,10 @@ class RutaForm extends Form
                         $servicio_ruta->servicio->save();
 
                         $totalRuta += $data['monto'];
-                    // }
                 }
             }
-            Log::info('Entra al array seleccionadosRecolecta: ');
             if (count($seleccionadosRecolecta)) {
                 foreach ($seleccionadosRecolecta as $data) {
-                    // if ($data['folio']) {
                         $servicio_ruta = RutaServicio::create([
                             'servicio_id' => $data['servicio_id'],
                             'ruta_id' => $this->ruta->id,
@@ -348,27 +343,19 @@ class RutaForm extends Form
 
                         $servicio_ruta->servicio->status_servicio = 4;
                         $servicio_ruta->servicio->save();
-                    // }
                 }
             }
 
-            Log::info('Entra al calculaRiesgo: ');
 
-            //calcular riesgo de la ruta:
             $riesgo = $this->calculaRiesgo($totalRuta);
-            //guardo el monto de mi ruta.
             $this->ruta->total_ruta += $totalRuta;
             $this->ruta->ctg_rutas_riesgo_id = $riesgo;
-            Log::info('Entra al save: ');
             $this->ruta->save();
-            Log::info('commit: ');
             DB::commit();
-            Log::info('commit fin: ');
             return 1;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-            Log::info('Info: ' . $e);
+           
             return 0;
         }
     }

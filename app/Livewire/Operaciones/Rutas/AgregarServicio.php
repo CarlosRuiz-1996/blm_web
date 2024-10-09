@@ -220,9 +220,6 @@ class AgregarServicio extends Component
     public function resetError($servicioId)
     {
         $this->resetErrorBag("montoArray.$servicioId");
-        $this->resetErrorBag("folioArray.$servicioId");
-        $this->resetErrorBag("montoArrayRecolecta.$servicioId");
-        $this->resetErrorBag("folioArrayRecolecta.$servicioId");
         $this->resetErrorBag("selectValidacion.$servicioId");
     }
 
@@ -231,7 +228,6 @@ class AgregarServicio extends Component
     public function addServicios()
     {
 
-        // dd($this->selectServicios);
         $this->selectServicios = array_filter($this->selectServicios);
         if (empty($this->selectServicios)) {
 
@@ -295,8 +291,7 @@ class AgregarServicio extends Component
                 $seleccionadosRecolecta = [];
                 $this->selectServiciosEntrega=[];
                 $this->selectServicios=[];
-                // $selectServicios = [];
-                // $selectServiciosRecolecta = [];
+               
                 $this->dispatch('total-ruta');
                 $this->dispatch('success-servicio', 'Servicios agregados con exito a la ruta');
                 $this->render();
