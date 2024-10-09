@@ -40,7 +40,6 @@ class AgregarServicio extends Component
         $this->clientes = $this->form->getClientes();
     }
 
-    // public $servicios=[];
     #[On('render-modal-servicios')]
     public function render()
     {

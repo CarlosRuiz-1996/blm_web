@@ -4,10 +4,10 @@
     <div class="d-sm-flex align-items-center justify-content-between">
 
         <h1 class="ml-3">Servicios</h1>
-        @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+        @if ($this->form->ruta->status_ruta != 3)
         <button title="Agrega una nueva ruta al catalogo" class="btn btn-primary m-2" data-toggle="modal"
             data-target="#servicios" wire:click='getServicios()'>
-            Agregar Servicio
+            {{$this->form->ruta->ctg_rutas_estado_id ==1?'Agregar Servicio':'Agregar Servicio de puerta en puerta'}}
             <i class="fa fa-plus" aria-hidden="true"></i>
 
         </button>
@@ -186,6 +186,7 @@
                                             empty($selectServicios[$servicio->id]) ? 'disabled' : '' }}
                                         name="selectServiciosRecolecta.{{ $servicio->id }}"
                                         id="selectServiciosRecolecta.{{ $servicio->id }}"
+                                        
                                         />
                                         <label class="form-check-label"
                                             for="selectServiciosRecolecta.{{ $servicio->id }}">Recolección</label>
@@ -199,6 +200,7 @@
                                             empty($selectServicios[$servicio->id]) ? 'disabled' : '' }}
                                         name="selectServiciosEntrega.{{ $servicio->id }}"
                                         id="selectServiciosEntrega.{{ $servicio->id }}"
+                                        @if ($this->form->ruta->ctg_rutas_estado_id != 1) disabled @endif
                                         />
                                         <label class="form-check-label"
                                             for="selectServiciosEntrega.{{ $servicio->id }}">Entrega</label>

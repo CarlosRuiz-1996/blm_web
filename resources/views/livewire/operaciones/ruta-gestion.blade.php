@@ -2,38 +2,7 @@
 
     {{-- cabecera --}}
     <div class="d-sm-flex align-items-center justify-content-between">
-        {{--
-        @if ($op != 1)
-            @php
-                $maxValue = 10000000; // 10 millones
-                $progressPercentage = min(($total_ruta / $maxValue) * 100, 100); // Asegurarse de no exceder 100%
-
-                $progressClass = '';
-
-                if ($total_ruta >= 10000000) {
-                    $progressClass = 'bg-danger'; // Rojo para >= 10 millones
-                } elseif ($total_ruta >= 7000000) {
-                    $progressClass = 'bg-warning'; // Amarillo para >= 7 millones
-                } else {
-                    $progressClass = 'bg-success'; // Verde para menos de 7 millones
-                }
-            @endphp
-            <div class="w-50">
-                <div style="width: 100%;">
-                    Total: {{ number_format($total_ruta, 2) }}
-                </div>
-                <div class="progress" style="width: 120%;">
-                    <div class="progress-bar {{ $progressClass }} progress-bar-striped progress-bar-animated"
-                        role="progressbar" style="width: {{ $progressPercentage }}%;" aria-label="Basic example"
-                        aria-valuenow="{{ $progressPercentage }}" aria-valuemin="0" aria-valuemax="100">
-                    </div>
-                </div>
-               
-            </div>
-            <div class="w-5 ml-12">
-                <button>PDF</button>
-            </div>
-        @endif --}}
+    
         <table class="table " width="100%" cellspacing="0">
             <tr>
                 <td align="left" class="d-flex align-items-center">
@@ -172,15 +141,15 @@
         @if ($form->ruta)
             {{-- vehiculos --}}
 
-            <livewire:operaciones.rutas.agregar-vehiculo :ruta="$form->ruta" />
+            {{-- <livewire:operaciones.rutas.agregar-vehiculo :ruta="$form->ruta" /> --}}
             {{-- elementos de operaciones --}}
-            <livewire:operaciones.rutas.agregar-operador :ruta="$form->ruta" />
+            {{-- <livewire:operaciones.rutas.agregar-operador :ruta="$form->ruta" /> --}}
             {{-- elementos de seguridad --}}
-            <livewire:operaciones.rutas.agregar-personal :ruta="$form->ruta" />
+            {{-- <livewire:operaciones.rutas.agregar-personal :ruta="$form->ruta" /> --}}
             {{-- servicios --}}
             <livewire:operaciones.rutas.agregar-servicio :ruta="$form->ruta" />
 
-            <livewire:operaciones.rutas.listar-compras :ruta="$form->ruta" />
+            {{-- <livewire:operaciones.rutas.listar-compras :ruta="$form->ruta" /> --}}
 
             @if ($this->form->ruta->ctg_rutas_estado_id == 1)
                 <div class="col-md-12 ">

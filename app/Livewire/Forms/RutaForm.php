@@ -14,6 +14,7 @@ use App\Models\RutaEmpleados;
 use App\Models\RutaFirma10M;
 use App\Models\RutaServicio;
 use App\Models\RutaVehiculo;
+use App\Models\ServicioPuerta;
 use App\Models\Servicios;
 use App\Models\SucursalServicio;
 use Livewire\Attributes\Validate;
@@ -249,15 +250,15 @@ class RutaForm extends Form
     public function getServicios()
     {
 
+        // ->whereDoesntHave('rutas', function ($query) {
+        //     $dia_semana_ruta = $this->ruta->ctg_ruta_dia_id;
 
+        //     $query->whereHas('dia', function ($subquery) use ($dia_semana_ruta) {
+        //         $subquery->where('id', $dia_semana_ruta);
+        //     });
+        // })
         return Servicios::where('status_servicio', '>=', 3)
-            // ->whereDoesntHave('rutas', function ($query) {
-            //     $dia_semana_ruta = $this->ruta->ctg_ruta_dia_id;
 
-            //     $query->whereHas('dia', function ($subquery) use ($dia_semana_ruta) {
-            //         $subquery->where('id', $dia_semana_ruta);
-            //     });
-            // })
             ->whereHas('cliente', function ($subquerycliente) {
                 $subquerycliente->where(function ($query) {
                     $query->where('rfc_cliente', 'ilike', '%' . $this->searchClienteModal . '%')
@@ -273,12 +274,12 @@ class RutaForm extends Form
     public $searchServicio;
     public function getRutaServicios()
     {
-        return RutaServicio::where('ruta_id', $this->ruta->id)->where('status_ruta_servicios','<',6)
+        return RutaServicio::where('ruta_id', $this->ruta->id)->where('status_ruta_servicios', '<', 6)
             ->where(function ($query) {
                 $query->where('folio', 'ilike', '%' . $this->searchServicio . '%')
                     ->orWhere('monto', 'ilike', '%' . $this->searchServicio . '%')
                     // ->orWhere('envases', 'ilike', '%' . $this->searchServicio . '%')
-                    ;
+                ;
             })
             ->whereHas('servicio', function ($query) {
                 $query->where(function ($subquery) {
@@ -317,32 +318,41 @@ class RutaForm extends Form
 
             if (count($seleccionados)) {
                 foreach ($seleccionados as $data) {
-                        $servicio_ruta = RutaServicio::create([
-                            'servicio_id' => $data['servicio_id'],
-                            'ruta_id' => $this->ruta->id,
-                            'monto' => $data['monto'],
-                            'folio' => $data['folio']??'',
-                            'tipo_servicio' => 1,
-                        ]);
+                    $servicio_ruta = RutaServicio::create([
+                        'servicio_id' => $data['servicio_id'],
+                        'ruta_id' => $this->ruta->id,
+                        'monto' => $data['monto'],
+                        'folio' => $data['folio'] ?? '',
+                        'tipo_servicio' => 1,
+                    ]);
 
-                        $servicio_ruta->servicio->status_servicio = 4;
-                        $servicio_ruta->servicio->save();
+                    $servicio_ruta->servicio->status_servicio = 4;
+                    $servicio_ruta->servicio->save();
 
-                        $totalRuta += $data['monto'];
+                    $totalRuta += $data['monto'];
                 }
             }
             if (count($seleccionadosRecolecta)) {
                 foreach ($seleccionadosRecolecta as $data) {
-                        $servicio_ruta = RutaServicio::create([
-                            'servicio_id' => $data['servicio_id'],
-                            'ruta_id' => $this->ruta->id,
-                            'monto' => $data['monto'],
-                            'folio' => $data['folio']??'',
-                            'tipo_servicio' => 2,
+                    $servicio_ruta = RutaServicio::create([
+                        'servicio_id' => $data['servicio_id'],
+                        'ruta_id' => $this->ruta->id,
+                        'monto' => $data['monto'],
+                        'folio' => $data['folio'] ?? '',
+                        'tipo_servicio' => 2,
+                        'puerta' => $this->ruta->ctg_rutas_estado_id == 1 ? 0 : 1,
+                        'status_ruta_servicios'=>$this->ruta->ctg_rutas_estado_id == 1 ? 1 : 4,
+                    ]);
+
+                    $servicio_ruta->servicio->status_servicio = 4;
+                    $servicio_ruta->servicio->save();
+
+                    if ($this->ruta->ctg_rutas_estado_id != 1) {
+                        ServicioPuerta::create([
+                            'ruta_servicio_id' => $servicio_ruta->id,
                         ]);
 
-                        $servicio_ruta->servicio->status_servicio = 4;
-                        $servicio_ruta->servicio->save();
+                    }
                 }
             }
 
@@ -355,7 +365,7 @@ class RutaForm extends Form
             return 1;
         } catch (\Exception $e) {
             DB::rollBack();
-           
+
             return 0;
         }
     }
@@ -403,7 +413,7 @@ class RutaForm extends Form
             $riesgo = $this->calculaRiesgo($this->ruta->total_ruta);
             $this->ruta->ctg_rutas_riesgo_id = $riesgo;
             $this->ruta->save();
-            $this->servicio_edit->update($this->only(['monto', 'folio']));//, 'envases'
+            $this->servicio_edit->update($this->only(['monto', 'folio'])); //, 'envases'
 
             DB::commit();
             return 1;
