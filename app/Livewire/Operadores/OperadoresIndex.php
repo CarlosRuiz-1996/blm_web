@@ -19,6 +19,7 @@ use App\Models\ServicioComision;
 use App\Models\ServicioEvidenciaEntrega;
 use App\Models\ServicioEvidenciaRecolecta;
 use App\Models\ServicioKey;
+use App\Models\ServicioPuerta;
 use App\Models\ServicioRutaEnvases;
 use Illuminate\Support\Facades\Notification as NotificationsNotification;
 use Exception;
@@ -59,6 +60,7 @@ class OperadoresIndex extends   Component
     public $photorepro;
     protected $listeners = ['modalCerrado', 'modalCerradoReprogramar'];
     public $papeleta;
+    public $nServicio;
     use WithFileUploads;
     public function render()
     {
@@ -91,10 +93,10 @@ class OperadoresIndex extends   Component
     {
 
         $this->readyToLoadModal = true;
-
-        $this->tiposervicio = $tiposervicio == 1 ? 'Entrega' : ($tiposervicio == 2 ? 'Recolección' : 'Otro');
         $servicioRuta = RutaServicio::find($id);
-        $this->papeleta = $servicioRuta->folio;
+        $this->tiposervicio = $tiposervicio == 1 ? 'Entrega' : ($tiposervicio == 2 ? 'Recolección' : 'Otro');
+        $this->papeleta = $servicioRuta->papeleta;
+        $this->nServicio = $servicioRuta->id;
         $this->MontoEntrega = $servicioRuta->monto;
         $this->idrecolecta = $id;
         $this->cantidadEnvases = $servicioRuta->envases;
@@ -111,7 +113,7 @@ class OperadoresIndex extends   Component
                     'photo' => '',
                     'sello' => $item->sello_seguridad,
                     'violado' => false,
-                    'morralla' =>false
+                    'morralla' => false
                 ]];
             })->toArray();
         } else {
@@ -173,24 +175,33 @@ class OperadoresIndex extends   Component
                 $servicioRuta->status_ruta_servicios = 3;
                 $servicioRuta->envase_cargado = 0;
                 $servicioRuta->save();
+
+                if ($servicioRuta->puertaHas) {
+                    $servicioRuta->puertaHas->entrega = 1;
+                    $servicioRuta->puertaHas->status_puerta_servicio = 2;
+                    $servicioRuta->puertaHas->save();
+                }
+
                 //pasar servicio a 3 para poderlo seleccionar:
                 $servicioRuta->servicio->status_servicio = 3;
                 $servicioRuta->servicio->save();
                 RutaServicioReporte::where('ruta_servicio_id', $servicioRuta->id)
                     ->where('status_ruta_servicio_reportes', 2)->update(['status_ruta_servicio_reportes' => 3]);
-
-
                 //guardar fotos y la evidencia en la tabla
                 foreach ($this->inputs as $index => $input) {
-                    // Log::info('ServicioEvidenciaEntrega: ');
                     $evidencia = ServicioEvidenciaEntrega::create(['servicio_envases_ruta_id' => $index]);
 
-                    $nombreRutaGuardaImg = 'Servicio_' . $servicioRuta->id . '_entrega_' . $evidencia->id . '_evidencia.png';
+                    $serv_name = 'Servicio_';
+                    $path = 'evidencias/EntregasRecolectas/';
+                    if ($servicioRuta->puertaHas) {
+                        $serv_name = 'Puerta_';
+                        $path = 'evidencias/PuertaEnPuerta/';
+                    }
 
-                    $input['photo']->storeAs(path: 'evidencias/EntregasRecolectas/', name: $nombreRutaGuardaImg);
+                    $nombreRutaGuardaImg = $serv_name . $servicioRuta->id . '_entrega_' . $evidencia->id . '_evidencia.png';
+
+                    $input['photo']->storeAs(path: $path, name: $nombreRutaGuardaImg);
                 }
-
-                //$this->photo->storeAs(path: 'evidencias/', name: 'avatar.png');
                 $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
                 NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
                 $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Entrega realizada con exito.'], ['tipomensaje' => 'success'], ['op' => 1]);
@@ -201,9 +212,6 @@ class OperadoresIndex extends   Component
         } catch (\Exception $e) {
             DB::rollBack();
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Hubo un error intenta más tarde.'], ['tipomensaje' => 'error']);
-
-            // Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-            // Log::info('Info: ' . $e);
         }
     }
     public function updatedEvidencias()
@@ -295,7 +303,10 @@ class OperadoresIndex extends   Component
             $servicioruta->morralla = $this->morralla;
             $servicioruta->save();
 
-
+            if ($servicioruta->puertaHas) {
+                $servicioruta->puertaHas->recolecta = 1;
+                $servicioruta->puertaHas->save();
+            }
             $ruta = Ruta::find($servicioruta->ruta_id);
             $ruta->total_ruta = $ruta->total_ruta + $this->MontoRecolecta;
             $ruta->save();
@@ -319,8 +330,14 @@ class OperadoresIndex extends   Component
                         'violate' => $input['violado']
                     ]
                 );
-                $nombreRutaGuardaImg = 'Servicio_' . $servicioruta->id . '_recolecta_' . $evidencia->id . '_evidencia.png';
-                $input['photo']->storeAs(path: 'evidencias/EntregasRecolectas/', name: $nombreRutaGuardaImg);
+                $serv_name = 'Servicio_';
+                $path = 'evidencias/EntregasRecolectas/';
+                if ($servicioruta->puertaHas) {
+                    $serv_name = 'Puerta_';
+                    $path = 'evidencias/PuertaEnPuerta/';
+                }
+                $nombreRutaGuardaImg = $serv_name . $servicioruta->id . '_recolecta_' . $evidencia->id . '_evidencia.png';
+                $input['photo']->storeAs(path: $path, name: $nombreRutaGuardaImg);
             }
 
             RutaServicioReporte::create([
@@ -366,6 +383,10 @@ class OperadoresIndex extends   Component
         $servicioRuta->status_ruta_servicios = 2;
         $servicioRuta->created_at = now();
         $servicioRuta->save();
+        if ($servicioRuta->puertaHas) {
+            $servicioRuta->puertaHas->status_puerta_servicio = 1;
+            $servicioRuta->puertaHas->save();
+        }
         $users = Empleado::whereIn('ctg_area_id', [9, 2, 3, 18])->get();
         NotificationsNotification::send($users, new \App\Notifications\newNotification('Ruta Iniciada'));
         $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio a iniciado'], ['tipomensaje' => 'success']);
@@ -378,6 +399,17 @@ class OperadoresIndex extends   Component
 
         $ruta_compra = RutaCompraEfectivo::where('ruta_id', $id)->where('status_ruta_compra_efectivos', '=', 2)->count();
 
+        $servicioPuertaCount = ServicioPuerta::whereHas('rutaServicio', function ($query) use ($id) {
+            $query->where('ruta_id', $id)
+                  ->where('puerta', 1); 
+        })->where('status_puerta_servicio', 2)
+          ->count();
+
+        $rutaServicioCount = RutaServicio::where('ruta_id', $id)
+          ->where('puerta', 1) 
+          ->where('status_ruta_servicios', '!=',6)
+          ->count();
+
         try {
 
             DB::beginTransaction();
@@ -388,6 +420,10 @@ class OperadoresIndex extends   Component
             }
             if ($ruta_compra > 0) {
                 throw new \Exception('No se puede terminar la ruta porque aún tiene compras de efectivo por terminar');
+            }
+
+            if ($servicioPuertaCount != $rutaServicioCount) {
+                throw new \Exception('No se puede terminar la ruta porque aún tiene servicios de puerta en puerta');
             }
 
             // Si no hay servicios pendientes con estado 2, actualiza el estado de la ruta
@@ -430,7 +466,8 @@ class OperadoresIndex extends   Component
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            $this->dispatch('agregarArchivocre', ['nombreArchivo' => $e->getMessage()], ['tipomensaje' => 'error']);
+            Log::info('error');
+            $this->dispatch('error', [$e->getMessage()]);
         }
     }
     //status servicio ruta en 4 es reporgramnar
@@ -747,14 +784,13 @@ class OperadoresIndex extends   Component
                 $evidenciaComisionName = 'comision_' . $comision->id . '_evidencia.png';
 
                 $this->evidencia_comision->storeAs(path: 'evidencias/ComisionesServicios/', name: $evidenciaComisionName);
-                
+
 
                 $this->cleanComision();
             });
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'La comision se guardo correctamente.'], ['tipomensaje' => 'success'], ['op' => 1]);
         } catch (Exception $e) {
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Hubo un error intenta más tarde.'], ['tipomensaje' => 'error']);
-
         }
     }
 }

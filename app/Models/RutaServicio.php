@@ -49,4 +49,8 @@ class RutaServicio extends Model
     public function comision(){
         return $this->hasMany(ServicioComision::class, 'ruta_servicio_id');
     }
+
+    public function puertaHas(){
+        return $this->hasOne(ServicioPuerta::class, 'ruta_servicio_id');
+    }
 }

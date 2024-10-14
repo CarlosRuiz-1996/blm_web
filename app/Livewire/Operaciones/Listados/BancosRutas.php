@@ -55,31 +55,38 @@ class BancosRutas extends Component
             if ($value != "") {
                 $this->resetValidation();
                 $baseQuery = Ruta::where('ctg_ruta_dia_id', '=', $value);
-                $ruta = $this->banco_servicio->servicio->ruta_servicio?->ruta;
 
-                //si esta asignado a una ruta
-                if ($ruta) {
-                    $statusRuta = $ruta->status_ruta;
-                    $tipoServicio = $this->banco_servicio->tipo_servicio;
-                    //revisa si el status de la ruta es planeacion o proceso/ruta
-                    if ($statusRuta == 1) {
-                        $baseQuery->where('status_ruta', '!=', 3); //recoleccion
-
-                        if ($tipoServicio  == 1) {
-                            $baseQuery->where('status_ruta', '=', 1); //entrega
-                        }
-                    } elseif ($statusRuta  > 1) {
-                        $baseQuery->where('status_ruta', 1); //entrega
-                        if ($tipoServicio  == 2) {
+                if(!$this->compra){
+                    $ruta = $this->banco_servicio->servicio->ruta_servicio?->ruta;
+               
+                    //si esta asignado a una ruta
+                    if ($ruta) {
+                        $statusRuta = $ruta->status_ruta;
+                        $tipoServicio = $this->banco_servicio->tipo_servicio;
+                        //revisa si el status de la ruta es planeacion o proceso/ruta
+                        if ($statusRuta == 1) {
                             $baseQuery->where('status_ruta', '!=', 3); //recoleccion
+
+                            if ($tipoServicio  == 1) {
+                                $baseQuery->where('status_ruta', '=', 1); //entrega
+                            }
+                        } elseif ($statusRuta  > 1) {
+                            $baseQuery->where('status_ruta', 1); //entrega
+                            if ($tipoServicio  == 2) {
+                                $baseQuery->where('status_ruta', '!=', 3); //recoleccion
+                            }
+                        }
+
+                        //que no traiga la ruta que ya tiene
+                        if ($this->banco_servicio->servicio->ruta_servicio->status_ruta_servicios < 6) {
+                            $baseQuery->where('id', '!=', $this->banco_servicio->servicio->ruta_servicio->ruta->id);
                         }
                     }
-
-                    //que no traiga la ruta que ya tiene
-                    if ($this->banco_servicio->servicio->ruta_servicio->status_ruta_servicios < 6) {
-                        $baseQuery->where('id', '!=', $this->banco_servicio->servicio->ruta_servicio->ruta->id);
-                    }
+                }else{
+                    $baseQuery->where('status_ruta', '!=', 3);
                 }
+
+
                 $this->rutas_dia = $baseQuery->get();
                 $this->ruta_id = "";
             } else {

@@ -1,5 +1,5 @@
 <div>
-    <div class="container-fluid pt-5" x-data="{ openRuta: null, openServicio: null, openCompra: null }">
+    <div class="container-fluid pt-5" x-data="{ openRuta: null, openServicio: null, openCompra: null, openPuerta:null, openPuertaServ:null }">
         @if ($identificado)
             <h3 class="ml-2">Operador-<span class="text-info">{{ $nombreUsuario }}</span></h3>
             <div class="">
@@ -69,7 +69,7 @@
                                             <!--Servicios rutas inicio-->
                                             @if ($rutaServicio->status_ruta != 1)
                                                 <div x-data="{ openServicio: null }">
-                                                    @foreach ($rutaServicio->rutaServicios->where('status_ruta_servicios', '!=', 6)->sortByDesc('updated_at') as $servicio)
+                                                    @foreach ($rutaServicio->rutaServicios->where('status_ruta_servicios', '!=', 6)->where('puerta',0)->sortByDesc('updated_at') as $servicio)
                                                         <div class="card m-0 text-xs">
                                                             <div class="card-header p-0">
                                                                 <button class="btn btn-block text-center text-xs"
@@ -106,12 +106,17 @@
                                                                             <div class="d-block d-md-table-cell text-center pt-1 pb-0 mt-0 mb-0"
                                                                                 colspan="3">No. Servicio: <p
                                                                                     class="text-bold">
-                                                                                    {{ $servicio->folio }}</p>
+                                                                                    {{ $servicio->id }}</p>
+                                                                            </div>
+                                                                            <div class="d-block d-md-table-cell text-center pt-1 pb-0 mt-0 mb-0"
+                                                                                colspan="3">Papeleta: <p
+                                                                                    class="text-bold">
+                                                                                    {{ $servicio->folio!=''?$servicio->folio:'N/A' }}</p>
                                                                             </div>
                                                                             <div class="d-block d-md-table-cell text-center pt-1 pb-0 mt-0 mb-0"
                                                                                 colspan="1">Envases : <p
                                                                                     class="text-bold">
-                                                                                    {{ $servicio->envases }}</p>
+                                                                                    {{ $servicio->envases??0 }}</p>
                                                                             </div>
                                                                             <div class="d-block d-md-table-cell text-center pt-1 pb-0 mt-0 mb-0"
                                                                                 colspan="2">Llaves :</p>
@@ -263,6 +268,116 @@
                                             @endif
                                             <!--COMPRAS BANCOS FIN-->
 
+                                            {{-- puerta en puerta --}}
+                                            @if ($rutaServicio->status_ruta != 1)
+                                                <div x-data="{ openPuerta: null, openPuertaServ:null }">
+                                                    @foreach ($rutaServicio->rutaServicios->where('status_ruta_servicios', '!=', 6)->where('puerta',1)->sortByDesc('updated_at') as $servicio)
+
+                                                   
+                                                        <div class="card m-0 text-xs">
+                                                           
+                                                            <h5 class="mb-0">
+                                                                <button
+                                                                    class="btn btn-block text-center text-md"
+                                                                    :style="openPuerta === {{ $servicio->id }} ? 'background-color:#9fd9e2' : 'bg-light'"
+                                                                    @click="openPuerta === {{ $servicio->id }} ? openPuerta = null : openPuerta = {{ $servicio->id }}"
+                                                                    :aria-expanded="openPuerta === {{ $servicio->id }} ? 'true' : 'false'"
+                                                                    aria-controls="collapsePuerta{{ $servicio->id }}">
+                                            
+                                                                    <p class="mb-0 text-success text-bold">
+                                                                        Servicio de puerta en puerta
+                                                                    </p>
+                                                                </button>
+                                                            </h5>
+                                                            <div x-show="openPuerta === {{ $servicio->id }}" x-collapse id="collapsePuerta{{ $servicio->id }}">
+                                                                <div class="card-header p-0">
+                                                                    <button class="btn btn-block text-center text-xs"
+                                                                        :style="openPuertaServ === {{ $servicio->id }} ?
+                                                                            'background-color:#bee5eb' : 'bg-light'"
+                                                                        @click="openPuertaServ === {{ $servicio->id }} ? openPuertaServ = null : openPuertaServ = {{ $servicio->id }}"
+                                                                        :aria-expanded="openPuertaServ === {{ $servicio->id }} ? 'true' :
+                                                                            'false'"
+                                                                        aria-controls="collapseServicio{{ $servicio->id }}">
+                                                                        <p class="mb-0 text-success text-bold">
+                                                                            {{ $servicio->servicio->ctg_servicio->descripcion }}
+                                                                        </p>
+                                                                        <p class="mb-0 text-danger">
+                                                                            {{ $servicio->servicio->cliente->razon_social }}
+                                                                        </p>
+                                                                        <p class="mb-0 text-info">
+                                                                            {{ $servicio->servicio->sucursal->sucursal->sucursal }},
+                                                                            {{ $servicio->servicio->sucursal->sucursal->direccion }},
+                                                                            {{ $servicio->servicio->sucursal->sucursal->cp->cp }},
+                                                                            {{ $servicio->servicio->sucursal->sucursal->cp->estado->name }}
+                                                                        </p>
+                                                                        <p class="mb-0 text-danger">
+                                                                            {{ $servicio->tipo_servicio == 1 ? 'Entrega' : ($servicio->tipo_servicio == 2 ? 'Recolección' : 'Otro') }}
+                                                                        </p>
+                                                                    </button>
+                                                                       
+                                                                </div>
+                                                                <div class="card-body p-0" x-show="openPuertaServ === {{ $servicio->id }}" x-collapse id="collapsePuertaServ{{ $servicio->id }}">
+                                                                    <div class="d-table table-info mt-0 pt-0"
+                                                                        style="width:100%">
+                                                                        <div class="d-table-row text-sm"
+                                                                            style="width:100%">
+                                                                            <div class="d-block d-md-table-cell text-center pt-1 pb-0 mt-0 mb-0"
+                                                                                colspan="3">No. Servicio: <p
+                                                                                    class="text-bold">
+                                                                                    {{ $servicio->id }}</p>
+                                                                            </div>
+                                                                            <div class="d-block d-md-table-cell text-center pt-1 pb-0 mt-0 mb-0"
+                                                                                colspan="3">Papeleta: <p
+                                                                                    class="text-bold">
+                                                                                    {{ $servicio->folio!=''?$servicio->folio:'N/A' }}</p>
+                                                                            </div>
+                                                                            <div class="d-block d-md-table-cell text-center pt-1 pb-0 mt-0 mb-0"
+                                                                                colspan="1">Envases : <p
+                                                                                    class="text-bold">
+                                                                                    {{ $servicio->envases??0 }}</p>
+                                                                            </div>
+                                                                           
+                                                                            <div class="d-block d-md-table-cell text-center pt-1 pb-0 mt-0 mb-0"
+                                                                                colspan="3">Acción :
+                                                                                @if ($servicio->puertaHas->status_puerta_servicio == 0)
+                                                                                    <p>
+                                                                                        <button type="button"
+                                                                                            wire:click="$dispatch('confirmarservicio', { contactId: {{ $servicio->id }}, serviciotipo: {{ $servicio->tipo_servicio }} })"
+                                                                                            class="btn mb-2 btn-primary btn-sm text-xs">
+                                                                                            <i
+                                                                                                class="fas fa-play mr-1"></i>
+                                                                                            Iniciar Servicio
+                                                                                        </button>
+                                                                                    </p>
+                                                                                @elseif($servicio->puertaHas->status_puerta_servicio == 1)
+                                                                                    <p class="mb-0">
+                                                                                        <button type="button"
+                                                                                            class="btn mb-2 btn-primary btn-sm text-xs"
+                                                                                            wire:click="ModalEntregaRecolecta('{{ $servicio->id }}', '{{ $servicio->puertaHas->recolecta ==0 ? 2: 1 }}')"
+                                                                                            data-toggle="modal"
+                                                                                            data-target="#ModalEntregarRecolectar">
+                                                                                            <i
+                                                                                                class="fas fa-play mr-1"></i>
+                                                                                            {{ $servicio->puertaHas->recolecta ==0 ? 'Recolecta': 'Entrega' }}
+                                                                                        </button>
+                                                                                    </p>   
+                                                                                @else
+                                                                                    <p>
+                                                                                        <span
+                                                                                            class="badge {{ $servicio->status_ruta_servicios == 3 ? 'bg-success' : 'bg-warning' }} mb-2">
+                                                                                            {{ $servicio->status_ruta_servicios == 3 ? 'Terminado' : 'Reprogramado' }}
+                                                                                        </span>
+                                                                                    </p>
+                                                                                @endif
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -335,7 +450,7 @@
                             @if ($tiposervicio)
                                 <div class="{{ $tiposervicio == 'Recolección' ? 'col-md-2' : 'col-md-12' }} mb-3">
                                     <x-input-validado label="No. Servicio:" :readonly="true" placeholder="No. Servicio"
-                                        wire-model="papeleta" type="text" />
+                                        wire-model="nServicio" type="text" />
                                 </div>
                             @endif
                             @if ($tiposervicio == 'Recolección')
@@ -400,7 +515,7 @@
 
                                 @if ($tiposervicio == 'Recolección')
                                     <div class="col-md-2 mb-3">
-                                        <x-input-validado label="No. Servicio:" :readonly="false" placeholder="No. Servicio"
+                                        <x-input-validado label="Papeleta:" :readonly="false" placeholder="Papeleta"
                                             wire-model="inputs.{{ $index }}.folio" wire-attribute="folios"
                                             type="text" />
                                     </div>
@@ -410,11 +525,28 @@
                                         placeholder="Sello de seguridad"
                                         wire-model="inputs.{{ $index }}.sello" type="text" />
                                 </div>
-                                <div class="col-md-2 mb-3">
-                                    <x-input-validado label="Evidencia:" :readonly="false" placeholder="Evidencia"
-                                        wire-model="inputs.{{ $index }}.photo" type="file" />
+                                <div class="col-md-2 mb-3" style="margin-top: 32px">
+                                    {{-- <x-input-validado label="Evidencia:" :readonly="false" placeholder="Evidencia"
+                                        wire-model="inputs.{{ $index }}.photo" type="file" /> --}}
+
+                                        <div class="input-group @error('inputs.{{ $index }}.photo') is-invalid @enderror">
+                                            <label class="input-group-text btn btn-primary " for="inputs.{{ $index }}.photo">
+                                                <i class="fas fa-camera"></i> Subir Evidencia
+                                            </label>
+                                            <input type="file" id="inputs.{{ $index }}.photo" wire:model="inputs.{{ $index }}.photo"
+                                                class="form-control d-none">
+    
+                                        </div>
+                                        @error('inputs.{{ $index }}.photo')
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
                                 </div>
                                 <div class="col-md-3 d-flex justify-content-center align-items-center">
+                                    <div wire:loading wire:target='inputs.{{ $index }}.photo'
+                                        class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
+                                        <strong>Evidencia cargando!</strong>
+                                    </div>
+
                                     <!-- Muestra la imagen cargada si existe -->
                                     @if (isset($input['photo']) && $input['photo'])
                                         <img src="{{ $input['photo']->temporaryUrl() }}" alt="Foto Tomada"
@@ -981,7 +1113,8 @@
                 Livewire.on('error', function([message]) {
                     Swal.fire({
                         icon: 'error',
-                        title: message[0],
+                        title: 'Oops...',
+                        text: message[0],
                         showConfirmButton: false,
                         timer: 3000
                     });
@@ -1003,7 +1136,8 @@
                     Swal.fire({
                         position: 'center',
                         icon: tipomensaje,
-                        title: nombreArchivo,
+                        title: tipomensaje=='success'?'Exito':'Error',
+                        text: nombreArchivo,
                         showConfirmButton: false,
                         timer: 3000
                     });
