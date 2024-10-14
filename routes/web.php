@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\administracion\administracioncontroller;
 use App\Http\Controllers\altaValidaCumplimiento;
 use App\Http\Controllers\Anexo1;
 use App\Http\Controllers\BancosController;
@@ -153,6 +154,9 @@ Route::middleware([
 
     //tablero
     Route::get('/tablero', [tableroController::class, 'index'])->name('tablero.index');
+    //tablero
+    Route::get('/administraciontablero', [administracioncontroller::class, 'index'])->name('administracion.index');
+
 });
 
 Livewire::setUpdateRoute(function ($handle) {

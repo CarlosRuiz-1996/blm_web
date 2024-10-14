@@ -42,6 +42,7 @@ class OperadoresIndex extends   Component
     public $originalFolios = [];
     public $MontoEntregado;
     public $MontoEntrega;
+    #[Validate('required|numeric')]
     public $MontoRecolecta;
     public $readyToLoad = false;
     public $morralla = false;
@@ -85,6 +86,13 @@ class OperadoresIndex extends   Component
 
         // Pasa los resultados a la vista
         return view('livewire.operadores.operadores-index', compact('rutaEmpleados', 'nombreUsuario', 'identificado'));
+    }
+    public function updatedMontoRecolecta()
+    {
+        // Validar que sea un número y si no, asignar 0
+        if (!is_numeric($this->MontoRecolecta)) {
+            $this->MontoRecolecta =null;
+        }
     }
 
     public function ModalEntregaRecolecta($id, $tiposervicio)
@@ -139,13 +147,16 @@ class OperadoresIndex extends   Component
     public function envase_recolecta()
     {
         $this->validate([
-            'envasescantidad' => 'required',
-            'MontoRecolecta' => 'required',
+            'envasescantidad' => 'required|numeric|min:1',
+            'MontoRecolecta' => 'required|numeric|min:1',
         ], [
-            'envasescantidad.required' => 'La cantidad de envases es obligatoria',
-            'MontoRecolecta.required' => 'Debe ingresar el monto total',
-
-        ]);
+            'envasescantidad.required' => 'La cantidad de envases es obligatoria.',
+            'envasescantidad.numeric' => 'La cantidad de envases debe ser un número.',
+            'envasescantidad.min' => 'La cantidad de envases debe ser al menos 1.',
+            'MontoRecolecta.required' => 'Debe ingresar el monto total.',
+            'MontoRecolecta.numeric' => 'El monto debe ser un número.',
+            'MontoRecolecta.min' => 'El monto debe ser al menos 1.',
+        ]);        
         $this->ModalEntregaRecolecta($this->idrecolecta, $this->tiposervicio == 'Recolección' ? 2 : 1);
     }
 

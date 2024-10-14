@@ -10,6 +10,7 @@ use Livewire\WithPagination;
 use Livewire\Attributes\On;
 use Livewire\WithoutUrlPagination;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Modelable;
 
 
 class AgregarServicio extends Component
@@ -28,6 +29,8 @@ class AgregarServicio extends Component
     public $selectValidacion = [];
     protected $rules = [];
     public $clientes;
+    #[Modelable]
+    public $dia_id_calendario;
     public function mount(Ruta $ruta)
     {
         // Inicializar las variables de estado
@@ -38,12 +41,15 @@ class AgregarServicio extends Component
         $this->montoArrayRecolecta = [];
         $this->folioArrayRecolecta = [];
         $this->clientes = $this->form->getClientes();
+        
     }
 
     #[On('render-modal-servicios')]
     public function render()
     {
+
         if ($this->readyToLoad) {
+            $this->form->dia_id_calendario=$this->dia_id_calendario;
             $servicios = $this->form->getServicios();
             $ruta_servicios = $this->form->getRutaServicios();
             foreach ($servicios as $servicio) {

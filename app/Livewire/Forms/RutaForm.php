@@ -29,10 +29,13 @@ class RutaForm extends Form
     public $hora_inicio;
     public $hora_fin;
     public $ctg_rutas_id;
+    public $dia_id_calendario;
     public $ctg_ruta_dia_id;
     public $ctg_rutas_riesgo_id;
     public $ctg_rutas_estado_id;
     public $diasfiltro;
+    public $diaid;
+    public $botonhablitarruta=false;
 
     //para poder guardardar el model de la ruta
     public $ruta;
@@ -312,6 +315,7 @@ class RutaForm extends Form
     }
     public function storeRutaServicio($seleccionados, $seleccionadosRecolecta)
     {
+        
         try {
             DB::beginTransaction();
             $totalRuta = 0;
@@ -324,6 +328,8 @@ class RutaForm extends Form
                         'monto' => $data['monto'],
                         'folio' => $data['folio'] ?? '',
                         'tipo_servicio' => 1,
+                        'fecha_servicio'=>$this->dia_id_calendario,
+                        
                     ]);
 
                     $servicio_ruta->servicio->status_servicio = 4;
@@ -342,6 +348,7 @@ class RutaForm extends Form
                         'tipo_servicio' => 2,
                         'puerta' => $this->ruta->ctg_rutas_estado_id == 1 ? 0 : 1,
                         'status_ruta_servicios'=>$this->ruta->ctg_rutas_estado_id == 1 ? 1 : 4,
+                        'fecha_servicio'=>$this->dia_id_calendario,
                     ]);
 
                     $servicio_ruta->servicio->status_servicio = 4;
@@ -669,4 +676,20 @@ class RutaForm extends Form
             return 0;
         }
     }
+    public function calcularProximoDia($fecha, $diaPermitido)
+        {
+            // Obtener el día actual (0: Domingo, 1: Lunes, ..., 6: Sábado)
+            $diaActual = $fecha->format('w'); // Formato 'w' devuelve el día de la semana
+        
+            // Calcular cuántos días faltan hasta el día permitido
+            $diasHastaPermitido = ($diaPermitido - $diaActual + 7) % 7;
+        
+            // Si el día permitido es hoy, no sumamos días
+            if ($diasHastaPermitido === 0) {
+                return $fecha; // Retorna la fecha actual
+            }
+        
+            // Retorna la fecha ajustada al próximo día permitido
+            return $fecha->addDays($diasHastaPermitido);
+        }
 }
