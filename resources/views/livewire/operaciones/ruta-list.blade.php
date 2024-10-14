@@ -73,7 +73,7 @@
                                                 <th>Dia</th>
                                                 <th>Riesgo</th>
                                                 <th>Estado</th>
-                                                <th>Hora Inicio</th>
+                                                <th>Horsfdsa Inicio</th>
                                                 <th>Hora Finalización</th>
                                                 <th>Opciones</th>
                                             </tr>
@@ -87,7 +87,7 @@
                                                 // Itera sobre todos los servicios asociados a la ruta
                                                 foreach ($ruta->rutaServicios as $serviciosa) {
                                                     // Condiciones: estatus 1, fecha menor a la actual y día diferente al actual
-                                                    if (($serviciosa->status_ruta_servicios != 6) && $serviciosa->created_at < now() && $ruta->dia->id != $diaActual && ($ruta->estado->id !=4 && $ruta->estado->id !=5)) {
+                                                    if (($serviciosa->status_ruta_servicios != 6 && $serviciosa->status_ruta_servicios != 1 && $serviciosa->status_ruta_servicios != 0 ) && $ruta->dia->id != $diaActual && ($ruta->estado->id !=4 && $ruta->estado->id !=1 && $ruta->estado->id !=5)) {
                                                         $marcarRojo = true;
                                                         break; // Si alguna condición se cumple, no es necesario seguir verificando más servicios
                                                     }

@@ -112,25 +112,58 @@
 
                             </div>
                         @else
-                            <div class="row">
-                                <div class="col-md-12 mb-3">
-                                    <label>Dia de la ruta:</label>
-                                    <input type="text" readonly class="form-control"
-                                        wire:model='form.ctg_ruta_dia_id'>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label>Nombre de la ruta:</label>
-                                    <input type="text" readonly class="form-control" wire:model='form.ctg_rutas_id'>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label>Hora de Inicio:</label>
-                                    <input wire:model="form.hora_inicio" type="time" readonly class="form-control" />
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label>Hora de Finalización:</label>
-                                    <input wire:model="form.hora_fin" type="time" readonly class="form-control" />
-                                </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label>Nombre de la ruta:</label>
+                                <input type="text" readonly class="form-control" wire:model='form.ctg_rutas_id'>
                             </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Dia de la ruta:</label>
+                                <input type="text" readonly class="form-control" wire:model='form.ctg_ruta_dia_id'>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label>Fecha a realizar Servicios:</label>
+                                <input id="ruta_fecha" type="date" @if(!$this->form->botonhablitarruta) readonly @endif wire:model.live='form.dia_id_calendario' class="form-control" />
+                            </div>
+                        
+                            <!-- Clases condicionales para las columnas de Hora de Inicio y Hora de Finalización -->
+                            <div class="{{ $this->form->ruta->ctg_rutas_estado_id == 2 ? 'col-md-6' : 'col-md-4' }} mb-3">
+                                <label>Hora de Inicio:</label>
+                                <input wire:model="form.hora_inicio" type="time" @if(!$this->form->botonhablitarruta) readonly @endif class="form-control @error('form.hora_inicio') is-invalid @enderror" />
+                                @error('form.hora_inicio')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                            
+                            <div class="{{ $this->form->ruta->ctg_rutas_estado_id == 2 ? 'col-md-6' : 'col-md-4' }} mb-3">
+                                <label>Hora de Finalización:</label>
+                                <input wire:model="form.hora_fin" type="time" @if(!$this->form->botonhablitarruta) readonly @endif class="form-control @error('form.hora_fin') is-invalid @enderror" />
+                                @error('form.hora_fin')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>                           
+                        
+                            @if ($this->form->ruta->ctg_rutas_estado_id == 1)
+                            <div class="col-md-4 mb-3 mt-2">
+                                @if(!$this->form->botonhablitarruta)
+                                    <button type="button" name="ediatruta" id="editarruta" wire:click='editarrutahora' class="btn btn-primary btn-block mt-4">Editar Ruta</button>
+                                @else
+                                <div class="row">
+                                    <div class="col-6 col-md-6 col-sm-12  mt-4">
+                                        <button type="button" name="guardaruta" id="guardaruta" wire:click='guardaredicionhoraruta' class="btn btn-success btn-block">Guardar</button>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-12  mt-4">
+                                        <button type="button" name="cancelaruta" id="cancelaruta" wire:click='cancelaredicionhoraruta' class="btn btn-danger btn-block">Cancelar</button>
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                            @endif
+                        </div>                        
                         @endif
                     </div>
                 </div>
@@ -147,7 +180,7 @@
             {{-- elementos de seguridad --}}
             <livewire:operaciones.rutas.agregar-personal :ruta="$form->ruta" />
             {{-- servicios --}}
-            <livewire:operaciones.rutas.agregar-servicio :ruta="$form->ruta" />
+            <livewire:operaciones.rutas.agregar-servicio :ruta="$form->ruta" wire:model="form.dia_id_calendario" />
 
             <livewire:operaciones.rutas.listar-compras :ruta="$form->ruta" />
 
@@ -297,6 +330,38 @@
                     });
 
                 });
+                Livewire.on('successRutaHora', function([message]) {
+                    var ruta = message[1];
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: message[0],
+                        text: message[1],
+                        showConfirmButton: false,
+                        timer: 4000
+                    });
+                });
+                Livewire.on('successRutaServicios', function([message]) {
+                    var ruta = message[1];
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: message[0],
+                        text: message[1],
+                        showConfirmButton: false,
+                        timer: 4000
+                    });
+                });
+                
+                Livewire.on('errorRutaHora', function(message) {
+                    console.log(message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: message,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                });
 
 
             });
@@ -318,6 +383,66 @@
                     }
                 })
             }
+
+            const rutaDiaId = @json($this->form->diaid); // Día de la semana permitido (1=lunes, ..., 6=sábado, 0=domingo)
+            const inputFecha = document.getElementById('ruta_fecha');
+
+// Función para calcular el próximo día permitido a partir de una fecha dada
+function calcularProximoDia(fecha, diaPermitido) {
+    let diaActual = fecha.getUTCDay(); // Obtener el día actual (0: Domingo, 1: Lunes, ..., 6: Sábado)
+    // Convertir día de 1-7 a 0-6 (Día de la semana en JavaScript)
+    const diaPermitidoJS = diaPermitido === 7 ? 0 : diaPermitido; 
+    const diasHastaPermitido = (diaPermitidoJS - diaActual + 7) % 7;
+    return new Date(fecha.setDate(fecha.getDate() + diasHastaPermitido));
+}
+
+// Función para habilitar solo los días permitidos
+function habilitarDiasPermitidos() {
+    const hoy = new Date();
+    const proximoDiaPermitido = calcularProximoDia(new Date(hoy), rutaDiaId); // Encontrar el próximo día permitido
+
+    // Establecer el valor inicial del input como el próximo día permitido
+    inputFecha.value = proximoDiaPermitido.toISOString().split('T')[0]; // Establecer el valor inicial del input
+
+    // Establecer el día mínimo permitido
+    inputFecha.setAttribute('min', proximoDiaPermitido.toISOString().split('T')[0]);
+
+    // Añadir evento para validar la selección
+    inputFecha.addEventListener('input', function () {
+        const fechaSeleccionada = new Date(this.value);
+        const diaSeleccionado = fechaSeleccionada.getUTCDay(); // Obtener el día seleccionado
+
+        // Verificar si el día seleccionado es el permitido
+        if (diaSeleccionado !== rutaDiaId) {
+            Swal.fire({
+                                        title: '¡Atencion!',
+                                        text: "Solo puede selecionar dias : "+getDiaNombre(rutaDiaId),
+                                        icon: 'warning',
+                                        showCancelButton: false,
+                                        timer: 4000
+                                    })
+            this.value = proximoDiaPermitido.toISOString().split('T')[0]; // Restablecer al próximo día permitido
+        }
+    });
+}
+
+// Función para obtener el nombre del día
+function getDiaNombre(dia) {
+    const nombresDias = {
+        1: "Lunes",
+        2: "Martes",
+        3: "Miércoles",
+        4: "Jueves",
+        5: "Viernes",
+        6: "Sábado",
+        0: "Domingo" // En JavaScript, 0 es Domingo
+    };
+    return nombresDias[dia];
+}
+
+// Habilitar los días permitidos al cargar
+habilitarDiasPermitidos();
+
         </script>
     @endpush
 </div>

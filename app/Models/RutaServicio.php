@@ -20,7 +20,8 @@ class RutaServicio extends Model
         'envase_cargado',
         'keys',
         'morralla',
-        'puerta'
+        'puerta',
+        'fecha_servicio'
     ];
 
 
