@@ -18,4 +18,8 @@ class CtgRutaDias extends Model
     public function rutas(){
         return $this->hasMany(Ruta::class);
     }
+    public function rutasdia()
+    {
+        return $this->hasMany(Ruta::class, 'ctg_ruta_dia_id');  // Relación con el campo ctg_ruta_dia_id en la tabla rutas
+    }
 }
