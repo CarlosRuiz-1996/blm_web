@@ -21,6 +21,7 @@ use App\Models\RutaVehiculo;
 use App\Models\RutaVehiculoReporte;
 use App\Models\ServicioComision;
 use App\Models\ServicioKey;
+use App\Models\ServicioPuerta;
 use App\Models\ServicioRutaEnvases;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -38,18 +39,21 @@ class RutaProcesar extends Component
     {
         $this->readyToLoad = true;
     }
-
+    public $puertas;
     public $comisiones;
     public function mount(Ruta $ruta)
     {
 
         $this->ruta = $ruta;
         $this->comisiones = collect(); // Inicializar como colección vacía
-
+        $this->puertas = collect();
         $ruta_serv = RutaServicio::where('ruta_id', $ruta->id)->get();
         foreach ($ruta_serv as $serv) {
             $this->comisiones = $this->comisiones->merge(ServicioComision::where('ruta_servicio_id', $serv->id)->get());
+            $this->puertas = $this->puertas->merge(ServicioPuerta::where('ruta_servicio_id', $serv->id)->get());
+
         }
+        
 
     }
     public function render()

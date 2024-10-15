@@ -13,6 +13,12 @@ class ServicioPuerta extends Model
         'name_entrega',
         'ruta_servicio_id',
         'recolecta',
-        'entrega'
+        'entrega',
+        'status_puerta_servicio'
     ];
+
+
+    public function rutaServicio(){
+        return $this->belongsTo(RutaServicio::class, 'ruta_servicio_id');
+    }
 }

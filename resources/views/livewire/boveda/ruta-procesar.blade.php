@@ -80,7 +80,7 @@
     <div class="card-outline card-info info-box">
         <div class="info-box-content">
             <div class="table-responsive">
-                <table class="table" x-data="{ servicio: false, compra: false,comision:false }">
+                <table class="table" x-data="{ servicio: false, compra: false,comision:false, puerta:false }">
                     <thead>
                         <tr @click="servicio = ! servicio">
                             <th colspan="6" class="text-center table-secondary">
@@ -91,60 +91,61 @@
                             </th>
                         </tr>
                         <tr class="table-success" x-show="servicio">
+                            <th>No. Servicio</th>
                             <th>Cliente</th>
                             <th>Servicio</th>
                             <th>Tipo</th>
-                            <th>No. Servicio</th>
+                            
                             <th>Llaves</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
 
-                        @foreach($ruta->rutaServicios->where('status_ruta_servicios','>=',3)->where('status_ruta_servicios','<=',5) as $servicio) 
+                        @foreach($ruta->rutaServicios->where('status_ruta_servicios','>=',3)->where('puerta',0)->where('status_ruta_servicios','<=',5) as $servicio) 
                         
-                        <tr x-show="servicio">
+                            <tr x-show="servicio">
+                                <td>
+                                    {{ $servicio->folio }}
+                                </td>
+                                <td>{{ $servicio->servicio->cliente->razon_social }}</td>
+                                <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+                                <td>{{ $servicio->tipo_servicio == 1 ? 'Entrega' : 'Recolecta' }}</td>
+                                
+                                <td>
+                                    <button type="button" class="btn mb-2 btn-warning btn-sm text-xs"
+                                        wire:click="showKeys('{{ $servicio->id }}')" data-toggle="modal"
+                                        data-target="#keyModal">
 
-                            <td>{{ $servicio->servicio->cliente->razon_social }}</td>
-                            <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
-                            <td>{{ $servicio->tipo_servicio == 1 ? 'Entrega' : 'Recolecta' }}</td>
-                            <td>
-                                {{ $servicio->folio }}
-                            </td>
-                            <td>
-                                <button type="button" class="btn mb-2 btn-warning btn-sm text-xs"
-                                    wire:click="showKeys('{{ $servicio->id }}')" data-toggle="modal"
-                                    data-target="#keyModal">
+                                        <i class="fa fa-key"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    @if ($servicio->status_ruta_servicios != 5)
+                                    @if ($servicio->tipo_servicio == 2)
+                                    <button class="btn btn-info" data-toggle="modal"
+                                        wire:click='opernModal({{ $servicio }})' data-target="#terminar_servicio">Verificar
+                                        monto</button>
+                                    @else
+                                    <button class="btn btn-info" data-toggle="modal"
+                                        wire:click='detallesEntrega({{ $servicio }})'
+                                        data-target="#ModalDetalleEntregar">Finalizar
+                                        Entrega</button>
+                                    @endif
+                                    @else
+                                    <span class="badge bg-success" style="font-weight: bold;"> Finalizado.</span>
+                                    @endif
 
-                                    <i class="fa fa-key"></i>
-                                </button>
-                            </td>
-                            <td>
-                                @if ($servicio->status_ruta_servicios != 5)
-                                @if ($servicio->tipo_servicio == 2)
-                                <button class="btn btn-info" data-toggle="modal"
-                                    wire:click='opernModal({{ $servicio }})' data-target="#terminar_servicio">Verificar
-                                    monto</button>
-                                @else
-                                <button class="btn btn-info" data-toggle="modal"
-                                    wire:click='detallesEntrega({{ $servicio }})'
-                                    data-target="#ModalDetalleEntregar">Finalizar
-                                    Entrega</button>
-                                @endif
-                                @else
-                                <span class="badge bg-success" style="font-weight: bold;"> Finalizado.</span>
-                                @endif
-
-                            </td>
+                                </td>
                             </tr>
-                            @endforeach
+                        @endforeach
 
 
-                            @if ($ruta->ruta_compra->isNotEmpty() &&
+                        @if ($ruta->ruta_compra->isNotEmpty() &&
                             $ruta->ruta_compra->where('status_ruta_compra_efectivos', '!=', 5)->count() > 0)
 
                             <tr @click="compra = ! compra">
-                                <th colspan="5" class="text-center table-secondary">
+                                <th colspan="6" class="text-center table-secondary">
                                     <h2>Compra de efectivo
                                         <i :class="compra === false ? 'fas fa-chevron-up' :
                                             'fas fa-chevron-down'" class="ml-2"></i>
@@ -154,40 +155,40 @@
                             <tr class="table-success" x-show="compra">
                                 <th>Total de la compra</th>
                                 <th>Fecha de la compra</th>
-                                <th>Estatus</th>
-                                <th colspan="2" class="text-center">Acciones</th>
+                                <th >Estatus</th>
+                                <th colspan="3" class="text-center">Acciones</th>
                             </tr>
                             @foreach ($ruta->ruta_compra as $ruta_compra)
-                            @if ($ruta_compra->status_ruta_compra_efectivos < 5) <tr x-show="compra">
-                                <td>
-                                    ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
+                                @if ($ruta_compra->status_ruta_compra_efectivos < 5) <tr x-show="compra">
+                                    <td>
+                                        ${{ number_format($ruta_compra->compra->total, 2, '.', ',') }}
 
 
-                                </td>
-                                <td>{{ $ruta_compra->compra->fecha_compra }}</td>
-                                <td>
-                                    <span
-                                        class="badge {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'bg-warning' : 'bg-success' }}">
-                                        {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'Pendiente' :
-                                        'Finalizada' }}
-                                    </span>
-                                </td>
-                                <td colspan="2" class="text-center">
-                                    <button class="btn btn-info" data-toggle="modal"
-                                        wire:click="showCompraDetail({{ $ruta_compra->compra }})"
-                                        data-target="#modalDetailCompra">Detalles
-                                    </button>
-                                    @if ($ruta_compra->compra->status_compra_efectivos == 3)
-                                    <button class="btn btn-danger"
-                                        wire:click="$dispatch('finalizar-compra',{{ $ruta_compra }})">
-                                        Finalizar
-                                    </button>
-                                    @endif
-                                </td>
-                                </tr>
+                                    </td>
+                                    <td>{{ $ruta_compra->compra->fecha_compra }}</td>
+                                    <td>
+                                        <span
+                                            class="badge {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'bg-warning' : 'bg-success' }}">
+                                            {{ $ruta_compra->compra->status_compra_efectivos == 3 ? 'Pendiente' :
+                                            'Finalizada' }}
+                                        </span>
+                                    </td>
+                                    <td colspan="3" class="text-center">
+                                        <button class="btn btn-info" data-toggle="modal"
+                                            wire:click="showCompraDetail({{ $ruta_compra->compra }})"
+                                            data-target="#modalDetailCompra">Detalles
+                                        </button>
+                                        @if ($ruta_compra->compra->status_compra_efectivos == 3)
+                                        <button class="btn btn-danger"
+                                            wire:click="$dispatch('finalizar-compra',{{ $ruta_compra }})">
+                                            Finalizar
+                                        </button>
+                                        @endif
+                                    </td>
+                                    </tr>
                                 @endif
-                                @endforeach
-                                @endif
+                            @endforeach
+                        @endif
 
                         @if (!$comisiones->isEmpty())
                             <tr @click="comision = ! comision">
@@ -232,6 +233,56 @@
                                     <td>{{$comision->status_servicio_comisions==1?'PENDIENTE':'PROCESADO'}}</td>
                                 </tr>
 
+                            @endforeach
+                        @endif
+                        @if(!$puertas->isEmpty())
+
+                        <tr @click="puerta = ! puerta">
+                            <th colspan="6" class="text-center table-secondary">
+                                <h2>Servicios de puerta en puerta
+                                    <i :class="puerta === false ? 'fas fa-chevron-up' :
+                                    'fas fa-chevron-down'" class="ml-2"></i>
+                                </h2>
+                            </th>
+                        </tr>
+                        <tr class="table-success" x-show="puerta">
+                            <th>No. Servicio</th>
+                            <th>Cliente</th>
+                            <th>Servicio</th>
+                            <th>Sucursal</th>
+                            <th>Tipo</th>
+                            <th >Acciones</th>
+                        </tr>
+                            @foreach($ruta->rutaServicios->where('status_ruta_servicios','>=',3)->where('puerta',1)->where('status_ruta_servicios','<=',5) as $servicio) 
+                            
+                                <tr x-show="puerta">
+                                    <td>
+                                        {{ $servicio->id }}
+                                    </td>
+                                    <td>{{ $servicio->servicio->cliente->razon_social }}</td>
+                                    <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+                                    <td>{{$servicio->servicio->sucursal->sucursal->sucursal}}</td>
+                                    <td>Puerta en puerta</td>
+                                    
+                                  
+                                    <td>
+                                        @if ($servicio->status_ruta_servicios != 5)
+                                        @if ($servicio->tipo_servicio == 2)
+                                        <button class="btn btn-info" data-toggle="modal"
+                                            wire:click='opernModal({{ $servicio }})' data-target="#terminar_servicio">Verificar
+                                            monto</button>
+                                        @else
+                                        <button class="btn btn-info" data-toggle="modal"
+                                            wire:click='detallesEntrega({{ $servicio }})'
+                                            data-target="#ModalDetalleEntregar">Finalizar
+                                            Entrega</button>
+                                        @endif
+                                        @else
+                                        <span class="badge bg-success" style="font-weight: bold;"> Finalizado.</span>
+                                        @endif
+
+                                    </td>
+                                </tr>
                             @endforeach
                         @endif
                     </tbody>

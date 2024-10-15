@@ -23,7 +23,7 @@ class Reprogramacion extends Component
         $dias = $this->form->getCtgDias();
         // $reprogramacion = RutaServicio::where('status_ruta_servicios',0)->paginate(10);
         $reprogramacion = ModelsReprogramacion::orderBy('id', 'DESC')->paginate(10);
-
+            
         }else{
             $dias = [];
             $reprogramacion = [];
