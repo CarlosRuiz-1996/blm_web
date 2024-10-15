@@ -51,10 +51,7 @@ class RutaProcesar extends Component
         foreach ($ruta_serv as $serv) {
             $this->comisiones = $this->comisiones->merge(ServicioComision::where('ruta_servicio_id', $serv->id)->get());
             $this->puertas = $this->puertas->merge(ServicioPuerta::where('ruta_servicio_id', $serv->id)->get());
-
         }
-        
-
     }
     public function render()
     {
@@ -238,6 +235,20 @@ class RutaProcesar extends Component
                     $query->where('status_servicio_keys', 1);
                 })
                 ->count();
+
+
+            $servicioPuertaCount = ServicioPuerta::whereHas('rutaServicio', function ($query) {
+                    $query->where('ruta_id', $this->ruta->id)
+                          ->where('puerta', 1); 
+                })->where('status_puerta_servicio', 3)
+                  ->count();
+        
+            $rutaServicioCount = RutaServicio::where('ruta_id',$this->ruta->id)
+                  ->where('puerta', 1) 
+                  ->where('status_ruta_servicios',5)
+                  ->count();
+
+            
             if ($keys > 0) {
                 throw new \Exception('No se puede terminar la ruta porque aún tiene Llaves por entregar.');
             }
@@ -248,7 +259,10 @@ class RutaProcesar extends Component
             if ($comprasPendientes > 0) {
                 throw new \Exception('No se puede terminar la ruta porque aún tiene compras de efectivo pendientes.');
             }
-
+            
+            if ($servicioPuertaCount != $rutaServicioCount) {
+                throw new \Exception('No se puede terminar la ruta porque aún tiene servicio de puerta en puerta pendientes.');
+            }
             //cambio a 5 su estatus de las compras
             RutaCompraEfectivo::where('ruta_id', $this->ruta->id)
                 ->where('status_ruta_compra_efectivos', 4)
@@ -550,8 +564,78 @@ class RutaProcesar extends Component
 
     //comisiones
 
-    public function evidenciaComision(ServicioComision $comision){
+    public function evidenciaComision(ServicioComision $comision)
+    {
         $this->evidencia_foto =  'evidencias/ComisionesServicios/comision_' . $comision->id . '_evidencia.png';
         $this->readyToLoadModal = true;
     }
+    //puerta
+    public function endPuerta(RutaServicio $servicio)
+    {
+        try {
+            DB::beginTransaction();
+
+            //actualizar la informacion de ruta servicio
+            $servicio->status_ruta_servicios = 5;
+            $servicio->save();
+            //finaliza puerta
+            $servicio->puertaHas->status_puerta_servicio =3;
+            $servicio->puertaHas->save();
+            //actualizar la informacion de envases
+            $servicio_envase =  ServicioRutaEnvases::where('ruta_servicios_id', $servicio->id)->where('status_envases', 1)->get();
+            foreach ($servicio_envase as $envase) {
+                $envase->status_envases = 2;
+                $envase->save();
+                $envase->evidencia_entrega->status_evidencia_entrega = 2;
+                $envase->evidencia_entrega->save();
+            }
+
+            $this->limpiar();
+            $this->dispatch('agregarArchivocre', ['msg' => 'El servicio de entrega ha sido termiando'], ['tipomensaje' => 'success']);
+
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
+
+            $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
+        }
+    }
+
+
+    public function detallesPuerta(RutaServicio $servicioRuta)
+    {
+        $this->readyToLoadModal = true;
+
+        $this->papeleta = $servicioRuta->folio;
+        $this->MontoEntrega = $servicioRuta->monto;
+        $this->servicioRuta_id = $servicioRuta->id;
+
+        $serviciosEnvases = ServicioRutaEnvases::where('ruta_servicios_id', $servicioRuta->id)->where('status_envases', 1)->get();
+
+        // Si hay registros, llenar los arreglos con los valores recuperados
+        if ($serviciosEnvases->isNotEmpty()) {
+            // dd('entra');
+            $this->inputs = $serviciosEnvases->mapWithKeys(function ($item) {
+                return [$item->id => [
+                    'cantidad' => $item->cantidad,
+                    'folio' => $item->folio,
+                    'sello' => $item->sello_seguridad,
+                ]];
+            })->toArray();
+        }
+    }
+
+    public function evidenciaPuerta(ServicioRutaEnvases $ruta_servicio, $op)
+    {
+
+
+        $tipo = $op == 1?'_recolecta_':'_entrega_';
+        $this->evidencia_foto =  'evidencias/PuertaEnPuerta/Puerta_' . $ruta_servicio->id .$tipo.
+        $ruta_servicio->evidencia_entrega->id . '_evidencia.png';
+        $this->readyToLoadModal = true;
+    }
+
+   
 }
