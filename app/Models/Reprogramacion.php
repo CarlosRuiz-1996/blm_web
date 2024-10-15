@@ -26,4 +26,12 @@ class Reprogramacion extends Model
     public function area(){
         return $this->belongsTo(Ctg_Area::class, 'area_id');
     }
+    public function rutaNew() {
+        return $this->belongsTo(Ruta::class, 'ruta_id_new');
+    }
+
+    // Relación con la ruta antigua
+    public function rutaOld() {
+        return $this->belongsTo(Ruta::class, 'ruta_id_old');
+    }
 }
