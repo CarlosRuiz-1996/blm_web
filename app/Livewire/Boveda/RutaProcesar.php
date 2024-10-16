@@ -71,7 +71,8 @@ class RutaProcesar extends Component
         $servicio = ServicioRutaEnvases::where('ruta_servicios_id', $servicio_id)->where('status_envases', 1)->get();
         foreach ($servicio as $s) {
             $this->form->servicio = $s->rutaServicios;
-            $this->form->folio = $this->form->servicio->folio;
+            $this->form->folio = $this->form->servicio->id;
+            $this->form->papeleta = $this->form->servicio->folio??'Sin especificar';
             $this->form->monto = $this->form->servicio->monto;
 
             $this->monto_envases[$s->id] = [
@@ -612,7 +613,10 @@ class RutaProcesar extends Component
         $this->MontoEntrega = $servicioRuta->monto;
         $this->servicioRuta_id = $servicioRuta->id;
 
-        $serviciosEnvases = ServicioRutaEnvases::where('ruta_servicios_id', $servicioRuta->id)->where('status_envases', 1)->get();
+        $serviciosEnvases = ServicioRutaEnvases::where('ruta_servicios_id', $servicioRuta->id)->get();
+
+        // ->where('status_envases', 1)
+        
 
         // Si hay registros, llenar los arreglos con los valores recuperados
         if ($serviciosEnvases->isNotEmpty()) {

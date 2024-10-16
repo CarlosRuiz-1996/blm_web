@@ -304,13 +304,16 @@
                 <div class="modal-body">
                     <div class="row" wire:init='loadServicios'>
                         @if ($form->servicio)
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <x-input-validado label="No. Servicio:" placeholder="No. Servicio" wire-model="form.folio"
                                 wire-attribute="folios" type="text" :readonly='true' />
                         </div>
+                        <div class="col-md-4 mb-3">
+                            <x-input-validado label="Papeleta:" placeholder="No. Servicio" wire-model="form.papeleta"
+                                wire-attribute="papeleta" type="text" :readonly='true' />
+                        </div>
 
-
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <x-input-validado label="Monto total del servicio:" placeholder="Envase"
                                 wire-model="monto_calculado" id="monto_total" type="text" :readonly='true' />
                         </div>
