@@ -771,12 +771,12 @@ class OperadoresIndex extends   Component
         $this->validate(
             [
                 'papeleta_comision' => 'required',
-                'monto_comision' => 'required',
+                // 'monto_comision' => 'required',
                 'evidencia_comision' => 'required|image|max:1024000'
             ],
             [
                 'papeleta_comision.required' => 'El campo es Obligatorio',
-                'monto_comision.required' => 'El campo es Obligatorio',
+                // 'monto_comision.required' => 'El campo es Obligatorio',
                 'evidencia_comision.required' => 'El campo es Obligatorio',
                 'evidencia_comision.image' => 'El archivo debe de ser imagen',
                 'evidencia_comision.max' => 'Tamaño maximo es de 1GB'
@@ -789,7 +789,7 @@ class OperadoresIndex extends   Component
 
                 $comision = ServicioComision::create([
                     'papeleta' => $this->papeleta_comision,
-                    'monto' => $this->monto_comision,
+                    'monto' => $this->monto_comision??0,
                     'ruta_servicio_id' => $this->ruta_servicio_comision->id,
                 ]);
 
