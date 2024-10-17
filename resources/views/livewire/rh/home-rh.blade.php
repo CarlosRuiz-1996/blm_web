@@ -1,6 +1,6 @@
 <div>
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="info-box">
             <span class="info-box-icon bg-info"><i class="fas fa-user-tie"></i></span>
             <div class="info-box-content">
@@ -15,7 +15,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="info-box">
             <span class="info-box-icon bg-info"><i class="fas fa-user-tie"></i></span>
             <div class="info-box-content">
@@ -30,27 +30,13 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="info-box">
-            <span class="info-box-icon bg-info "><i class="fas fa-dollar-sign"></i></span>
-            <div class="info-box-content">
-                <span class="info-box-text">Vacantes</span>
-                <span class="info-box-number">2 vacantes</span>
-                <div class="progress">
-                    <div class="progress-bar bg-info" style="width: 70%"></div>
-                </div>
-                <span class="progress-description">
-                    Más información
-                </span>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
+
+    <div class="col-md-4">
         <div class="info-box">
             <span class="info-box-icon bg-info "><i class="fas fa-plain"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Vacaciones</span>
-                <span class="info-box-number">2 vacaciones en curso</span>
+                <span class="info-box-number">{{$solicitudesactivas}} en curso</span>
                 <div class="progress">
                     <div class="progress-bar bg-info" style="width: 70%"></div>
                 </div>
