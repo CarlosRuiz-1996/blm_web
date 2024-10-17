@@ -22,7 +22,13 @@
 
                             $config = [
                                 'language' => ['url' => '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'],
+                                'columns' => [
+                                ['ID' => true, 'type' => 'num'], // Configuración para que la columna ID se ordene numéricamente
+                                null, // Columna Nombre
+                                ['ID' => false], // Columna de acciones no ordenable
+                            ],
                             ];
+
                         @endphp
 
                         {{-- Minimal example / fill data using the component slot --}}

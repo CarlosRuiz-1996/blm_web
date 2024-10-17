@@ -50,7 +50,9 @@ class RutaProcesar extends Component
         $ruta_serv = RutaServicio::where('ruta_id', $ruta->id)->get();
         foreach ($ruta_serv as $serv) {
             $this->comisiones = $this->comisiones->merge(ServicioComision::where('ruta_servicio_id', $serv->id)->get());
-            $this->puertas = $this->puertas->merge(ServicioPuerta::where('ruta_servicio_id', $serv->id)->get());
+            $this->puertas = $this->puertas->merge(ServicioPuerta::where('ruta_servicio_id', $serv->id)
+                ->where('status_puerta_servicio', '!=', 4)
+                ->get());
         }
     }
     public function render()
@@ -72,7 +74,7 @@ class RutaProcesar extends Component
         foreach ($servicio as $s) {
             $this->form->servicio = $s->rutaServicios;
             $this->form->folio = $this->form->servicio->id;
-            $this->form->papeleta = $this->form->servicio->folio??'Sin especificar';
+            $this->form->papeleta = $this->form->servicio->folio ?? 'Sin especificar';
             $this->form->monto = $this->form->servicio->monto;
 
             $this->monto_envases[$s->id] = [
@@ -239,17 +241,17 @@ class RutaProcesar extends Component
 
 
             $servicioPuertaCount = ServicioPuerta::whereHas('rutaServicio', function ($query) {
-                    $query->where('ruta_id', $this->ruta->id)
-                          ->where('puerta', 1); 
-                })->where('status_puerta_servicio', 3)
-                  ->count();
-        
-            $rutaServicioCount = RutaServicio::where('ruta_id',$this->ruta->id)
-                  ->where('puerta', 1) 
-                  ->where('status_ruta_servicios',5)
-                  ->count();
+                $query->where('ruta_id', $this->ruta->id)
+                    ->where('puerta', 1);
+            })->where('status_puerta_servicio', 3)
+                ->count();
 
-            
+            $rutaServicioCount = RutaServicio::where('ruta_id', $this->ruta->id)
+                ->where('puerta', 1)
+                ->where('status_ruta_servicios', 5)
+                ->count();
+
+
             if ($keys > 0) {
                 throw new \Exception('No se puede terminar la ruta porque aún tiene Llaves por entregar.');
             }
@@ -260,7 +262,7 @@ class RutaProcesar extends Component
             if ($comprasPendientes > 0) {
                 throw new \Exception('No se puede terminar la ruta porque aún tiene compras de efectivo pendientes.');
             }
-            
+
             if ($servicioPuertaCount != $rutaServicioCount) {
                 throw new \Exception('No se puede terminar la ruta porque aún tiene servicio de puerta en puerta pendientes.');
             }
@@ -280,6 +282,11 @@ class RutaProcesar extends Component
             RutaServicio::where('ruta_id', $this->ruta->id)
                 ->where('status_ruta_servicios', 5)->update(['status_ruta_servicios' => 6]);
 
+            if (!$this->puertas->isEmpty()) {
+                $serv = RutaServicio::where('ruta_id', $this->ruta->id)->where('puerta', 1)->get();
+                ServicioPuerta::where('ruta_servicio_id', $serv->id)
+                    ->where('status_puerta_servicio', 3)->update(['status_puerta_servicio' => 4]);
+            }
 
             //actualizo ruta vehiculo
             RutaVehiculo::where('ruta_id', $this->ruta->id)->where('status_ruta_vehiculos', 2)->update(['status_ruta_vehiculos' => 1]);
@@ -570,6 +577,70 @@ class RutaProcesar extends Component
         $this->evidencia_foto =  'evidencias/ComisionesServicios/comision_' . $comision->id . '_evidencia.png';
         $this->readyToLoadModal = true;
     }
+    public $comision;
+    public $comision_cliente;
+    public $comision_sucursal;
+    public $comision_papeleta;
+    public $comision_monto;
+
+    public function montoComision(ServicioComision $comision)
+    {
+        $this->comision = $comision;
+
+        $this->comision_cliente = $comision->ruta_servicio->servicio->cliente->razon_social;
+        $this->comision_sucursal = $comision->ruta_servicio->servicio->sucursal->sucursal->sucursal;
+        $this->comision_papeleta = $comision->papeleta;
+        $this->comision_monto = $comision->monto;
+
+        $this->readyToLoadModal = true;
+    }
+
+    public function cleanComision()
+    {
+        $this->reset('comision', 'comision_cliente', 'comision_sucursal', 'comision_papeleta', 'comision_monto', 'readyToLoadModal');
+    }
+
+    public function editMontoComision()
+    {
+        $this->validate(
+            ['comision_monto' => 'required|not_in:0'],
+            [
+                'comision_monto.required' => 'El monto es requerido',
+                'comision_monto.not_in' => 'No puede ser el monto en 0',
+            ]
+        );
+
+        try {
+            DB::transaction(function () {
+                $this->comision->monto = $this->comision_monto;
+                $this->comision->save();
+            });
+            $this->mount($this->ruta);
+            $this->cleanComision();
+            $this->dispatch('agregarArchivocre', ['msg' => 'El monto se ha modificado'], ['tipomensaje' => 'success']);
+        } catch (\Exception $e) {
+            $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
+        }
+    }
+    public function endComision(ServicioComision $comision)
+    {
+        try {
+            DB::transaction(function () use ($comision) {
+                if ($comision->monto == 0) {
+                    throw new \Exception('No se puede finalizar la comision con el monto en 0');
+                }
+                $comision->status_servicio_comisions = 2;
+                $comision->save();
+            });
+
+            $this->mount($this->ruta);
+            $this->cleanComision();
+            $this->dispatch('agregarArchivocre', ['msg' => 'La comision fue aprobada'], ['tipomensaje' => 'success']);
+        } catch (\Exception $e) {
+            $this->dispatch('error', [$e->getMessage()]);
+        }
+    }
+
     //puerta
     public function endPuerta(RutaServicio $servicio)
     {
@@ -580,7 +651,7 @@ class RutaProcesar extends Component
             $servicio->status_ruta_servicios = 5;
             $servicio->save();
             //finaliza puerta
-            $servicio->puertaHas->status_puerta_servicio =3;
+            $servicio->puertaHas->status_puerta_servicio = 3;
             $servicio->puertaHas->save();
             //actualizar la informacion de envases
             $servicio_envase =  ServicioRutaEnvases::where('ruta_servicios_id', $servicio->id)->where('status_envases', 1)->get();
@@ -616,7 +687,7 @@ class RutaProcesar extends Component
         $serviciosEnvases = ServicioRutaEnvases::where('ruta_servicios_id', $servicioRuta->id)->get();
 
         // ->where('status_envases', 1)
-        
+
 
         // Si hay registros, llenar los arreglos con los valores recuperados
         if ($serviciosEnvases->isNotEmpty()) {
@@ -635,11 +706,9 @@ class RutaProcesar extends Component
     {
 
 
-        $tipo = $op == 1?'_recolecta_':'_entrega_';
-        $this->evidencia_foto =  'evidencias/PuertaEnPuerta/Puerta_' . $ruta_servicio->id .$tipo.
-        $ruta_servicio->evidencia_entrega->id . '_evidencia.png';
+        $tipo = $op == 1 ? '_recolecta_' : '_entrega_';
+        $this->evidencia_foto =  'evidencias/PuertaEnPuerta/Puerta_' . $ruta_servicio->id . $tipo .
+            $ruta_servicio->evidencia_entrega->id . '_evidencia.png';
         $this->readyToLoadModal = true;
     }
-
-   
 }

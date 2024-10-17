@@ -200,11 +200,10 @@
                                 <tr class="table-success" x-show="comision">
                                     <th>Cliente</th>
                                     <th>Sucursal</th>
-                                    <th>Total</th>
+                                    <th>Monto</th>
                                     <th>Papeleta</th>
-                                    <th>Evidencia</th>
                                     <th>Estatus</th>
-                                    {{-- <th colspan="2" class="text-center">Acciones</th> --}}
+                                    <th colspan="2" class="text-center">Acciones</th>
                                 </tr>
 
                                 @foreach ($comisiones as $comision)
@@ -214,8 +213,12 @@
                                     <td>{{$comision->ruta_servicio->servicio->sucursal->sucursal->sucursal}}</td>
                                     <td>
                                         $ {{ number_format($comision->monto, 2, '.', ',') }} MXN
+                                    
+                                        
                                     </td>
                                     <td>{{$comision->papeleta}}</td>
+                                    <td>{{$comision->status_servicio_comisions==1?'PENDIENTE':'PROCESADO'}}</td>
+
                                     <td>
                                         <button class="btn btn-info" data-toggle="modal" data-target="#evidenciaModal"
                                             wire:click='evidenciaComision({{ $comision }})'>
@@ -227,8 +230,17 @@
                                                     d="M10.707 9.293a1 1 0 0 1 1.414 0L15 12.172V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-.828l3.293-3.293a1 1 0 0 1 1.414 0L7 10.586l3.707-3.707zM10 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                                             </svg>
                                         </button>
+                                        @if($comision->status_servicio_comisions <2)
+                                        <button class="btn btn-info" data-toggle="modal" data-target="#montoComisionModal"
+                                            wire:click='montoComision({{ $comision }})'>
+                                            Editar
+                                        </button>
+                                        <button class="btn btn-info"
+                                            wire:click='endComision({{ $comision }})'>
+                                            Finalizar
+                                        </button>
+                                        @endif
                                     </td>
-                                    <td>{{$comision->status_servicio_comisions==1?'PENDIENTE':'PROCESADO'}}</td>
                                 </tr>
 
                                 @endforeach
@@ -900,6 +912,58 @@
             </div>
         </div>
     </div>
+
+
+     {{-- detalles de puerta --}}
+     <div class="modal fade" id="montoComisionModal" wire:ignore.self tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-xl" role="document">
+         <div class="modal-content">
+             <div class="modal-header bg-info">
+                 <h5 class="modal-title" id="exampleModalLabel">
+                     Editar monto de comisión
+                 </h5>
+                 <button wire:click='cleanComision' type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                 </button>
+             </div>
+             <div class="modal-body">
+                 <div class="row">
+                     @if ($readyToLoadModal)
+
+                     <div class="col-md-6 mb-3">
+                        <x-input-validado label="Cliente:" placeholder="Cliente" wire-model="comision_cliente"
+                            wire-attribute="Cliente" type="text" :readonly='true' />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <x-input-validado label="Sucursal:" placeholder="No. Servicio" wire-model="comision_sucursal"
+                            wire-attribute="sucursal" type="text" :readonly='true' />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <x-input-validado label="Papeleta:" placeholder="Envase"
+                            wire-model="comision_papeleta" id="comision_papeleta" type="text" :readonly='true' />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <x-input-validado label="Monto:" placeholder="monto"
+                            wire-model="comision_monto" id="comision_monto" type="text" :readonly='false' />
+                    </div>
+                     @else
+                     <div class="col-md-12 text-center">
+                         <div class="spinner-border" role="status">
+                         </div>
+                     </div>
+                     @endif
+                 </div>
+             </div>
+             <div class="modal-footer">
+                 <button type="button" wire:click='cleanComision' class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                 <button class="btn btn-info"
+                 wire:click="editMontoComision" wire:loading.remove>Actualizar</button>
+             </div>
+         </div>
+     </div>
+ </div>
     @push('js')
     <script>
         var array_monto = [];
@@ -987,7 +1051,7 @@
                 $('#terminar_servicio').modal('hide');
                 $('#diferencia_mdl').modal('hide');
                 $('#ModalDetalleEntregar').modal('hide');
-
+                $('#montoComisionModal').modal('hide');
                 if(tipomensaje != 'error'){
                 $('#keyModal').modal('hide');
                 }

@@ -70,8 +70,7 @@ class MemoValidacionForm extends Form
                     }
                 }                
             } else {
-                dd('muere');
-                die();
+                
                 $revisor = RevisorArea::where('empleado_id', $empleado_id)
                     ->where('ctg_area_id', $area)->first();
 
