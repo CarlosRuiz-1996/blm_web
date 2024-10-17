@@ -13,6 +13,7 @@ use App\Models\RutaEmpleadoReporte;
 use App\Models\RutaEmpleados;
 use App\Models\RutaServicio;
 use App\Models\RutaServicioReporte;
+use App\Models\RutaServicioTransferir;
 use App\Models\RutaVehiculo;
 use App\Models\RutaVehiculoReporte;
 use App\Models\ServicioComision;
@@ -93,7 +94,7 @@ class OperadoresIndex extends   Component
     {
         // Validar que sea un número y si no, asignar 0
         if (!is_numeric($this->MontoRecolecta)) {
-            $this->MontoRecolecta =null;
+            $this->MontoRecolecta = null;
         }
     }
 
@@ -158,7 +159,7 @@ class OperadoresIndex extends   Component
             'MontoRecolecta.required' => 'Debe ingresar el monto total.',
             'MontoRecolecta.numeric' => 'El monto debe ser un número.',
             'MontoRecolecta.min' => 'El monto debe ser al menos 1.',
-        ]);        
+        ]);
         $this->ModalEntregaRecolecta($this->idrecolecta, $this->tiposervicio == 'Recolección' ? 2 : 1);
     }
 
@@ -412,14 +413,14 @@ class OperadoresIndex extends   Component
 
         $servicioPuertaCount = ServicioPuerta::whereHas('rutaServicio', function ($query) use ($id) {
             $query->where('ruta_id', $id)
-                  ->where('puerta', 1); 
+                ->where('puerta', 1);
         })->where('status_puerta_servicio', 2)
-          ->count();
+            ->count();
 
         $rutaServicioCount = RutaServicio::where('ruta_id', $id)
-          ->where('puerta', 1) 
-          ->where('status_ruta_servicios', '!=',6)
-          ->count();
+            ->where('puerta', 1)
+            ->where('status_ruta_servicios', '!=', 6)
+            ->count();
 
         try {
 
@@ -804,4 +805,67 @@ class OperadoresIndex extends   Component
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Hubo un error intenta más tarde.'], ['tipomensaje' => 'error']);
         }
     }
+
+    public $transferir_servicio;
+    public $cliente_transf;
+    public $direccion_transf;
+    public $transferir_servicio_tipo;
+    public $papeleta_transf;
+    public $monto_transf;
+    public $tipo_transf;
+    public $rutas;
+    public function transferir(RutaServicio $ruta_servicio)
+    {
+        $this->readyToLoadModal = true;
+        $this->transferir_servicio  = $ruta_servicio;
+        $this->papeleta_transf  = $ruta_servicio->folio;
+        $this->monto_transf  = $ruta_servicio->monto;
+        $this->tipo_transf  = $ruta_servicio->tipo == 1 ? 'Entrega' : 'Recolecta';
+
+        $this->cliente_transf = $ruta_servicio->servicio->cliente->razon_social;
+        $this->transferir_servicio_tipo = $ruta_servicio->servicio->ctg_servicio->descripcion;
+        $this->direccion_transf = $ruta_servicio->servicio->sucursal->sucursal->sucursal .
+            ' Calle ' . $ruta_servicio->servicio->sucursal->sucursal->direccion .
+            ' CP.' . $ruta_servicio->servicio->sucursal->sucursal->cp->cp .
+            ' ' . $ruta_servicio->servicio->sucursal->sucursal->cp->estado->name;
+        $this->rutas = Ruta::whereBetween('ctg_rutas_estado_id', [2, 3])->where('id', '!=', $ruta_servicio->ruta_id)->get();
+    }
+
+    public $ruta_id;
+    public function saveTransfer()
+    {
+        $this->validate(['ruta_id' => 'required'], ['ruta_id.required' => 'campo requerido']);
+
+
+        try {
+
+            DB::transaction(function () {
+                RutaServicioTransferir::create([
+                    'ruta_old' => $this->transferir_servicio->ruta_id,
+                    'ruta_new' => $this->ruta_id
+                ]);
+                $this->transferir_servicio->ruta_id = $this->ruta_id;
+                $this->transferir_servicio->save();
+            });
+            $this->limpiarTranf();
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'El servicio se transfirio correctamente.'], ['tipomensaje' => 'success'], ['op' => 1]);
+        } catch (Exception $e) {
+            $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Hubo un error intenta más tarde.'], ['tipomensaje' => 'error']);
+        }
+    }
+
+    public function limpiarTranf()
+{
+    $this->reset(
+        'transferir_servicio', 
+        'cliente_transf', 
+        'direccion_transf', 
+        'transferir_servicio_tipo', 
+        'papeleta_transf', 
+        'monto_transf', 
+        'tipo_transf', 
+        'rutas'
+    );
+}
+
 }
