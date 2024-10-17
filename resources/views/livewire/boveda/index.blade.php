@@ -49,6 +49,11 @@
                         <a class="nav-link" id="serviciostotales-tab" data-toggle="tab" href="#serviciostotales" role="tab"
                             aria-controls="serviciostotales" wire:ignore.self aria-selected="false">Servicios Totales</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="valida-memo-tab" data-toggle="pill"
+                            href="#valida-memo" role="tab" aria-controls="valida-memo"
+                            aria-selected="false">VALIDACIÓN MEMORÁNDUM</a>
+                    </li>
                 </ul>
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab"
@@ -230,6 +235,12 @@
                         wire:ignore.self>
                         @livewire('boveda.totales-servicios')
                     </div>
+                    <div class="tab-pane fade" id="valida-memo" role="tabpanel"
+                            aria-labelledby="valida-memo-tab">
+                            <livewire:memorandum-validacion.validacion-listados :area="3"/>
+                           
+
+                        </div>
                 </div>
             </div>
         </div>

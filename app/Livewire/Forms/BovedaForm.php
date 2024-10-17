@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 class BovedaForm extends Form
 {
     public $folio;
+    public $papeleta;
     public $monto = 0;
     public $servicio;
     public $morralla =false;
