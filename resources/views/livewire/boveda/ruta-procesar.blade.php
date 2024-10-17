@@ -235,7 +235,7 @@
                                             wire:click='montoComision({{ $comision }})'>
                                             Editar
                                         </button>
-                                        <button class="btn btn-info" data-toggle="modal" data-target="#montoComisionModal"
+                                        <button class="btn btn-info"
                                             wire:click='endComision({{ $comision }})'>
                                             Finalizar
                                         </button>

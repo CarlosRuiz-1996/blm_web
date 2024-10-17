@@ -51,8 +51,8 @@ class RutaProcesar extends Component
         foreach ($ruta_serv as $serv) {
             $this->comisiones = $this->comisiones->merge(ServicioComision::where('ruta_servicio_id', $serv->id)->get());
             $this->puertas = $this->puertas->merge(ServicioPuerta::where('ruta_servicio_id', $serv->id)
-            ->where('status_puerta_servicio','!=',4)
-            ->get());
+                ->where('status_puerta_servicio', '!=', 4)
+                ->get());
         }
     }
     public function render()
@@ -282,10 +282,10 @@ class RutaProcesar extends Component
             RutaServicio::where('ruta_id', $this->ruta->id)
                 ->where('status_ruta_servicios', 5)->update(['status_ruta_servicios' => 6]);
 
-            if(!$this->puertas->isEmpty()){
-                $serv = RutaServicio::where('ruta_id', $this->ruta->id)->where('puerta',1)->get();
+            if (!$this->puertas->isEmpty()) {
+                $serv = RutaServicio::where('ruta_id', $this->ruta->id)->where('puerta', 1)->get();
                 ServicioPuerta::where('ruta_servicio_id', $serv->id)
-                ->where('status_puerta_servicio', 3)->update(['status_puerta_servicio' => 4]);
+                    ->where('status_puerta_servicio', 3)->update(['status_puerta_servicio' => 4]);
             }
 
             //actualizo ruta vehiculo
@@ -610,8 +610,8 @@ class RutaProcesar extends Component
             ]
         );
 
-        try{
-            DB::transaction(function(){
+        try {
+            DB::transaction(function () {
                 $this->comision->monto = $this->comision_monto;
                 $this->comision->save();
             });
@@ -620,16 +620,16 @@ class RutaProcesar extends Component
         } catch (\Exception $e) {
             $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
         }
-
     }
 
     public function endComision(ServicioComision $comision)
     {
-        try{
-            DB::transaction(function()use ($comision){
-                if($comision->monto ==0){
+        $err = 0;
+        try {
+            DB::transaction(function () use ($comision) {
+                if ($comision->monto == 0) {
                     throw new \Exception('No se puede finalizar la comision con el monto en 0');
-
+                    $err = 1;
                 }
 
                 $comision->status_servicio_comisions = 2;
@@ -638,9 +638,13 @@ class RutaProcesar extends Component
             $this->cleanComision();
             $this->dispatch('agregarArchivocre', ['msg' => 'La comision fue aprobada'], ['tipomensaje' => 'success']);
         } catch (\Exception $e) {
-            $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
-        }
+            if ($err == 1) {
 
+                $this->dispatch('error', [$e->getMessage()]);
+            } else {
+                $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
+            }
+        }
     }
 
     //puerta
