@@ -65,7 +65,7 @@
                                 @endphp
 
                                 @foreach ($firmas as $firma)
-                                    @foreach ([5, 6, 7, 8] as $IdArea)
+                                    @foreach ([5, 6, 7, 9] as $IdArea)
                                         @if ($IdArea == $firma->revisor_areas->area->id)
                                             <td colspan="2">
                                                 <i class="fa fa-circle" style="color: green;"> </i>
@@ -78,7 +78,7 @@
                                         @endif
                                     @endforeach
                                 @endforeach
-                                @foreach ([5, 6, 7, 8] as $IdArea)
+                                @foreach ([5, 6, 7, 9] as $IdArea)
                                     @unless (in_array($IdArea, $tiene_firma))
                                         <td colspan="2">
                                             <i class="fa fa-circle" style="color: orange;"> </i> Aún no validado
