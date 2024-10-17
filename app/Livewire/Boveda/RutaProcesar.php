@@ -50,8 +50,11 @@ class RutaProcesar extends Component
         $ruta_serv = RutaServicio::where('ruta_id', $ruta->id)->get();
         foreach ($ruta_serv as $serv) {
             $this->comisiones = $this->comisiones->merge(ServicioComision::where('ruta_servicio_id', $serv->id)->get());
-            $this->puertas = $this->puertas->merge(ServicioPuerta::where('ruta_servicio_id', $serv->id)->get());
+            $this->puertas = $this->puertas->merge(ServicioPuerta::where('ruta_servicio_id', $serv->id)
+            ->where('status_puerta_servicio','!=',4)
+            ->get());
         }
+        // dd($this->puertas);
     }
     public function render()
     {
@@ -280,6 +283,11 @@ class RutaProcesar extends Component
             RutaServicio::where('ruta_id', $this->ruta->id)
                 ->where('status_ruta_servicios', 5)->update(['status_ruta_servicios' => 6]);
 
+            if(!$this->puertas->isEmpty()){
+                $serv = RutaServicio::where('ruta_id', $this->ruta->id)->where('puerta',1)->get();
+                ServicioPuerta::where('ruta_servicio_id', $serv->id)
+                ->where('status_puerta_servicio', 3)->update(['status_puerta_servicio' => 4]);
+            }
 
             //actualizo ruta vehiculo
             RutaVehiculo::where('ruta_id', $this->ruta->id)->where('status_ruta_vehiculos', 2)->update(['status_ruta_vehiculos' => 1]);
