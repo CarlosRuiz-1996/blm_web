@@ -54,7 +54,6 @@ class RutaProcesar extends Component
             ->where('status_puerta_servicio','!=',4)
             ->get());
         }
-        // dd($this->puertas);
     }
     public function render()
     {
@@ -628,6 +627,11 @@ class RutaProcesar extends Component
     {
         try{
             DB::transaction(function()use ($comision){
+                if($comision->monto ==0){
+                    throw new \Exception('No se puede finalizar la comision con el monto en 0');
+
+                }
+
                 $comision->status_servicio_comisions = 2;
                 $comision->save();
             });

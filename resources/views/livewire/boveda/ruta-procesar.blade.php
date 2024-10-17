@@ -230,14 +230,16 @@
                                                     d="M10.707 9.293a1 1 0 0 1 1.414 0L15 12.172V13a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-.828l3.293-3.293a1 1 0 0 1 1.414 0L7 10.586l3.707-3.707zM10 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                                             </svg>
                                         </button>
+                                        @if($comision->status_servicio_comisions <3)
                                         <button class="btn btn-info" data-toggle="modal" data-target="#montoComisionModal"
                                             wire:click='montoComision({{ $comision }})'>
                                             Editar
                                         </button>
                                         <button class="btn btn-info" data-toggle="modal" data-target="#montoComisionModal"
-                                            wire:click='montoComision({{ $comision }})'>
+                                            wire:click='endComision({{ $comision }})'>
                                             Finalizar
                                         </button>
+                                        @endif
                                     </td>
                                 </tr>
 
