@@ -615,6 +615,7 @@ class RutaProcesar extends Component
                 $this->comision->monto = $this->comision_monto;
                 $this->comision->save();
             });
+            $this->mount($this->ruta);
             $this->cleanComision();
             $this->dispatch('agregarArchivocre', ['msg' => 'El monto se ha modificado'], ['tipomensaje' => 'success']);
         } catch (\Exception $e) {
