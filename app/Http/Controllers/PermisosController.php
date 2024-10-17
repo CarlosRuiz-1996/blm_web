@@ -14,8 +14,10 @@ class PermisosController extends Controller
     }
 
     public function store(Request $request){
-
-        Permission::create(['name' => $request->input('permiso')]);
+        Permission::create([
+            'name' => $request->input('permiso'),
+            'guard_name'=>'web']
+        );
         return redirect()->back()->with('success', 'Permiso creado con exito!');
     }
 

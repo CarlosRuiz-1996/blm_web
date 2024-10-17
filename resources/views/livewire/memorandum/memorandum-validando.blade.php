@@ -48,7 +48,7 @@
                                 @foreach ([1, 2, 3, 4] as $IdArea)
                                     @unless (in_array($IdArea, $tiene_firma))
                                         <td colspan="2">
-                                            <i class="fa fa-circle" style="color: orange;"> </i>Aún no validado
+                                            <i class="fa fa-circle" style="color: orange;"> </i>Aún no validado {{$IdArea}}
                                         </td>
                                     @endunless
                                 @endforeach
