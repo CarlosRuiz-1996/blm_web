@@ -14,4 +14,13 @@ class SolicitudVacacion extends Model
         'status_vacaciones',
         'ctg_motivo_vacaciones_id'
     ];
+
+    public function empleado()
+    {
+        return $this->belongsTo(Empleado::class, 'empleado_id');
+    }
+    public function motivo()
+    {
+        return $this->belongsTo(CtgMotivoVacaciones::class, 'ctg_motivo_vacaciones_id');
+    }
 }

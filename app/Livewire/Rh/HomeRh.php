@@ -3,6 +3,7 @@
 namespace App\Livewire\Rh;
 
 use App\Models\Empleado;
+use App\Models\SolicitudVacacion;
 use Livewire\Component;
 
 
@@ -19,12 +20,17 @@ class HomeRh extends Component
 
         $percentajeActivos = round(($conteoEmpleados / $conteotodosEmpleados) * 100);
         $percentajeInactivos = round(($conteoEmpleadosInactivos / $conteotodosEmpleados) * 100);
+        $solicitudesactivas = SolicitudVacacion::where('fecha_inicio', '<=', now())
+        ->where('fecha_fin', '>=', now())
+        ->where('status_vacaciones',1)
+        ->count();
 
         return view('livewire.rh.home-rh', compact(
             'conteoEmpleados', 
             'conteoEmpleadosInactivos', 
             'percentajeActivos', 
-            'percentajeInactivos'
+            'percentajeInactivos',
+            'solicitudesactivas'
         ));
     }
 }

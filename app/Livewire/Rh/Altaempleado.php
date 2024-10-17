@@ -67,6 +67,10 @@ class Altaempleado extends Component
     public $fechaIngreso;
     public $SueldoMensual;
     public $roles;
+    public $tallaCamisa, $tallaPantalon, $tallaZapatos;
+    public $nombreEmergencia1, $telefonoEmergencia1, $parentescoEmergencia1, $direccionEmergencia1;
+    public $nombreEmergencia2, $telefonoEmergencia2, $parentescoEmergencia2, $direccionEmergencia2;
+    public $alergias, $tipoSangre, $umf, $hospital;
      use WithFileUploads;
     public $roles_user = [];
     public $revisor;
@@ -156,6 +160,21 @@ class Altaempleado extends Component
                     'status_empleado' => 1,
                     'fecha_nacimiento' => $this->fechaNacimiento,
                     'cve_empleado' => $this->cve_empleado,
+                    'talla_camisa' => $this->tallaCamisa,
+                    'talla_pantalon' => $this->tallaPantalon,
+                    'talla_zapatos' => $this->tallaZapatos,
+                    'nombre_emergencia1' => $this->nombreEmergencia1,
+                    'telefono_emergencia1' => $this->telefonoEmergencia1,
+                    'parentesco_emergencia1' => $this->parentescoEmergencia1,
+                    'direccion_emergencia1' => $this->direccionEmergencia1,
+                    'nombre_emergencia2' => $this->nombreEmergencia2,
+                    'telefono_emergencia2' => $this->telefonoEmergencia2,
+                    'parentesco_emergencia2' => $this->parentescoEmergencia2,
+                    'direccion_emergencia2' => $this->direccionEmergencia2,
+                    'alergias' => $this->alergias,
+                    'tipo_sangre' => $this->tipoSangre,
+                    'umf' => $this->umf,
+                    'hospital' => $this->hospital,
                 ]);
                 if ($this->image) {
                     $this->image->storeAs(path: 'fotosEmpleados/', name: $idempleado->id . '.png');

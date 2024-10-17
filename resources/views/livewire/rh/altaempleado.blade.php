@@ -14,16 +14,16 @@
                                 <div class="position-relative">
                                     <!-- Imagen cargada -->
                                     @if ($image)
-                                        <div class="text-center d-flex justify-content-center">
-                                            <img src="{{ asset($image->temporaryUrl()) }}" alt="Imagen cargada"
-                                                width="200" height="200">
-                                        </div>
+                                    <div class="text-center d-flex justify-content-center">
+                                        <img src="{{ asset($image->temporaryUrl()) }}" alt="Imagen cargada" width="200"
+                                            height="200">
+                                    </div>
                                     @else
-                                        <!-- Imagen por defecto -->
-                                        <div class="text-center d-flex justify-content-center">
-                                            <img src="{{ asset('img/sinfoto.png') }}" alt="Imagen por defecto"
-                                                width="200" height="200">
-                                        </div>
+                                    <!-- Imagen por defecto -->
+                                    <div class="text-center d-flex justify-content-center">
+                                        <img src="{{ asset('img/sinfoto.png') }}" alt="Imagen por defecto" width="200"
+                                            height="200">
+                                    </div>
                                     @endif
                                     <!-- Icono del input -->
                                     <div class="position-absolute" style="top: 0; right: 35%;">
@@ -91,27 +91,26 @@
 
 
                                         @foreach ($roles as $role)
-                                            <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('roles_user')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
-                           
+
                             <div class="col-md-4 mb-3">
-                                <x-select-validado label="area:" placeholder="Seleccione" wire-model="area"
-                                    required>
+                                <x-select-validado label="area:" placeholder="Seleccione" wire-model="area" required>
                                     @foreach ($areas as $area)
-                                        <option value="{{ $area->id }}">{{ $area->name }}</option>
+                                    <option value="{{ $area->id }}">{{ $area->name }}</option>
                                     @endforeach
                                 </x-select-validado>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <x-input-validado label="    ¿Revisor de area?:" wire-model="revisor"
                                     wire-attribute="revisor" type="checkbox" />
-                                    
+
                             </div>
                         </div>
                         <div class="row">
@@ -151,12 +150,12 @@
                                                 <x-select-validado label="Colonia:" placeholder="Seleccione"
                                                     wire-model="ctg_cp_id" required>
                                                     @if (count($colonias))
-                                                        @foreach ($colonias as $cp)
-                                                            <option value="{{ $cp->id }}">{{ $cp->colonia }}
-                                                            </option>
-                                                        @endforeach
+                                                    @foreach ($colonias as $cp)
+                                                    <option value="{{ $cp->id }}">{{ $cp->colonia }}
+                                                    </option>
+                                                    @endforeach
                                                     @else
-                                                        <option value="">Esperando...</option>
+                                                    <option value="">Esperando...</option>
                                                     @endif
                                                 </x-select-validado>
 
@@ -175,18 +174,151 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <button class="btn btn-info btn-block"
-                                    wire:click="$dispatch('confirm')">Guardar</button>
+                                <div class="card card-outline card-info">
+                                    <div class="card-header">
+                                        <h3 class="text-center">Tallas de Ropa</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <x-input-validado label="Talla de Camisa:"
+                                                    placeholder="Ingrese talla de camisa" wire-model="tallaCamisa"
+                                                    type="number" />
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <x-input-validado label="Talla de Pantalón:"
+                                                    placeholder="Ingrese talla de pantalón" wire-model="tallaPantalon"
+                                                    type="number" />
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <x-input-validado label="Talla de Zapatos:"
+                                                    placeholder="Ingrese talla de zapatos" wire-model="tallaZapatos"
+                                                    type="number" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card card-outline card-info">
+                                    <div class="card-header">
+                                        <h3 class="text-center">Datos de contacto de emrgencia 1</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <x-input-validado label="Nombre de Contacto de Emergencia:"
+                                                    placeholder="Ingrese nombre" wire-model="nombreEmergencia1"
+                                                    type="text" />
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <x-input-validado-telefono label="Teléfono de Emergencia:"
+                                                    placeholder="Ingrese teléfono" wire-model="telefonoEmergencia1"
+                                                    type="text" />
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <x-input-validado label="Parentesco:" placeholder="Ingrese parentesco"
+                                                    wire-model="parentescoEmergencia1" type="text" />
+                                            </div>
+                                            <div class="col-md-12 mb-3">
+                                                <x-input-validado label="Dirección del Contacto de Emergencia:"
+                                                    placeholder="Ingrese dirección" wire-model="direccionEmergencia1"
+                                                    type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card card-outline card-info">
+                                    <div class="card-header">
+                                        <h3 class="text-center">Datos de contacto de emrgencia 2</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <x-input-validado label="Nombre de Contacto de Emergencia 2:"
+                                                    placeholder="Ingrese nombre" wire-model="nombreEmergencia2"
+                                                    type="text" />
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <x-input-validado-telefono label="Teléfono de Emergencia 2:"
+                                                    placeholder="Ingrese teléfono" wire-model="telefonoEmergencia2"
+                                                    type="text" />
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <x-input-validado label="Parentesco 2:" placeholder="Ingrese parentesco"
+                                                    wire-model="parentescoEmergencia2" type="text" />
+                                            </div>
+                                            <div class="col-md-12 mb-3">
+                                                <x-input-validado label="Dirección del Contacto de Emergencia 2:"
+                                                    placeholder="Ingrese dirección" wire-model="direccionEmergencia2"
+                                                    type="text" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-outline card-info">
+                                <div class="card-header">
+                                    <h3 class="text-center">Información Medica</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <x-input-validado label="Alergias:" placeholder="Ingrese alergias"
+                                                wire-model="alergias" type="text" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <x-select-validado label="Tipo de Sangre:" placeholder="Seleccione"
+                                                wire-model="tipoSangre">
+                                                <option value="A+">A+</option>
+                                                <option value="A-">A-</option>
+                                                <option value="B+">B+</option>
+                                                <option value="B-">B-</option>
+                                                <option value="O+">O+</option>
+                                                <option value="O-">O-</option>
+                                                <option value="AB+">AB+</option>
+                                                <option value="AB-">AB-</option>
+                                            </x-select-validado>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <x-input-validado label="UMF Correspondiente:" placeholder="Ingrese UMF"
+                                                wire-model="umf" type="text" />
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <x-input-validado label="Hospital General de Zona Correspondiente:"
+                                                placeholder="Ingrese hospital" wire-model="hospital" type="text" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class="btn btn-info btn-block" wire:click="$dispatch('confirm')">Guardar</button>
                     </div>
                 </div>
+
             </div>
         </div>
-        @push('js')
-            <script>
-                document.addEventListener('livewire:initialized', () => {
+    </div>
+</div>
+@push('js')
+<script>
+    document.addEventListener('livewire:initialized', () => {
 
                     @this.on('confirm', () => {
 
@@ -232,6 +364,6 @@
                         });
                     });
                 });
-            </script>
-        @endpush
-    </div>
+</script>
+@endpush
+</div>

@@ -9,19 +9,32 @@ use Illuminate\Notifications\Notifiable;
 class Empleado extends Model
 {
     use HasFactory;
- use Notifiable;
-    protected $table = 'empleados';
     protected $fillable = [
-       'user_id',
-       'direccion',
-       'ctg_cp_id',
-       'sexo',
-       'phone',
-       'ctg_area_id',
-       'status_empleado',
-       'fecha_nacimiento',
-       'cve_empleado',
-    ];
+        'user_id',
+        'direccion',
+        'ctg_cp_id',
+        'sexo',
+        'phone',
+        'ctg_area_id',
+        'status_empleado',
+        'fecha_nacimiento',
+        'cve_empleado',
+        'talla_camisa',
+        'talla_pantalon',
+        'talla_zapatos',
+        'nombre_emergencia1',
+        'telefono_emergencia1',
+        'parentesco_emergencia1',
+        'direccion_emergencia1',
+        'nombre_emergencia2',
+        'telefono_emergencia2',
+        'parentesco_emergencia2',
+        'direccion_emergencia2',
+        'alergias',
+        'tipo_sangre',
+        'umf',
+        'hospital'
+     ];
     
     //relaciones de usuario/cliente/revisor area
     public function area()
@@ -40,5 +53,9 @@ class Empleado extends Model
 
     public function armado (){
         return $this->hasOne(EmpleadoArmado::class, 'empleado_id');
+    }
+    public function solicitudesVacaciones()
+    {
+        return $this->hasMany(SolicitudVacacion::class, 'empleado_id');
     }
 }
