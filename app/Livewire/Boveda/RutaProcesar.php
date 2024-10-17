@@ -632,7 +632,7 @@ class RutaProcesar extends Component
                 $comision->save();
             });
 
-            $this->render();
+            $this->mount($this->ruta);
             $this->cleanComision();
             $this->dispatch('agregarArchivocre', ['msg' => 'La comision fue aprobada'], ['tipomensaje' => 'success']);
         } catch (\Exception $e) {
