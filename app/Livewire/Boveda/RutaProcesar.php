@@ -621,15 +621,14 @@ class RutaProcesar extends Component
             $this->dispatch('error', ['Hubo un error, intenta mas tarde.']);
         }
     }
-
+    public $err=0;
     public function endComision(ServicioComision $comision)
     {
-        $err = 0;
         try {
             DB::transaction(function () use ($comision) {
                 if ($comision->monto == 0) {
                     throw new \Exception('No se puede finalizar la comision con el monto en 0');
-                    $err = 1;
+                    $this->err = 1;
                 }
 
                 $comision->status_servicio_comisions = 2;
@@ -638,7 +637,7 @@ class RutaProcesar extends Component
             $this->cleanComision();
             $this->dispatch('agregarArchivocre', ['msg' => 'La comision fue aprobada'], ['tipomensaje' => 'success']);
         } catch (\Exception $e) {
-            if ($err == 1) {
+            if ($this->err == 1) {
 
                 $this->dispatch('error', [$e->getMessage()]);
             } else {
