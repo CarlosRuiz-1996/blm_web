@@ -19,7 +19,9 @@
             @foreach ($permisos as $permiso)
                 <div class="">
                     <label>
-                        {!! Form::checkbox('permisos[]', $permiso->id, $role->hasPermissionTo($permiso->id) ?: false, ['class' => '']) !!}
+                        {{-- {!! Form::checkbox('permisos[]', $permiso->id, $role->hasPermissionTo($permiso->id) ?: false, ['class' => '']) !!} --}}
+                        
+                        {!! Form::checkbox('permisos[]', $permiso->id, $role->getAllPermissions()->contains('id', $permiso->id), ['class' => '']) !!}
 
                         {{ $permiso->name }}
                     </label>
