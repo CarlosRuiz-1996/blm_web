@@ -24,6 +24,8 @@ use App\Http\Controllers\ValidacionMemorandumController;
 use App\Http\Controllers\ventasController;
 use App\Livewire\BancosGestion;
 use App\Livewire\Boveda\CambioEfectivo;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 //rutas para livewire
 use Livewire\Livewire;
@@ -48,20 +50,25 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+
+    // 'role.redirect', 
+
     Route::get('/dashboard', function () {
         return view('dashboard');
-    })->middleware('role.redirect')->name('dashboard');
+    })->middleware( 'role.redirect','role:Super|Admin')->name('dashboard');
 
-    Route::get('/usuarios', [UsuariosController::class, 'index'])->name('user.index');
-    Route::get('/usuarios/nuevo', [UsuariosController::class, 'nuevousuario'])->name('user.create');
-    Route::post('/usuarios/save', [UsuariosController::class, 'store'])->name('user.store');
-    Route::get('/usuarios/actualizar/{user}', [UsuariosController::class, 'actualizarusuario'])->name('user.edit');
-    Route::put('/usuarios/updated/{user}', [UsuariosController::class, 'updated'])->name('user.updated');
-    Route::get('/usuarios/delete/{user}', [UsuariosController::class, 'delete'])->name('user.delete');
-    Route::get('/usuarios/reactivar/{user}', [UsuariosController::class, 'reactivar'])->name('user.reactivar');
-    Route::get('/usuarios/cambio-contrasenia/{user}', [UsuariosController::class, 'password_view'])->name('user.password');
-    Route::put('/usuarios/password/{user}', [UsuariosController::class, 'password'])->name('user.save-password');
+    Route::middleware(['role:Super|Admin'])->group(function () {
 
+        Route::get('/usuarios', [UsuariosController::class, 'index'])->name('user.index');
+        Route::get('/usuarios/nuevo', [UsuariosController::class, 'nuevousuario'])->name('user.create');
+        Route::post('/usuarios/save', [UsuariosController::class, 'store'])->name('user.store');
+        Route::get('/usuarios/actualizar/{user}', [UsuariosController::class, 'actualizarusuario'])->name('user.edit');
+        Route::put('/usuarios/updated/{user}', [UsuariosController::class, 'updated'])->name('user.updated');
+        Route::get('/usuarios/delete/{user}', [UsuariosController::class, 'delete'])->name('user.delete');
+        Route::get('/usuarios/reactivar/{user}', [UsuariosController::class, 'reactivar'])->name('user.reactivar');
+        Route::get('/usuarios/cambio-contrasenia/{user}', [UsuariosController::class, 'password_view'])->name('user.password');
+        Route::put('/usuarios/password/{user}', [UsuariosController::class, 'password'])->name('user.save-password');
+    });
     //cliente activo
     Route::get('/clientes-activos', [ClientesActivosController::class, 'index'])->name('cliente.index');
     Route::get('/cliente/nuevo', [ClientesActivosController::class, 'nuevousuario'])->name('cliente.create');
@@ -156,7 +163,6 @@ Route::middleware([
     Route::get('/tablero', [tableroController::class, 'index'])->name('tablero.index');
     //tablero
     Route::get('/administraciontablero', [administracioncontroller::class, 'index'])->name('administracion.index');
-
 });
 
 Livewire::setUpdateRoute(function ($handle) {

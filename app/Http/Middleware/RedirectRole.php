@@ -22,11 +22,38 @@ class RedirectRole
             $auth = Auth::user();
             $user = User::find($auth->id);
 
-            // dd($user->hasRole('OPERADOR'));
             
             // Verificamos si el usuario tiene el rol
-            if ($user->hasRole('OPERADOR')) {
+            if ($user->hasRole('OPERADOR/CAJERO')) {
                 return redirect('/operadores');
+            }
+
+            if ($user->hasRole('Seguridad')) {
+                return redirect('/seguridad');
+            }
+            if ($user->hasRole('Ventas')) {
+                return redirect('/ventas');
+            }
+            
+            if ($user->hasRole('Bancos')) {
+                return redirect('/bancos');
+            }
+            if ($user->hasRole('Operaciones')) {
+                return redirect('/operaciones');
+            }
+            if ($user->hasRole('Boveda')) {
+                return redirect('/boveda/inicio');
+            }
+            
+            if ($user->hasRole('RH')) {
+                return redirect('/rh');
+            }
+            if ($user->hasRole('Juridico')) {
+                return redirect('/juridico');
+            }
+            
+            if ($user->hasRole('Cumplimiento')) {
+                return redirect('/cumplimiento');
             }
         }
         return $next($request);
