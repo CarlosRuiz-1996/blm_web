@@ -70,11 +70,12 @@ Route::middleware([
         Route::put('/usuarios/password/{user}', [UsuariosController::class, 'password'])->name('user.save-password');
     });
     //cliente activo
-    Route::get('/clientes-activos', [ClientesActivosController::class, 'index'])->name('cliente.index');
+    Route::middleware(['permission:menu-clientes'])->group(function () {
+        Route::get('/clientes-activos', [ClientesActivosController::class, 'index'])->name('cliente.index');
     Route::get('/cliente/nuevo', [ClientesActivosController::class, 'nuevousuario'])->name('cliente.create');
     Route::get('/cliente/detalles/{cliente}/{op}', [ClientesActivosController::class, 'detalles'])->name('cliente.detalles');
     Route::get('/cliente/editar/{cliente}', [ClientesActivosController::class, 'edit'])->name('cliente.edit');
-
+    });
     Route::get('/ventas', [ventasController::class, 'indexventas'])->name('ventas.indexventas');
     Route::get('/ventas/altaSolicitudCumplimiento/{id}', [ventasController::class, 'altaSolicitudCumplimiento'])->name('clientesactivos.altaSolicitudCumplimiento');
     Route::get('/ventas/expediente-digital/{id}/{sts}', [ventasController::class, 'expediente_digital'])->name('cliente.expediente');
