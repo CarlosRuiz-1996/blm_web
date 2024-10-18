@@ -282,9 +282,8 @@
                                                     </td>
                                                     <td>{{ $solicitud->updated_at }}</td>
                                                     <td>
-                                                        pdf
-                                                        {{-- <a href="{{route('anexo.index', $solicitud->id)}}">Comenzar anexo1</a> --}}
-                                                    </td>
+                                                        <i wire:click="generarPDF({{ $solicitud->id }})" class="fa fa-file-pdf" style="color: red; cursor: pointer;"></i>
+                                                    </td>                                                    
                                                 </tr>
                                             @endforeach
                                         </tbody>
