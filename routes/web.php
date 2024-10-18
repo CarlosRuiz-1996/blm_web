@@ -55,7 +55,7 @@ Route::middleware([
 
     Route::get('/dashboard', function () {
         return view('dashboard');
-    })->middleware( 'role.redirect','role:Super|Admin')->name('dashboard');
+    })->middleware('role.redirect', 'role:Super|Admin')->name('dashboard');
 
     Route::middleware(['role:Super|Admin'])->group(function () {
 
@@ -70,18 +70,25 @@ Route::middleware([
         Route::put('/usuarios/password/{user}', [UsuariosController::class, 'password'])->name('user.save-password');
     });
     //cliente activo
-    Route::middleware(['permission:menu-clientes'])->group(function () {
+    // Route::middleware(['permission:menu-clientes'])->group(function () {
         Route::get('/clientes-activos', [ClientesActivosController::class, 'index'])->name('cliente.index');
-    Route::get('/cliente/nuevo', [ClientesActivosController::class, 'nuevousuario'])->name('cliente.create');
-    Route::get('/cliente/detalles/{cliente}/{op}', [ClientesActivosController::class, 'detalles'])->name('cliente.detalles');
-    Route::get('/cliente/editar/{cliente}', [ClientesActivosController::class, 'edit'])->name('cliente.edit');
-    });
-    Route::get('/ventas', [ventasController::class, 'indexventas'])->name('ventas.indexventas');
-    Route::get('/ventas/altaSolicitudCumplimiento/{id}', [ventasController::class, 'altaSolicitudCumplimiento'])->name('clientesactivos.altaSolicitudCumplimiento');
-    Route::get('/ventas/expediente-digital/{id}/{sts}', [ventasController::class, 'expediente_digital'])->name('cliente.expediente');
+        Route::get('/cliente/nuevo', [ClientesActivosController::class, 'nuevousuario'])->name('cliente.create');
+        Route::get('/cliente/detalles/{cliente}/{op}', [ClientesActivosController::class, 'detalles'])->name('cliente.detalles');
+        Route::get('/cliente/editar/{cliente}', [ClientesActivosController::class, 'edit'])->name('cliente.edit');
+        Route::get('/clientesactivos/CotizacionesNuevas', [ClientesActivosController::class, 'CotizacionesNuevas'])->name('clientesactivos.CotizacionesNuevas');
+        Route::get('/clientesactivos/cotizardenuevo/{id}', [ClientesActivosController::class, 'cotizardenuevo'])->name('clientesactivos.cotizardenuevo');
+    // });
 
-    Route::get('/clientesactivos/CotizacionesNuevas', [ClientesActivosController::class, 'CotizacionesNuevas'])->name('clientesactivos.CotizacionesNuevas');
-    Route::get('/clientesactivos/cotizardenuevo/{id}', [ClientesActivosController::class, 'cotizardenuevo'])->name('clientesactivos.cotizardenuevo');
+    // Route::middleware(['permission:menu-clientes'])->group(function () {
+
+        Route::get('/ventas', [ventasController::class, 'indexventas'])->name('ventas.indexventas');
+        Route::get('/ventas/altaSolicitudCumplimiento/{id}', [ventasController::class, 'altaSolicitudCumplimiento'])->name('clientesactivos.altaSolicitudCumplimiento');
+        Route::get('/ventas/expediente-digital/{id}/{sts}', [ventasController::class, 'expediente_digital'])->name('cliente.expediente');
+        Route::get('/ventas/detalle-cotizacion/{cotizacion}', [ClientesActivosController::class, 'detalle_cotizacion'])->name('cotizacion.detalle');
+        Route::get('/ventas/cotizacion-pdf/{cotizacion}', [ClientesActivosController::class, 'cotizacion_pdf'])->name('cotizacion.pdf');
+    
+    // });
+   
     Route::get('/ventas/detalle-cotizacion/{cotizacion}', [ClientesActivosController::class, 'detalle_cotizacion'])->name('cotizacion.detalle');
     Route::get('/ventas/cotizacion-pdf/{cotizacion}', [ClientesActivosController::class, 'cotizacion_pdf'])->name('cotizacion.pdf');
 
