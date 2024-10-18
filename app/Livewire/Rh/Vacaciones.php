@@ -53,6 +53,6 @@ class Vacaciones extends Component
             ];
         })
         ->toArray(); // Convertir a array
-        return view('livewire.rh.Vacaciones');
+        return view('livewire.rh.vacaciones');
     }
 }
