@@ -42,8 +42,6 @@ class PermisosController extends Controller
 
     public function destroy(Permission $permiso)
     {
-        // dd( $permiso);
-        // Verifica si el permiso está asociado a algún rol y desvincúlalo primero
         $permiso->roles()->detach();
         $permiso->delete();
         return redirect()->back()->with('success', 'Permiso eliminado con exito!');

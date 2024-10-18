@@ -14,7 +14,7 @@ class RoleController extends Controller
     public function index()
     {
         $roles = Role::all();
-        return view('admin.roles-permisos.gestion-roles',compact('roles'));
+        return view('admin.roles-permisos.gestion-roles', compact('roles'));
     }
 
     /**
@@ -30,12 +30,14 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        
-        Role::create(['name'=>$request->input('rol')]);
+
+        Role::create([
+            'name' => $request->input('rol'),
+            'guard_name' => 'web'
+        ]);
         app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
         return redirect()->back()->with('success', 'Rol se creo con exito!');
-
     }
 
     /**
@@ -54,7 +56,7 @@ class RoleController extends Controller
     {
         $role = Role::find($id);
         $permisos = Permission::all();
-        return view('admin.roles-permisos.rol-permisos',compact('role','permisos'));
+        return view('admin.roles-permisos.rol-permisos', compact('role', 'permisos'));
     }
 
     /**
@@ -62,16 +64,16 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-      
+
         //asigna los permisos a los roles
         $role->permissions()->sync($request->permisos);
-        return redirect()->route('roles.edit',$role);
+        return redirect()->route('roles.index');
     }
 
 
-    public function updated_rol(Request $request,Role $role)
+    public function updated_rol(Request $request, Role $role)
     {
-        
+
         $request->validate([
             'new_name' => 'required|string|max:255'
         ]);
@@ -80,9 +82,8 @@ class RoleController extends Controller
         // Actualiza el nombre del rol
         $role->name = $newName;
         $role->save();
-    
+
         return redirect()->back()->with('success', 'Rol actualizado con exito!');
-        
     }
 
 
@@ -91,6 +92,13 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+
+        if ($role->users()->count() > 0) {
+            return redirect()->back()->with('error', 'No puedes eliminar este rol porque está asignado a usuarios.');
+        }
+
+        // Desasociar permisos
+        $role->syncPermissions([]);
         $role->delete();
         return redirect()->back()->with('success', 'Rol eliminad con exito!');
     }
