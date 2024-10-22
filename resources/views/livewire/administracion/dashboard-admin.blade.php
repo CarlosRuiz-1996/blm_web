@@ -210,7 +210,7 @@
                                     @foreach($reprogramacion as $repro)
                                         <tr>
                                            <td>{{$repro->rutaOld->nombre->name}}</td>
-                                           <td>{{$repro->rutaNew->nombre->name}}</td>
+                                           <td>{{$repro->rutaNew?->nombre->name}}</td>
                                            <td>{{$repro->motivo}}</td>
                                         </tr>
                                     @endforeach
