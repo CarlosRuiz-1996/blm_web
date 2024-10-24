@@ -19,19 +19,63 @@ class MemoValidacionForm extends Form
 
     public function getPendientes($area)
     {
-        return Memorandum::whereNotExists(function ($query) use ($area) {
-            $query->select(DB::raw(1))
-                ->from('memoranda_validacion')
-                ->join('revisor_areas', 'memoranda_validacion.revisor_areas_id', '=', 'revisor_areas.id')
-                ->whereRaw('memoranda_validacion.memoranda_id = memoranda.id')
-                ->where('revisor_areas.id', $area);
+        // return Memorandum::whereNotExists(function ($query) use ($area) {
+        //     $query->select(DB::raw(1))
+        //         ->from('memoranda_validacion')
+        //         ->join('revisor_areas', 'memoranda_validacion.revisor_areas_id', '=', 'revisor_areas.id')
+        //         ->whereRaw('memoranda_validacion.memoranda_id = memoranda.id')
+        //         ->where('revisor_areas.id', $area);
+        // })
+        //     ->get();
+
+        // return Memorandum::where(function ($query) {
+        //     $query->whereRaw('8 != (select count(id) from memoranda_validacion mv where mv.memoranda_id = memoranda.id)');
+        // })
+        // ->whereExists(function ($query) {
+        //     $query->select(DB::raw(1))
+        //           ->from('memorandum_cotizacion')
+        //           ->whereRaw('memorandum_cotizacion.memoranda_id = memoranda.id');
+        // })
+        // ->get();
+        // return Memorandum::select('memoranda.*')
+        //     ->join('memorandum_cotizacion', 'memorandum_cotizacion.memoranda_id', '=', 'memoranda.id')
+        //     ->join('memoranda_validacion', 'memoranda_validacion.memoranda_id', '=', 'memoranda.id')
+        //     ->join('revisor_areas', 'revisor_areas.id', '=', 'memoranda_validacion.revisor_areas_id')
+        //     ->join('ctg_area', 'ctg_area.id', '=', 'revisor_areas.ctg_area_id')
+        //     ->where('memoranda.status_memoranda', 1)
+        //     ->where('ctg_area.id', $area)
+        //     ->groupBy('memoranda.id')
+        //     ->havingRaw('COUNT(memoranda_validacion.id) < 8')
+        //     ->get();
+
+        
+        return Memorandum::select('memoranda.*')
+        ->join('memorandum_cotizacion as mc', 'mc.memoranda_id', '=', 'memoranda.id')
+        ->whereNotIn('memoranda.id', function ($query) use ($area) {
+            $query->select('mv.memoranda_id')
+                ->from('memoranda_validacion as mv')
+                ->join('revisor_areas as ra', 'ra.id', '=', 'mv.revisor_areas_id')
+                ->join('ctg_area as ca', 'ca.id', '=', 'ra.ctg_area_id')
+                ->where('ca.id', $area);
         })
-            ->get();
+        ->groupBy('memoranda.id')
+        ->get();
+
     }
 
     public function getValidados($area)
     {
-        return MemorandumValidacion::where('revisor_areas_id', $area)->get();
+        // return MemorandumValidacion::where('revisor_areas_id', $area)->get();
+         return Memorandum::select('memoranda.*')
+            ->join('memorandum_cotizacion', 'memorandum_cotizacion.memoranda_id', '=', 'memoranda.id')
+            ->join('memoranda_validacion', 'memoranda_validacion.memoranda_id', '=', 'memoranda.id')
+            ->join('revisor_areas', 'revisor_areas.id', '=', 'memoranda_validacion.revisor_areas_id')
+            ->join('ctg_area', 'ctg_area.id', '=', 'revisor_areas.ctg_area_id')
+            ->where('memoranda.status_memoranda', 1)
+            ->where('ctg_area.id', $area)
+            ->groupBy('memoranda.id')
+            ->havingRaw('COUNT(memoranda_validacion.id) < 8')
+            ->paginate(10);
     }
 
     public function store($area, $memorandum_id, $admin)
@@ -70,7 +114,7 @@ class MemoValidacionForm extends Form
                     }
                 }                
             } else {
-                
+
                 $revisor = RevisorArea::where('empleado_id', $empleado_id)
                     ->where('ctg_area_id', $area)->first();
 
@@ -95,19 +139,37 @@ class MemoValidacionForm extends Form
 
     public function getPendientesAdmin()
     {
-        return Memorandum::whereNotExists(function ($query) {
-            $query->select(DB::raw(1))
-                ->from('memoranda_validacion')
-                ->join('revisor_areas', 'memoranda_validacion.revisor_areas_id', '=', 'revisor_areas.id')
-                ->whereRaw('memoranda_validacion.memoranda_id = memoranda.id')
-                // ->where('revisor_areas.id', $area)
-            ;
-        })
+        // return Memorandum::whereNotExists(function ($query) {
+        //     $query->select(DB::raw(1))
+        //         ->from('memoranda_validacion')
+        //         ->join('revisor_areas', 'memoranda_validacion.revisor_areas_id', '=', 'revisor_areas.id')
+        //         ->whereRaw('memoranda_validacion.memoranda_id = memoranda.id')
+        //         // ->where('revisor_areas.id', $area)
+        //     ;
+        // })
+        //     ->get();
+        return Memorandum::select('memoranda.*')
+            ->join('memorandum_cotizacion', 'memorandum_cotizacion.memoranda_id', '=', 'memoranda.id')
+            ->join('memoranda_validacion', 'memoranda_validacion.memoranda_id', '=', 'memoranda.id')
+            ->join('revisor_areas', 'revisor_areas.id', '=', 'memoranda_validacion.revisor_areas_id')
+            ->join('ctg_area', 'ctg_area.id', '=', 'revisor_areas.ctg_area_id')
+            ->where('memoranda.status_memoranda', 1)
+            ->groupBy('memoranda.id')
+            ->havingRaw('COUNT(memoranda_validacion.id) < 8')
             ->get();
+
     }
 
     public function getValidadosAdmin()
     {
-        return MemorandumValidacion::all();
+        return Memorandum::select('memoranda.*')
+        ->join('memorandum_cotizacion', 'memorandum_cotizacion.memoranda_id', '=', 'memoranda.id')
+        ->join('memoranda_validacion', 'memoranda_validacion.memoranda_id', '=', 'memoranda.id')
+        ->join('revisor_areas', 'revisor_areas.id', '=', 'memoranda_validacion.revisor_areas_id')
+        ->join('ctg_area', 'ctg_area.id', '=', 'revisor_areas.ctg_area_id')
+        ->where('memoranda.status_memoranda', 2)
+        ->groupBy('memoranda.id')
+        ->havingRaw('COUNT(memoranda_validacion.id) = 8')
+        ->paginate(10);
     }
 }

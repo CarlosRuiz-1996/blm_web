@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Livewire\Memorandum\MemorandumValidando;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -42,5 +43,9 @@ class Memorandum extends Model
     public function memo_cotizacion()
     {
         return $this->hasOne(MemorandumCotizacion::class, 'memoranda_id');
+    }
+
+    public function memo_validacion (){
+        return $this->hasOne(MemorandumValidacion::class, 'memoranda_id');
     }
 }

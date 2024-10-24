@@ -1,11 +1,11 @@
-<div>
+<div wire:init='loadData'>
     <div class="row g-3">
         <div class="col-md-10" style="display: flex; justify-content: space-between;">
             <h3 style="margin: 0;">Validación de Memorándum de servicio</h3>
         </div>
         <div class="col-md-2" style="display: flex; justify-content: space-between;">
-            @if($name)
-            <h6 class="text-primary" style="align-self: flex-end;">- Área: {{ $name }}</h6>
+            @if ($name)
+                <h6 class="text-primary" style="align-self: flex-end;">- Área: {{ $name }}</h6>
             @endif
         </div>
     </div>
@@ -37,40 +37,53 @@
                         <div class="card card-outline card-info">
 
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead class="table-primary">
-                                            <tr>
-                                                <th>No Memorándum</th>
-                                                <th>Razon Social</th>
-                                                <th>RFC</th>
-                                                <th>Contacto</th>
-                                                <th>Fecha de Solicitud</th>
-                                                <th>Opciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($solicitudes as $solicitud)
-                                            <tr>
-                                                <td>{{ $solicitud->id }}</td>
-                                                <td>{{ $solicitud->cliente->razon_social }}</td>
-                                                <td>{{ $solicitud->cliente->rfc_cliente }}</td>
-                                                <td>{{ $solicitud->cliente->user->name .
-                                                    ' ' .
-                                                    $solicitud->cliente->user->paterno .
-                                                    ' ' .
-                                                    $solicitud->cliente->user->materno }}
-                                                </td>
-                                                <td>{{ $solicitud->created_at }}</td>
-                                                <td>
-                                                    <a class="btn btn-primary"
-                                                        href="{{ route('memorandum.validar', ['memorandum' => $solicitud, 'area' => $area, 'admin'=>$admin]) }}">Validar</a>
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                @if (count($solicitudes))
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead class="table-primary">
+                                                <tr>
+                                                    <th>No Memorándum</th>
+                                                    <th>Razon Social</th>
+                                                    <th>RFC</th>
+                                                    <th>Contacto</th>
+                                                    <th>Fecha de Solicitud</th>
+                                                    <th>Opciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($solicitudes as $solicitud)
+                                                    <tr>
+                                                        <td>{{ $solicitud->id }}</td>
+                                                        <td>{{ $solicitud->cliente->razon_social }}</td>
+                                                        <td>{{ $solicitud->cliente->rfc_cliente }}</td>
+                                                        <td>{{ $solicitud->cliente->user->name .
+                                                            ' ' .
+                                                            $solicitud->cliente->user->paterno .
+                                                            ' ' .
+                                                            $solicitud->cliente->user->materno }}
+                                                        </td>
+                                                        <td>{{ $solicitud->created_at }}</td>
+                                                        <td>
+                                                            <a class="btn btn-primary"
+                                                                href="{{ route('memorandum.validar', ['memorandum' => $solicitud, 'area' => $area, 'admin' => $admin]) }}">Validar</a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @else
+                                    @if ($readyToLoad)
+                                        <div class="alert alert-secondary" role="alert">
+                                            No hay datos disponibles </div>
+                                    @else
+                                        <div class="text-center">
+                                            <div class="spinner-border" role="status">
+                                                {{-- <span class="visually-hidden">Loading...</span> --}}
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -85,45 +98,62 @@
 
                     <div class="col-md-12">
                         <div class="card card-outline card-info">
+                            @if (count($terminadas))
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead class="table-primary">
+                                                <tr>
+                                                    <th>No Validación</th>
+                                                    <th>Razon Social</th>
+                                                    <th>RFC</th>
+                                                    <th>Contacto</th>
+                                                    <th>Fecha de validación</th>
+                                                    <th>Validación</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($terminadas as $solicitud)
+                                                    <tr>
+                                                        <td>{{ $solicitud->id }}</td>
+                                                        <td>{{ $solicitud->cliente->razon_social }}</td>
+                                                        <td>{{ $solicitud->cliente->rfc_cliente }}</td>
+                                                        <td>{{ $solicitud->cliente->user->name .
+                                                            ' ' .
+                                                            $solicitud->cliente->user->paterno .
+                                                            ' ' .
+                                                            $solicitud->cliente->user->materno }}
+                                                        </td>
+                                                        <td>{{ $solicitud->created_at }}</td>
+                                                        <td>
+                                                            <i class="fa fa-circle"
+                                                                style="color: {{ $solicitud->memo_validacion->status_validacion_memoranda == 1 ? 'green' : 'orange' }};">
+                                                            </i>
 
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead class="table-primary">
-                                            <tr>
-                                                <th>No Validación</th>
-                                                <th>Razon Social</th>
-                                                <th>RFC</th>
-                                                <th>Contacto</th>
-                                                <th>Fecha de validación</th>
-                                                <th>Validación</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($terminadas as $solicitud)
-                                            <tr>
-                                                <td>{{ $solicitud->id }}</td>
-                                                <td>{{ $solicitud->memorandum->cliente->razon_social }}</td>
-                                                <td>{{ $solicitud->memorandum->cliente->rfc_cliente }}</td>
-                                                <td>{{ $solicitud->memorandum->cliente->user->name .
-                                                    ' ' .
-                                                    $solicitud->memorandum->cliente->user->paterno .
-                                                    ' ' .
-                                                    $solicitud->memorandum->cliente->user->materno }}
-                                                </td>
-                                                <td>{{ $solicitud->created_at }}</td>
-                                                <td>
-                                                    <i class="fa fa-circle"
-                                                        style="color: {{ $solicitud->status_validacion_memoranda == 1 ? 'green' : 'orange' }};">
-                                                    </i>
-
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    @if ($terminadas->hasPages())
+                                        <div class="d-flex justify-content-center">
+                                            {{ $terminadas->links() }}
+                                        </div>
+                                    @endif
                                 </div>
-                            </div>
+                            @else
+                                @if ($readyToLoad)
+                                    <div class="alert alert-secondary" role="alert">
+                                        No hay datos disponibles </div>
+                                @else
+                                    <div class="text-center">
+                                        <div class="spinner-border" role="status">
+                                            {{-- <span class="visually-hidden">Loading...</span> --}}
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
                         </div>
                     </div>
                 </div>
