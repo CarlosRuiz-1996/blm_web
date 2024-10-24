@@ -132,4 +132,8 @@ class User extends Authenticatable
             ]);
         });
     }
+
+    public function fullName(){
+        return $this->name.' '.$this->paterno.''.$this->materno;
+    }
 }

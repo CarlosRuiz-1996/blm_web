@@ -16,9 +16,9 @@ class RevisorArea extends Model
         'status_revisor_areas',
     ];
 
-    public function user()
+    public function empleado()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Empleado::class, 'empleado_id');
     }
 
     public function area()

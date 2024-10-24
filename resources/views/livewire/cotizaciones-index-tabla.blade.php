@@ -52,8 +52,18 @@
                                 <td><a
                                         href="{{ route('cliente.detalles', [$item->cliente_id,2]) }}">{{ $item->razon_social }}</a>
                                 </td>
-                                <td>{{ $item->status_cotizacion }}</td>
-                                <td>{{ $item->total }}</td>
+                                <td>
+                                    {{ $item->status_cotizacion==1?'Pendiente':'' }}
+                                    {{ $item->status_cotizacion==2?'Validacion de documentos':'' }}
+                                    {{ $item->status_cotizacion==3?'Proceso':'' }}
+                                    {{ $item->status_cotizacion==4?'Proceso':'' }}
+                                    {{ $item->status_cotizacion==5?'Finalizada':'' }}
+
+                                </td>
+                                <td>
+                                    ${{ number_format($item->total, 2, '.',',') }} MXN
+
+                                </td>
                                 <td><a href="{{ route('cotizacion.pdf', $item->id) }}" class="btn text-danger" target="_blank">
                                         <i class="fas fa-file-pdf"></i> 
                                     </a></td>

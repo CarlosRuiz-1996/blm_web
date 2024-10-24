@@ -36,7 +36,7 @@
                                         @if ($IdArea == $firma->revisor_areas->area->id)
                                             <td colspan="2">
                                                 <i class="fa fa-circle" style="color: green;"> </i>
-                                                {{ $firma->revisor_areas->area->name }}
+                                                {{ $firma->revisor_areas->empleado->user->fullName() }}
                                             </td>
                                             @php
                                                 $tiene_firma[] = $IdArea;
@@ -48,7 +48,7 @@
                                 @foreach ([1, 2, 3, 4] as $IdArea)
                                     @unless (in_array($IdArea, $tiene_firma))
                                         <td colspan="2">
-                                            <i class="fa fa-circle" style="color: orange;"> </i>Aún no validado {{$IdArea}}
+                                            <i class="fa fa-circle" style="color: orange;"> </i>Aún no validado 
                                         </td>
                                     @endunless
                                 @endforeach
