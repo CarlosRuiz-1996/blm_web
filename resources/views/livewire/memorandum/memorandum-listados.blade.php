@@ -3,21 +3,21 @@
         <h3 for="">Memorándum de servicio</h3>
     </div>
     <div class="">
-        <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+        <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist" wire:ignore.self>
             <!-- Pestaña "Servicios" -->
             <li class="nav-item">
-                <a class="nav-link active" id="memo-solicitud-tab" data-toggle="pill" href="#memo-solicitud" role="tab"
+                <a class="nav-link active" id="memo-solicitud-tab" data-toggle="pill" href="#memo-solicitud" wire:ignore.self role="tab"
                     aria-controls="memo-solicitud" aria-selected="true">SOLICITUDES</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" id="memo-proceso-tab" data-toggle="pill" href="#memo-proceso" role="tab"
+                <a class="nav-link" id="memo-proceso-tab" data-toggle="pill" href="#memo-proceso" wire:ignore.self role="tab"
                     aria-controls="memo-proceso" aria-selected="true">EN VALIDACION</a>
             </li>
 
             <!-- Pestaña "Otra Pestaña 2" -->
             <li class="nav-item">
-                <a class="nav-link" id="memo-terminado-tab" data-toggle="pill" href="#memo-terminado" role="tab"
+                <a class="nav-link" id="memo-terminado-tab" data-toggle="pill" href="#memo-terminado" wire:ignore.self role="tab"
                     aria-controls="memo-terminado" aria-selected="false">ATENDIDAS</a>
             </li>
         </ul>

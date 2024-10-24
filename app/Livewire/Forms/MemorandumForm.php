@@ -86,7 +86,9 @@ class MemorandumForm extends Form
     }
     public function getMemorandumTerminado()
     {
-        return Memorandum::where('status_memoranda', '=', 2)->get();
+        return Memorandum::where('status_memoranda', 2)
+            ->whereHas('memo_cotizacion') // Filtra los que tienen una cotización relacionada
+            ->get();
     }
     public function getSucursales($id)
     {

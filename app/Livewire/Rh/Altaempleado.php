@@ -175,6 +175,7 @@ class Altaempleado extends Component
                     'tipo_sangre' => $this->tipoSangre,
                     'umf' => $this->umf,
                     'hospital' => $this->hospital,
+                    'fecha_ingreso' =>$this->fechaIngreso
                 ]);
                 if ($this->image) {
                     $this->image->storeAs(path: 'fotosEmpleados/', name: $idempleado->id . '.png');

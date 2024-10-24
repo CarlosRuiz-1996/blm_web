@@ -61,26 +61,20 @@
                                 <x-input-validado label="Correo Electrónico:" placeholder="Ingrese Correo Electronico"
                                     wire-model="correoElectronico" wire-attribute="correoElectronico" type="text" />
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <x-input-validado-date label="Fecha Nacimiento:"
-                                    placeholder="Ingrese fecha de nacimiento" wire-model="fechaNacimiento"
-                                    wire-attribute="fechaNacimiento" type="date" />
+                            <div class="col-md-4 mb-3">
+                                <label for="">Fecha Nacimiento:</label>
+                                <input placeholder="Ingrese fecha de nacimiento" wire:model="fechaNacimiento" type="date" class="form-control" />
                             </div>
-                            <div class="col-md-3 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <x-select-validado label="Sexo:" placeholder="Seleccione" wire-model="sexo" required>
                                     <option value="Masculino">Masculino</option>
                                     <option value="Femenino">Femenino</option>
                                 </x-select-validado>
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <x-input-validado label="Fecha Ingreso:" placeholder="Ingrese fecha que ingresa"
-                                    wire-model="fechaIngreso" wire-attribute="fechaIngreso" type="date" />
+                            <div class="col-md-4 mb-3">
+                                    <label for="">Fecha Ingreso:</label>
+                                    <input placeholder="Ingrese fecha que ingresa" wire:model="fechaIngreso" type="date" class="form-control" />
                             </div>
-                            <div class="col-md-3 mb-3">
-                                <x-input-validado label="Sueldo Mensual:" placeholder="Ingrese sueldo Mensual"
-                                    wire-model="SueldoMensual" wire-attribute="SueldoMensual" type="text" />
-                            </div>
-
 
 
                             <div class="col-md-4 mb-3">

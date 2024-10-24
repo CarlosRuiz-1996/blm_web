@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 
 class Empleado extends Model
@@ -33,7 +34,8 @@ class Empleado extends Model
         'alergias',
         'tipo_sangre',
         'umf',
-        'hospital'
+        'hospital',
+        'fecha_ingreso'
      ];
     
     //relaciones de usuario/cliente/revisor area
@@ -57,5 +59,14 @@ class Empleado extends Model
     public function solicitudesVacaciones()
     {
         return $this->hasMany(SolicitudVacacion::class, 'empleado_id');
+    }
+
+    public function codigoPostal(): BelongsTo
+    {
+        return $this->belongsTo(Ctg_Cp::class, 'ctg_cp_id');
+    }
+    public function revisores()
+    {
+        return $this->hasMany(RevisorArea::class, 'empleado_id');
     }
 }
