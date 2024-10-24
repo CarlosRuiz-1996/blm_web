@@ -38,6 +38,10 @@
                                                 <tbody>
                                                     @foreach($documentosPorEmpleado as $doc)
                                                         @if($tipoDocumento->id == $doc->ctg_documentos_expediente_empleados_id)
+                                                        @php
+                                                            // Obtener la extensión del archivo
+                                                            $extension = pathinfo($doc->url_archivo, PATHINFO_EXTENSION);
+                                                        @endphp
                                                             <tr>
                                                                 <td>{{ $doc->nombre_archivo }}</td>
                                                                 <td>
@@ -47,6 +51,11 @@
                                                                     <button class="btn btn-sm btn-danger" wire:click="eliminarDocumento({{ $doc->id }})">
                                                                         <i class="fas fa-trash-alt"></i>
                                                                     </button>
+                                                                    @if(in_array($extension, ['pdf', 'jpg', 'jpeg', 'png', 'gif'])) <!-- Agrega otras extensiones de imagen según sea necesario -->
+                                                                    <button class="btn btn-sm btn-info"  wire:click="openModaltres({{ $doc->id }})">
+                                                                        <i class="fas fa-eye"></i>
+                                                                    </button>
+                                                                     @endif
                                                                 </td>
                                                             </tr>
                                                         @endif
@@ -152,7 +161,62 @@
             </div>
         </div>
     </div>
+    <!-- Modal de Bootstrap -->
+    <div
+        x-data="{ show: @entangle('isOpentres') }"
+        x-init="
+            $watch('show', value => {
+                if (value) {
+                    $('#myModaldos').modal('show');
+                } else {
+                    $('#myModaldos').modal('hide');
+                }
+            });
+            $('#myModaldos').on('hidden.bs.modal', () => {
+                if (show) {
+                    show = false;
+                }
+            });
+        "
+        id="myModaldos"
+        class="modal fade @if($isOpentres) show @endif"
+        tabindex="-1"
+        aria-labelledby="myModaldosLabel"
+        aria-hidden="true"
+        wire:ignore.self
+        style="@if($isOpentres) display: block; @endif"
+    >
+        <div class="modal-dialog modal-dialog-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white text-center">
+                    <h5 class="modal-title" id="myModaldosLabel">Vista previa</h5>
+                </div>
+                <div class="modal-body">
+                    @if($url) <!-- Verifica si el nombre del archivo está disponible -->
+                        @php
+                            // Construir la URL completa del archivo
+                            $url = asset('storage/' . $url);
+                            $extension = pathinfo($url, PATHINFO_EXTENSION);
+                        @endphp
 
+                        @if(in_array($extension, ['pdf'])) <!-- Si es PDF -->
+                            <iframe src="{{ $url }}" style="width: 100%; height: 500px;" frameborder="0"></iframe>
+                        @elseif(in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) <!-- Si es imagen -->
+                            <img src="{{ $url }}" style="width: 100%; height: auto;" />
+                        @else
+                            <p>Formato no soportado.</p>
+                        @endif
+                    @else
+                        <p>No hay documento para mostrar.</p>
+                    @endif              
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" wire:click="$set('isOpentres', false)">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         document.addEventListener('livewire:initialized', function () {
             Livewire.on('clear-file-input', () => {

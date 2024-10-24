@@ -13,17 +13,18 @@ class EmpleadosExpedienteDigital extends Component
 {
     public $empleadoId;    
     use WithFileUploads;
-
+    public $url;
     public $archivo; // Variable que guarda el archivo subido
     public $tipoDocumentoId; // Variable que almacena el ID del tipo de documento
     public $archivos = [];
     // Reglas de validación para el archivo
     protected $rules = [
-        'archivo' => 'required|mimes:jpg,jpeg,png,pdf|max:10240', // Limita tipos y tamaño del archivo (máximo 10 MB)
+        'archivo' => 'required|mimes:jpg,jpeg,png,pdf|max:20480', // Limita tipos y tamaño del archivo (máximo 10 MB)
     ];
 
     public $isOpen = false;
     public $isOpendos = false;
+    public $isOpentres = false;
     public $documentId;
 
 
@@ -34,6 +35,7 @@ class EmpleadosExpedienteDigital extends Component
         $this->documentId = $id; // Asigna el ID al atributo
         $this->isOpen = true; // Abre el modal
     }
+   
 
     public function openModal2($id)
     {
@@ -145,6 +147,17 @@ public function eliminarDocumento($documentoId)
         session()->flash('error', 'Documento no encontrado.');
     }
 }
+
+    public function openModaltres($id)
+    {
+        $documento = DocumentoEmpleado::find($id); // Ajusta según tu modelo
+    
+        // Lógica para mostrar el documento. Podrías redirigir a una vista, abrir en un modal, etc.
+        if ($documento) {
+            $this->url = $documento->url_archivo; // Asegúrate de que la ruta del archivo esté correctamente configurada
+            $this->isOpentres = true; // Abre el modal
+        }
+    }
 
 
 }

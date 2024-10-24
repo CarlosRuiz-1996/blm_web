@@ -245,13 +245,16 @@
 
 
             //inicializo de nuevo funcion
-            function restar_table() {
-                $('#table1').DataTable().destroy();
-
-                $(() => {
-                    $('#table1').DataTable(@json($config));
-                })
-            }
+            Livewire.hook('message.processed', (message, component) => {
+        if (component.fingerprint.name === 'vehiculos-modelos') {
+            $('#table1').DataTable().destroy();
+            $('#table1').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+                }
+            });
+        }
+    });
         </script>
     @endpush
 </div>

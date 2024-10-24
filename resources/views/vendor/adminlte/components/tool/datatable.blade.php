@@ -2,7 +2,7 @@
 
 <div class="table-responsive">
 
-<table id="{{ $id }}" style="width:100%" {{ $attributes->merge(['class' => $makeTableClass()]) }}>
+<table wire:ignore.self id="{{ $id }}" style="width:100%" {{ $attributes->merge(['class' => $makeTableClass()]) }}>
 
     {{-- Table head --}}
     <thead @isset($headTheme) class="thead-{{ $headTheme }}" @endisset>
