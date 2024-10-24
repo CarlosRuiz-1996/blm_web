@@ -32,7 +32,9 @@
                         @endphp
 
                         {{-- Minimal example / fill data using the component slot --}}
-                        <x-adminlte-datatable id="table1" :heads="$heads" :config="$config">
+                        <x-adminlte-datatable id="table1" :heads="$heads" :config="$config"
+                         hoverable   head-theme="dark"
+                        >
                             @foreach ($permisos as $permiso)
                                 <tr>
                                     <td>

@@ -239,7 +239,6 @@ class RutaProcesar extends Component
                 })
                 ->count();
 
-
             $servicioPuertaCount = ServicioPuerta::whereHas('rutaServicio', function ($query) {
                 $query->where('ruta_id', $this->ruta->id)
                     ->where('puerta', 1);
@@ -251,7 +250,7 @@ class RutaProcesar extends Component
                 ->where('status_ruta_servicios', 5)
                 ->count();
 
-
+            Log::info("excepciones");
             if ($keys > 0) {
                 throw new \Exception('No se puede terminar la ruta porque aún tiene Llaves por entregar.');
             }
@@ -283,9 +282,13 @@ class RutaProcesar extends Component
                 ->where('status_ruta_servicios', 5)->update(['status_ruta_servicios' => 6]);
 
             if (!$this->puertas->isEmpty()) {
-                $serv = RutaServicio::where('ruta_id', $this->ruta->id)->where('puerta', 1)->get();
-                ServicioPuerta::where('ruta_servicio_id', $serv->id)
-                    ->where('status_puerta_servicio', 3)->update(['status_puerta_servicio' => 4]);
+                $servicios  = RutaServicio::where('ruta_id', $this->ruta->id)->where('puerta', 1)->get();
+               
+                foreach ($servicios as $serv) {
+                    ServicioPuerta::where('ruta_servicio_id', $serv->id)
+                        ->where('status_puerta_servicio', 3)
+                        ->update(['status_puerta_servicio' => 4]);
+                }
             }
 
             //actualizo ruta vehiculo

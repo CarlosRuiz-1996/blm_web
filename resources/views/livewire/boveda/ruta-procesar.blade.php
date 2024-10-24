@@ -104,7 +104,7 @@
 
                         @foreach($ruta->rutaServicios->where('status_ruta_servicios','>=',3)->where('puerta',0)->where('status_ruta_servicios','<=',5) as $servicio) <tr x-show="servicio">
                             <td>
-                                {{ $servicio->folio }}
+                                {{ $servicio->id }}
                             </td>
                             <td>{{ $servicio->servicio->cliente->razon_social }}</td>
                             <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
