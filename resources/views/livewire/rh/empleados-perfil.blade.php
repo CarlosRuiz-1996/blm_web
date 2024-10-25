@@ -137,6 +137,30 @@ style="@if($isOpenempleado) display: block; @endif"
                             </div>
                             <div class="card-body">
                                 <div class="row">
+                                    <div class="col-md-12 mb-3 text-center">
+                                        <!-- Mostrar la vista previa de la imagen cuando se haya cargado un archivo temporal -->
+                                        @if(file_exists(storage_path('app/public/fotosEmpleados/' . $empleado->id . '.png')))
+                                            <img src="{{ asset('storage/fotosEmpleados/' . $empleado->id . '.png') }}"
+                                                 alt="Imagen del empleado" width="200" height="117" class="img-fluid img-thumbnail">
+                                        @else
+                                            @if ($foto)
+                                                <div class="mt-3">
+                                                    <p>Vista previa:</p>
+                                                    <img src="{{ $foto->temporaryUrl() }}" alt="Vista previa de la imagen" 
+                                                         class="img-fluid img-thumbnail" style="max-height: 200px;">
+                                                </div>
+                                            @else
+                                                <img src="{{ asset('img/sinfoto.png') }}" alt="Imagen por defecto" width="200" height="117" 
+                                                     class="img-fluid img-thumbnail">
+                                            @endif
+                                        @endif
+                                    </div>
+                                    
+                                    <div class="col-md-12 mb-3">
+                                        <label for="foto">Subir Foto</label>
+                                        <input type="file" id="foto" wire:model.live="foto" accept="image/*" class="form-control">
+                                        @error('foto') <span class="error">{{ $message }}</span> @enderror
+                                    </div>
                                     <div class="col-md-4 mb-3">
                                         <x-input-validado label="Nombre del contacto:"
                                             placeholder="Ingrese el Nombre del Contacto" wire-model="nombreContacto"
