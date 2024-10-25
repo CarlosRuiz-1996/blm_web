@@ -19,7 +19,7 @@ class MemoValidacionForm extends Form
 
     public function getPendientes($area)
     {
-       
+
         return Memorandum::select('memoranda.*')
             ->join('memorandum_cotizacion as mc', 'mc.memoranda_id', '=', 'memoranda.id')
             ->whereNotIn('memoranda.id', function ($query) use ($area) {
@@ -49,10 +49,10 @@ class MemoValidacionForm extends Form
 
     public function store($area, $memorandum_id, $admin)
     {
-
+        $this->validate();
         try {
             DB::beginTransaction();
-            $this->validate();
+            
 
 
             $empleado_id = auth()->user()->empleado->id;
@@ -65,14 +65,14 @@ class MemoValidacionForm extends Form
                         ->where('ctg_area_id', $i)->first();
 
                     if ($revisor) {
-                      
+
                         $existe = MemorandumValidacion::where('memoranda_id', $memorandum_id)
-                        ->whereHas('revisor_areas', function($query)use($i){
-                            $query->whereHas('area', function($query2) use($i){
-                                $query2->where('id', $i);
-                            });
-                        })
-                        ->exists();
+                            ->whereHas('revisor_areas', function ($query) use ($i) {
+                                $query->whereHas('area', function ($query2) use ($i) {
+                                    $query2->where('id', $i);
+                                });
+                            })
+                            ->exists();
                         if (!$existe) {
                             MemorandumValidacion::create([
                                 'memoranda_id' => $memorandum_id,
@@ -80,36 +80,37 @@ class MemoValidacionForm extends Form
                                 'status_validacion_memoranda' => $this->cumple
                             ]);
                         }
-                    } 
+                    }
                 }
             } else {
 
                 $revisor = RevisorArea::where('empleado_id', $empleado_id)
                     ->where('ctg_area_id', $area)->first();
-
+                if (!$revisor) {
+                    throw new \Exception('No tienes permisos para validar el memorandum.');
+                }
                 $existe = MemorandumValidacion::where('memoranda_id', $memorandum_id)
-                    ->whereHas('revisor_areas', function($query)use($area){
-                        $query->whereHas('area', function($query2) use($area){
+                    ->whereHas('revisor_areas', function ($query) use ($area) {
+                        $query->whereHas('area', function ($query2) use ($area) {
                             $query2->where('id', $area);
                         });
                     })
                     ->exists();
-                if (!$existe) {
-                    MemorandumValidacion::create([
-                        'memoranda_id' => $memorandum_id,
-                        'revisor_areas_id' => $revisor->id,
-                        'status_validacion_memoranda' => $this->cumple
-                    ]);
+                if ($existe) {
+                    throw new \Exception('Ya ha sido validado por esta area.');
                 }
+
+                MemorandumValidacion::create([
+                    'memoranda_id' => $memorandum_id,
+                    'revisor_areas_id' => $revisor->id,
+                    'status_validacion_memoranda' => $this->cumple
+                ]);
             }
             DB::commit();
             return 1;
         } catch (\Exception $e) {
-            $this->validate();
             DB::rollBack();
-            Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-            Log::info('Info: ' . $e);
-            return 0;
+            return $e->getMessage();
         }
     }
 

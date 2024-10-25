@@ -49,7 +49,7 @@ class ValidacionCreate extends Component
             $this->dispatch('success', ["Memorandum completado con exito.",$this->area]);
 
         } else {
-            $this->dispatch('error', ["No tienes permisos para validar el memorandum."]);
+            $this->dispatch('error', [$res]);
         }
     }
 }
