@@ -58,7 +58,6 @@ class MemoValidacionForm extends Form
             $empleado_id = auth()->user()->empleado->id;
 
             if ($admin == 1) {
-
                 $limit = MemorandumValidacion::where('memoranda_id', $memorandum_id)->count();
                 $limit = 8 - $limit;
                 for ($i = 1; $i <= $limit; $i++) {
@@ -85,12 +84,8 @@ class MemoValidacionForm extends Form
                 }
             } else {
 
-                if($area==9){
-                    $area = 8;
-                }
                 $revisor = RevisorArea::where('empleado_id', $empleado_id)
                     ->where('ctg_area_id', $area)->first();
-
 
                 $existe = MemorandumValidacion::where('memoranda_id', $memorandum_id)
                     ->whereHas('revisor_areas', function($query)use($area){
@@ -99,7 +94,6 @@ class MemoValidacionForm extends Form
                         });
                     })
                     ->exists();
-
                 if (!$existe) {
                     MemorandumValidacion::create([
                         'memoranda_id' => $memorandum_id,
