@@ -58,34 +58,30 @@ class MemoValidacionForm extends Form
             $empleado_id = auth()->user()->empleado->id;
 
             if ($admin == 1) {
-                $limit = MemorandumValidacion::where('memoranda_id', $memorandum_id)->count();
-                $limit = 8 - $limit;
-                for ($i = 1; $i <= $limit; $i++) {
+               
+                for ($i = 1; $i <= 8; $i++) {
                     $revisor = RevisorArea::where('empleado_id', $empleado_id)
                         ->where('ctg_area_id', $i)->first();
-
-                    if ($revisor) {
-
-                        $existe = MemorandumValidacion::where('memoranda_id', $memorandum_id)
-                            ->whereHas('revisor_areas', function ($query) use ($i) {
-                                $query->whereHas('area', function ($query2) use ($i) {
-                                    $query2->where('id', $i);
-                                });
-                            })
-                            ->exists();
-                        if (!$existe) {
-                            MemorandumValidacion::create([
-                                'memoranda_id' => $memorandum_id,
-                                'revisor_areas_id' => $revisor->id,
-                                'status_validacion_memoranda' => $this->cumple
-                            ]);
-                        }
+                    $existe = MemorandumValidacion::where('memoranda_id', $memorandum_id)
+                        ->whereHas('revisor_areas', function ($query) use ($i) {
+                            $query->whereHas('area', function ($query2) use ($i) {
+                                $query2->where('id', $i);
+                            });
+                        })
+                        ->exists();
+                    if (!$existe) {
+                        MemorandumValidacion::create([
+                            'memoranda_id' => $memorandum_id,
+                            'revisor_areas_id' => $revisor->id,
+                            'status_validacion_memoranda' => $this->cumple
+                        ]);
+                        
                     }
+                
                 }
             } else {
-
                 $revisor = RevisorArea::where('empleado_id', $empleado_id)
-                    ->where('ctg_area_id', $area)->first();
+                    ->where('ctg_area_id', 9)->first();
                 if (!$revisor) {
                     throw new \Exception('No tienes permisos para validar el memorandum.');
                 }
