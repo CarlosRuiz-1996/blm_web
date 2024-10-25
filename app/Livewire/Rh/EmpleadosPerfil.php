@@ -7,10 +7,12 @@ use App\Models\Empleado;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Spatie\Permission\Models\Role;
 
 class EmpleadosPerfil extends Component
 {
+    use WithFileUploads;
     public $id; // Definir una propiedad para almacenar el ID del empleado
     public $isOpenempleado = false;
     public $employeeId;
@@ -23,6 +25,9 @@ class EmpleadosPerfil extends Component
     public $areas,$fechaIngreso;
     public $cp_invalido,$ctg_cp_id;
     public $umf,$hospital;
+    
+
+    public $foto;
     public function mount($id)
     {
         $this->roles=Role::all();
@@ -68,9 +73,9 @@ class EmpleadosPerfil extends Component
         $this->ctg_cp_id=$employee->ctg_cp_id;
         $this->validarCp();
     }
-    public function closeModal(){
-        $this->isOpenempleado = false; // Abre el modal
-    }
+        public function closeModal(){
+            $this->isOpenempleado = false; // Abre el modal
+        }
 
     public function activarempleado($id)
     {
@@ -149,7 +154,7 @@ class EmpleadosPerfil extends Component
                 'fechaNacimiento' => 'required|date',
                 'sexo' => 'required|string',
                 'calleNumero' => 'required|string|max:255',
-                // Añadir más validaciones según sea necesario
+                'foto' => 'nullable|image|max:1024', 
             ]);
 
             // Actualizar el empleado
@@ -180,6 +185,9 @@ class EmpleadosPerfil extends Component
             $employee->hospital = $this->hospital;
             $employee->fecha_ingreso = \Carbon\Carbon::parse($this->fechaIngreso); // Formatear si es necesario
             $employee->ctg_cp_id = $this->ctg_cp_id; // Asegúrate de que este campo se actualice adecuadamente
+            if ($this->foto) {
+                $this->foto->storeAs(path: 'fotosEmpleados/', name: $this->employeeId . '.png');
+            }
 
             // Guardar los cambios
             $employee->user->save(); // Guardar cambios del usuario
