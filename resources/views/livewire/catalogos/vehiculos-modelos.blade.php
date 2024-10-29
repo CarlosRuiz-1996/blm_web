@@ -1,4 +1,4 @@
-<div class="">
+<div wire:init='loadTable'>
     <div class="d-sm-flex align-items-center justify-content-between">
 
 
@@ -19,76 +19,110 @@
             <div class="card card-outline card-info">
 
 
-                <div class="card-body">
-                    {{-- Setup data for datatables --}}
-                    @php
-                        $heads = [
-                            'ID',
-                            'Modelo',
-                            'Marca',
-                            'Estatus',
-                            ['label' => 'Actiones', 'no-export' => true, 'width' => 20],
-                        ];
+                <div class="card-body" wire:ignore.self>
+                 
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
 
-                        $config = [
-                            'language' => ['url' => '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'],
-                        ];
-                    @endphp
+                                <i class="fa fa-search" aria-hidden="true"></i>
 
-                    {{-- Minimal example / fill data using the component slot --}}
-                    <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" head-theme="dark" striped
-                        hoverable bordered compressed>
-                        @foreach ($modelos as $modelo)
-                            <tr>
-                                <td>
-                                    {{ $modelo->id }}
-                                </td>
-                                <td>
-                                    {{ $modelo->name }}
-                                </td>
-                                <td>
-                                    {{$modelo->marca? $modelo->marca->name:''}}
-                                </td>
-                                <td>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                            aria-label="Dollar amount (with dot and two decimal places)" wire:model.live='search'>
+                    </div>
+                    @if (count($modelos))
 
-                                    <i class="fa fa-circle" aria-hidden="true"
-                                        style="color:{{ $modelo->status_ctg_vehiculos_modelos == 1 ? 'green' : 'red' }};"></i>
-                                </td>
-                                <td>
-
-                                    <div class="btn-group">
-
-                                        @if ($modelo->status_ctg_vehiculos_modelos == 1)
-                                            <button class="btn text-success" title="Editar"
-                                                wire:click="setModelo({{ $modelo }})">
-                                                <i class="fa fa-lg fa-fw fa-pen"></i>
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="table-info">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Modelo</th>
+                                    <th>Marca</th>
+                                    <th>Estatus</th>
+                                    <th style="width: 120px">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($modelos as $modelo)
+                                <tr>
+                                    <td>
+                                        {{ $modelo->id }}
+                                    </td>
+                                    <td>
+                                        {{ $modelo->name }}
+                                    </td>
+                                    <td>
+                                        {{$modelo->marca? $modelo->marca->name:''}}
+                                    </td>
+                                    <td>
+    
+                                        <i class="fa fa-circle" aria-hidden="true"
+                                            style="color:{{ $modelo->status_ctg_vehiculos_modelos == 1 ? 'green' : 'red' }};"></i>
+                                    </td>
+                                    <td>
+    
+                                        <div class="btn-group">
+    
+                                            @if ($modelo->status_ctg_vehiculos_modelos == 1)
+                                                <button class="btn text-success" title="Editar"
+                                                    wire:click="setModelo({{ $modelo }})">
+                                                    <i class="fa fa-lg fa-fw fa-pen"></i>
+                                                </button>
+    
+                                                <button class="btn text-danger" title="Dar de baja"
+                                                    wire:click="$dispatch('confirm-baja',{{ $modelo }})">
+    
+                                                    <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                                </button>
+                                            @else
+                                                <button class="btn btn-primary" title="Reactivar"
+                                                    wire:click="$dispatch('confirm-reactivar',{{ $modelo }})">
+                                                    Reactivar
+                                                </button>
+                                            @endif
+    
+                                            <button class="btn text-danger" title="Eliminar"
+                                                wire:click="$dispatch('confirm-delete',{{ $modelo }})">
+                                                <i class="fa fa-lg fa-fw fa-trash"></i>
                                             </button>
+    
+                                        </div>
+    
+                                    </td>
+                                </tr>
+                            @endforeach
 
-                                            <button class="btn text-danger" title="Dar de baja"
-                                                wire:click="$dispatch('confirm-baja',{{ $modelo }})">
 
-                                                <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                                            </button>
-                                        @else
-                                            <button class="btn btn-primary" title="Reactivar"
-                                                wire:click="$dispatch('confirm-reactivar',{{ $modelo }})">
-                                                Reactivar
-                                            </button>
-                                        @endif
+                            </tbody>
+                        </table>
 
-                                        <button class="btn text-danger" title="Eliminar"
-                                            wire:click="$dispatch('confirm-delete',{{ $modelo }})">
-                                            <i class="fa fa-lg fa-fw fa-trash"></i>
-                                        </button>
 
-                                    </div>
+                        @if ($modelos->hasPages())
+                            <div class="col-md-12 text-center">
+                                {{ $modelos->links() }}
+                            </div>
+                        @endif
+                    @else
+                        @if ($readyToLoad)
+                            <h3 class="col-md-12 text-center">No hay datos disponibles</h3>
+                        @else
+                            <!-- Muestra un spinner mientras los datos se cargan -->
+                            <div class="col-md-12 text-center">
+                                <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
+                                    role="status">
+                                    {{-- <span class="visually-hidden">Loading...</span> --}}
+                                </div>
+                            </div>
+                        @endif
+                    @endif
 
-                                </td>
-                            </tr>
-                        @endforeach
-                    </x-adminlte-datatable>
+
                 </div>
             </div>
+               
+           
         </div>
     </div>
 

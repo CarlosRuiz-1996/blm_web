@@ -3,11 +3,6 @@
 
 @section('title', 'Catalogos')
 
-@section('content_header')
-    {{-- <h1>Listado de Catalogos</h1> --}}
-
-@stop
-
 @section('content')
     @if ($op == 1)
         <livewire:catalogos.vehiculos />

@@ -274,6 +274,7 @@ class RutaProcesar extends Component
             // Si no hay servicios pendientes con estado 2, actualiza el estado de la ruta
             $this->ruta->status_ruta = 1;
             $this->ruta->ctg_rutas_estado_id = 1;
+            $this->ruta->total_ruta = 0;
             $this->ruta->save();
 
 

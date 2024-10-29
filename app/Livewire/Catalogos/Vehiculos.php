@@ -6,16 +6,34 @@ use Livewire\Component;
 use App\Livewire\Forms\Catalogos\VehiculosForm;
 use App\Models\CtgVehiculos;
 use Livewire\Attributes\On;
+use Livewire\WithPagination;
+use Livewire\WithoutUrlPagination;
+
 class Vehiculos extends Component
 {
     public VehiculosForm $form;
+    public $readyToLoad = false;
+    use WithPagination, WithoutUrlPagination; 
     public $modelos;
+    public $search;
+    public function loadTable()
+    {
+        $this->readyToLoad = true;
+    }
+  
     public function render()
     {
-        $vehiculos = $this->form->getAllVehiculos();
-        $marcas = $this->form->getAllMarcas();
+        if($this->readyToLoad){
+            $vehiculos = $this->form->getAllVehiculos($this->search);
+            $marcas = $this->form->getAllMarcas();
+        }else{
+            $vehiculos =[];
+            $marcas = [];
+        }
         return view('livewire.catalogos.vehiculos', compact('vehiculos', 'marcas'));
     }
+   
+
     public function updated($property)
     {
 

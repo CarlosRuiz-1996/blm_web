@@ -1,9 +1,9 @@
-<div class="">
+<div wire:init='loadTable'>
     <div class="d-sm-flex align-items-center justify-content-between">
 
 
         <h1 class="ml-2">
-            <a href="{{route('catalogo')}}" title="ATRAS">
+            <a href="{{ route('catalogo') }}" title="ATRAS">
                 <i class="fa fa-arrow-left"></i>
             </a>Marcas de vehiculos
         </h1>
@@ -13,76 +13,109 @@
         </button>
 
     </div>
+
     <div class="row">
 
         <div class="col-md-12">
             <div class="card card-outline card-info">
 
 
-                <div class="card-body">
-                    {{-- Setup data for datatables --}}
-                    @php
-                        $heads = [
-                            'ID',
-                            'Marca',
-                            'Estatus',
-                            ['label' => 'Actiones', 'no-export' => true, 'width' => 20],
-                        ];
+                <div class="card-body" wire:ignore.self>
+                 
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
 
-                        $config = [
-                            'language' => ['url' => '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'],
-                        ];
-                    @endphp
+                                <i class="fa fa-search" aria-hidden="true"></i>
 
-                    {{-- Minimal example / fill data using the component slot --}}
-                    <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" head-theme="dark" striped
-                        hoverable bordered compressed>
-                        @foreach ($marcas as $marca)
-                            <tr>
-                                <td>
-                                    {{ $marca->id }}
-                                </td>
-                                <td>
-                                    {{ $marca->name }}
-                                </td>
-                                <td>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                            aria-label="Dollar amount (with dot and two decimal places)" wire:model.live='search'>
+                    </div>
+                    @if (count($marcas))
 
-                                    <i class="fa fa-circle" aria-hidden="true"
-                                        style="color:{{ $marca->status_ctg_vehiculos_marcas == 1 ? 'green' : 'red' }};"></i>
-                                </td>
-                                <td>
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="table-info">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Marca</th>
+                                    <th>Estatus</th>
+                                    <th style="width: 120px">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($marcas as $marca)
+                                    <tr>
+                                        <td>
+                                            {{ $marca->id }}
+                                        </td>
+                                        <td>
+                                            {{ $marca->name }}
+                                        </td>
+                                        <td>
 
-                                    <div class="btn-group">
+                                            <i class="fa fa-circle" aria-hidden="true"
+                                                style="color:{{ $marca->status_ctg_vehiculos_marcas == 1 ? 'green' : 'red' }};"></i>
+                                        </td>
+                                        <td>
 
-                                        @if ($marca->status_ctg_vehiculos_marcas == 1)
-                                            <button class="btn text-success" title="Editar"
-                                                wire:click="setMarca({{ $marca }})">
-                                                <i class="fa fa-lg fa-fw fa-pen"></i>
-                                            </button>
+                                            <div class="btn-group">
 
-                                            <button class="btn text-danger" title="Dar de baja"
-                                                wire:click="$dispatch('confirm-baja',{{ $marca }})">
+                                                @if ($marca->status_ctg_vehiculos_marcas == 1)
+                                                    <button class="btn text-success" title="Editar"
+                                                        wire:click="setMarca({{ $marca }})">
+                                                        <i class="fa fa-lg fa-fw fa-pen"></i>
+                                                    </button>
 
-                                                <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                                            </button>
-                                        @else
-                                            <button class="btn btn-primary" title="Reactivar"
-                                                wire:click="$dispatch('confirm-reactivar',{{ $marca }})">
-                                                Reactivar
-                                            </button>
-                                        @endif
+                                                    <button class="btn text-danger" title="Dar de baja"
+                                                        wire:click="$dispatch('confirm-baja',{{ $marca }})">
 
-                                        <button class="btn text-danger" title="Eliminar"
-                                            wire:click="$dispatch('confirm-delete',{{ $marca }})">
-                                            <i class="fa fa-lg fa-fw fa-trash"></i>
-                                        </button>
+                                                        <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                                    </button>
+                                                @else
+                                                    <button class="btn btn-primary" title="Reactivar"
+                                                        wire:click="$dispatch('confirm-reactivar',{{ $marca }})">
+                                                        Reactivar
+                                                    </button>
+                                                @endif
 
-                                    </div>
+                                                <button class="btn text-danger" title="Eliminar"
+                                                    wire:click="$dispatch('confirm-delete',{{ $marca }})">
+                                                    <i class="fa fa-lg fa-fw fa-trash"></i>
+                                                </button>
 
-                                </td>
-                            </tr>
-                        @endforeach
-                    </x-adminlte-datatable>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+
+                            </tbody>
+                        </table>
+
+
+                        @if ($marcas->hasPages())
+                            <div class="col-md-12 text-center">
+                                {{ $marcas->links() }}
+                            </div>
+                        @endif
+                    @else
+                        @if ($readyToLoad)
+                            <h3 class="col-md-12 text-center">No hay datos disponibles</h3>
+                        @else
+                            <!-- Muestra un spinner mientras los datos se cargan -->
+                            <div class="col-md-12 text-center">
+                                <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
+                                    role="status">
+                                    {{-- <span class="visually-hidden">Loading...</span> --}}
+                                </div>
+                            </div>
+                        @endif
+                    @endif
+
+
                 </div>
             </div>
         </div>
@@ -115,6 +148,8 @@
         <script>
             document.addEventListener('livewire:initialized', () => {
 
+
+
                 @this.on('confirm', (opcion) => {
 
                     Swal.fire({
@@ -134,7 +169,7 @@
                     })
                 })
                 @this.on('confirm-delete', (marca) => {
-
+                    console.log('entra');
                     Swal.fire({
                         title: '¿Estas seguro?',
                         text: "Se borrara de la base de datos, esto puede traer problemas con el sistema",
@@ -203,10 +238,7 @@
 
                     restar_table();
                 });
-                //inicializo de nuevo 
-                Livewire.on('datatable', function() {
-                    restar_table();
-                });
+
                 Livewire.on('edit-marcas', function() {
                     $('#marca').modal('show');
                 });
@@ -221,19 +253,8 @@
                         timer: 1500
                     });
 
-                    restar_table();
                 });
             });
-
-
-            //inicializo de nuevo funcion
-            function restar_table() {
-                $('#table1').DataTable().destroy();
-
-                $(() => {
-                    $('#table1').DataTable(@json($config));
-                })
-            }
         </script>
     @endpush
 </div>
