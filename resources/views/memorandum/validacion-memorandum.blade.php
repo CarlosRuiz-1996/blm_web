@@ -5,7 +5,7 @@
 
 @section('content_header')
 <h1 class="ml-2">
-  <a href="/boveda/inicio" title="ATRAS">
+  <a href="javascript:history.back()" title="ATRÁS">
     <i class="fa fa-arrow-left"></i>
 </a>Validacion de Memorándum de servicio en validacion</h1>
 @stop

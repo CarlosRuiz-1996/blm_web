@@ -544,7 +544,7 @@ return [
                 ],
                 [
                     'text' => 'Valida Gerencia',
-                    'url'  => 'validacion/listar/9/Gerencia',
+                    'url'  => 'validacion/listar/8/Gerencia',
                     'icon'    => 'fas fa-fw fa-sticky-note',
 
                 ],

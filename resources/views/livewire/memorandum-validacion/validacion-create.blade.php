@@ -190,13 +190,11 @@
                     Swal.fire({
                         icon: 'success',
                         title: message[0],
-                        showConfirmButton: true,
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            var previousUrl = document.referrer;
-                            window.location.href = previousUrl;
-                        }
+                        showConfirmButton: false,
+                        timer: 4000
                     });
+                    var previousUrl = document.referrer;
+                    window.location.href = previousUrl;
                 });
 
 

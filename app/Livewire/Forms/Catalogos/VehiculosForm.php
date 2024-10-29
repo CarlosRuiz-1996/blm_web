@@ -23,17 +23,38 @@ class VehiculosForm extends Form
         'ctg_vehiculo_modelo_id' => 'required',
         'placas' => 'required',
     ];
-    public function getAllVehiculos()
+    public function getAllVehiculos($search)
     {
-        return CtgVehiculos::all();
+        return CtgVehiculos::where(function ($query)use($search){
+            $query->where('descripcion','ilike','%'.$search.'%')
+            ->orWhere('serie','ilike','%'.$search.'%')
+            ->orWhere('anio','ilike','%'.$search.'%')
+            ->orWhere('placas','ilike','%'.$search.'%');
+        })
+        
+        ->orWhereHas('modelo',function ($model)use($search){
+            $model->where('name','ilike','%'.$search.'%')
+            ->orWhereHas('marca',function ($marca)use($search){
+                $marca->where('name','ilike','%'.$search.'%');
+                
+            });
+        })
+        
+        ->orderBy('id', 'ASC')->paginate(10);
+
     }
-    public function getAllMarcas()
+    public function getAllMarcas($search = "")
     {
-        return CtgVehiculosMarca::all();
+        return CtgVehiculosMarca::where('name','ilike','%'.$search.'%')->orderBy('id', 'ASC')->paginate(10);
     }
-    public function getAllModelos()
+    public function getAllModelos($search  = "")
     {
-        return CtgVehiculosModelo::all();
+        return CtgVehiculosModelo::where('name','ilike','%'.$search.'%')
+            ->orWhereHas('marca',function ($query)use($search){
+                $query->where('name','ilike','%'.$search.'%');
+            })
+        
+        ->orderBy('id', 'ASC')->paginate(10);
     }
     public function getAllModelosByMarca()
     {

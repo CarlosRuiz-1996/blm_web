@@ -28,29 +28,22 @@
                             </thead>
                             <tbody>
                                 @php
-                                    $tiene_firma = [];
+                                    $idsConFirma = $firmas->pluck('revisor_areas.area.id')->intersect([1, 2, 3, 4]);
+                                    $no_firmas += $idsConFirma->count();
+
                                 @endphp
 
-                                @foreach ($firmas as $firma)
-                                    @foreach ([1, 2, 3, 4] as $IdArea)
-                                        @if ($IdArea == $firma->revisor_areas->area->id)
-                                            <td colspan="2">
-                                                <i class="fa fa-circle" style="color: green;"> </i>
-                                                {{ $firma->revisor_areas->empleado->user->fullName() }}
-                                            </td>
-                                            @php
-                                                $tiene_firma[] = $IdArea;
-                                                $no_firmas++;
-                                            @endphp
-                                        @endif
-                                    @endforeach
-                                @endforeach
                                 @foreach ([1, 2, 3, 4] as $IdArea)
-                                    @unless (in_array($IdArea, $tiene_firma))
+                                    @if ($idsConFirma->contains($IdArea))
                                         <td colspan="2">
-                                            <i class="fa fa-circle" style="color: orange;"> </i>Aún no validado 
+                                            <i class="fa fa-circle" style="color: green;"></i>
+                                            {{ $firmas->firstWhere('revisor_areas.area.id', $IdArea)->revisor_areas->area->name }}
                                         </td>
-                                    @endunless
+                                    @else
+                                        <td colspan="2">
+                                            <i class="fa fa-circle" style="color: orange;"></i> Aún no validado
+                                        </td>
+                                    @endif
                                 @endforeach
                             </tbody>
                             <thead class="table-secondary">
@@ -61,29 +54,22 @@
                             </thead>
                             <tbody>
                                 @php
-                                    $tiene_firma = [];
+                                    $idsConFirma = $firmas->pluck('revisor_areas.area.id')->intersect([5, 6, 7, 8]);
+                                    $no_firmas += $idsConFirma->count();
+
                                 @endphp
 
-                                @foreach ($firmas as $firma)
-                                    @foreach ([5, 6, 7, 9] as $IdArea)
-                                        @if ($IdArea == $firma->revisor_areas->area->id)
-                                            <td colspan="2">
-                                                <i class="fa fa-circle" style="color: green;"> </i>
-                                                {{ $firma->revisor_areas->area->name }}
-                                            </td>
-                                            @php
-                                                $tiene_firma[] = $IdArea;
-                                                $no_firmas++;
-                                            @endphp
-                                        @endif
-                                    @endforeach
-                                @endforeach
-                                @foreach ([5, 6, 7, 9] as $IdArea)
-                                    @unless (in_array($IdArea, $tiene_firma))
+                                @foreach ([5, 6, 7, 8] as $IdArea)
+                                    @if ($idsConFirma->contains($IdArea))
                                         <td colspan="2">
-                                            <i class="fa fa-circle" style="color: orange;"> </i> Aún no validado
+                                            <i class="fa fa-circle" style="color: green;"></i>
+                                            {{ $firmas->firstWhere('revisor_areas.area.id', $IdArea)->revisor_areas->area->name }}
                                         </td>
-                                    @endunless
+                                    @else
+                                        <td colspan="2">
+                                            <i class="fa fa-circle" style="color: orange;"></i> Aún no validado
+                                        </td>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -91,7 +77,6 @@
                             <div class="mt-3">
                                 <center>
                                     <button class="btn btn-info" wire:click="$dispatch('confirm')">FINALIZAR</button>
-
                                 </center>
                             </div>
                         @endif

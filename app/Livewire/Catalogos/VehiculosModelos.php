@@ -6,17 +6,26 @@ use App\Models\CtgVehiculosModelo;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use App\Livewire\Forms\Catalogos\VehiculosForm;
-
+use Livewire\WithPagination;
 class VehiculosModelos extends Component
 {
-
+    use WithPagination;
     public VehiculosForm $form;
-
+    public $readyToLoad = false;
+    public $search;
+    public function loadTable()
+    {
+        $this->readyToLoad = true;
+    }
     public function render()
     {
-        $modelos = $this->form->getAllModelos();
+        if($this->readyToLoad){
+        $modelos = $this->form->getAllModelos($this->search);
         $marcas = $this->form->getAllMarcas();
-
+        }else{
+            $modelos = [];
+            $marcas = [];
+        }
         return view('livewire.catalogos.vehiculos-modelos',compact('modelos','marcas'));
     }
 

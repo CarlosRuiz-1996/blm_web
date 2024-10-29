@@ -57,7 +57,7 @@
                             </div>
                             <div class="tab-pane fade" id="validacion-memo" role="tabpanel"
                                 aria-labelledby="validacion-memo-tab">
-                                <livewire:memorandum-validacion.validacion-listados :area="2" /> n
+                                <livewire:memorandum-validacion.validacion-listados :area="2" /> 
 
 
                             </div>
