@@ -164,16 +164,25 @@ class BancosGestion extends Component
     public $papeleta;
 
     public $compras_efectivo = [];
+
+    public function updatedMonto_e($value)
+    {
+        // Validar que el valor sea un número
+        $this->validate([
+            'monto_e' => 'numeric', // Solo números permitidos
+        ]);
+    }
     public function addCompra()
     {
         $this->validate(
             [
                 'cajero_id' => 'required',
-                'monto_e' => 'required',
+                'monto_e' => 'required|numeric', // Agregamos la validación para que sea numérico
             ],
             [
                 'cajero_id.required' => 'El cajero es obligatorio',
                 'monto_e.required' => 'El monto es obligatorio',
+                'monto_e.numeric' => 'El monto debe ser un número', // Mensaje personalizado para la validación numérica
             ]
         );
         $cajero = CtgConsignatario::find($this->cajero_id);

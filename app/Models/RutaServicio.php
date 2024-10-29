@@ -46,7 +46,9 @@ class RutaServicio extends Model
     public function keys(){
         return $this->hasMany(ServicioKey::class, 'ruta_servicio_id');
     }
-
+    public function servicioKeys(){
+        return $this->hasMany(ServicioKey::class, 'ruta_servicio_id');
+    }
     public function comision(){
         return $this->hasMany(ServicioComision::class, 'ruta_servicio_id');
     }

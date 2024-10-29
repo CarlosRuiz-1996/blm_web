@@ -597,7 +597,7 @@
 
 
                         <label for="">Monto a Ingresar $
-                            {{ $form->ingresa_monto ? number_format($form->ingresa_monto, 2, '.', ',') : '0' }}
+                            {{ is_numeric($form->ingresa_monto) ? number_format($form->ingresa_monto, 2, '.', ',') : '0.00' }} MXN
                         </label>
                         <input type="number" class="form-control @error('form.ingresa_monto') is-invalid @enderror"
                             placeholder="Monto a Ingresar" wire:model.live="form.ingresa_monto">
@@ -728,7 +728,9 @@
 
                         <div class="form-group  col-md-5">
 
-                            <label for="">Monto: {{ number_format($monto_e ?? 0, 2, '.', ',') }} MXN</label>
+                            <label for="">Monto: 
+                                {{ is_numeric($monto_e) ? number_format($monto_e, 2, '.', ',') : '0.00' }} MXN
+                            </label>
                             <input type="number" wire:model.live='monto_e'
                                 class="form-control @error('monto_e') is-invalid @enderror">
                             @error('monto_e')
