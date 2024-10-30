@@ -25,6 +25,8 @@ class reporteGeneral extends Controller
     public function descargarExcel($id)
     {
         // Lógica para generar el archivo Excel
+        //$cliente = Cliente::find($id);
+        //return view('excelreportegeneral.cliente', compact('cliente'));
         return Excel::download(new reportegeneralClienteExport($id), 'servicio_' . $id . '.xlsx');
     }
 }

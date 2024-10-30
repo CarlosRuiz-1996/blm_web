@@ -179,7 +179,7 @@ wire:ignore.self>
                       <div class="card-header" id="headingOne">
                         <h5 class="mb-0">
                           <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{$servicio->id}}" aria-expanded="true" aria-controls="collapse{{$servicio->id}}">
-                            {{$servicio->ctg_servicio->descripcion}}({{$servicio->ruta_servicios->count()}})
+                            {{$servicio->ctg_servicio->descripcion}}({{$servicio->ruta_servicios->count()}})--{{$servicio->sucursal_servicio->sucursal}}
                           </button>
                         </h5>
                       </div>
