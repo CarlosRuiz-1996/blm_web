@@ -386,6 +386,12 @@ return [
                     'icon'    => 'fas fa-fw fa-sticky-note',
 
                 ],
+                [
+                    'text' => 'Reporte Clientes',
+                    'route'  => 'reportegeneral.index',
+                    'icon'    => 'fas fa-fw fa-sticky-note',
+
+                ],
             ],
         ],
 

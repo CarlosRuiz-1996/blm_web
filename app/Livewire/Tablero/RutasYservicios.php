@@ -25,6 +25,7 @@ class RutasYservicios extends Component
     public $showModal=false;
     public $serviciosRutasevidencias = [];
     public $editIndex; // Para saber qué servicio estamos editando
+    public $isLoading = true;
 
     public function getListeners()
     {
@@ -37,6 +38,7 @@ class RutasYservicios extends Component
     }
     public function rutamonto($rutaServiciosId)
 {
+    $this->isLoading = true;
     // Obtener los servicios como colección de modelos Eloquent
     $this->serviciosRutasevidencias = ServicioRutaEnvases::with(['rutaServicios', 'evidencia_recolecta', 'evidencia_entrega']) // Cargar todas las relaciones necesarias
         ->where('ruta_servicios_id', $rutaServiciosId)
@@ -44,6 +46,7 @@ class RutasYservicios extends Component
         ->get()
         ->toArray(); // Convertir a array si es necesario
                                             $this->editIndex = null; // Resetear el índice de edición
+                                            $this->isLoading=false;
 }
 
 public function editService($index)
@@ -200,6 +203,7 @@ public function updateService()
     #[On('modalCerrado')]
     public function modalCerrado()
     {
+        $this->isLoading = true;
         // Lógica que quieres ejecutar cuando el modal se cierre
         $this->evidencia_foto = [];
         $this->readyToLoadModal = false;

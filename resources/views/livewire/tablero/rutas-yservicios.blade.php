@@ -291,6 +291,9 @@
                 <form wire:submit.prevent="updateService"> 
                     <div class="modal-body">
                         <div class="row">
+                            @if($isLoading)
+                            <span>Cargando información...</span>
+                            @elseif(count($serviciosRutasevidencias) > 0)
                             @foreach($serviciosRutasevidencias as $index => $servicio)
                                 <div class="col-md-2">
                                     <div class="form-group">
@@ -306,13 +309,24 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        @if($servicio['tipo_servicio'] == "2") 
-                                        <img src="{{ asset('storage/evidencias/EntregasRecolectas/Servicio_' . $servicio['ruta_servicios']['id'] . '_recolecta_' . $servicio['evidencia_recolecta']['id'] . '_evidencia.png?v=' . time()) }}" alt="Evidencia" class="img-fluid mb-2" style="width: 150px; height: 150px;">
-                                    @else
-                                        <img src="{{ asset('storage/evidencias/EntregasRecolectas/Servicio_' . $servicio['ruta_servicios']['id'] . '_entrega_' . $servicio['evidencia_entrega']['id'] . '_evidencia.png?v=' . time()) }}" alt="Evidencia" class="img-fluid mb-2" style="width: 150px; height: 150px;">
-                                    @endif                                    
+                                        @php
+                                            $tipo = $servicio['tipo_servicio'] == "2" ? 'recolecta' : 'entrega';
+                                            $evidenciaId = $servicio['tipo_servicio'] == "2" 
+                                                            ? ($servicio['evidencia_recolecta']['id'] ?? null) 
+                                                            : ($servicio['evidencia_entrega']['id'] ?? null);
+                                            $rutaEvidencia = $evidenciaId 
+                                                            ? 'storage/evidencias/EntregasRecolectas/Servicio_' . $servicio['ruta_servicios']['id'] . '_' . $tipo . '_' . $evidenciaId . '_evidencia.png'
+                                                            : null;
+                                        @endphp
+                                
+                                        @if($rutaEvidencia && file_exists(public_path($rutaEvidencia)))
+                                            <img src="{{ asset($rutaEvidencia . '?v=' . time()) }}" alt="Evidencia" class="img-fluid mb-2" style="width: 150px; height: 150px;">
+                                        @else
+                                            <span>Sin evidencia</span>
+                                        @endif
                                     </div>
-                                </div>                               
+                                </div>
+                                                           
                                 
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -331,6 +345,9 @@
                                     </div>
                                 </div>
                             @endforeach
+                            @else
+                            <span>Sin registros encontrados</span>
+                            @endif
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -344,6 +361,15 @@
         </div>
     </div>
 </div>
+@push('js')
+<script>
+    document.addEventListener('livewire:initialized', () => {
+        $('#showModalMontos').on('hidden.bs.modal', function () {
+            Livewire.dispatch('modalCerrado'); // Emitir un evento de Livewire
+        });
+    });
+</script>
+@endpush
 
 
 

@@ -17,4 +17,8 @@ class ServicioEvidenciaRecolecta extends Model
     // {
     //     return $this->belongsTo(ServicioRutaEnvases::class);
     // }
+    // public function envases()
+    // {
+    //     return $this->belongsTo(ServicioRutaEnvases::class);
+    // }
 }

@@ -77,29 +77,36 @@ class EmpleadosPerfil extends Component
             $this->isOpenempleado = false; // Abre el modal
         }
 
-    public function activarempleado($id)
-    {
-        // Busca al empleado por ID y actualiza su estado a activo (1)
-        $empleado = Empleado::find($id);
-        if ($empleado) {
-            $empleado->status_empleado = 1; // Activo
-            $empleado->save();
-
-            // Opcional: Emitir un evento para refrescar la lista o mostrar un mensaje
-            session()->flash('message', 'Empleado activado con éxito.');
+        public function activarempleado($id)
+        {
+            // Busca al empleado por ID y actualiza su estado a activo (1)
+            $empleado = Empleado::find($id);
+            if ($empleado) {
+                $empleado->status_empleado = 1; // Activo
+                $empleado->save();
+        
+                // Verifica si el empleado tiene un usuario asociado y actívalo también
+                if ($empleado->user) {
+                    $empleado->user->status_user = 1; // Activo
+                    $empleado->user->save();
+                }
+            }
         }
-    }
-
+        
     public function desactivarempleado($id)
     {
         // Busca al empleado por ID y actualiza su estado a inactivo (0)
         $empleado = Empleado::find($id);
         if ($empleado) {
-            $empleado->status_empleado = 0; // Inactivo
+            // Desactiva el empleado
+            $empleado->status_empleado = 0;
             $empleado->save();
 
-            // Opcional: Emitir un evento para refrescar la lista o mostrar un mensaje
-            session()->flash('message', 'Empleado desactivado con éxito.');
+            // Verifica que el empleado tenga un usuario asociado y desactívalo
+            if ($empleado->user) {
+                $empleado->user->status_user = 0; // Cambia a activo si es lo que necesitas
+                $empleado->user->save();
+            }
         }
     }
 

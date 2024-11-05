@@ -16,6 +16,7 @@ use App\Http\Controllers\MemorandumController;
 use App\Http\Controllers\OperacionesController;
 use App\Http\Controllers\Operadores;
 use App\Http\Controllers\PermisosController;
+use App\Http\Controllers\reportegeneral\reporteGeneral;
 use App\Http\Controllers\RhController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\tableroController;
@@ -78,6 +79,10 @@ Route::middleware([
         Route::get('/admin/catalogos/listar/{op}', [CatalogosController::class, 'listar'])->name('catalogo.listar');
         //tablero
         Route::get('/administraciontablero', [administracioncontroller::class, 'index'])->name('administracion.index');
+        Route::get('/reportegeneral', [reporteGeneral::class, 'index'])->name('reportegeneral.index');
+        Route::get('/reportegeneral/descargar-pdf/{id}/{fechaInicio}/{fechaFin}', [reporteGeneral::class, 'descargarPdf'])->name('descargarpdfgeneral.pdf');
+        Route::get('/reportegeneral/descargar-excel/{id}/{fechaInicio}/{fechaFin}', [reporteGeneral::class, 'descargarExcel'])->name('descargarexcelgeneral.excel');
+
     });
   
 
