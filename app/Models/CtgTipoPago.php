@@ -9,4 +9,7 @@ class CtgTipoPago extends Model
 {
     use HasFactory;
     protected $table="ctg_tipo_pago";
+    protected $fillable = [
+        'name','status_ctg_tipo_pago'
+    ];
 }

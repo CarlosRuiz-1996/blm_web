@@ -9,5 +9,7 @@ class CtgDiaEntrega extends Model
 {
     use HasFactory;
     protected $table = 'ctg_dia_entrega';
-
+    protected $fillable = [
+        'name','status_ctg_dia_entrega'
+    ];
 }

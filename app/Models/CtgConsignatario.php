@@ -10,5 +10,7 @@ class CtgConsignatario extends Model
     use HasFactory;
     
     protected $table = 'ctg_consignatario';
-
+    protected $fillable = [
+        'name','status_ctg_consignatario'
+    ];
 }

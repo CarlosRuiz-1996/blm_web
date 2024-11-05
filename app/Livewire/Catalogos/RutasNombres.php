@@ -6,16 +6,28 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 use App\Livewire\Forms\Catalogos\RutasForm;
 use App\Models\CtgRutas;
+use Livewire\Features\SupportPagination\WithoutUrlPagination;
+use Livewire\WithPagination;
 
 class RutasNombres extends Component
 {
 
     public RutasForm $form;
-
+    public $readyToLoad = false;
+    use WithPagination, WithoutUrlPagination;
+    public $search;
+    public function loadTable()
+    {
+        $this->readyToLoad = true;
+    }
     public function render()
     {
-        $rutas= $this->form->getAllRutas();
+        if ($this->readyToLoad) {
 
+        $rutas= $this->form->getAllRutas($this->search);
+    } else {
+        $rutas = [];
+    }
         return view('livewire.catalogos.rutas-nombres', compact('rutas'));
     }
 
@@ -28,7 +40,7 @@ class RutasNombres extends Component
         if ($res == 1) {
             $this->dispatch('success-ruta', "El nombre de la ruta se agrego al catalogo.");
         } else {
-            $this->dispatch('datatable');
+            $this->dispatch('error', "No se pudo completar la accion, intente mas tarde.");
         }
     }
 
@@ -52,7 +64,6 @@ class RutasNombres extends Component
         $this->form->name = '';
         $this->ruta_id = 0;
         $this->ruta = '';
-        $this->dispatch('datatable');
     }
 
     #[On('update-ruta')]
@@ -62,7 +73,7 @@ class RutasNombres extends Component
         if ($res == 1) {
             $this->dispatch('success-ruta', "El nombre de la ruta se actualizo con exito.");
         } else {
-            $this->dispatch('datatable');
+            $this->dispatch('error', "No se pudo completar la accion, intente mas tarde.");
         }
     }
 

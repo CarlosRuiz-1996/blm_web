@@ -10,6 +10,6 @@ class Ctg_Area extends Model
     use HasFactory;
     protected $table = 'ctg_area';
     protected $fillable = [
-        'name','status_ctg_area'
+        'name','status_area'
     ];
 }
