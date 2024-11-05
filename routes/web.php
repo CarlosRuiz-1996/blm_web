@@ -80,8 +80,8 @@ Route::middleware([
         //tablero
         Route::get('/administraciontablero', [administracioncontroller::class, 'index'])->name('administracion.index');
         Route::get('/reportegeneral', [reporteGeneral::class, 'index'])->name('reportegeneral.index');
-        Route::get('/reportegeneral/descargar-pdf/{id}', [reporteGeneral::class, 'descargarPdf'])->name('descargarpdfgeneral.pdf');
-        Route::get('/reportegeneral/descargar-excel/{id}', [reporteGeneral::class, 'descargarExcel'])->name('descargarexcelgeneral.excel');
+        Route::get('/reportegeneral/descargar-pdf/{id}/{fechaInicio}/{fechaFin}', [reporteGeneral::class, 'descargarPdf'])->name('descargarpdfgeneral.pdf');
+        Route::get('/reportegeneral/descargar-excel/{id}/{fechaInicio}/{fechaFin}', [reporteGeneral::class, 'descargarExcel'])->name('descargarexcelgeneral.excel');
 
     });
   

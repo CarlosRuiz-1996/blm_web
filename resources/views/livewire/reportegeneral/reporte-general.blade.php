@@ -1,15 +1,31 @@
 <div>
     <div>
+        <div class="row mb-2 mt-2 align-items-end">
+            <div class="col-3 col-sm-12 col-md-3">
+                <label for="fechainicio">Fecha Inicio</label>
+                <input class="form-control" type="date" wire:model.live='fechaInicio'>
+            </div>
+            <div class="col-3 col-sm-12 col-md-3">
+                <label for="fechafin">Fecha Fin</label>
+                <input class="form-control" type="date" wire:model.live='fechaFin'>
+            </div>
+            <div class="col-3 col-sm-12 col-md-3">
+                <label for="razonsocial">Cliente:Razón Social</label>
+                <input class="form-control" type="text" wire:model.live='razonsocial'>
+            </div>
+            <dv class="col-3 col-sm-12 col-md-3">
+                <label for="perPage">Mostrar:</label>
+                <select wire:model.live="perPage" id="perPage" class="form-control" style="width: auto; display: inline-block;">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                registros por página.
+            </dv>
+        </div>
         <!-- Selector de cantidad de resultados por página -->
-        <label for="perPage">Mostrar:</label>
-        <select wire:model.live="perPage" id="perPage" class="form-control" style="width: auto; display: inline-block;">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="20">20</option>
-        </select>
-        registros por página.
-
+       
         <!-- Tabla de clientes -->
         <table class="table table-striped table-bordered align-middle">
             <thead class="table-dark">
@@ -62,12 +78,14 @@
                         </span>
                     </td>
                     <td>
-                        <a href="{{ route('descargarpdfgeneral.pdf', $cliente->id) }}" class="btn btn-primary" target="_blank">
-                            Descargar PDF
+                        <a href="{{ route('descargarpdfgeneral.pdf', ['id' => $cliente->id, 'fechaInicio' => $fechaInicio, 'fechaFin' => $fechaFin]) }}" class="btn btn-link text-danger" target="_blank">
+                            <i class="fas fa-file-pdf"></i>
                         </a>
-                        <a href="{{ route('descargarexcelgeneral.excel', $cliente->id) }}" class="btn btn-success" target="_blank">
-                            Descargar Excel
+                        
+                        <a href="{{ route('descargarexcelgeneral.excel', ['id' => $cliente->id, 'fechaInicio' => $fechaInicio, 'fechaFin' => $fechaFin]) }}" class="btn btn-link text-success" target="_blank">
+                            <i class="fas fa-file-excel"></i>
                         </a>
+                                           
                     </td>
                     
                     <!-- Agrega más campos aquí -->
@@ -178,9 +196,10 @@ wire:ignore.self>
                     <div class="card">
                       <div class="card-header" id="headingOne">
                         <h5 class="mb-0">
-                          <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{$servicio->id}}" aria-expanded="true" aria-controls="collapse{{$servicio->id}}">
-                            {{$servicio->ctg_servicio->descripcion}}({{$servicio->ruta_servicios->count()}})--{{$servicio->sucursal_servicio->sucursal}}
-                          </button>
+                            <button class="btn btn-link btn-block d-flex flex-column align-items-center text-center" data-toggle="collapse" data-target="#collapse{{$servicio->id}}" aria-expanded="true" aria-controls="collapse{{$servicio->id}}">
+                                <p class="mb-0">{{$servicio->ctg_servicio->descripcion}} ({{$servicio->ruta_servicios->count()}})</p>
+                                <p class="mb-0">Sucursal: {{$servicio->sucursal->sucursal->sucursal}}</p>
+                            </button>
                         </h5>
                       </div>
                   
@@ -195,6 +214,7 @@ wire:ignore.self>
                                     <th>Ruta</th>
                                     <th>Monto</th>
                                     <th>Tipo</th>
+                                    <th>Papeleta</th>
                                     <th>Envases</th>
                                     <th>llaves</th>
                                     <th>Fecha de Servicio</th>
@@ -207,6 +227,7 @@ wire:ignore.self>
                                         <td>{{ $servicio->ruta->nombre->name }}</td>
                                         <td>${{ number_format($servicio->monto, 2) }}</td>
                                         <td>{{ $servicio->tipo_servicio == 2 ? 'Recoleccion':'Entrega' }}</td>
+                                        <td>{{ $servicio->folio}}</td>
                                         <td>
                                             @if($servicio->envases_servicios->count() > 0)
                                                 <div>
