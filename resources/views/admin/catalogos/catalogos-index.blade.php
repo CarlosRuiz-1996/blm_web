@@ -153,9 +153,9 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2 text-center">
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Puestos</div>
+                                Areas</div>
                             <br>
-                            <a class="btn btn-primary text-center" href="viewPuestoEquipo.php">Editar</a>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',9)}}">Editar</a>
                         </div>
 
                     </div>
@@ -175,9 +175,9 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2 text-center">
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Precio Cliente </div>
+                                Horarios de servicio </div>
                             <br>
-                            <a class="btn btn-primary text-center" href="viewPrecios.php">Editar</a>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',13)}}">Editar</a>
                         </div>
 
                     </div>
@@ -193,9 +193,9 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2 text-center">
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Perfiles</div>
+                                Dias de servicio</div>
                             <br>
-                            <a class="btn btn-primary text-center" href="viewPerfiles.php">Editar</a>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',12)}}">Editar</a>
                         </div>
 
                     </div>
@@ -210,9 +210,9 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2 text-center">
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Áreas</div>
+                                Dias de entregas</div>
                             <br>
-                            <a class="btn btn-primary text-center" href="viewAreas.php">Editar</a>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',11)}}">Editar</a>
                         </div>
 
                     </div>
@@ -233,9 +233,9 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2 text-center">
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Vigencia </div>
+                                Horarios de entrega </div>
                             <br>
-                            <a class="btn btn-primary text-center" href="viewVigencia.php">Editar</a>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',14)}}">Editar</a>
                         </div>
 
                     </div>
@@ -251,11 +251,10 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2 text-center">
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Riesgos</div>
+                                Tipos de cliente </div>
                             <br>
-                            <a class="btn btn-primary text-center" href="viewRiesgo.php">Editar</a>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',15)}}">Editar</a>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -270,7 +269,7 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 Tipo Solicitud</div>
                             <br>
-                            <a class="btn btn-primary text-center" href="viewTSolicitud.php">Editar</a>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',16)}}">Editar</a>
                         </div>
 
                     </div>
@@ -291,7 +290,7 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 Tipo de Pago </div>
                             <br>
-                            <a class="btn btn-primary text-center" href="viewTPago.php">Editar</a>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',17)}}">Editar</a>
                         </div>
 
                     </div>
@@ -309,7 +308,7 @@
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 Consignatario</div>
                             <br>
-                            <a class="btn btn-primary text-center" href="viewConsignatorio.php">Editar</a>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',10)}}">Editar</a>
                         </div>
 
                     </div>
@@ -324,9 +323,9 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2 text-center">
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Ejecutivos</div>
+                                Tipos de servicio</div>
                             <br>
-                            <a class="btn btn-primary text-center" href="viewEjecutivo.php">Editar</a>
+                            <a class="btn btn-primary text-center" href="{{route('catalogo.listar',18)}}">Editar</a>
                         </div>
 
                     </div>
@@ -345,9 +344,9 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2 text-center">
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Revisor de Área </div>
+                               Tipos de monedas </div>
                             <br>
-                            <a class="btn btn-primary text-center" href="viewRArea.php">Editar</a>
+                        <a class="btn btn-primary text-center" href="{{route('catalogo.listar',19)}}">Editar</a>
                         </div>
 
                     </div>
@@ -357,7 +356,7 @@
 
 
         <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-4 col-md-6 mb-4">
+        {{-- <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -371,10 +370,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Pending Requests Card Example -->
-        <div class="col-xl-4 col-md-6 mb-4">
+        {{-- <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
@@ -388,23 +387,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
-    <div class="col-xl-4 col-md-6 mb-4 pl-0">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2 text-center">
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                            Motivo Reprogramación </div>
-                        <br>
-                        <a class="btn btn-primary text-center" href="viewMotivoReprogramacion.php">Editar</a>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
+   
     
 @stop

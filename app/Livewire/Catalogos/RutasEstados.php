@@ -6,15 +6,27 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 use App\Livewire\Forms\Catalogos\RutasForm;
 use App\Models\CtgRutasEstado;
+use Livewire\Features\SupportPagination\WithoutUrlPagination;
+use Livewire\WithPagination;
 
 class RutasEstados extends Component
 {
 
     public RutasForm $form;
-
+    public $readyToLoad = false;
+    use WithPagination, WithoutUrlPagination;
+    public $search;
+    public function loadTable()
+    {
+        $this->readyToLoad = true;
+    }
     public function render()
     {
-        $estados = $this->form->getAllRutasEstados();
+        if ($this->readyToLoad) {
+            $estados = $this->form->getAllRutasEstados($this->search);
+        } else {
+            $estados = [];
+        }
         return view('livewire.catalogos.rutas-estados', compact('estados'));
     }
 
@@ -26,7 +38,7 @@ class RutasEstados extends Component
         if ($res == 1) {
             $this->dispatch('success-estado', "El nombre del estado se agrego al catalogo.");
         } else {
-            $this->dispatch('datatable');
+            $this->dispatch('error', "No se pudo completar la accion, intente mas tarde.");
         }
     }
 
@@ -49,7 +61,6 @@ class RutasEstados extends Component
         $this->form->name = '';
         $this->estado_id = 0;
         $this->estado = '';
-        $this->dispatch('datatable');
     }
 
     #[On('update-estado')]
@@ -59,7 +70,7 @@ class RutasEstados extends Component
         if ($res == 1) {
             $this->dispatch('success-estado', "El nombre de la ruta se actualizo con exito.");
         } else {
-            $this->dispatch('datatable');
+            $this->dispatch('error', "No se pudo completar la accion, intente mas tarde.");
         }
     }
 

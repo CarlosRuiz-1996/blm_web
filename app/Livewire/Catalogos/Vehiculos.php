@@ -49,9 +49,7 @@ class Vehiculos extends Component
     {
         $res = $this->form->storeVehiculo();
         if ($res == 0) {
-            $this->dispatch('datatable');
             $this->validate();
-
         }
         $this->dispatch('success', "El vehiculo se guardo con excito.");
 
@@ -63,9 +61,7 @@ class Vehiculos extends Component
 
         $res = $this->form->updateVehiculo($this->vehiculo);
         if ($res == 0) {
-            $this->dispatch('datatable');
             $this->validate();
-
         }
         $this->dispatch('success', "El vehiculo se actualizo con exito.");
 
@@ -121,6 +117,5 @@ class Vehiculos extends Component
         $this->form->serie ="";
         $this->form->ctg_vehiculo_modelo_id ="";
         $this->form->ctg_vehiculo_marca_id ="";
-        $this->dispatch('datatable');
     }
 }

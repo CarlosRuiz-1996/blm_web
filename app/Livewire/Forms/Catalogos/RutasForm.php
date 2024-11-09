@@ -15,21 +15,26 @@ class RutasForm extends Form
     #[Validate('required', message: 'Debes ingresar el nombre')]
     public $name;
 
-    public function getAllRutasEstados()
+    public function getAllRutasEstados($search)
     {
-        return CtgRutasEstado::all();
+        return CtgRutasEstado::where('name','ilike','%'.$search.'%')
+        ->orderBy('id', 'DESC')->paginate(10);
+        
     }
-    public function getAllRutasRiesgos()
+    public function getAllRutasRiesgos($search)
     {
-        return CtgRutasRiesgo::all();
+        return CtgRutasRiesgo::where('name','ilike','%'.$search.'%')
+        ->orderBy('id', 'DESC')->paginate(10);
     }
-    public function getAllRutasDias()
+    public function getAllRutasDias($search)
     {
-        return CtgRutaDias::all();
+        return CtgRutaDias::where('name','ilike','%'.$search.'%')
+        ->orderBy('id', 'DESC')->paginate(10);
     }
-    public function getAllRutas()
+    public function getAllRutas($search)
     {
-        return CtgRutas::all();
+        return CtgRutas::where('name','ilike','%'.$search.'%')
+        ->orderBy('id', 'DESC')->paginate(10);
     }
     public function store($op)
     {

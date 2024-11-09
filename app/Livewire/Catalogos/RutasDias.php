@@ -6,16 +6,27 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 use App\Livewire\Forms\Catalogos\RutasForm;
 use App\Models\CtgRutaDias;
+use Livewire\Features\SupportPagination\WithoutUrlPagination;
+use Livewire\WithPagination;
 
 class RutasDias extends Component
 {
 
     public RutasForm $form;
-
+    public $readyToLoad = false;
+    use WithPagination, WithoutUrlPagination;
+    public $search;
+    public function loadTable()
+    {
+        $this->readyToLoad = true;
+    }
     public function render()
     {
-        $dias = $this->form->getAllRutasDias();
-
+        if ($this->readyToLoad) {
+            $dias = $this->form->getAllRutasDias($this->search);
+        } else {
+            $dias = [];
+        }
         return view('livewire.catalogos.rutas-dias', compact('dias'));
     }
 
@@ -33,7 +44,7 @@ class RutasDias extends Component
             if ($res == 1) {
                 $this->dispatch('success-dia', "El nombre del dia se agrego al catalogo.");
             } else {
-                $this->dispatch('datatable');
+                $this->dispatch('error', "No se pudo completar la accion, intente mas tarde.");
             }
         } else {
             $this->dispatch('error', "Este no es un dia de la semana.");
@@ -67,7 +78,6 @@ class RutasDias extends Component
         $this->form->name = '';
         $this->dia_id = 0;
         $this->dia = '';
-        $this->dispatch('datatable');
     }
 
     #[On('update-dia')]
@@ -82,7 +92,7 @@ class RutasDias extends Component
             if ($res == 1) {
                 $this->dispatch('success-dia', "El nombre del dia se actualizo con exito.");
             } else {
-                $this->dispatch('datatable');
+                $this->dispatch('error', "No se pudo completar la accion, intente mas tarde.");
             }
         } else {
             $this->dispatch('error', "Este no es un dia de la semana.");

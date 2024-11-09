@@ -1,4 +1,4 @@
-<div class="">
+<div wire:init='loadTable'>
     <div class="d-sm-flex align-items-center justify-content-between">
 
 
@@ -14,79 +14,110 @@
 
     </div>
     <div class="row">
-
         <div class="col-md-12">
             <div class="card card-outline card-info">
 
 
-                <div class="card-body">
-                    {{-- Setup data for datatables --}}
-                    @php
-                        $heads = [
-                            'ID',
-                            'Nombre del dia',
-                            'Estatus',
-                            ['label' => 'Actiones', 'no-export' => true, 'width' => 20],
-                        ];
+                <div class="card-body" wire:ignore.self>
+                 
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
 
-                        $config = [
-                            // 'language' => ['url' => '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'],
-                        ];
-                    @endphp
+                                <i class="fa fa-search" aria-hidden="true"></i>
 
-                    {{-- Minimal example / fill data using the component slot --}}
-                    <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" head-theme="dark" striped
-                        hoverable bordered compressed>
-                        @foreach ($dias as $dia)
-                            <tr>
-                                <td>
-                                    {{ $dia->id }}
-                                </td>
-                                <td>
-                                    {{ $dia->name }}
-                                    
-                                </td>
-                                <td>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control"
+                            aria-label="Dollar amount (with dot and two decimal places)" wire:model.live='search'>
+                    </div>
+                    @if (count($dias))
 
-                                    <i class="fa fa-circle" aria-hidden="true"
-                                        style="color:{{ $dia->status_ctg_ruta_dias == 1 ? 'green' : 'red' }};"></i>
-                                </td>
-                                <td>
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="table-info">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre del dia</th>
+                                  
+                                    <th>Estatus</th>
+                                    <th style="width: 120px">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($dias as $dia)
+                                    <tr>
+                                        <td>
+                                            {{ $dia->id }}
+                                        </td>
+                                        <td>
+                                            {{ $dia->name }}
+                                            
+                                        </td>
+                                        <td>
 
-                                    <div class="btn-group">
+                                            <i class="fa fa-circle" aria-hidden="true"
+                                                style="color:{{ $dia->status_ctg_ruta_dias == 1 ? 'green' : 'red' }};"></i>
+                                        </td>
+                                        <td>
 
-                                        @if ($dia->status_ctg_ruta_dias == 1)
-                                            <button class="btn text-success" title="Editar"
-                                                wire:click="setDia({{ $dia }})">
-                                                <i class="fa fa-lg fa-fw fa-pen"></i>
-                                            </button>
+                                            <div class="btn-group">
 
-                                            <button class="btn text-danger" title="Dar de baja"
-                                                wire:click="$dispatch('confirm-baja',{{ $dia }})">
+                                                @if ($dia->status_ctg_ruta_dias == 1)
+                                                    <button class="btn text-success" title="Editar"
+                                                        wire:click="setDia({{ $dia }})">
+                                                        <i class="fa fa-lg fa-fw fa-pen"></i>
+                                                    </button>
 
-                                                <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                                            </button>
-                                        @else
-                                            <button class="btn btn-primary" title="Reactivar"
-                                                wire:click="$dispatch('confirm-reactivar',{{ $dia }})">
-                                                Reactivar
-                                            </button>
-                                        @endif
+                                                    <button class="btn text-danger" title="Dar de baja"
+                                                        wire:click="$dispatch('confirm-baja',{{ $dia }})">
 
-                                        <button class="btn text-danger" title="Eliminar"
-                                            wire:click="$dispatch('confirm-delete',{{ $dia }})">
-                                            <i class="fa fa-lg fa-fw fa-trash"></i>
-                                        </button>
+                                                        <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                                    </button>
+                                                @else
+                                                    <button class="btn btn-primary" title="Reactivar"
+                                                        wire:click="$dispatch('confirm-reactivar',{{ $dia }})">
+                                                        Reactivar
+                                                    </button>
+                                                @endif
 
-                                    </div>
+                                                <button class="btn text-danger" title="Eliminar"
+                                                    wire:click="$dispatch('confirm-delete',{{ $dia }})">
+                                                    <i class="fa fa-lg fa-fw fa-trash"></i>
+                                                </button>
 
-                                </td>
-                            </tr>
-                        @endforeach
-                    </x-adminlte-datatable>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+
+
+                        @if ($dias->hasPages())
+                            <div class="col-md-12 text-center">
+                                {{ $dias->links() }}
+                            </div>
+                        @endif
+                    @else
+                        @if ($readyToLoad)
+                            <h3 class="col-md-12 text-center">No hay datos disponibles</h3>
+                        @else
+                            <div class="col-md-12 text-center">
+                                <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
+                                    role="status">
+                                </div>
+                            </div>
+                        @endif
+                    @endif
+
+
                 </div>
             </div>
+          
         </div>
+       
     </div>
 
 
@@ -202,12 +233,8 @@
 
                     });
 
-                    restar_table();
                 });
-                //inicializo de nuevo 
-                Livewire.on('datatable', function() {
-                    restar_table();
-                });
+                
                 Livewire.on('edit-dias', function() {
                     $('#dias').modal('show');
                 });
@@ -222,19 +249,11 @@
                         timer: 1500
                     });
 
-                    restar_table();
                 });
             });
 
 
-            //inicializo de nuevo funcion
-            function restar_table() {
-                $('#table1').DataTable().destroy();
-
-                $(() => {
-                    $('#table1').DataTable(@json($config));
-                })
-            }
+            
         </script>
     @endpush
 </div>

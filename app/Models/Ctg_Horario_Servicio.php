@@ -9,5 +9,7 @@ class Ctg_Horario_Servicio extends Model
 {
     use HasFactory;
     protected $table = 'ctg_horario_servicio';
-
+    protected $fillable = [
+        'name','status_ctg_horario_servicio'
+    ];
 }

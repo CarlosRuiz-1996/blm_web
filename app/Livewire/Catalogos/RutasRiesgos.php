@@ -6,14 +6,26 @@ use Livewire\Component;
 use Livewire\Attributes\On;
 use App\Livewire\Forms\Catalogos\RutasForm;
 use App\Models\CtgRutasRiesgo;
+use Livewire\Features\SupportPagination\WithoutUrlPagination;
+use Livewire\WithPagination;
 
 class RutasRiesgos extends Component
 {
     public RutasForm $form;
-
+    public $readyToLoad = false;
+    use WithPagination, WithoutUrlPagination;
+    public $search;
+    public function loadTable()
+    {
+        $this->readyToLoad = true;
+    }
     public function render()
     {
-        $riesgos = $this->form->getAllRutasRiesgos();
+        if ($this->readyToLoad) {
+            $riesgos = $this->form->getAllRutasRiesgos($this->search);
+        } else {
+            $riesgos = [];
+        }
         return view('livewire.catalogos.rutas-riesgos', compact('riesgos'));
     }
 
@@ -26,7 +38,7 @@ class RutasRiesgos extends Component
         if ($res == 1) {
             $this->dispatch('success-riesgo', "El nombre de la riesgo se agrego al catalogo.");
         } else {
-            $this->dispatch('datatable');
+            $this->dispatch('error', "No se pudo completar la accion, intente mas tarde.");
         }
     }
 
@@ -49,7 +61,6 @@ class RutasRiesgos extends Component
         $this->form->name = '';
         $this->riesgo_id = 0;
         $this->riesgo = '';
-        $this->dispatch('datatable');
     }
 
     #[On('update-riesgo')]
@@ -60,7 +71,7 @@ class RutasRiesgos extends Component
         if ($res == 1) {
             $this->dispatch('success-riesgo', "El nombre del riesgo se actualizo con exito.");
         } else {
-            $this->dispatch('datatable');
+            $this->dispatch('error', "No se pudo completar la accion, intente mas tarde.");
         }
     }
 

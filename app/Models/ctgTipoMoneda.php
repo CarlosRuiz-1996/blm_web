@@ -9,5 +9,7 @@ class ctgTipoMoneda extends Model
 {
     use HasFactory;
     protected $table = "ctg_tipo_monedas";
-    
+    protected $fillable = [
+        'name','status'
+    ]; 
 }

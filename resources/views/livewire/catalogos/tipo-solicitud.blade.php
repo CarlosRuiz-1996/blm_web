@@ -3,12 +3,12 @@
 
 
         <h1 class="ml-2">
-            <a href="{{route('catalogo')}}" title="ATRAS">
+            <a href="{{ route('catalogo') }}" title="ATRAS">
                 <i class="fa fa-arrow-left"></i>
-            </a>Estados de las rutas
+            </a>Catalogo de tipos de solicitud
         </h1>
 
-        <button type="button" class="btn btn-primary" wire:click='limpiar()' data-toggle="modal" data-target="#estado">
+        <button type="button" class="btn btn-primary" wire:click='limpiar()' data-toggle="modal" data-target="#data">
             Nuevo
         </button>
 
@@ -16,11 +16,12 @@
     <div class="row">
 
         <div class="col-md-12">
+           
             <div class="card card-outline card-info">
 
 
                 <div class="card-body" wire:ignore.self>
-                 
+
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">
@@ -32,56 +33,57 @@
                         <input type="text" class="form-control"
                             aria-label="Dollar amount (with dot and two decimal places)" wire:model.live='search'>
                     </div>
-                    @if (count($estados))
+                    @if (count($datas))
 
                         <table class="table table-bordered table-striped table-hover">
                             <thead class="table-info">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Nombre del estado</th>
-                                  
+                                    <th>Nombre</th>
+
                                     <th>Estatus</th>
                                     <th style="width: 120px">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($estados as $estado)
+                                @foreach ($datas as $data)
                             <tr>
                                 <td>
-                                    {{ $estado->id }}
+                                    {{ $data->id }}
                                 </td>
                                 <td>
-                                    {{ $estado->name }}
+                                    {{ $data->name }}
+
                                 </td>
                                 <td>
 
                                     <i class="fa fa-circle" aria-hidden="true"
-                                        style="color:{{ $estado->status_ctg_rutas_estados == 1 ? 'green' : 'red' }};"></i>
+                                        style="color:{{ $data->status_ctg_tipo_solicitud == 1 ? 'green' : 'red' }};"></i>
                                 </td>
                                 <td>
 
                                     <div class="btn-group">
 
-                                        @if ($estado->status_ctg_rutas_estados == 1)
+                                        @if ($data->status_ctg_tipo_solicitud == 1)
                                             <button class="btn text-success" title="Editar"
-                                                wire:click="setEstado({{ $estado }})">
+                                                wire:click="setData({{ $data }})">
                                                 <i class="fa fa-lg fa-fw fa-pen"></i>
                                             </button>
 
                                             <button class="btn text-danger" title="Dar de baja"
-                                                wire:click="$dispatch('confirm-baja',{{ $estado }})">
+                                                wire:click="$dispatch('confirm-baja',{{ $data }})">
 
                                                 <i class="fa fa-arrow-down" aria-hidden="true"></i>
                                             </button>
                                         @else
                                             <button class="btn btn-primary" title="Reactivar"
-                                                wire:click="$dispatch('confirm-reactivar',{{ $estado }})">
+                                                wire:click="$dispatch('confirm-reactivar',{{ $data }})">
                                                 Reactivar
                                             </button>
                                         @endif
 
                                         <button class="btn text-danger" title="Eliminar"
-                                            wire:click="$dispatch('confirm-delete',{{ $estado }})">
+                                            wire:click="$dispatch('confirm-delete',{{ $data }})">
                                             <i class="fa fa-lg fa-fw fa-trash"></i>
                                         </button>
 
@@ -95,9 +97,9 @@
                         </table>
 
 
-                        @if ($estados->hasPages())
+                        @if ($datas->hasPages())
                             <div class="col-md-12 text-center">
-                                {{ $estados->links() }}
+                                {{ $datas->links() }}
                             </div>
                         @endif
                     @else
@@ -115,13 +117,14 @@
 
                 </div>
             </div>
-          
         </div>
+
     </div>
 
 
 
-    <x-adminlte-modal wire:ignore.self id="estado" title=" {{ $estado_id != 0 ? 'Editar estado de ruta' : 'Agregar estado de ruta' }}"
+    <x-adminlte-modal wire:ignore.self id="data"
+        title=" {{ $data_id != 0 ? 'Editar nombre' : 'Agregar registro' }}"
         theme="info" icon="fas fa-bolt" size='md' disable-animations>
         <div class="col-md-12 card card-outline card-info">
 
@@ -129,7 +132,7 @@
                 <div class="row">
                     <div class="col-md-12 mb-3">
 
-                        <x-input-validado label="Nombre:" placeholder="nombre" wire-model="form.name" type="text" />
+                        <x-input-validado label="Nombre:" placeholder="nombre" wire-model="name" type="text" />
                     </div>
 
                 </div>
@@ -138,7 +141,7 @@
 
         </div>
         <button type="button" class="btn btn-info"
-            wire:click="$dispatch('confirm',{{ $estado_id != 0 ? 2 : 1 }})">Guardar</button>
+            wire:click="$dispatch('confirm',{{ $data_id != 0 ? 2 : 1 }})">Guardar</button>
     </x-adminlte-modal>
 
 
@@ -150,8 +153,9 @@
 
                     Swal.fire({
                         title: '¿Estas seguro?',
-                        text: opcion == 1 ? "El estado de la ruta se guardara en la base de datos" :
-                            "El estado se actualizara",
+                        text: opcion == 1 ?
+                            "El registro se guardara en la base de datos" :
+                            "El registro se actualizara",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
@@ -160,11 +164,11 @@
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            @this.dispatch(opcion == 1 ? 'save-estado' : 'update-estado');
+                            @this.dispatch(opcion == 1 ? 'save-data' : 'update-data');
                         }
                     })
                 })
-                @this.on('confirm-delete', (estado) => {
+                @this.on('confirm-delete', (data) => {
 
                     Swal.fire({
                         title: '¿Estas seguro?',
@@ -177,13 +181,13 @@
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            @this.dispatch('delete-estado', {
-                                estado: estado
+                            @this.dispatch('delete-data', {
+                                data: data
                             });
                         }
                     })
                 })
-                @this.on('confirm-baja', (estado) => {
+                @this.on('confirm-baja', (data) => {
 
                     Swal.fire({
                         title: '¿Estas seguro?',
@@ -196,13 +200,13 @@
                         cancelButtonText: 'Cancelar'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            @this.dispatch('baja-estado', {
-                                estado: estado
+                            @this.dispatch('baja-data', {
+                                data: data
                             });
                         }
                     })
                 })
-                @this.on('confirm-reactivar', (estado) => {
+                @this.on('confirm-reactivar', (data) => {
 
                     Swal.fire({
                         title: '¿Estas seguro?',
@@ -216,13 +220,13 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             @this.dispatch('delete-reactivar', {
-                                estado: estado
+                                data: data
                             });
                         }
                     })
                 })
-                Livewire.on('success-estado', function(message) {
-                    $('#estado').modal('hide');
+                Livewire.on('success-data', function(message) {
+                    $('#data').modal('hide');
 
                     Swal.fire({
                         icon: 'success',
@@ -233,10 +237,9 @@
                     });
 
                 });
-                //inicializo de nuevo 
-                
-                Livewire.on('edit-estados', function() {
-                    $('#estado').modal('show');
+               
+                Livewire.on('edit-data', function() {
+                    $('#data').modal('show');
                 });
 
 
