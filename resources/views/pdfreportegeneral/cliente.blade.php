@@ -304,13 +304,13 @@
                                         @if($envase->tipo_servicio==1)
                                             @if($envase->evidencia_entrega && !is_null($envase->evidencia_entrega->id))
                                                 <tr>
-                                                    <td colspan="12" class="text-center" ><img width="400" height="400" src="{{ public_path('storage/evidencias/EntregasRecolectas/Servicio_'.$envase->ruta_servicios_id.'_entrega_'.$envase->evidencia_entrega->id.'_evidencia.png') }}" alt="Ejemplo de Imagen"> </td>
+                                                    <td colspan="12" class="text-center" ><img width="400" height="400" src="{{ asset('storage/evidencias/EntregasRecolectas/Servicio_'.$envase->ruta_servicios_id.'_entrega_'.$envase->evidencia_entrega->id.'_evidencia.png') }}" alt="Ejemplo de Imagen"> </td>
                                                 </tr>
                                             @endif
                                         @else
                                             @if($envase->evidencia_recolecta && !is_null($envase->evidencia_recolecta->id))
                                                 <tr>
-                                                    <td colspan="12" class="text-center" ><img width="400" height="400" src="{{ public_path('storage/evidencias/EntregasRecolectas/Servicio_'.$envase->ruta_servicios_id.'_recolecta_'.$envase->evidencia_recolecta->id.'_evidencia.png') }}" alt="Ejemplo de Imagen"> </td>
+                                                    <td colspan="12" class="text-center" ><img width="400" height="400" src="{{ asset('storage/evidencias/EntregasRecolectas/Servicio_'.$envase->ruta_servicios_id.'_recolecta_'.$envase->evidencia_recolecta->id.'_evidencia.png') }}" alt="Ejemplo de Imagen"> </td>
                                                 </tr>
                                             @endif
                                         @endif

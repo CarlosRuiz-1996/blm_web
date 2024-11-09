@@ -87,7 +87,7 @@
             </thead>
             <tbody>
                 @php $i=1; @endphp
-                @foreach ($ruta->rutaServicios as $servicio)
+                @foreach ($ruta->rutaServicios()->whereNotIn('status_ruta_servicios', [6, 0])->get() as $servicio)
                     <tr>
                         <td class="p-1 small-text-md">{{ $i }}</td>
                         <td class="p-1 small-text-md">{{ ucwords(strtolower($servicio->servicio->cliente->razon_social)) }}</td>

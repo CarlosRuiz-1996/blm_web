@@ -1,4 +1,34 @@
 <div>
+<style>
+/* Estilos del Modal de Expansión de Imagen */
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 1050; /* Debe ser más alto que el modal principal */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    align-items: center;
+    justify-content: center;
+}
+
+.image-modal-content {
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.close-image-modal {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    color: #fff;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+</style>
     <div>
         <div class="row mb-2 mt-2 align-items-end">
             <div class="col-3 col-sm-12 col-md-3">
@@ -13,7 +43,7 @@
                 <label for="razonsocial">Cliente:Razón Social</label>
                 <input class="form-control" type="text" wire:model.live='razonsocial'>
             </div>
-            <dv class="col-3 col-sm-12 col-md-3">
+            <div class="col-3 col-sm-12 col-md-3">
                 <label for="perPage">Mostrar:</label>
                 <select wire:model.live="perPage" id="perPage" class="form-control" style="width: auto; display: inline-block;">
                     <option value="5">5</option>
@@ -22,7 +52,7 @@
                     <option value="20">20</option>
                 </select>
                 registros por página.
-            </dv>
+            </div>
         </div>
         <!-- Selector de cantidad de resultados por página -->
        
@@ -242,18 +272,32 @@ wire:ignore.self>
                                                                         <th class="text-xs">Cantidad</th>
                                                                         <th class="text-xs">Folio</th>
                                                                         <th class="text-xs">Sello de Seguridad</th>
+                                                                        <th class="text-xs">Evidencia</th>
                                                                     </tr>
                                                                 </thead>
-                                                                <tbody>
+                                                                  <tbody>
                                                                     @foreach ($servicio->envases_servicios as $envase)
                                                                         <tr>
                                                                             <td class="text-xs">{{$envase->cantidad}}</td>
                                                                             <td class="text-xs">{{$envase->folio}}</td>
                                                                             <td class="text-xs">{{$envase->sello_seguridad}}</td>
+                                                                            @if($envase->tipo_servicio == 1 && $envase->evidencia_entrega && !is_null($envase->evidencia_entrega->id))
+                                                                                <td colspan="12" class="text-center">
+                                                                                    <img onclick="expandImage('{{ asset('storage/evidencias/EntregasRecolectas/Servicio_'.$envase->ruta_servicios_id.'_entrega_'.$envase->evidencia_entrega->id.'_evidencia.png') }}')" width="50" height="50" src="{{ asset('storage/evidencias/EntregasRecolectas/Servicio_'.$envase->ruta_servicios_id.'_entrega_'.$envase->evidencia_entrega->id.'_evidencia.png') }}" alt="Imagen de Entrega">
+                                                                                </td>
+                                                                            @elseif($envase->evidencia_recolecta && !is_null($envase->evidencia_recolecta->id))
+                                                                                <td colspan="12" class="text-center">
+                                                                                    <img onclick="expandImage('{{ asset('storage/evidencias/EntregasRecolectas/Servicio_'.$envase->ruta_servicios_id.'_recolecta_'.$envase->evidencia_recolecta->id.'_evidencia.png') }}')" width="50" height="50" src="{{ asset('storage/evidencias/EntregasRecolectas/Servicio_'.$envase->ruta_servicios_id.'_recolecta_'.$envase->evidencia_recolecta->id.'_evidencia.png') }}" alt="Imagen de Recolecta">
+                                                                                </td>
+                                                                            @endif
+
                                                                         </tr>
                                                                     @endforeach
                                                                 </tbody>
                                                             </table>
+
+                                                            <!-- Segundo Modal de Expansión para la Imagen -->
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -306,6 +350,46 @@ wire:ignore.self>
     </div>
 </div>
 </div>
+ <div id="imageModal" class="image-modal" onclick="closeImageModal()">
+                                                                <span class="close-image-modal">&times;</span>
+                                                                <img class="image-modal-content" id="expandedImage">
+                                                            </div>
+<script>
+    document.addEventListener('livewire:initialized', () => {
+        // Define la función correctamente dentro del 'window'
+        window.expandImage = function(src) {
+            var imageModal = document.getElementById("imageModal");
+            var expandedImage = document.getElementById("expandedImage");
+
+            if (imageModal && expandedImage) {
+                // Forza la actualización de la imagen agregando un timestamp como parámetro en el src para evitar cachés
+                expandedImage.src = src + "?t=" + new Date().getTime();
+
+                // Muestra el modal de imagen
+                imageModal.style.display = "flex";
+            } else {
+                console.error("Los elementos 'imageModal' o 'expandedImage' no se encontraron en el DOM.");
+            }
+        }
+
+        window.closeImageModal = function() {
+            var imageModal = document.getElementById("imageModal");
+            imageModal.style.display = "none";
+        }
+
+        // Detecta el clic fuera de la imagen ampliada para cerrar el modal
+        document.addEventListener("click", function(event) {
+            var imageModal = document.getElementById("imageModal");
+            var modalContent = document.getElementById("modalContent");
+
+            if (imageModal && modalContent && imageModal.style.display === "flex" && !modalContent.contains(event.target)) {
+                window.closeImageModal();
+            }
+        });
+    });
+</script>
+
+
 
 
 </div>
