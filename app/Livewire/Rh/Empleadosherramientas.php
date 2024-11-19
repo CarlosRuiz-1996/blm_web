@@ -15,19 +15,27 @@ class Empleadosherramientas extends Component
     public $herramientas;
     public $ctgherramienta;
 
+    //incializa el compoonente
     public function mount(){
         $this->idempleado= $this->empleadoId;
         $this->herramientas=HerramientaEmpleado::all(); 
     }
+
+    //renderiza el componente con las herramientas del empleado seleccionado
     public function render()
     {
         $empleadoHerramientas=AsignacionHerramientaEmpleado::where('empleado_id',$this->empleadoId)->get();
         return view('livewire.rh.empleadosherramientas',compact('empleadoHerramientas'));
     }
+
+
+    //funcion cuando abre modal asigna el id del empleado y catalogo de herraminetas para asignar
     public function modalherramienta(){
      $this->idempleado= $this->empleadoId;
      $this->herramientas=HerramientaEmpleado::all();
     }
+
+    //funcion para guardar informacion de las herramientas asignadas a cada empleado
     public function modalherramientaGuardar(){
         $this->validate([
             'idempleado' => 'required',
@@ -61,6 +69,8 @@ class Empleadosherramientas extends Component
         //estatus 1 estatus activo
         //estatus 2 estatus dado de baja
         //estatus 3 estatus cambiado
+
+        //funcion para asignar si se cambio el equipo del empleado
        public function cambiar($idherramienta){
         $herramienta=AsignacionHerramientaEmpleado::find($idherramienta);
         $herramienta->fecha_cambio=Carbon::now();
@@ -69,6 +79,7 @@ class Empleadosherramientas extends Component
         $herramienta->save();
         $this->dispatch('success', ['La herramienta se cambio']);
        }
+       //funcion para asignar si se dio de baja el equipo del empleado
        public function darDeBaja($idherramienta){
         $herramienta=AsignacionHerramientaEmpleado::find($idherramienta);
         $herramienta->fecha_devolucion=Carbon::now();
@@ -76,6 +87,8 @@ class Empleadosherramientas extends Component
         $herramienta->save();
         $this->dispatch('success', ['La herramienta se dio de baja para este empleado']);
        }
+              //funcion para eliminar el equipo del empleado
+              //borra registro  relacionado solo con el empleado 
        public function eliminar($idherramienta){
         $herramienta=AsignacionHerramientaEmpleado::find($idherramienta);
         $herramienta->delete();

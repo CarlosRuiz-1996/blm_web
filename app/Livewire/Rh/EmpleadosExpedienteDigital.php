@@ -19,7 +19,7 @@ class EmpleadosExpedienteDigital extends Component
     public $archivos = [];
     // Reglas de validación para el archivo
     protected $rules = [
-        'archivo' => 'required|mimes:jpg,jpeg,png,pdf|max:20480', // Limita tipos y tamaño del archivo (máximo 10 MB)
+        'archivo' => 'required|mimes:jpg,jpeg,png,pdf|max:20480', // Limita tipos y tamaño del archivo (máximo 20 MB)
     ];
 
     public $isOpen = false;
@@ -28,8 +28,8 @@ class EmpleadosExpedienteDigital extends Component
     public $documentId;
 
 
-    
-
+     
+    //abre modal con el id seleccionado
     public function openModal($id)
     {
         $this->documentId = $id; // Asigna el ID al atributo
@@ -42,7 +42,7 @@ class EmpleadosExpedienteDigital extends Component
         $this->isOpendos = true; // Abre el modal
     }
 
-    
+    //renderiza el componente con el catalogo de documentos que requieren los empleados y los documentos que tiene los empleados  
     public function render()
     {
         $tiposDocumentos = CtgDocumentoExpedienteEmpleado::all();
@@ -54,7 +54,7 @@ class EmpleadosExpedienteDigital extends Component
     public function storeDocuments()
     {
         $this->validate([
-            'archivos.*' => 'file|max:2048', // Validar antes de almacenar
+            'archivos.*' => 'file|max:20480', // Validar antes de almacenar
             'empleadoId' => 'required|exists:empleados,id',
             'documentId' => 'required|exists:ctg_documentos_expediente_empleados,id',
         ]);
@@ -103,7 +103,7 @@ class EmpleadosExpedienteDigital extends Component
         session()->flash('message', 'Archivos subidos y almacenados correctamente.');
     }
     
-
+    //elimina los archivos antes de subir
     public function removeFile($index)
     {
         if (isset($this->archivos[$index])) {
@@ -113,6 +113,9 @@ class EmpleadosExpedienteDigital extends Component
         }
     }
 
+
+
+    //descargra documentos
     public function descargarDocumento($documentoId)
 {
     // Buscar el documento en la base de datos
@@ -126,6 +129,8 @@ class EmpleadosExpedienteDigital extends Component
         session()->flash('error', 'El archivo no existe.');
     }
 }
+
+//Elimina documentos cargados a empleados ya cargados en storage
 public function eliminarDocumento($documentoId)
 {
     // Buscar el documento en la base de datos
@@ -148,13 +153,14 @@ public function eliminarDocumento($documentoId)
     }
 }
 
+
+   //modal para visualizar los documentos seleccionados del empleado
     public function openModaltres($id)
     {
-        $documento = DocumentoEmpleado::find($id); // Ajusta según tu modelo
+        $documento = DocumentoEmpleado::find($id);
     
-        // Lógica para mostrar el documento. Podrías redirigir a una vista, abrir en un modal, etc.
         if ($documento) {
-            $this->url = $documento->url_archivo; // Asegúrate de que la ruta del archivo esté correctamente configurada
+            $this->url = $documento->url_archivo;
             $this->isOpentres = true; // Abre el modal
         }
     }

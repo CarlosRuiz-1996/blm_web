@@ -74,17 +74,21 @@ class Altaempleado extends Component
      use WithFileUploads;
     public $roles_user = [];
     public $revisor;
+
+    //incializa el componente con estos valores en los select 
     public function mount()
     {
         $this->roles=Role::all();
         $this->colonias = collect();
         $this->areas = Ctg_Area::all();
     }
+    //renderiza la vista altaempleado
     public function render()
     {
         return view('livewire.rh.altaempleado');
     }
 
+    //valida e codigo postal para obtener municipio y estado 
     public function validarCp()
     {
         $this->validate([
@@ -110,12 +114,14 @@ class Altaempleado extends Component
             $this->cp_invalido = "Codigo postal no valido";
         }
     }
+
+    //escucha el evento save-empleado 
     #[On('save-empleado')]
     public function guaradaempleado()
     {
         
 
-
+        //valida datos recibidos
         $this->validate([
             'nombreContacto' => 'required|string|max:255',
             'apepaterno' => 'required|string|max:255',
@@ -135,7 +141,7 @@ class Altaempleado extends Component
 
         ]);
 
-
+        //crea el empleado con su usuario y sus roles
         try {
             DB::transaction(function () {
                 $id = User::create([
@@ -147,7 +153,6 @@ class Altaempleado extends Component
                 ]);
 
                 if ($this->roles_user) {
-                    // $user->assignRole($request->input('roles'));
                     $id->roles()->sync($this->roles_user);
                 }
                 $idempleado = Empleado::create([
@@ -201,6 +206,7 @@ class Altaempleado extends Component
             });
             $this->dispatch('success', ['El empleado se creó con éxito']);
         } catch (\Exception $e) {
+            //cacha el error y manda msj
             dd($e->getMessage());
             $this->dispatch('error', ['Ocurrió un error al registrar el empleado']);
         }

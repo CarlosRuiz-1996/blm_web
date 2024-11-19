@@ -28,11 +28,13 @@ class SolicitudVacaciones extends Component
     public $empleado_id;
     
 
-
+   //incializa el componente
     public function mount(){
         $this->empleados = Empleado::all(); // Carga los empleados
         $this->motivos = CtgMotivoVacaciones::all(); // Carga los motivos de vacaciones
     }
+
+    //rendeeriza el componenete paginado  validando filtros
     public function render()
     {
         $this->empleados = Empleado::all(); // Carga los empleados
@@ -59,6 +61,8 @@ class SolicitudVacaciones extends Component
 
         return view('livewire.rh.solicitud-vacaciones', compact('solicitudes'));
     }
+
+    //resetea filtros
     public function resetFilters()
     {
         $this->reset(['empleado_id_filtro', 'fecha_inicio_filtro', 'fecha_fin_filtro', 'status_vacaciones_filtro']);
@@ -71,6 +75,8 @@ class SolicitudVacaciones extends Component
         'ctg_motivo_vacaciones_id' => 'required|exists:ctg_motivo_vacaciones,id', // Cambia según tu tabla
     ];
 
+
+    //guarda la solicitud de vacaciones edicion o nueva
     public function submit()
     {
         // Validar y guardar la solicitud
@@ -110,6 +116,8 @@ class SolicitudVacaciones extends Component
         $this->closeModal();
     }
 
+
+    //abre modal si es que es necesario editar
     public function openModal($solicitudId = null)
     {
         $this->isOpen = true;
@@ -127,7 +135,7 @@ class SolicitudVacaciones extends Component
             $this->solicitudId=null;
         }
     }
-
+    //cierra modal
     public function closeModal()
     {
         $this->isOpen = false;

@@ -16,16 +16,17 @@ class CotizacionesIndexTabla extends Component
     public $fechainicio;
     public $fechafin;
     public $nombrecliente;
-    
+    //escucha el evento para  reset paginacion
     protected $listeners = ['resetPagination'];
     
-
+    // renderiza el componente con los daos obtenidos en buscacotizacion
     public function render()
     {
         $data = $this->BuscarCotizacion();
         return view('livewire.cotizaciones-index-tabla', compact('data'));
     }
-
+    
+    //filtra la informacion de cotizacion dependiendo el filtro
     public function BuscarCotizacion()
     {
         $query = DB::table('cotizacion AS ctz')

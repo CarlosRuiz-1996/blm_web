@@ -9,6 +9,8 @@ use Livewire\Component;
 
 class HomeRh extends Component
 {
+
+    //renderiza la vista con el conteo de empleados activos e inactivos  y el conteo total para sacar el porcentaje
     public function render()
     {
         $conteos = Empleado::selectRaw('count(*) as total, sum(case when status_empleado = 1 then 1 else 0 end) as activos, sum(case when status_empleado = 0 then 1 else 0 end) as inactivos')

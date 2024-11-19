@@ -28,6 +28,9 @@ class EmpleadosPerfil extends Component
     
 
     public $foto;
+
+
+    //incializa el componenete  con los valosres de los catalogos
     public function mount($id)
     {
         $this->roles=Role::all();
@@ -37,7 +40,7 @@ class EmpleadosPerfil extends Component
         $this->id = $id; // Asignar el ID recibido a la propiedad $id
     }
    
-
+//abre modal de edicion y asigna valores encontrados para el empleado
     public function openModal($id)
     {
         $employee = Empleado::find($id);
@@ -85,7 +88,7 @@ class EmpleadosPerfil extends Component
                 $empleado->status_empleado = 1; // Activo
                 $empleado->save();
         
-                // Verifica si el empleado tiene un usuario asociado y actívalo también
+                // Verifica si el empleado tiene un usuario asociado y actíva
                 if ($empleado->user) {
                     $empleado->user->status_user = 1; // Activo
                     $empleado->user->save();
@@ -122,7 +125,7 @@ class EmpleadosPerfil extends Component
         // Pasar el empleado a la vista
         return view('livewire.rh.empleados-perfil', ['empleado' => $empleado]);
     }
-
+   //valida coidgo postal  y obtiene estado y municipio
     public function validarCp()
     {
         $this->validate([
@@ -199,8 +202,6 @@ class EmpleadosPerfil extends Component
             // Guardar los cambios
             $employee->user->save(); // Guardar cambios del usuario
             $employee->save(); // Guardar cambios del empleado
-
-            // O puedes agregar un mensaje de éxito o redireccionar
             session()->flash('message', 'Empleado actualizado correctamente.');
         }
 }

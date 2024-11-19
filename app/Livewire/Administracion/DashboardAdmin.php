@@ -26,12 +26,16 @@ class DashboardAdmin extends Component
     public $recoleccionServicios2;
     public $totalactas;
     public $totalreprogramacion;
+
+    //incializa el componenete con la fecha de inicio de mes y fin del mes actual
     public function mount()
     {
         // Inicializa las fechas al inicio y fin del mes actual
         $this->startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
         $this->endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
     }
+
+    //renderiza el componente
     public function render()
     {
         $this->updateData();
@@ -46,7 +50,7 @@ class DashboardAdmin extends Component
         $totalderutas=Ruta::count();
         return view('livewire.administracion.dashboard-admin',compact('diasrutas','totalderutas','recoleccionServicios','entregaServicios','resguardototal','inconsistencias','reprogramacion'));
     }
-
+//actulliza la informacion con el filtro del las fechas seleccionadas en la grafica
     public function updateData()
 {
     // Verificar si ambos filtros están presentes
@@ -77,6 +81,7 @@ class DashboardAdmin extends Component
         $this->dispatch('updatedChartData', serviciosEntrega:$this->serviciosEntrega, serviciosRecoleccion:$this->serviciosRecoleccion);
     }
 }
+//obtiene informacion de montos de fechas seleccionadas
 public function datosMontos()
 {
     // Verificar si ambos filtros están presentes
@@ -96,6 +101,7 @@ public function datosMontos()
     }
 }
 
+//obtiene informacion de recoleccion por fechas
 public function datosrecoleccion()
 {
     if ($this->startDate && $this->endDate) {
@@ -110,6 +116,7 @@ public function datosrecoleccion()
     return RutaServicio::where('tipo_servicio', '2')->paginate(5, pageName: 'invoices-pagedos'); // Devuelve paginación por defecto
 }
 
+//obtiene informacion de entregas por fecha seleccionada
 public function datosentrega()
 {
     if ($this->startDate && $this->endDate) {
@@ -123,6 +130,8 @@ public function datosentrega()
 
     return RutaServicio::where('tipo_servicio', '1')->paginate(5, pageName: 'invoices-page'); // Devuelve paginación por defecto
 }
+
+//obtiene informacion de inconsistencias
 public function datosinconsistencias()
 {
     if ($this->startDate && $this->endDate) {
@@ -135,7 +144,8 @@ public function datosinconsistencias()
 
     return Inconsistencias::paginate(5, pageName: 'invoices-page3'); // Devuelve paginación por defecto
 }
-
+  
+//obtiene informacion de los servicios que fueron reporgramados
 public function datosreprogramacion(){
 
     if ($this->startDate && $this->endDate) {

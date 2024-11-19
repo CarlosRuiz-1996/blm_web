@@ -25,7 +25,7 @@ class ReporteGeneral extends Component
     public $fechaInicio;
     public $fechaFin;
     public $razonsocial;// Cantidad predeterminada de resultados por página
-
+   //slecciona el filtro de la columa por la cual se ordena
     public function sortBy($column)
     {
         // Cambia la dirección de ordenación si la columna es la misma, de lo contrario reiníciala a ascendente
@@ -45,15 +45,15 @@ class ReporteGeneral extends Component
     }
     public function updatingFechaInicio()
     {
-        $this->resetPage(); // Reinicia a la primera página al cambiar la cantidad de resultados por página
+        $this->resetPage(); // Reinicia a la primera página al cambiar la fehca de inicio 
     }
     public function updatingFechaFin()
     {
-        $this->resetPage(); // Reinicia a la primera página al cambiar la cantidad de resultados por página
+        $this->resetPage(); // Reinicia a la primera página al cambiar la fechs fin 
     }
     public function updatingRazonsocial()
     {
-        $this->resetPage(); // Reinicia a la primera página al cambiar la cantidad de resultados por página
+        $this->resetPage(); // Reinicia a la primera página al cambiar la razon social  
     }
 
     public function render()
@@ -94,12 +94,13 @@ class ReporteGeneral extends Component
         return view('livewire.reportegeneral.reporte-general', compact('clientes'));
     }
     
-
+    //carga iinformacion del cliente en modal y lo abre
     public function loadCliente($id)
     {
         $this->clienteSeleccionado = Cliente::find($id);
         $this->isOpen=true;
     }
+    //cierra modal
     public function cerrarModal(){
         $this->clienteSeleccionado = null;
         $this->isOpen=false;
@@ -110,7 +111,7 @@ class ReporteGeneral extends Component
        $this->clienteMovimientos;
        $this->isOpenMovimientos=true;
     }
-    
+    //carga los servicios del cliente
     public function loadClienteServicios($id){
         $this->clienteServicios = Servicios::where('cliente_id', $id)
     ->when($this->fechaInicio && $this->fechaFin, function ($query) {
@@ -135,6 +136,7 @@ class ReporteGeneral extends Component
         $this->isOpenServicios=true;
         
     }
+    //cierra modal de los servicios del cliente y limpia
     public function cerrarModalServicios(){
         $this->clienteServicios = null;
         $this->isOpen=false;
@@ -144,6 +146,7 @@ class ReporteGeneral extends Component
         $this->isOpen=false;
     }
 
+    //inicializa el componente
     public function mount()
     {
         // Asignar el primer día del mes actual

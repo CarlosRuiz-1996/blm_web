@@ -30,6 +30,9 @@ class TablaDocumentos extends Component
 
     public $cliente_status;  
     public $expediente;
+
+
+    //inicializa el componente con el informacion del cliente
     public function mount(Cliente $cliente,$cliente_status)
     {
         $this->expediente = expediente_digital::where('cliente_id',$cliente->id)->first();
@@ -41,11 +44,12 @@ class TablaDocumentos extends Component
         $this->cargarDocumentosExpediente();
         $this->cargarDocumentosExpedienteBene();
     }
+    //renderiza el componente
     public function render()
     {
         return view('livewire.tabla-documentos');
     }
-
+    //obtiene ls documentos del cliente
     public function cargarDocumentosExpediente()
     {
         // Obtener los documentos del expediente digital actualizado
@@ -55,6 +59,7 @@ class TablaDocumentos extends Component
             ->select('ex.ctg_documentos_id', 'ex.document_name')
             ->get();
     }
+    //obtiene los docuemntos del clinte-beneficiario
     public function cargarDocumentosExpedienteBene()
     {
         // Obtener los documentos del expediente digital actualizado
