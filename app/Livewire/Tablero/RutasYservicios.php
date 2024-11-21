@@ -17,96 +17,94 @@ class RutasYservicios extends Component
 {
 
 
-    // detalles de la comrpa
     use WithFileUploads;
     public $readyToLoadModal = false;
     public $evidencia_foto = [];
     protected $listeners = ['modalCerrado'];
-    public $showModal=false;
+    public $showModal = false;
     public $serviciosRutasevidencias = [];
-    public $editIndex; // Para saber qué servicio estamos editando
+    public $editIndex;
     public $isLoading = true;
 
+    //escuchar eventos en tiempo real  sobre las notificaciones para renderizar el componenete livewire
     public function getListeners()
     {
         $empleado_id = Auth::user()->empleado->id;
         return [
-            // Private Channel
-            // "echo:notification.{$empleado_id},notification" => 'render'
             "echo-notification:App.Models.Empleado.{$empleado_id},notification" => 'render',
         ];
     }
+
+    //obtenener servicios rutas en moodal
     public function rutamonto($rutaServiciosId)
-{
-    $this->isLoading = true;
-    // Obtener los servicios como colección de modelos Eloquent
-    $this->serviciosRutasevidencias = ServicioRutaEnvases::with(['rutaServicios', 'evidencia_recolecta', 'evidencia_entrega']) // Cargar todas las relaciones necesarias
-        ->where('ruta_servicios_id', $rutaServiciosId)
-        ->where('status_envases', 1)
-        ->get()
-        ->toArray(); // Convertir a array si es necesario
-                                            $this->editIndex = null; // Resetear el índice de edición
-                                            $this->isLoading=false;
-}
-
-public function editService($index)
-{
-    $this->editIndex = $index; // Establecer el índice del servicio que estamos editando
-}
-
-public function updateService()
-{
-    $rutaServiciosId = null;
-
-    foreach ($this->serviciosRutasevidencias as $key => $servicio) {
-        // Validar cada servicio
-        $this->validate([
-            "serviciosRutasevidencias.$key.cantidad" => 'required|numeric',
-            "serviciosRutasevidencias.$key.evidencianueva" => 'nullable|image|max:102400', // Validar que sea una imagen si se carga
-        ]);
-
-        // Actualizar el servicio existente
-        $servicioModelo = ServicioRutaEnvases::find($servicio['id']); // Busca el modelo original usando el ID
-
-        // Si hay una nueva evidencia, guarda la imagen
-        if (isset($servicio['evidencianueva'])) {
-            // Construir el nombre de la imagen según el tipo de servicio
-            $tipoServicio = $servicioModelo->tipo_servicio; // Asume que esta propiedad existe en tu modelo
-            $rutaServicioId = $servicioModelo->ruta_servicios_id; // Asumir que ya tienes el ID de la ruta de servicios
-        
-            // Define el nombre del archivo según el tipo de servicio
-            $evidenciaId = $tipoServicio == "2" ? $servicioModelo->evidencia_recolecta->id : $servicioModelo->evidencia_entrega->id; // Cambia aquí
-        
-            $nombreArchivo = "Servicio_{$rutaServicioId}_" . ($tipoServicio == "2" ? "recolecta" : "entrega") . "_{$evidenciaId}_evidencia.png";
-            // Guardar la imagen en la carpeta correspondiente
-            $path = $servicio['evidencianueva']->storeAs(path: 'evidencias/EntregasRecolectas/', name:$nombreArchivo);
-            
-        }
-        // Actualizar la cantidad directamente en el modelo
-        $servicioModelo->cantidad = $servicio['cantidad'];
-        $servicioModelo->save(); // Guardar los cambios
-
-        // Asignar el ID de ruta_servicios una vez
-        if ($rutaServiciosId === null) {
-            $rutaServiciosId = $servicioModelo->ruta_servicios_id; // Obtener el ID de la relación
-        }
-        
+    {
+        $this->isLoading = true;
+        // Obtener los servicios como colección de modelos Eloquent
+        $this->serviciosRutasevidencias = ServicioRutaEnvases::with(['rutaServicios', 'evidencia_recolecta', 'evidencia_entrega']) // Cargar todas las relaciones necesarias
+            ->where('ruta_servicios_id', $rutaServiciosId)
+            ->where('status_envases', 1)
+            ->get()
+            ->toArray(); // Convertir a array si es necesario
+        $this->editIndex = null; // Resetear el índice de edición
+        $this->isLoading = false;
     }
 
-    // Calcular la suma total de las cantidades después de actualizar los servicios
-    $totalCantidad = ServicioRutaEnvases::where('ruta_servicios_id', $rutaServiciosId)->sum('cantidad');
+    //obtener id del servicio a editar
+    public function editService($index)
+    {
+        $this->editIndex = $index; // Establecer el índice del servicio que estamos editando
+    }
+   //actualizar  ruta_servicio
+    public function updateService()
+    {
+        $rutaServiciosId = null;
 
-    // Actualizar el monto en ruta_servicios
-    RutaServicio::where('id', $rutaServiciosId)->update(['monto' => $totalCantidad]);
+        foreach ($this->serviciosRutasevidencias as $key => $servicio) {
+            // Validar cada servicio
+            $this->validate([
+                "serviciosRutasevidencias.$key.cantidad" => 'required|numeric',
+                "serviciosRutasevidencias.$key.evidencianueva" => 'nullable|image|max:102400', // Validar que sea una imagen si se carga
+            ]);
 
-    // Opcional: restablecer los valores
-    $this->editIndex = null; // Resetear el índice de edición
-    $this->serviciosRutasevidencias=[];
-    $this->rutamonto($rutaServiciosId);
-}
+            // Actualizar el servicio existente
+            $servicioModelo = ServicioRutaEnvases::find($servicio['id']); // Busca el modelo original usando el ID
 
-    
+            // Si hay una nueva evidencia, guarda la imagen
+            if (isset($servicio['evidencianueva'])) {
+                // Construir el nombre de la imagen según el tipo de servicio
+                $tipoServicio = $servicioModelo->tipo_servicio; 
+                $rutaServicioId = $servicioModelo->ruta_servicios_id;
+                // Define el nombre del archivo según el tipo de servicio
+                $evidenciaId = $tipoServicio == "2" ? $servicioModelo->evidencia_recolecta->id : $servicioModelo->evidencia_entrega->id; // Cambia aquí
 
+                $nombreArchivo = "Servicio_{$rutaServicioId}_" . ($tipoServicio == "2" ? "recolecta" : "entrega") . "_{$evidenciaId}_evidencia.png";
+                // Guardar la imagen en la carpeta correspondiente
+                $path = $servicio['evidencianueva']->storeAs(path: 'evidencias/EntregasRecolectas/', name: $nombreArchivo);
+            }
+            // Actualizar la cantidad directamente en el modelo
+            $servicioModelo->cantidad = $servicio['cantidad'];
+            $servicioModelo->save(); // Guardar los cambios
+
+            // Asignar el ID de ruta_servicios una vez
+            if ($rutaServiciosId === null) {
+                $rutaServiciosId = $servicioModelo->ruta_servicios_id; // Obtener el ID de la relación
+            }
+        }
+
+        // Calcular la suma total de las cantidades después de actualizar los servicios
+        $totalCantidad = ServicioRutaEnvases::where('ruta_servicios_id', $rutaServiciosId)->sum('cantidad');
+
+        // Actualizar el monto en ruta_servicios
+        RutaServicio::where('id', $rutaServiciosId)->update(['monto' => $totalCantidad]);
+
+        // Opcional: restablecer los valores
+        $this->editIndex = null; // Resetear el índice de edición
+        $this->serviciosRutasevidencias = [];
+        $this->rutamonto($rutaServiciosId);
+    }
+
+ 
+   //renderiza el componente con los servicios de las rutas del dia
     public function render()
     {
         $dia = $this->obtenerDia();
@@ -117,8 +115,8 @@ public function updateService()
         return view('livewire.tablero.rutas-yservicios', compact('rutaEmpleados'));
     }
 
-    public function obtenerservicio() {}
 
+    //obtiene el dia de la semana para comprar en el render
     public function obtenerDia()
     {
         $dayOfWeek = Carbon::now()->dayOfWeek; // Obtiene el día de la semana (0 para Domingo, 1 para Lunes, etc.)
@@ -149,7 +147,7 @@ public function updateService()
         return $id;
     }
 
-
+    //obtener evidencias de entrega del servicio seleccionado
     public function evidenciaEntrega($id)
     {
         $this->readyToLoadModal = false;
@@ -167,6 +165,8 @@ public function updateService()
 
         $this->readyToLoadModal = true;
     }
+
+     //obtener evidencias de recolecta del servicio seleccionado
     public function evidenciaRecolecta($id)
     {
         $this->readyToLoadModal = false;
@@ -190,6 +190,7 @@ public function updateService()
         $this->readyToLoadModal = true;
     }
 
+     //obtener evidencias de compras del servicio seleccionado
     public function evidenciaCompra(DetallesCompraEfectivo $detalle)
     {
         $detalles = $detalle;
@@ -200,6 +201,8 @@ public function updateService()
         $this->readyToLoadModal = true;
     }
 
+
+    //escucha el evento de cerrae modal para resetear valores
     #[On('modalCerrado')]
     public function modalCerrado()
     {

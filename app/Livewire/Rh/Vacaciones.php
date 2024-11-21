@@ -13,6 +13,8 @@ class Vacaciones extends Component
     public $solicitudesactivas;
     public $solicitudesactivascalen;
     public $solicitudestermin;
+
+    //incializa el componente
     public function mount() {
         // 1. Actualizar el estatus de las solicitudes que ya han finalizado
         SolicitudVacacion::where('status_vacaciones', 1)
@@ -32,6 +34,7 @@ class Vacaciones extends Component
             })
             ->toArray(); // Convertir a array
     }
+    //renderiza los tipo de solicituds de vacacion dependiendo el estaus
     public function render()
     {
         $this->solicitudespen=SolicitudVacacion::where('status_vacaciones',3)->count();

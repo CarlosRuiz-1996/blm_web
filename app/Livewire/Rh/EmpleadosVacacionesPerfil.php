@@ -12,7 +12,7 @@ class EmpleadosVacacionesPerfil extends Component
 
     public $empleadoId; // Variable para almacenar el ID del empleado
 
-    // Método para inicializar el componente con el ID del empleado
+    //inicializar el componente con el ID del empleado
     public function mount($empleadoId)
     {
         $this->empleadoId = $empleadoId;

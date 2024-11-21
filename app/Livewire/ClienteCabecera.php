@@ -10,6 +10,8 @@ class ClienteCabecera extends Component
 {
     public $cliente;
     public $direccion_completa;
+
+    //incializar el componente con los datos del cliente
     public function mount(Cliente $cliente){
         $this->cliente = $cliente;
         $codigo = DB::select("
@@ -28,6 +30,7 @@ class ClienteCabecera extends Component
 
     $this->direccion_completa = 'Calle ' . $cliente->direccion.', Colonia '.$colonia. ', '.$cliente->cp->cp.' ' . $codigo[0]->municipio . ' ' . $codigo[0]->name;
     }
+    //renderiza el componente
     public function render()
     {
         return view('livewire.cliente-cabecera');

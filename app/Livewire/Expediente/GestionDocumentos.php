@@ -91,7 +91,7 @@ class GestionDocumentos extends Component
     public $isOpen = false;
     public $cliente_sts;
 
-
+    //obtiene informacion del cliente al cargar la pagina
     public function mount(Request $request)
     {
 
@@ -131,28 +131,33 @@ class GestionDocumentos extends Component
         $this->cargarDocumentosExpediente();
         $this->cargarDocumentosExpedienteBene();
     }
+    //renderiza el componente
     public function render()
     {
         return view('livewire.expediente.gestion-documentos');
     }
     public function cargarDocumentosExpediente()
     {
-        // Obtener los documentos del expediente digital actualizado
+        // Obtener los documentos del expediente digital actualizado del titular
         $this->documentosexpediente = DB::table('expediente_digital as exp')
             ->join('expediente_documentos as ex', 'ex.expediente_digital_id', '=', 'exp.id')
             ->where('exp.cliente_id', $this->id)
             ->select('ex.ctg_documentos_id', 'ex.document_name', 'ex.id')
             ->get();
     }
+
+    //obtiene registros de documentos de benedificiarios
     public function cargarDocumentosExpedienteBene()
     {
-        // Obtener los documentos del expediente digital actualizado
+        // Obtener los documentos del expediente digital actualizado de beneficiarios
         $this->documentosexpedienteBene = DB::table('expediente_digital as exp')
             ->join('expediente_documentos_benf as ex', 'ex.expediente_digital_id', '=', 'exp.id')
             ->where('exp.cliente_id', $this->id)
             ->select('ex.ctg_documentos_benf_id', 'ex.document_name', 'ex.id')
             ->get();
     }
+
+    //funcion para cargadr docuemntos
     public function agregarArchivo()
     {
         $this->validate([
@@ -220,6 +225,8 @@ class GestionDocumentos extends Component
             $this->dispatch('agregarArchivocre', ['nombreArchivo' => 'Fallo al subir archivo'], ['tipomensaje' => 'error']);
         }
     }
+
+    //funcion para agregra archivos a beneficiario
     public function agregarArchivoBeneficiario()
     {
         $this->validate([
@@ -298,6 +305,7 @@ class GestionDocumentos extends Component
         $this->isOpen = false;
     }
 
+    //funcion paraeliminar documentos 
     public function eliminarArchivo($iddocumento)
     {
         // Encuentra el documento por su ID
@@ -316,6 +324,7 @@ class GestionDocumentos extends Component
             $this->dispatch('ArchivoEliminado', ['nombreArchivo' => 'Fallo al intentar eliminar archivo'], ['tipomensaje' => 'error']);
         }
     }
+     //funcion para eliminar documentos de beneficiario 
     public function eliminarArchivoBene($iddocumento)
     {
         // Encuentra el documento por su ID

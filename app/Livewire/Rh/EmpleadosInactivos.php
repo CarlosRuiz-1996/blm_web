@@ -12,6 +12,7 @@ class EmpleadosInactivos extends Component
 
     public $claveEmpleado;
     public $NombreEmpleado;
+    //renderiza el componenete con los empleados con estatus 0 = incativos
     public function render()
     {
         $query = Empleado::where('status_empleado', 0); // Filtra por estatus 1
