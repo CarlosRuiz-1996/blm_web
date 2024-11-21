@@ -11,16 +11,24 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class CompraEfectivoExport implements FromView,WithStyles, ShouldAutoSize
 {
     protected $compras;
+    /**
+     * recibe objeto para renderizar a la vista
+     * 
+     * revisar documentacion de laravel excel
+     * 
+     */
     public function __construct($compras)
     {
         $this->compras = $compras;
     }
+
+    /*renderiza una vista para mapear datos*/
     public function view():View
     {
         return view('exports.bancos.compra-efectivo', ['compras'=>$this->compras]);
     }
 
-
+/**agrega estilos a las tablas */
     public function styles(Worksheet $sheet)
     {
         return [

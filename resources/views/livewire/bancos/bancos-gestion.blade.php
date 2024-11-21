@@ -1,5 +1,6 @@
 <div wire:init='loadClientes'>
 
+    {{-- componnete renderizado por livewire usa boostrap. --}}
     <div class="container-fluid">
         <div class="info-box">
             {{-- montoo total --}}
@@ -79,7 +80,7 @@
         </div>
 
         <ul class="nav nav-tabs" wire:ignore.self id="custom-tabs-one-tab" role="tablist">
-            <!-- Pestaña "Servicios" -->
+            <!-- navbar que se muestra en vista de rutas -->
 
             <li class="nav-item">
                 <a class="nav-link {{ $activeNav[0] }}" wire:click='ActiveNav(0)' id="bancos-tab" data-toggle="pill"
@@ -131,6 +132,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {{-- recorree objeto de clientes --}}
                                 @foreach ($clientes as $cliente)
                                     <tr>
                                         <td>{{ $cliente->razon_social ?? 'N/A' }}</td>
@@ -141,6 +143,7 @@
                                             ${{ $cliente->resguardo > 0 ? number_format($cliente->resguardo, 2, '.', ',') : 0 }}
                                         </td>
                                         <td>
+                                            {{-- despliega modales y funcion de livewire para poder llenar info del moal --}}
                                             <button class="btn btn-info d-inline-block"
                                                 title="detalles de movimientos" data-toggle="modal"
                                                 wire:click="showDetail({{ $cliente->id }})"
@@ -152,11 +155,7 @@
                                                 data-target="#modalAdd">
                                                 <i class="fas fa-plus"></i>
                                             </button>
-                                            {{-- <div class="d-inline-block" wire:ignore.self>
-                                                <livewire:clientes.servicios-clientes :cliente="$cliente"
-                                                    :banco="true" />
-
-                                            </div> --}}
+                                          
 
                                         </td>
                                     </tr>
@@ -166,13 +165,14 @@
                             </tbody>
                         </table>
 
-
+                        {{-- pagina la tabla --}}
                         @if ($clientes->hasPages())
                             <div class="col-md-12 text-center">
                                 {{ $clientes->links() }}
                             </div>
                         @endif
                     @else
+
                         @if ($readyToLoad)
                             <h3 class="col-md-12 text-center">No hay datos disponibles</h3>
                         @else
@@ -180,7 +180,6 @@
                             <div class="col-md-12 text-center">
                                 <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
                                     role="status">
-                                    {{-- <span class="visually-hidden">Loading...</span> --}}
                                 </div>
                             </div>
                         @endif
@@ -189,7 +188,7 @@
             </div>
             <div class="tab-pane fade {{ $activeNav[1] }} {{ $showNav[1] }} " id="compras" role="tabpanel"
                 aria-labelledby="compras-tab">
-
+                {{-- inputs para aplicar filtros.. estos filtros se vinculan a una variable en tiempo real --}}
                 <div class="card col-md-12 ">
                     <div class="row mt-3">
                         <div class="col-md-3">
@@ -291,7 +290,6 @@
                             <div class="col-md-12 text-center mt-3">
                                 <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
                                     role="status">
-                                    {{-- <span class="visually-hidden">Loading...</span> --}}
                                 </div>
                             </div>
                         @endif
@@ -1041,8 +1039,11 @@
 
     @push('js')
         <script>
+            //inicializa livewire
             document.addEventListener('livewire:initialized', () => {
 
+
+                //escucha eventos de livewire
                 Livewire.on('alert', function([message]) {
 
                     if (message[1] == 'success') {

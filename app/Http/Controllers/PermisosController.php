@@ -13,6 +13,7 @@ class PermisosController extends Controller
         return view('admin.roles-permisos.gestion-permisos',compact('permisos'));
     }
 
+    //funcion para crear un permiso
     public function store(Request $request){
         Permission::create([
             'name' => $request->input('permiso'),
@@ -22,7 +23,8 @@ class PermisosController extends Controller
     }
 
 
-    
+        //funcion para actualizar un permiso
+
     public function updated_permiso(Request $request,Permission $permiso)
     {
         
@@ -39,6 +41,7 @@ class PermisosController extends Controller
         
     }
 
+        //funcion para eliminar un permiso
 
     public function destroy(Permission $permiso)
     {

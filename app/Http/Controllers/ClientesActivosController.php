@@ -22,6 +22,8 @@ class ClientesActivosController extends Controller
         return view('clientesactivos.clientesnuevos');
 
     }
+
+    //redirecciona a una vista de clientes y realiza una consulta a la bd con Query Builder para acceder a la direccion
     public function detalles(Cliente $cliente, $op)
     {   
 

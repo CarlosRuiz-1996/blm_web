@@ -7,7 +7,9 @@
     <h1>Gestion de Catalogos</h1>
 
 
-
+{{-- listado de cards de catalogos de blm...
+aqui se listan los catalogos mas importantes de blm
+--}}
 @stop
 
 @section('content')

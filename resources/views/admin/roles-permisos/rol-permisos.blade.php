@@ -5,6 +5,10 @@
 
 @section('content_header')
     <h1>Roles y permisos</h1>
+
+{{-- listado de roles los cuales se checkean en base a los permisos que tiene el rol, formulario echo con laravel colective
+los roles y permisos se crearon en base a laravel permisos de spatie.
+--}}
 @stop
 
 @section('content')

@@ -5,6 +5,8 @@
 
 @section('content_header')
     <h1 class="ml-2">Gestion de Roles</h1>
+        {{-- vista de los la vista de roles --}}
+
 @stop
 @section('content')
     <x-alert />

@@ -24,10 +24,14 @@ use Livewire\Attributes\On;
 use Livewire\WithoutUrlPagination;
 use Maatwebsite\Excel\Facades\Excel;
 
+/*revisar documentacion de livewire*/
+
 class BancosGestion extends Component
 {
-
+    /* implementa paginacion*/
     use WithPagination,WithoutUrlPagination;
+
+    /** implementa un objeto de formulario de bancos, el cual contienen logica de validacion y funciones para save y update, get, delete */
     public BancosForm $form;
     public $readyToLoad = false;
     public $readyToLoadModal = false;
@@ -36,10 +40,13 @@ class BancosGestion extends Component
     public $showNav = ['show', '', '', ''];
 
 
+    //define una propiedad protegida, la cual sera ignorada por el url
     protected $queryString = [
         'form.searchCliente' => ['except' => ''],
     ];
 
+
+    //funcion para controlar el refresh de livewire y mantrener activo el navBar en la vista,
     public function ActiveNav($op)
     {
         foreach ($this->showNav as $key => $value) {
@@ -53,9 +60,22 @@ class BancosGestion extends Component
 
         $this->showNav[$op] = 'show';
     }
+
+
+    /**renderiza vista de livewire */
     public function render()
     {
 
+
+        /***
+         * readyToLoad, variable booleana que detecta si es la primera ves que entras a la pagina
+         * si es la primera ves sera false, entoces la pagina se cargara sin realizar la consulta a los datos
+         * la vista se envuelve con la funcion loadClientes, que se ejecutara una ves que cargue la pagina
+         * posterior mente la pagina recargara y entrara a render pero como esta ves readyToLoad es true, ahora si buscara la informacion
+         * posteriormente pasa la informacion a la vista livewire por medio de compact, funcioon de laravel.
+         * 
+         * la vista controla este funcionamiento con una condicion que indica que si readyToLoad es false muestra un spiner de lo contrario carga la informacion.
+         */
         if ($this->readyToLoad) {
             $resguardototal = $this->form->getCountResguadoClientes();
             $resguardototalCliente = Cliente::where('status_cliente', 1)->sum('resguardo');
@@ -63,7 +83,6 @@ class BancosGestion extends Component
             $clientes = $this->form->getAllClientes();
             $servicios = $this->form->getAllBancosServicios();
             $compras = $this->form->getAllComprasEfectivo();
-            // dd($clientes);
             $acreditaciones = $this->form->getAllAcreditaciones();
         } else {
             $resguardototal = 0;
@@ -81,11 +100,15 @@ class BancosGestion extends Component
     {
         $this->readyToLoad = true;
     }
+
+    /*cada que se actualiza la valirable form.searchCliente se renderiza la pagina y no se modifica la url.*/
     public function updatingFormSearchCliente()
     {
         $this->resetPage();
     }
 
+
+    /***modifica las variables con informacion de un cliente especifico para mostrar su detalle en la vista */
     public function showMonto(Cliente $cliente)
     {
         $this->form->cliente = $cliente;
@@ -103,6 +126,9 @@ class BancosGestion extends Component
         return $this->cliente_detail->montos()->orderBy('id', 'DESC')->paginate(10, pageName: 'montos');
     }
 
+
+    /**funcion que escucha un evento desde la vista por medio de js para limpiar datos de las variables */
+
     #[On('clean')]
     public function limpiarDatos()
     {
@@ -117,6 +143,8 @@ class BancosGestion extends Component
         );
     }
 
+
+    /*funcion que detecta cuando hay un cambio en el stage de la vista y revisa cual modelo cambio, en caso de que sea el monto se hace una opercaion de aumentar*/
     public function updating($property, $value)
     {
 
@@ -129,6 +157,8 @@ class BancosGestion extends Component
         }
     }
 
+
+    /**esta funcion implemnenta el objeto form y llama a una funcion para guardar la informacion, posteriormente dispara un evento a la vista que detecta por js.*/
     public function add()
     {
         $res =  $this->form->addMonto();
@@ -172,6 +202,16 @@ class BancosGestion extends Component
             'monto_e' => 'numeric', // Solo números permitidos
         ]);
     }
+
+    /**esta funcion agrega a un array dimencional informacion de las compras que se deben hacer
+     * 
+     * validate, realiza cierta logica de validacion para revisar que los dtaos sean correctos
+     * CtgConsignatario::find--- entra a buscar un modelo del consignatario con eloquent
+     * posterior agrega al array un array con datos de la compra para esperar a ser giuardados a la bd
+     * se incrementa el total de la compra, variable global con el monto de la compra de efectivo
+     * se resetean las variables.
+     * 
+     */
     public function addCompra()
     {
         $this->validate(
@@ -194,6 +234,9 @@ class BancosGestion extends Component
         $this->total += $this->monto_e;
         $this->reset(['cajero_id', 'monto_e']);
     }
+
+
+    /**elimina del array datos de una compra de efectivo antes de guardarlo en la db */
     public function removeCompra($index)
     {
         unset($this->compras_efectivo[$index]);
@@ -212,16 +255,24 @@ class BancosGestion extends Component
             $this->servicios_cliente = Servicios::where('cliente_id', $value)->where('status_servicio', '>=', 3)->get();
     }
 
+
+    /**se finaliza la compra y se guardan los datos del array mapeandolo y creanto detalles de compra.
+     * 
+     * se ocupa una transaccion de queryBuilder para poder controlar si hay algun error se realice un rollback
+     * de lo contrario se realice un commit de la informacion.
+     * 
+     * se puede sustituir con:
+     * DB::transaction(function(){//accionesn}.});
+     * en esta ocuacion se realizo de esta forma para poder ver el proceso mas detallado del bloque de codigo
+     */
     public function finalizarCompra()
     {
 
         $this->validate(
             [
-                // 'cajero_id' => 'required',
                 'fecha' => 'required',
             ],
             [
-                // 'cajero_id.required' => 'El cajero es obligatorio',
                 'fecha.required' => 'La fecha es obligatorio',
             ]
         );
@@ -254,6 +305,8 @@ class BancosGestion extends Component
         }
     }
 
+
+    /*funcion que limpia las variables/modesl de livewire*/
     public function clean()
     {
         $this->form->reset([
@@ -419,6 +472,11 @@ class BancosGestion extends Component
     }
 
     //expórtaciones a excel
+
+    /**se realiza una consulta avanzada con eloquent para aplicar filtros antes de escargar el excel.
+     * 
+     * dichos filtros dependen de los campos del formulario/filtro de la vista.
+     */
     public function exportarCompras()
     {
         $compras = CompraEfectivo::where(function ($query) {

@@ -13,7 +13,12 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Form;
 use Illuminate\Support\Facades\Session;
-
+/**
+ * clase que se encarga de separar la logica de valicacion y conecciones a la bd del anexo1, 
+ * la clase se implementa en los archivos Liverwire/Anexo1/.....
+ * esta implementacion se puede consultar en:
+ * https://livewire.laravel.com/docs/forms
+ */
 class AnexoForm extends Form
 {
     //datos generales de la sucursal
@@ -61,21 +66,7 @@ class AnexoForm extends Form
             $this->cp_invalido = "Codigo postal no valido";
         }
     }
-    // protected $rules = [
 
-    //     'referencias' => 'required',
-    //     'sucursal' => 'required',
-    //     'contacto' => 'required',
-    //     'cargo' => 'required',
-    //     'fecha_evaluacion' => 'required',
-    //     'phone' => 'required|numeric|max:10|min:8',
-    //     'correo' => 'required|email',
-    //     'direccion' => 'required',
-    //     'ctg_cp_id' => 'required',
-    //     'fecha_inicio_servicio' => 'required',
-    //     'cp' => 'required|max:5',
-
-    // ];
     protected function rules()
     {
         return [
@@ -101,7 +92,6 @@ class AnexoForm extends Form
                     $fail('No se puede iniciar el servicio sin evaluación.');
                 }
             }],
-            // ... otras reglas ...
         ];
     }
 
@@ -127,15 +117,12 @@ class AnexoForm extends Form
         } catch (\Exception $e) {
             $this->validate();
             DB::rollBack();
-            // Log::error('No se pudo completar la solicitud: ' . $e->getMessage());
-            // Log::info('Info: ' . $e);
             return 0;
         }
     }
 
     public function getAllServicios($id)
     {
-        // return Cotizacion::find($id);;
         return CotizacionServicio::where('cotizacion_id', '=', $id)->get();
     }
 
@@ -181,7 +168,6 @@ class AnexoForm extends Form
     }
     public function getSucursalName()
     {
-        // $this->validateOnly('sucursal_id');
         $this->validateOnly('sucursal_id', [
             'sucursal_id' => 'required|numeric',
         ], [

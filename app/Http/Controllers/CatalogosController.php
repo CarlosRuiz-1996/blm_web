@@ -10,6 +10,8 @@ class CatalogosController extends Controller
         return view('admin.catalogos.catalogos-index');
     }
 
+
+    //redirecciona a una vista y pasa un parametro que recibe por url/get
     public function listar($op){
         return view('admin.catalogos.catalogos-listar', compact('op'));
     }

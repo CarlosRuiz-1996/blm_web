@@ -18,6 +18,8 @@ class RedirectRole
      */
     public function handle(Request $request, Closure $next): Response
     {
+
+        //redirecciona segun el rol a su vista pricnipal
         if (Auth::check()) {
             $auth = Auth::user();
             $user = User::find($auth->id);

@@ -14,6 +14,8 @@ class MemorandumGestion extends Component
     public $sucursales;
 
 
+    //recibe de forma inicial por el metodo mount un obejto de factivilidad.
+    //este objeto se manda cuando se llama al componente livewire desde una vista
     public function mount(Factibilidad $factibilidad)
     {
         $this->form->factibilidad = $factibilidad;
@@ -31,6 +33,7 @@ class MemorandumGestion extends Component
     public function render()
     {
 
+        //renderiza directamente los objetos que se ocuparan en la vista, para  los dropdown
         return view('livewire.memorandum.memorandum-gestion', [
             'ctg_tipo_solicitud' => $this->form->getAllTipoSolicitud(),
             'ctg_tipo_servicio' => $this->form->getAllTipoServicio(),
@@ -45,7 +48,7 @@ class MemorandumGestion extends Component
     }
     
 
-
+//se implementa el formulario de memorandum y se guardan los datos
     #[On('save-memo')]
     public function save()
     {

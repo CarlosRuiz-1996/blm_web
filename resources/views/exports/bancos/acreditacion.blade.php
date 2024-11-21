@@ -1,4 +1,6 @@
 <table >
+
+    {{-- vista de los excel de bancos, revisar docmentacion de laravel excel --}}
     <thead >
         <tr>
             <th>Cliente</th>

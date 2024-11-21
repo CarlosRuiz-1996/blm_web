@@ -7,7 +7,6 @@
     <h1 class="ml-2">Bitacora</h1>
 @stop
 @section('content')
-    {{-- @livewire('roles-crear') --}}
 
     <div class="container-fluid">
 

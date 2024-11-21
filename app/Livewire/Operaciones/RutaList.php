@@ -82,7 +82,7 @@ class RutaList extends Component
                 $this->form->ruta_id = "";
                 $this->form->monto = "";
                 $this->form->folio = "";
-                $this->form->envases = "";
+                // $this->form->envases = "";
             } else {
 
                 $this->addError('form.ctg_ruta_dia_id', 'La fecha de evaluación debe ser menor a la fecha de inicio de servicio.');
@@ -90,7 +90,7 @@ class RutaList extends Component
                 $this->form->ruta_id = "";
                 $this->form->monto = "";
                 $this->form->folio = "";
-                $this->form->envases = "";
+                // $this->form->envases = "";
             }
         }
     }

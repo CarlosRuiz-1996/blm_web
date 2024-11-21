@@ -10,17 +10,17 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class Anexo1 extends Controller
 {
+
+    //redirecciona a la vista de de anexo 1
     public function index(Cotizacion $cotizacion){
         
         return view('anexo1.anexo-create', compact('cotizacion'));
     }
 
-
+    //genera un pdf con dompdf, recibe datos del modelo de anexo1 y los pasa a la vista para mapearlo
     public function anexo_pdf(ModelsAnexo1 $anexo){
         
-        // return view('anexo1.anexo-pdf', compact('anexo'));
         $pdf = new PDF();
-        // $pdf->loadHTML('<h1>Contenido del PDF</h1>', compact('cotizacion')); 
         $pdf = PDF::loadView('anexo1.anexo-pdf', compact('anexo'));
         return $pdf->stream();
     }
