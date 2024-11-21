@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="p-4">
         <div class="row">
             <div class="col-md-2">
                 <img src="{{ asset('/img/logospdf.png') }}" alt="Nombre alternativo" class="mb-3"
@@ -31,55 +31,54 @@
         </style>
 
         {{-- datos cliente --}}
-        <table class="text-center table table-bordered mt-4 table-dark-border" width="100%" cellspacing="0"
-            style="font-size:100%">
-            <tr class="table-dark-border">
+        <table class="text-center table table-bordered table-sm mt-4  " width="100%" cellspacing="0">
+            <tr class="">
                 <td colspan="4" class="text-center " style="background-color: #808080;">
-                    <h6 class="font-weight-bold">ANEXO 1</h6>
+                    ANEXO 1
                 </td>
 
             </tr>
-            <tr class="table-dark-border" style="background-color: #808080;">
+            <tr class="" style="background-color: #808080;">
                 <td class="text-center" colspan="4"></td>
 
             </tr>
-            <tr class="table-dark-border">
+            <tr class="">
                 <td class="text-center" colspan="4"></td>
 
             </tr>
             <tr>
-                <td style="background-color: #DCDCDC;">
-                    <h6 class="font-weight-bold">CLIENTE:</h6>
-                </td>
-                <td>{{ Str::upper($anexo->cliente->razon_social) }}</td>
-                <td style="background-color: #DCDCDC;">
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">
+                    CLIENTE:
+                </th>
+                <td style="font-size:11px;">{{ Str::upper($anexo->cliente->razon_social) }}</td>
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">
 
-                    <h6 class="font-weight-bold">CLAVE CLIENTE:</h6>
+                    CLAVE CLIENTE:
 
-                </td>
-                <td>{{ $anexo->cliente->id }}
-                </td>
-
-            </tr>
-            <tr>
-                <td style="background-color: #DCDCDC;">
-                    <h6 class="font-weight-bold">RFC:</h6>
-                </td>
-                <td>{{ Str::upper($anexo->cliente->rfc_cliente) }}</td>
-                <td style="background-color: #DCDCDC;">
-
-                    <h6 class="font-weight-bold">FECHA:</h6>
-
-                </td>
-                <td>{{ $anexo->created_at }}
+                </th>
+                <td style="font-size:11px;">{{ $anexo->cliente->id }}
                 </td>
 
             </tr>
             <tr>
-                <td style="background-color: #DCDCDC;">
-                    <h6 class="font-weight-bold">DIRECCIÓN</h6>
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">
+                    RFC:
+                </th>
+                <td style="font-size:11px;">{{ Str::upper($anexo->cliente->rfc_cliente) }}</td>
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">
+
+                    FECHA:
+
+                </th>
+                <td style="font-size:11px;">{{ $anexo->created_at }}
                 </td>
-                <td colspan="3">
+
+            </tr>
+            <tr>
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">
+                    DIRECCIÓN
+                </th>
+                <td style="font-size:11px;" colspan="3">
                     {{ Str::upper(
                         $anexo->cliente->direccion . ' ' . $anexo->cliente->cp->cp . ' ' . $anexo->cliente->cp->estado->name,
                     ) }}
@@ -87,56 +86,55 @@
 
             </tr>
             <tr>
-                <td style="background-color: #DCDCDC;">
-                    <h6 class="font-weight-bold">FACTURADO A:</h6>
-                </td>
-                <td colspan="3">{{ Str::upper($anexo->cliente->razon_social) }}</td>
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">
+                    FACTURADO A:
+                </th>
+                <td style="font-size:11px;" colspan="3">{{ Str::upper($anexo->cliente->razon_social) }}</td>
             </tr>
 
 
         </table>
 
-        <table class="text-center table table-bordered mt-4 table-dark-border" width="100%" cellspacing="0"
-            style="font-size:100%">
+        <table class="text-center table table-bordered table-sm mt-4 " width="100%" cellspacing="0">
 
             <tr>
-                <td style="background-color: #808080;">
-                    <h6 class="font-weight-bold ">CONTACTO:</h6>
-                </td>
-                <td style="background-color: #808080;">
-                    <h6 class="font-weight-bold">CARGO:</h6>
-                </td>
-                <td style="background-color: #808080;">
-                    <h6 class="font-weight-bold">TELEFONO:</h6>
-                </td>
+               <th class="font-weight-bold" style="background-color: gray;font-size:11px;">
+                    CONTACTO:
+                </th>
+               <th class="font-weight-bold" style="background-color: gray;font-size:11px;">
+                    CARGO:
+                </th>
+               <th class="font-weight-bold" style="background-color: gray;font-size:11px;">
+                    TELEFONO:
+                </th>
             </tr>
             <tr>
-                <td>
-                    <h6 class="font-weight-bold ">
+                <td style="font-size:11px;">
+                    
 
                         {{ Str::upper($anexo->cliente->user->name . ' ' . $anexo->cliente->user->paterno . ' ' . $anexo->cliente->user->materno) }}
-                    </h6>
+                    
                 </td>
-                <td>
-                    <h6 class="font-weight-bold">
+                <td style="font-size:11px;">
+                    
                         {{ Str::upper($anexo->cliente->puesto) }}
-                    </h6>
+                    
                 </td>
-                <td>
-                    <h6 class="font-weight-bold">{{ $anexo->cliente->phone }}</h6>
+                <td style="font-size:11px;">
+                    {{ $anexo->cliente->phone }}
                 </td>
             </tr>
         </table>
 
 
 
-        <table class="table table-bordered" width="100%" cellspacing="0" style="font-size:100%">
+        <table class="table table-bordered table-sm" width="100%" cellspacing="0">
             <thead>
-                <th class="font-weight-bold" style="background-color: gray;">CANTIDAD:</th>
-                <th class="font-weight-bold" style="background-color: gray;">CONCEPTO:</th>
-                <th class="font-weight-bold" style="background-color: gray;">PRECIO POR SERVICIO:
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">CANTIDAD:</th>
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">CONCEPTO:</th>
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">PRECIO POR SERVICIO:
                 </th>
-                <th class="font-weight-bold" style="background-color: gray;">IMPORTE:
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">IMPORTE:
                 </th>
 
             </thead>
@@ -144,17 +142,17 @@
                 @php $total=0; @endphp
                 @foreach ($anexo->sucursal_servicio as $servicio)
                     <tr>
-                        <td>{{ $servicio->servicio->cantidad }}</td>
-                        <td>{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
-                        <td>${{ $servicio->servicio->precio_unitario }}</td>
-                        <td>${{ $servicio->servicio->subtotal }}</td>
+                        <td style="font-size:11px;">{{ $servicio->servicio->cantidad }}</td>
+                        <td style="font-size:11px;">{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+                        <td style="font-size:11px;">${{ $servicio->servicio->precio_unitario }}</td>
+                        <td style="font-size:11px;">${{ $servicio->servicio->subtotal }}</td>
                         @php $total += $servicio->servicio->subtotal @endphp
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="3" class="text-center font-weight-bold">
+                    <td style="font-size:11px;" colspan="3" class="text-center font-weight-bold">
                         ESTOS PRECIOS MAS 16 % DE I V A</td>
-                    <td style="background-color: gray; " class="text-center font-weight-bold">
+                    <td style="background-color: gray;font-size:11px; " class="text-center font-weight-bold">
                         ${{ $total }}</td>
                 </tr>
             </tbody>
@@ -163,23 +161,23 @@
 
 
 
-        <table class="text-center table table-bordered mt-4 mb-5" width="100%" cellspacing="0" style="font-size:100%">
+        <table class="text-center table table-bordered table-sm mt-4 mb-1 " width="100%" cellspacing="0" style="font-size:11px">
 
             <tr style="background-color: gray;">
-                <td>
-                    <h6 class="font-weight-bold">OBSERVACIONES:</h6>
-                </td>
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">
+                    OBSERVACIONES:
+                </th>
 
             </tr>
             <tr>
-                <td>S/N</td>
+                <td style="font-size:11px;">S/N</td>
             </tr>
 
             <tr>
                 <td></td>
             </tr>
             <tr>
-                <td>LOS SERVICIOS NO ESPECIFICADOS EN ESTA COTIZACIÓN SE COBRARAN A PRECIOS DE LISTA
+                <td style="font-size:11px;">LOS SERVICIOS NO ESPECIFICADOS EN ESTA COTIZACIÓN SE COBRARAN A PRECIOS DE LISTA
                 </td>
             </tr>
             <tr>
@@ -203,22 +201,22 @@
             }
         </style>
         
-        <table class="text-center table table-bordered mt-4 mb-5 firma-table" width="100%" cellspacing="0" style="font-size:100%">
-            <tr style="background-color: gray;">
-                <td>
-                    <h6 class="font-weight-bold">POR LA COMPAÑIA</h6>
-                </td>
-                <td>
-                    <h6 class="font-weight-bold">POR EL CLIENTE</h6>
-                </td>
+        <table class="text-center table table-bordered table-sm mt-1 mb-5 firma-table" width="100%" cellspacing="0">
+            <tr >
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">
+                    POR LA COMPAÑIA
+                </th>
+                <th class="font-weight-bold" style="background-color: gray;font-size:11px;">
+                    POR EL CLIENTE
+                </th>
             </tr>
             <tr class="taller-info">
-                <td>SILVESTRE OCTAVIANO GARCIA CARRILLO</td>
-                <td>{{ Str::upper($anexo->cliente->user->name . ' ' . $anexo->cliente->user->paterno . ' ' . $anexo->cliente->user->materno) }}</td>
+                <td style="font-size:11px;">SILVESTRE OCTAVIANO GARCIA CARRILLO</td>
+                <td style="font-size:11px;">{{ Str::upper($anexo->cliente->user->name . ' ' . $anexo->cliente->user->paterno . ' ' . $anexo->cliente->user->materno) }}</td>
             </tr>
             <tr>
-                <td>SERVICIOS INTEGRADOS PRO-BLM DE MEXICO, S.A. DE C.V.</td>
-                <td>{{ $anexo->cliente->razon_social }}</td>
+                <td style="font-size:11px;">SERVICIOS INTEGRADOS PRO-BLM DE MEXICO, S.A. DE C.V.</td>
+                <td style="font-size:11px;">{{ $anexo->cliente->razon_social }}</td>
             </tr>
         </table>
         

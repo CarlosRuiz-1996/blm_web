@@ -75,11 +75,11 @@
                                         aria-controls="custom-tabs-one-servicios" aria-selected="false">SERVICIOS</a>
                                 </li>
 
-                                <li class="nav-item">
+                                <!--<li class="nav-item">
                                     <a class="nav-link" id="custom-tabs-one-facturacion-tab" data-toggle="pill"
                                         href="#custom-tabs-one-facturacion" role="tab"
                                         aria-controls="custom-tabs-one-facturacion" aria-selected="false">FACTURACIÓN</a>
-                                </li>
+                                </li>-->
                                 <li class="nav-item">
                                     <a class="nav-link" id="custom-tabs-one-boveda-tab" data-toggle="pill"
                                         href="#custom-tabs-one-boveda" role="tab" aria-controls="custom-tabs-one-boveda"
@@ -107,11 +107,10 @@
                                 aria-labelledby="custom-tabs-one-servicios-tab">
                               <livewire:clientes.servicios-clientes :cliente="$cliente->id" />
                             </div>
-                            <div class="tab-pane fade" id="custom-tabs-one-facturacion" role="tabpanel"
+                            <!--<div class="tab-pane fade" id="custom-tabs-one-facturacion" role="tabpanel"
                                 aria-labelledby="custom-tabs-one-facturacion-tab">
-                                <!-- Contenido de la segunda pestaña -->
                                 Contenido de la Tab 3
-                            </div>
+                            </div>-->
                             <div class="tab-pane fade" id="cotizacion-nav" role="tabpanel"
                                 aria-labelledby="cotizacion-nav-tab">
                                 
