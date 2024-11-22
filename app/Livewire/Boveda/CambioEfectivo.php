@@ -15,6 +15,7 @@ use Livewire\WithPagination;
 class CambioEfectivo extends Component
 {
     use WithPagination;
+    public $porTransferencia = false;
     public BovedaForm $form;
     public $cantidadTotal;
     public $tipoCambio;
@@ -25,7 +26,7 @@ class CambioEfectivo extends Component
     public $sumaTotalbolsas = 0;
     public $sumaIncorrecta = false;
     public $monedasDisponibles;
-
+    public $pico=0.0;
     public $billetesDisponibles;
     public $bolsasDisponibles;
     public $readyToLoad = false;
@@ -75,10 +76,26 @@ class CambioEfectivo extends Component
         } elseif ($this->tipoCambio == 'moneda_a_bolsas') {
             $this->calcularSumaBolsas();
             $this->calcularSumaBilletes();
-            $this->sumaIncorrecta = ((int)$this->sumaTotal !== (int)$this->sumaTotalbolsas);
+
+            if(!$this->porTransferencia){
+                $this->sumaIncorrecta = ((int)$this->sumaTotal !== (int)$this->sumaTotalbolsas);
+            }else{
+                $this->sumaIncorrecta = ((int)$this->cantidadTotal !== (int)$this->sumaTotalbolsas);
+            }
+            
         }
     }
 }
+public function updatedCantidadTotal($value)
+    {
+        $this->validate([
+            'cantidadTotal' => 'numeric|required|min:1',
+        ], [
+            'cantidadTotal.required' => 'El monto total es obligatorio',
+            'cantidadTotal.numeric' => 'El monto total debe ser un número',
+            'cantidadTotal.min' => 'El monto total debe ser al menos 1',
+        ]);
+    }
         private function reiniciarValores()
         {
             $this->denominacionesPermitidas = [];
@@ -86,6 +103,7 @@ class CambioEfectivo extends Component
             $this->sumaTotal = 0;
             $this->sumaTotalbolsas = 0;
             $this->sumaIncorrecta = false;
+            $this->porTransferencia=false;
         }
         public function clean(){
             $this->form->from_change='';
@@ -97,6 +115,8 @@ class CambioEfectivo extends Component
             $this->sumaTotal = 0;
             $this->sumaTotalbolsas = 0;
             $this->sumaIncorrecta = false;
+            $this->porTransferencia=false;
+            $this->pico=0;
         }
 
 
@@ -125,6 +145,9 @@ class CambioEfectivo extends Component
             $cantidad = $this->cambioBolsas[$bolsa->id] ?? 0;
             $this->sumaTotalbolsas += (int)$cantidad *  ((float)$bolsa->piezas * (float)$bolsa->cantidad);
         }
+        if($this->pico > 0){
+            $this->sumaTotalbolsas+=(float)$this->pico; 
+        }
     } 
 
     public function guardar()
@@ -132,6 +155,7 @@ class CambioEfectivo extends Component
         // Validar las entradas
         $this->validate([
             'cantidadTotal' => 'required|numeric|min:1',
+            'pico' => 'numeric',
             'denominacionesPermitidas.*' => 'required|numeric|min:0', // Asegurarse de que sean números y no negativos
             // Agrega otras validaciones que consideres necesarias
         ], [
@@ -141,6 +165,7 @@ class CambioEfectivo extends Component
             'denominacionesPermitidas.*.required' => 'Las denominaciones son obligatorias',
             'denominacionesPermitidas.*.numeric' => 'Las denominaciones deben ser números válidos',
             'denominacionesPermitidas.*.min' => 'Las denominaciones no deben ser negativas',
+            'pico.numeric' => 'Las denominaciones deben ser números válidos',
         ]);
     
         try {
@@ -155,10 +180,12 @@ class CambioEfectivo extends Component
             $cambioEfectivo = ModelsCambioEfectivo::create([
                 'monto' => $this->cantidadTotal,
                 'empleado_boveda_id' => Auth::user()->empleado->id,
-                'from_change' => $this->form->from_change
+                'from_change' => $this->form->from_change,
+                'transferencia' => $this->porTransferencia
             ]);
     
             // Guardar las denominaciones permitidas
+            if(!$this->porTransferencia){
             foreach ($this->denominacionesPermitidas as $denominacionId => $cantidad) {
                 if ($cantidad > 0) {
                     // Busca la denominación por su ID
@@ -175,7 +202,9 @@ class CambioEfectivo extends Component
                         ]);
                     }
                 }
-            }            
+            }   
+        }
+        $this->clean();
             DB::commit();
             $this->dispatch('alert', ['msg' => 'Registro guardado con éxito'], ['tipomensaje' => 'success']);
         } catch (\Exception $e) {

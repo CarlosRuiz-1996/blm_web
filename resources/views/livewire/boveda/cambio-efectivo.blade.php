@@ -47,21 +47,36 @@
                                 Montos
                             </th>
                         </tr>
+                       @if ($cambio->denominacions->isEmpty() && $cambio->transferencia == false)
+                        <tr class="" x-show="openRow === {{ $cambio->id }}">
+                            <td colspan="4" class="text-center text-danger">
+                                No hay denominaciones registradas y no se realizó por transferencia.
+                            </td>
+                        </tr>
+                    @elseif ($cambio->denominacions->isEmpty() && $cambio->transferencia == true)
+                        <tr class="" x-show="openRow === {{ $cambio->id }}">
+                            <td colspan="4" class="text-center text-success">
+                                El cambio se registró como transferencia.
+                            </td>
+                        </tr>
+                    @else
                         @foreach ($cambio->denominacions as $denominacion)
                             <tr class="" x-show="openRow === {{ $cambio->id }}">
                                 <td colspan="2">
-
-                                    {{
-                                        $denominacion->tipo_denominacion->tipo_moneda->name .' de '.
-                                        $denominacion->tipo_denominacion->denominacion }}</td>
+                                 @if($denominacion->ctg_denominacion_id !=null || $denominacion->ctg_denominacion_id !="")
+                                    {{ $denominacion->tipo_denominacion->tipo_moneda->name .' de '.
+                                    $denominacion->tipo_denominacion->denominacion }}
+                                    @else
+                                    Extra/Pico
+                                    @endif
+                                </td>
                                 <td colspan="2">
-
                                     $ {{ number_format($denominacion->monto, 2, '.', ',') }} MXN
                                 </td>
-
-
                             </tr>
                         @endforeach
+                    @endif
+
                     @endforeach
                 @else
                     @if ($readyToLoad)
@@ -169,38 +184,63 @@
                                                 @endforeach
                                             </div>
                                     @endif
-                                    @if($tipoCambioMonedas == 'billetes')
-                                            <div class="col-md-12 mt-2">
-                                                <label for="denominaciones">Denominaciones:</label>
-                                                @foreach($monedasDisponibles as $moneda)
-                                                    <div class="row mb-2">
-                                                        <div class="col-md-6 mt-1">
-                                                            <label>{{ $moneda->denominacion }} (Moneda)</label>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <input type="number" wire:model.live="cambioBolsas.{{ $moneda->id }}" class="form-control" placeholder="Cantidad de bolsas" min="0">
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                                 <!-- Suma de las denominaciones -->
-                                                <h3 class="mt-4">Suma Total Calculada de bolsas: ${{ number_format($sumaTotalbolsas, 2) }}</h3>
-                                            </div>
-                                            <div class="col-md-12 mt-4">
-                                                 <!-- Suma de las denominaciones -->
-                                                <h3 class="mt-4">Cambiar por:</h3>
-                                                <label for="billetes">Denominaciones de Billetes:</label>
-                                                @foreach($billetesDisponibles as $billete)
-                                                    <div class="row mb-2">
-                                                        <div class="col-md-6 mt-1">
-                                                            <label>{{ $billete->denominacion }} (Billete)</label>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <input type="number" wire:model.live="denominacionesPermitidas.{{ $billete->id }}" class="form-control" placeholder="Cantidad de billetes" min="0">
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                    @endif
+@if($tipoCambioMonedas == 'billetes')
+    <div class="col-md-12 mt-2">
+        <label for="denominaciones">Denominaciones:</label>
+        <!-- Checkbox para transferencia -->
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="porTransferencia" wire:model.live="porTransferencia">
+            <label class="form-check-label" for="porTransferencia">
+                Cambio realizado por transferencia
+            </label>
+        </div>
+
+        <!-- Mostrar denominaciones de monedas -->
+        <h3 class="mt-4">Denominaciones de Monedas:</h3>
+        <div class="row mb-2">
+        @foreach($monedasDisponibles as $moneda)
+            
+                <div class="col-md-6 mt-1 mb-1">
+                    <label>{{ $moneda->denominacion }} (Moneda)</label>
+                </div>
+                <div class="col-md-6 mt-1 mb-1">
+                    <input type="number" wire:model.live="cambioBolsas.{{ $moneda->id }}" class="form-control" placeholder="Cantidad de bolsas" min="0">
+                </div>
+        @endforeach
+        <div class="col-md-6 mt-1 mb-1">
+          <label>Extra/Pico</label>
+         </div>
+        <div class="col-md-6 mt-1 mb-1">
+         <input type="number" wire:model.live="pico" class="form-control" placeholder="Cantidad extra/pico" min="0">
+        </div>
+        </div>
+        <!-- Suma de las denominaciones de monedas -->
+        <h3 class="mt-4">Suma Total Calculada de bolsas: ${{ number_format($sumaTotalbolsas, 2) }}</h3>
+    </div>
+
+    <div class="col-md-12 mt-4">
+        <!-- Mostrar denominaciones de billetes solo si no es transferencia -->
+        @if(!$porTransferencia)
+            <h3 class="mt-4">Cambiar por:</h3>
+            <label for="billetes">Denominaciones de Billetes:</label>
+            @foreach($billetesDisponibles as $billete)
+                <div class="row mb-2">
+                    <div class="col-md-6 mt-1">
+                        <label>{{ $billete->denominacion }} (Billete)</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="number" wire:model.live="denominacionesPermitidas.{{ $billete->id }}" class="form-control" placeholder="Cantidad de billetes" min="0">
+                    </div>
+                </div>
+            @endforeach
+        @else
+            <!-- Mensaje de transferencia -->
+            <h3 class="mt-4 text-success">El cambio de billetes se registrara como transferencia.</h3>
+        @endif
+    </div>
+@endif
+
+
                                 @elseif($tipoCambio == 'billete_a_moneda' || $tipoCambio == 'moneda_a_menor_denominacion')
                                     <!-- Cantidad por Denominación Ingresada Manualmente para Monedas -->
                                         <div class="col-md-12 mt-2">
@@ -244,7 +284,9 @@
                             </form>
                         
                             <!-- Suma de las denominaciones -->
+                             @if(!$porTransferencia)
                             <h3 class="mt-4">Suma Total Calculada: ${{ number_format($sumaTotal, 2) }}</h3>
+                            @endif
                         </div>
                         
                     </div>
