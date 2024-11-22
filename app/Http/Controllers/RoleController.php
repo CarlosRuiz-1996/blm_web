@@ -28,6 +28,8 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    //funcion para crear/guardar un rol
+
     public function store(Request $request)
     {
 
@@ -43,6 +45,7 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      */
+    //funcion para ver los permisos de un rol, atraves de una api, por el route/api
     public function show(Role $role)
     {
         $permissions = $role->permissions;
@@ -52,6 +55,8 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+            //funcion para ver la vista de asignacion de permisos a roles.
+
     public function edit(string $id)
     {
         $role = Role::find($id);
@@ -62,6 +67,8 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
+
     public function update(Request $request, Role $role)
     {
 
@@ -70,6 +77,8 @@ class RoleController extends Controller
         return redirect()->route('roles.index');
     }
 
+
+                //funcion para actualizar un rol
 
     public function updated_rol(Request $request, Role $role)
     {
@@ -90,6 +99,9 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+
+    //funcion para elimiar un rol
+
     public function destroy(Role $role)
     {
 

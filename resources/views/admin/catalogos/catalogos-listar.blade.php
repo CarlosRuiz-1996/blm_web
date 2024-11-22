@@ -3,6 +3,8 @@
 
 @section('title', 'Catalogos')
 
+
+{{-- vista en cargada de renderizar un comonente de livewire dependiendo de que opcion le pasen por la url --}}
 @section('content')
     @if ($op == 1)
         <livewire:catalogos.vehiculos />

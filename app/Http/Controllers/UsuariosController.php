@@ -25,6 +25,8 @@ class UsuariosController extends Controller
         $roles = Role::all();
         return view('usuarios.usuarionuevo', compact('areas', 'roles'));
     }
+
+    //guardar un user y aplicar reglas de validacion
     public function store(Request $request)
     {
         $validate = $this->validate($request, [
@@ -36,15 +38,14 @@ class UsuariosController extends Controller
             'area' => ['required', 'string', 'max:255'],
             'roles' => ['array'],
         ]);
-        // dd($request->input('roles'));
+
+        //mapea un objeto user con los campos recibidos de los input a traves de request
         $user = new User();
         $user->name = $request->input('name');
         $user->paterno = $request->input('paterno');
         $user->materno = $request->input('materno');
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
-        // $user->ctg_area_id = $request->input('area');
-        // Guardar otros campos del usuario si los tienes
 
         // Guardar el usuario en la base de datos
         $user->save();
@@ -76,14 +77,11 @@ class UsuariosController extends Controller
         ]);
 
         
-
-        // dd($request->input('roles'));
         $user->name = $request->input('name');
         $user->paterno = $request->input('paterno');
         $user->materno = $request->input('materno');
         $user->email = $request->input('email');
         $user->empleado->ctg_area_id = $request->input('area');
-        // Guardar otros campos del usuario si los tienes
 
         // Guardar el usuario en la base de datos
         $user->update();
@@ -122,7 +120,7 @@ class UsuariosController extends Controller
         $validate = $this->validate($request, [ 
             'password' => ['required', 'string', 'max:255'],
         ]);
-        // dd($request->input('roles'));
+
         $user->password = Hash::make($request->input('password'));
         $user->update();
         return redirect()->route('user.index')->with('success', 'La contraseña se actualizo exitosamente.');

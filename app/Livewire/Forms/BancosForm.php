@@ -51,7 +51,7 @@ class BancosForm extends Form
 
     public function getCountResguadoClientes()
     {
-        return MontoBlm::find(1); //Cliente::where('status_cliente', 1)->sum('resguardo');
+        return MontoBlm::find(1); 
     }
 
     public function addMonto()

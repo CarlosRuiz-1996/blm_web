@@ -45,9 +45,6 @@ class ListadosAnexo1 extends Component
             if ($this->fechaFinsoli) {
                 $query->whereDate('created_at', '<=', $this->fechaFinsoli);
             }
-
-            // Aplicar otros filtros si es necesario
-            // $query->orderBy('id', 'DESC');
             // Obtener los resultados
             $this->solicitudes = $query->where('status_cotizacion', 2)->paginate(5);
         }

@@ -11,6 +11,12 @@ use Livewire\Features\SupportPagination\WithoutUrlPagination;
 use Livewire\WithPagination;
 use Livewire\Attributes\Validate;
 
+/**
+ * clase que controla el crud del catalogo de Areas de blm
+ * 
+ */
+
+
 class Areas extends Component
 {
     public $readyToLoad = false;

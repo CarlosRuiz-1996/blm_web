@@ -23,6 +23,8 @@ class Factibilidad extends Controller
         return view('seguridad.reporte-create', compact('anexo'));
     }
 
+
+    //ejemplo de como genera un pdf desde un controller, este fue remplazado por una funcion en livewire/factibilidad.php
     public function showPDF()
     {
         $data = [

@@ -1,5 +1,5 @@
 @extends('adminlte::page')
-
+{{-- pantalla inicial de rutas, en la cual importa componentes de livewire --}}
 
 @section('title', 'Dashboard')
 
@@ -36,8 +36,6 @@
                                     role="tab" aria-controls="validacion-memo" aria-selected="false">VALIDACIÓN
                                     MEMORANDUM</a>
                             </li>
-
-                            <!-- Puedes agregar más pestañas según sea necesario -->
                         </ul>
                     </div>
                     <div class="card-body">
@@ -58,10 +56,9 @@
                             <div class="tab-pane fade" id="validacion-memo" role="tabpanel"
                                 aria-labelledby="validacion-memo-tab">
                                 <livewire:memorandum-validacion.validacion-listados :area="2" /> 
-
+                                {{-- requiere el componente de livewire --}}
 
                             </div>
-                            <!-- Puedes agregar más contenidos según sea necesario -->
                         </div>
                     </div>
                 </div>

@@ -48,7 +48,6 @@ class NotificationNavBar extends Component
         $this->totalNotifications = Notification::where('ctg_area_id', Auth::user()->empleado->ctg_area_id)
             ->where('status_notificacion', 1)
             ->count();
-        // dd($notification);
         return view('livewire.notifications.notification-nav-bar');
     }
 
@@ -190,8 +189,6 @@ class NotificationNavBar extends Component
     #[On('banco-validar')]
     public function validarBanco($respuesta, $notification, $password)
     {
-        // dd($respuesta.'-'. $notification.'-'.$password);
-
         $user = Auth::user();
 
         try {

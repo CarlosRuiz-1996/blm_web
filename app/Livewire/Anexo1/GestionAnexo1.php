@@ -35,7 +35,6 @@ class GestionAnexo1 extends Component
     public function validarCp()
     {
 
-        // dd('entra');
         $this->validate([
             'form.cp' => 'required|digits_between:1,5',
         ], [
@@ -174,7 +173,6 @@ class GestionAnexo1 extends Component
     public function save()
     {
         if (Session::has('servicio-sucursal')) {
-            // dd('entra');
             $res = $this->form->store($this->cotizacion);
             if ($res == 1) {
                 session()->forget('servicio-sucursal');
@@ -183,12 +181,9 @@ class GestionAnexo1 extends Component
                 $this->dispatch('error', ["A ocurrido un error, intente más tarde.", 1]);
             }
         } else {
-            // dd('error');
             session()->forget('servicio-sucursal');
             $this->dispatch('error', ["No hay servicios con sucursales."]);
         }
-        // return redirect()->route('roles.index')->with('success', 'Permiso eliminad con exito!');
-
     }
 
 

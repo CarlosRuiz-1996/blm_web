@@ -42,18 +42,22 @@ use Livewire\Livewire;
 |
 */
 
+//ruta/url principal
 Route::get('/', function () {
     return view('auth/login');
 });
 
+
+//agrupacion de rutas con un middleware para autentication
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
 
-    // 'role.redirect', 
 
+    //middleware revisa algunas reglas antes de acceder a una ruta.
+    
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->middleware('role.redirect', 'role:Super|Admin')->name('dashboard');

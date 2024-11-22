@@ -37,8 +37,7 @@
 
                 <hr class="p-0 m-0">
             @endforeach
-            {{-- <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item dropdown-footer">Ver todas las notificaciones</a> --}}
+          
         </div>
 
 
