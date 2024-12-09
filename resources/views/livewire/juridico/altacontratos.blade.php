@@ -273,13 +273,15 @@
                                     <thead class="table-info">
                                         <tr>
                                             <th>RFC</th>
-                                            <th>Nombre</th> <!-- Agrega más columnas según tus necesidades -->
+                                            <th>Razón Social</th>
+                                            <th>Contacto</th> <!-- Agrega más columnas según tus necesidades -->
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach($data as $cliente)
                                             <tr wire:click="mostrarCliente({{ $cliente->id }})">
                                                 <td>{{ $cliente->rfc_cliente }}</td>
+                                                <td>{{ $cliente->razon_social }}</td>
                                                 <td>{{ $cliente->name }} {{ $cliente->paterno }} {{ $cliente->materno }}</td>
                                                 <!-- Puedes agregar más columnas según tus necesidades -->
                                             </tr>
