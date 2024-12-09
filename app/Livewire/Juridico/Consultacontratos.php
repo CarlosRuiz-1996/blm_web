@@ -69,12 +69,18 @@ class Consultacontratos extends Component
         // Filtrar los resultados según los valores del formulario
         $query = Contratos_cotizacion::query();
 
+        // Cargar la relación 'cliente'
+        $query->with('cliente');
+
         if ($this->inputId) {
             $query->where('id', $this->inputId);
         }
 
         if ($this->cliente_id) {
-            $query->where('cliente_id', $this->cliente_id);
+            // Filtrar por el campo 'rfc_cliente' en la relación 'cliente'
+            $query->whereHas('cliente', function ($subQuery) {
+                $subQuery->whereRaw('LOWER(rfc_cliente) LIKE ?', ['%' . strtolower($this->cliente_id) . '%']);
+            });
         }
 
         if ($this->inputFechaInicio) {
@@ -90,11 +96,11 @@ class Consultacontratos extends Component
         }
 
         // Ejecutar la consulta
-        $valor=$query->paginate(2);
+        $valor = $query->paginate(10);
 
         return $valor;
-        
     }
+
 
     public function render()
     {

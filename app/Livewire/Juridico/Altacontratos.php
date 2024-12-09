@@ -121,10 +121,13 @@ class Altacontratos extends Component
                 ->where(function ($query) use ($valorbuscado) {
                     $query->where('users.name', 'LIKE', '%' . $valorbuscado . '%')
                         ->orWhere('users.paterno', 'LIKE', '%' . $valorbuscado . '%')
-                        ->orWhere('users.materno', 'LIKE', '%' . $valorbuscado . '%');
+                        ->orWhere('users.materno', 'LIKE', '%' . $valorbuscado . '%')
+                        ->orWhere('clientes.rfc_cliente', 'LIKE', '%' . $valorbuscado . '%')
+                        ->orWhere('clientes.razon_social', 'LIKE', '%' . $valorbuscado . '%');
                 })
-                ->paginate(2); // Paginar antes de obtener los resultados
+                ->paginate(10); // Paginar antes de obtener los resultados
                 $this->buscarRealizado=true;
+                $this->resetPagination();
         }
         
         return $busqueda;

@@ -8,7 +8,7 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="inputId">Id</label>
-                                    <input type="text" wire:model="inputId" class="form-control" id="inputId" placeholder="Ingresa el Id">
+                                    <input type="text" wire:model="inputId" class="form-control" id="inputId" placeholder="Ingresa el Id del contrato">
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -59,6 +59,7 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>RFC Cliente</th>
                                     <th>Nombre Contrato</th>
                                     <th>Cotizacíon</th>
                                     <th>Documento</th>
@@ -73,6 +74,7 @@
                                 @foreach($contratoslist as $contrato)
                                 <tr>
                                     <td>{{ $contrato->id}}</td>
+                                    <td>{{ $contrato->cliente->rfc_cliente}}</td>
                                     <td>{{ $contrato->ctg_contratos->nombre}}</td>
                                     <td>{{ $contrato->cotizacion_id}}</td>
 
