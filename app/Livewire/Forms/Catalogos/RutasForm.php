@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Forms\catalogos;
+namespace App\Livewire\Forms\Catalogos;
 
 use App\Models\CtgRutaDias;
 use App\Models\CtgRutas;

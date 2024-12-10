@@ -10,7 +10,7 @@ class Factibilidad extends Controller
 {
     public function index()
     {
-        $solicitudes  = Anexo1::where('status_anexo', 1)->get();
+        $solicitudes  = Anexo1::where('status_anexo', 1)->where('cotizacion_id','!=',null)->get();
         $procesos  = Anexo1::where('status_anexo', 2)->get();
         $terminados  = Anexo1::where('status_anexo', 3)->get();
 
@@ -36,6 +36,5 @@ class Factibilidad extends Controller
 
         // return $pdf->download('ejemplo.pdf');
         return $pdf->stream('ejemplo.pdf');
-
     }
 }

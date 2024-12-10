@@ -365,7 +365,7 @@ class Altacontratos extends Component
             ->get();
         $this->contratosList = Contratos_cotizacion::where('cliente_id', $this->id)->get();
         $this->dispatch('cerrarModal');
-        $this->dispatch('cerrarModal', [$this->nombreContacto]);
+        $this->dispatch('cerrarModal', [$this->razonSocial]);
     }
 
     public function updatedDatosextra()
