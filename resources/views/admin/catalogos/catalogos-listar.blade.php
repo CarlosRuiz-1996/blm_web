@@ -44,5 +44,7 @@
         <livewire:catalogos.tipo-servicio />
     @elseif($op == 19)
         <livewire:catalogos.tipo-moneda />
+    @elseif($op == 20)
+        <livewire:catalogos.servicios />
     @endif
 @stop
