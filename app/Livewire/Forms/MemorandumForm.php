@@ -79,7 +79,7 @@ class MemorandumForm extends Form
         ->whereHas('anexo', function ($query) {
             $query->where('cotizacion_id','!=', null);
         })
-        ->get();
+        ->paginate(10);
     }
     public function getMemorandumValidacion()
     {

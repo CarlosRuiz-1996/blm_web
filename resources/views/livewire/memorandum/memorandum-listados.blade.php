@@ -1,4 +1,4 @@
-<div>
+<div wire:init='loadData'>
     <div class="col-md-6">
         <h3 for="">Memorándum de servicio</h3>
     </div>
@@ -6,19 +6,19 @@
         <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist" wire:ignore.self>
             <!-- Pestaña "Servicios" -->
             <li class="nav-item">
-                <a class="nav-link active" id="memo-solicitud-tab" data-toggle="pill" href="#memo-solicitud" wire:ignore.self role="tab"
-                    aria-controls="memo-solicitud" aria-selected="true">SOLICITUDES</a>
+                <a class="nav-link active" id="memo-solicitud-tab" data-toggle="pill" href="#memo-solicitud"
+                    wire:ignore.self role="tab" aria-controls="memo-solicitud" aria-selected="true">SOLICITUDES</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" id="memo-proceso-tab" data-toggle="pill" href="#memo-proceso" wire:ignore.self role="tab"
-                    aria-controls="memo-proceso" aria-selected="true">EN VALIDACION</a>
+                <a class="nav-link" id="memo-proceso-tab" data-toggle="pill" href="#memo-proceso" wire:ignore.self
+                    role="tab" aria-controls="memo-proceso" aria-selected="true">EN VALIDACION</a>
             </li>
 
             <!-- Pestaña "Otra Pestaña 2" -->
             <li class="nav-item">
-                <a class="nav-link" id="memo-terminado-tab" data-toggle="pill" href="#memo-terminado" wire:ignore.self role="tab"
-                    aria-controls="memo-terminado" aria-selected="false">ATENDIDAS</a>
+                <a class="nav-link" id="memo-terminado-tab" data-toggle="pill" href="#memo-terminado" wire:ignore.self
+                    role="tab" aria-controls="memo-terminado" aria-selected="false">ATENDIDAS</a>
             </li>
         </ul>
 
@@ -73,41 +73,53 @@
                                 </form>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead class="table-primary">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Razon Social</th>
-                                                <th>RFC</th>
-                                                <th>Contacto</th>
-                                                <th>Fecha de Solicitud</th>
-                                                <th>Opciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($solicitudes as $solicitud)
+                                @if (count($solicitudes))
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead class="table-primary">
                                                 <tr>
-                                                    <td>{{ $solicitud->id }}</td>
-                                                    <td>{{ $solicitud->cliente->razon_social }}</td>
-                                                    <td>{{ $solicitud->cliente->rfc_cliente }}</td>
-                                                    <td>{{ $solicitud->cliente->user->name .
-                                                        ' ' .
-                                                        $solicitud->cliente->user->paterno .
-                                                        ' ' .
-                                                        $solicitud->cliente->user->materno }}
-                                                    </td>
-                                                    <td>{{ $solicitud->updated_at }}</td>
-                                                    <td>
-                                                        <button class="btn btn-primary" 
-                                                        wire:click="$dispatch('confirm', [1, {{$solicitud->id}}])">Comenzar</button>
-
-                                                    </td>
+                                                    <th>ID</th>
+                                                    <th>Razon Social</th>
+                                                    <th>RFC</th>
+                                                    <th>Contacto</th>
+                                                    <th>Fecha de Solicitud</th>
+                                                    <th>Opciones</th>
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($solicitudes as $solicitud)
+                                                    <tr>
+                                                        <td>{{ $solicitud->id }}</td>
+                                                        <td>{{ $solicitud->cliente->razon_social }}</td>
+                                                        <td>{{ $solicitud->cliente->rfc_cliente }}</td>
+                                                        <td>{{ $solicitud->cliente->user->name .
+                                                            ' ' .
+                                                            $solicitud->cliente->user->paterno .
+                                                            ' ' .
+                                                            $solicitud->cliente->user->materno }}
+                                                        </td>
+                                                        <td>{{ $solicitud->updated_at }}</td>
+                                                        <td>
+                                                            <button class="btn btn-primary"
+                                                                wire:click="$dispatch('confirm', [1, {{ $solicitud->id }}])">Comenzar</button>
+
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @else
+                                    @if ($readyToLoad)
+                                        <div class="alert alert-secondary" role="alert">
+                                            No hay datos disponibles </div>
+                                    @else
+                                        <div class="text-center">
+                                            <div class="spinner-border" role="status">
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -163,43 +175,54 @@
                                 </form>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead class="table-primary">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Razon Social</th>
-                                                <th>RFC</th>
-                                                <th>Contacto</th>
-                                                <th>Fecha de Solicitud</th>
-                                                <th>Opciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($proceso as $solicitud)
+                                @if (count($proceso))
+                                    <div class="table-responsive">
+
+                                        <table class="table">
+                                            <thead class="table-primary">
                                                 <tr>
-                                                    <td>{{ $solicitud->id }}</td>
-                                                    <td>{{ $solicitud->cliente->razon_social }}</td>
-                                                    <td>{{ $solicitud->cliente->rfc_cliente }}</td>
-                                                    <td>{{ $solicitud->cliente->user->name .
-                                                        ' ' .
-                                                        $solicitud->cliente->user->paterno .
-                                                        ' ' .
-                                                        $solicitud->cliente->user->materno }}
-                                                    </td>
-                                                    <td>{{ $solicitud->created_at }}</td>
-                                                    <td>
-                                                        <a class="btn btn-primary text-white"
-                                                        wire:click="$dispatch('confirm', [2, {{$solicitud->id}}])"
-                                                            
-                                                            >
-                                                            Detalles</a>
-                                                    </td>
+                                                    <th>ID</th>
+                                                    <th>Razon Social</th>
+                                                    <th>RFC</th>
+                                                    <th>Contacto</th>
+                                                    <th>Fecha de Solicitud</th>
+                                                    <th>Opciones</th>
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($proceso as $solicitud)
+                                                    <tr>
+                                                        <td>{{ $solicitud->id }}</td>
+                                                        <td>{{ $solicitud->cliente->razon_social }}</td>
+                                                        <td>{{ $solicitud->cliente->rfc_cliente }}</td>
+                                                        <td>{{ $solicitud->cliente->user->name .
+                                                            ' ' .
+                                                            $solicitud->cliente->user->paterno .
+                                                            ' ' .
+                                                            $solicitud->cliente->user->materno }}
+                                                        </td>
+                                                        <td>{{ $solicitud->created_at }}</td>
+                                                        <td>
+                                                            <a class="btn btn-primary text-white"
+                                                                wire:click="$dispatch('confirm', [2, {{ $solicitud->id }}])">
+                                                                Detalles</a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @else
+                                    @if ($readyToLoad)
+                                        <div class="alert alert-secondary" role="alert">
+                                            No hay datos disponibles </div>
+                                    @else
+                                        <div class="text-center">
+                                            <div class="spinner-border" role="status">
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -256,39 +279,58 @@
                                 </form>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead class="table-primary">
-                                            <tr>
-                                                <th>Id</th>
-                                                <th>Razon Social</th>
-                                                <th>RFC</th>
-                                                <th>Contacto</th>
-                                                <th>Fecha de Solicitud</th>
-                                                <th>Opciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($terminadas as $solicitud)
+                                @if (count($terminadas))
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead class="table-primary">
                                                 <tr>
-                                                    <td>{{ $solicitud->id }}</td>
-                                                    <td>{{ $solicitud->cliente->razon_social }}</td>
-                                                    <td>{{ $solicitud->cliente->rfc_cliente }}</td>
-                                                    <td>{{ $solicitud->cliente->user->name .
-                                                        ' ' .
-                                                        $solicitud->cliente->user->paterno .
-                                                        ' ' .
-                                                        $solicitud->cliente->user->materno }}
-                                                    </td>
-                                                    <td>{{ $solicitud->updated_at }}</td>
-                                                    <td>
-                                                        <i wire:click="generarPDF({{ $solicitud->id }})" class="fa fa-file-pdf" style="color: red; cursor: pointer;"></i>
-                                                    </td>                                                    
+                                                    <th>Id</th>
+                                                    <th>Razon Social</th>
+                                                    <th>RFC</th>
+                                                    <th>Contacto</th>
+                                                    <th>Fecha de Solicitud</th>
+                                                    <th>Opciones</th>
                                                 </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($terminadas as $solicitud)
+                                                    <tr>
+                                                        <td>{{ $solicitud->id }}</td>
+                                                        <td>{{ $solicitud->cliente->razon_social }}</td>
+                                                        <td>{{ $solicitud->cliente->rfc_cliente }}</td>
+                                                        <td>{{ $solicitud->cliente->user->name .
+                                                            ' ' .
+                                                            $solicitud->cliente->user->paterno .
+                                                            ' ' .
+                                                            $solicitud->cliente->user->materno }}
+                                                        </td>
+                                                        <td>{{ $solicitud->updated_at }}</td>
+                                                        <td>
+                                                            <i wire:click="generarPDF({{ $solicitud->id }})"
+                                                                class="fa fa-file-pdf"
+                                                                style="color: red; cursor: pointer;"></i>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                        @if ($terminadas->hasPages())
+                                        <div class="d-flex justify-content-center">
+                                            {{ $terminadas->links() }}
+                                        </div>
+                                    @endif
+                                    </div>
+                                @else
+                                    @if ($readyToLoad)
+                                        <div class="alert alert-secondary" role="alert">
+                                            No hay datos disponibles </div>
+                                    @else
+                                        <div class="text-center">
+                                            <div class="spinner-border" role="status">
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -301,29 +343,30 @@
     @push('js')
         <script>
             document.addEventListener('livewire:initialized', () => {
-            @this.on('confirm', ([op, id]) => {
-                Swal.fire({
-                    title: op==1?'¿Seguro de inicar el memorandum?':'¿Esta seguro?',
-                    text: op==2?'Desde esta area se podra finalizar el memorandum':'',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Si, adelante!',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        if(op==1){
-                            window.location.href = '{{ route('memorandum', [':factibilidad']) }}'
-                                        .replace(':factibilidad', id)
-                        }else if(op == 2){
-                            window.location.href = '{{ route('memorandum.validacion', [':memorandum']) }}'
-                                        .replace(':memorandum', id)
+                @this.on('confirm', ([op, id]) => {
+                    Swal.fire({
+                        title: op == 1 ? '¿Seguro de inicar el memorandum?' : '¿Esta seguro?',
+                        text: op == 2 ? 'Desde esta area se podra finalizar el memorandum' : '',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, adelante!',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (op == 1) {
+                                window.location.href = '{{ route('memorandum', [':factibilidad']) }}'
+                                    .replace(':factibilidad', id)
+                            } else if (op == 2) {
+                                window.location.href =
+                                    '{{ route('memorandum.validacion', [':memorandum']) }}'
+                                    .replace(':memorandum', id)
+                            }
                         }
-                    }
+                    })
                 })
-            })
-        });
+            });
         </script>
     @endpush
 </div>
