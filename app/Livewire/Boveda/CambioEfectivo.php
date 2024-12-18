@@ -63,25 +63,17 @@ class CambioEfectivo extends Component
 
     // Reinicia la suma total y la suma incorrecta
     $this->sumaTotal = 0;
-    $this->sumaIncorrecta = false;
+    $this->sumaIncorrecta = null;
 
     // Calcula la suma total según el tipo de cambio seleccionado
     if ($this->tipoCambio) {
         if ($this->tipoCambio == 'billete_a_moneda' || $this->tipoCambio == 'moneda_a_menor_denominacion') {
             $this->calcularSumaMonedas();
-            $this->sumaIncorrecta = ((int)$this->sumaTotal !== (int)$this->cantidadTotal);
         } elseif ($this->tipoCambio == 'moneda_a_billete' || $this->tipoCambio == 'billete_a_menor_denominacion') {
             $this->calcularSumaBilletes();
-            $this->sumaIncorrecta = ((int)$this->sumaTotal !== (int)$this->cantidadTotal);
         } elseif ($this->tipoCambio == 'moneda_a_bolsas') {
             $this->calcularSumaBolsas();
             $this->calcularSumaBilletes();
-
-            if(!$this->porTransferencia){
-                $this->sumaIncorrecta = ((int)$this->sumaTotal !== (int)$this->sumaTotalbolsas);
-            }else{
-                $this->sumaIncorrecta = ((int)$this->cantidadTotal !== (int)$this->sumaTotalbolsas);
-            }
             
         }
     }
@@ -152,7 +144,19 @@ public function updatedCantidadTotal($value)
 
     public function guardar()
     {
-        // Validar las entradas
+        
+       if($this->tipoCambio == 'moneda_a_bolsas'){
+        if(!$this->porTransferencia){
+            $this->sumaIncorrecta = ((int)$this->sumaTotal !== (int)$this->sumaTotalbolsas);
+        }else{
+            $this->sumaIncorrecta = ((int)$this->cantidadTotal !== (int)$this->sumaTotalbolsas);
+        }
+
+    }else{
+        $this->sumaIncorrecta = ((int)$this->sumaTotal !== (int)$this->cantidadTotal);
+    }
+        
+            
         $this->validate([
             'cantidadTotal' => 'required|numeric|min:1',
             'pico' => 'numeric',

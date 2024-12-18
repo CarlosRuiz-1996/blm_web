@@ -191,7 +191,7 @@
         <div class="form-check mb-3">
             <input class="form-check-input" type="checkbox" id="porTransferencia" wire:model.live="porTransferencia">
             <label class="form-check-label" for="porTransferencia">
-                Cambio realizado por transferencia
+                Cambiar solo bolsas
             </label>
         </div>
 
@@ -235,7 +235,7 @@
             @endforeach
         @else
             <!-- Mensaje de transferencia -->
-            <h3 class="mt-4 text-success">El cambio de billetes se registrara como transferencia.</h3>
+            <h3 class="mt-4 text-success">Solo se cambiaran bolsas.</h3>
         @endif
     </div>
 @endif
@@ -274,7 +274,7 @@
                                 @endif
 
                                 <!-- Mensaje de error si la suma no es correcta -->
-                                @if($sumaIncorrecta)
+                                @if($sumaIncorrecta==true && $sumaIncorrecta !=null )
                                 <div class="col-md-12">
                                     <div class="alert alert-danger mt-3">
                                         La suma de los billetes o monedas no coincide con la cantidad total ingresada.

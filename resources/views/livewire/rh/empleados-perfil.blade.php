@@ -98,8 +98,7 @@
     </div>
 </div>
 <div
-x-data="{ show: @entangle('isOpenempleado') }"
-x-init="
+x-data="{ show: @entangle('isOpenempleado') }" x-init="
     $watch('show', value => {
         if (value) {
             $('#myModaldosempleados').modal('show');
@@ -111,8 +110,7 @@ x-init="
         if (show) {
             show = false;
         }
-    });
-"
+    });"
 id="myModaldosempleados"
 class="modal fade @if($isOpenempleado) show @endif"
 tabindex="-1"
