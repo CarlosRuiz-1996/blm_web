@@ -57,6 +57,7 @@
                                     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config"
                                         head-theme="dark" striped hoverable bordered compressed>
                                         @foreach ($solicitudes as $solicitud)
+                                        @if($solicitud)
                                             <tr>
                                                 <td>{{ $solicitud->id }}</td>
                                                 <td>{{ $solicitud->cliente->razon_social }}</td>
@@ -70,6 +71,7 @@
                                                     </a>
                                                 </td>
                                             </tr>
+                                            @endif
                                         @endforeach
 
 

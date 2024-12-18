@@ -11,7 +11,7 @@ class CtgServicios extends Model
     protected $table = 'ctg_servicios';
 
     protected $fillable = [
-        'folio', 'tipo', 'descripcion', 'unidad',
+        'folio', 'tipo', 'descripcion', 'unidad','status_servicio'
         // Agrega aquí cualquier otro campo que desees asignar masivamente
     ];
 }

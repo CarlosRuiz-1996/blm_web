@@ -217,9 +217,8 @@
                             <a class="nav-link {{ $active_img }}" wire:click='CambiarTab' id="img-tab"
                                 data-toggle="pill" href="#img" role="tab" aria-controls="img"
                                 aria-selected="false">FOTOGRAFIAS DEL
-                                ESTABLECIMIENTO (OPCIONAL)</a>
+                                ESTABLECIMIENTO</a>
                         </li>
-                        <!-- Puedes agregar más pestañas según sea necesario -->
                     </ul>
                     {{-- content del nav --}}
                     <div class="tab-content " id="custom-tabs-one-tabContent">

@@ -153,7 +153,7 @@
             <div class="modal-body">
                 <div class="col-md-12 mb-3">
                     {{-- Success is as dangerous as failure. --}}
-                    <x-adminlte-button label="Agregar sucursal" onclick="ocultar()" class="bg-primary" />
+                    {{-- <x-adminlte-button label="Agregar sucursal" onclick="ocultar()" class="bg-primary" /> --}}
                     <x-select-validado label="Sucursales:" placeholder="" wire-model="form.sucursal_id" required>
                         @if ($sucursales && count($sucursales))
                             @foreach ($sucursales as $sucursal)
