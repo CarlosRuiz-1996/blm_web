@@ -37,7 +37,7 @@
                                     @if ($idsConFirma->contains($IdArea))
                                         <td colspan="2">
                                             <i class="fa fa-circle" style="color: green;"></i>
-                                            {{ $firmas->firstWhere('revisor_areas.area.id', $IdArea)->revisor_areas->area->name }}
+                                            {{ $firmas->firstWhere('revisor_areas.area.id', $IdArea)->revisor_areas->empleado->user->full_name }}
                                         </td>
                                     @else
                                         <td colspan="2">
@@ -63,7 +63,7 @@
                                     @if ($idsConFirma->contains($IdArea))
                                         <td colspan="2">
                                             <i class="fa fa-circle" style="color: green;"></i>
-                                            {{ $firmas->firstWhere('revisor_areas.area.id', $IdArea)->revisor_areas->area->name }}
+                                            {{ $firmas->firstWhere('revisor_areas.area.id', $IdArea)->revisor_areas->empleado->user->full_name }}
                                         </td>
                                     @else
                                         <td colspan="2">

@@ -133,7 +133,8 @@ class User extends Authenticatable
         });
     }
 
-    public function fullName(){
-        return $this->name.' '.$this->paterno.''.$this->materno;
+    public function getFullNameAttribute()
+    {
+        return $this->name . ' ' . $this->paterno . ' ' . $this->materno;
     }
 }

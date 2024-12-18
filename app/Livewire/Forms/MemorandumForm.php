@@ -277,7 +277,8 @@ class MemorandumForm extends Form
     // firmas
     public function getFirmas($memo_id)
     {
-        return MemorandumValidacion::where('memoranda_id', $memo_id)->get();
+        return MemorandumValidacion::where('memoranda_id', $memo_id)
+        ->get();
     }
 
 
