@@ -79,7 +79,7 @@ class MemorandumForm extends Form
         ->whereHas('anexo', function ($query) {
             $query->where('cotizacion_id','!=', null);
         })
-        ->paginate(10);
+        ->get();
     }
     public function getMemorandumValidacion()
     {
@@ -92,7 +92,7 @@ class MemorandumForm extends Form
     {
         return Memorandum::where('status_memoranda', 2)
             ->whereHas('memo_cotizacion') // Filtra los que tienen una cotización relacionada
-            ->get();
+            ->paginate(10);
     }
     public function getSucursales($id)
     {

@@ -315,10 +315,10 @@
                                             </tbody>
                                         </table>
                                         @if ($terminadas->hasPages())
-                                        <div class="d-flex justify-content-center">
-                                            {{ $terminadas->links() }}
-                                        </div>
-                                    @endif
+                                            <div class="d-flex justify-content-center">
+                                                {{ $terminadas->links() }}
+                                            </div>
+                                        @endif
                                     </div>
                                 @else
                                     @if ($readyToLoad)
