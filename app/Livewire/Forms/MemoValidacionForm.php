@@ -56,9 +56,9 @@ class MemoValidacionForm extends Form
 
 
             $empleado_id = auth()->user()->empleado->id;
-
+           
             if ($admin == 1) {
-               
+                dd('if');    
                 for ($i = 1; $i <= 8; $i++) {
                     $revisor = RevisorArea::where('empleado_id', $empleado_id)
                         ->where('ctg_area_id', $i)->first();
@@ -80,11 +80,14 @@ class MemoValidacionForm extends Form
                 
                 }
             } else {
+               
                 $revisor = RevisorArea::where('empleado_id', $empleado_id)
-                    ->where('ctg_area_id', 9)->first();
+                    ->where('ctg_area_id', $area)->first();
                 if (!$revisor) {
                     throw new \Exception('No tienes permisos para validar el memorandum.');
                 }
+
+
                 $existe = MemorandumValidacion::where('memoranda_id', $memorandum_id)
                     ->whereHas('revisor_areas', function ($query) use ($area) {
                         $query->whereHas('area', function ($query2) use ($area) {
