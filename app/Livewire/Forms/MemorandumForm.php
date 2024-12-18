@@ -75,7 +75,11 @@ class MemorandumForm extends Form
 
     public function getFactibilidadAll()
     {
-        return Factibilidad::where('status_factibilidad', '=', 1)->get();
+        return Factibilidad::where('status_factibilidad', '=', 1)
+        ->whereHas('anexo', function ($query) {
+            $query->where('cotizacion_id','!=', null);
+        })
+        ->get();
     }
     public function getMemorandumValidacion()
     {
