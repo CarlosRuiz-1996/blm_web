@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Ruta extends Model
 {
@@ -47,5 +48,13 @@ class Ruta extends Model
         return $this->hasMany(RutaCompraEfectivo::class, 'ruta_id');
     }
 
-    
+    public function ruta_vehiculo(){
+        return $this->hasOne(RutaVehiculo::class, 'ruta_id');
+    }
+    public function empleado(){
+        return $this->hasOne(RutaEmpleados::class, 'ruta_id');
+    }
+    public function empleados(){
+        return $this->hasMany(RutaEmpleados::class, 'ruta_id');
+    }
 }
