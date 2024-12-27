@@ -22,7 +22,7 @@ class RutaGestion extends Component
     public $rutas;
     public RutaForm $form;
     public $dia_select = false;
-    public $total_ruta;
+    public $total_ruta= 0;
     public $originalHoraInicio;
     public $originalHoraFin;
     public $originalCtgRutasId;
@@ -167,7 +167,9 @@ class RutaGestion extends Component
     #[On('total-ruta')]
     public function total()
     {
-        $this->total_ruta = RutaServicio::where('ruta_id', $this->form->ruta->id)->sum('monto');
+        $this->total_ruta = RutaServicio::where('ruta_id', $this->form->ruta->id)
+        ->where('status_ruta_servicios','!=',6)
+        ->sum('monto');
         if ($this->total_ruta > 10000000) {
             $this->validar10m();
         }

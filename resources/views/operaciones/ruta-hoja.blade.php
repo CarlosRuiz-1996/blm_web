@@ -14,11 +14,13 @@
         font-size: 8px;
         /* Ajusta este valor según lo necesites */
     }
+
     .small-text-md {
         font-size: 10px;
         /* Ajusta este valor según lo necesites */
     }
-    .small-texta{
+
+    .small-texta {
         font-size: 8px;
         text-align: center;
         /* Ajusta este valor según lo necesites */
@@ -41,7 +43,8 @@
                 $dia = $fecha_creacion->format('d');
                 $anio = $fecha_creacion->format('Y');
             @endphp
-            <h6 class="text-dark text-right mt-1 mr-8 pr-3">CIUDAD DE MÉXICO, A {{ $dia }} DE {{ $nombre_mes }}
+            <h6 class="text-dark text-right mt-1 mr-8 pr-3">CIUDAD DE MÉXICO, A {{ $dia }} DE
+                {{ $nombre_mes }}
                 DEL {{ $anio }}.</h6>
         </div>
         <div class="col-md-2 col-4">
@@ -52,7 +55,8 @@
         <div class="col-md-2 col-4">
             <table class="small-text">
                 <tr>
-                    <th class="text-center">UNIDAD: _________________</th>
+                    <th class="text-center">UNIDAD:
+                        {{ $ruta->ruta_vehiculo ? $ruta->ruta_vehiculo->vehiculo->placas : '_________________' }}</th>
                 </tr>
                 <tr>
                     <th class="text-center">KM: _____________________</th>
@@ -90,21 +94,38 @@
                 @foreach ($ruta->rutaServicios()->whereNotIn('status_ruta_servicios', [6, 0])->get() as $servicio)
                     <tr>
                         <td class="p-1 small-text-md">{{ $i }}</td>
-                        <td class="p-1 small-text-md">{{ ucwords(strtolower($servicio->servicio->cliente->razon_social)) }}</td>
                         <td class="p-1 small-text-md">
-                            {{ ucwords(strtolower(
-                                $servicio->servicio->sucursal->sucursal->direccion . ' ' . 
-                                $servicio->servicio->sucursal->sucursal->cp->cp . ' ' . 
-                                $servicio->servicio->sucursal->sucursal->cp->estado->name
-                            )) }}
+                            {{ ucwords(strtolower($servicio->servicio->cliente->razon_social)) }}</td>
+                        <td class="p-1 small-text-md">
+                            {{ ucwords(
+                                strtolower(
+                                    $servicio->servicio->sucursal->sucursal->direccion .
+                                        ' ' .
+                                        $servicio->servicio->sucursal->sucursal->cp->cp .
+                                        ' ' .
+                                        $servicio->servicio->sucursal->sucursal->cp->estado->name,
+                                ),
+                            ) }}
                         </td>
-                        
+
                         <td class="p-1"></td>
-                        <td class="p-1"></td>
-                        <td class="p-1"></td>
-                        <td class="p-1"></td>
-                        <td class="p-1"></td>
-                        <td class="p-1"></td>
+                        <td class="p-1">
+                            {{-- llaves --}}
+                            {{ $servicio->keys }}
+                        </td>
+                        <td class="p-1">
+                            {{ ucwords(strtolower($servicio->servicio->ctg_servicio->descripcion)) }}
+                        </td>
+                        <td class="p-1">
+                            {{ $servicio->ruta->created_at }}
+                        </td>
+                        <td class="p-1">
+                            {{ $servicio->ruta->updated_at }}
+                        </td>
+                        <td class="p-1">
+                            {{-- consignatario --}}
+                            {{ $servicio->servicio->sucursal->servicio_memo->consignatario->name }}
+                        </td>
                         <td class="p-1"></td>
                         <td class="p-1"></td>
                         <td class="p-1"></td>
@@ -124,19 +145,35 @@
             </tbody>
         </table>
     </div>
-    
 
 
     <div class="col-md-2 col-4">
         <table class="small-text">
             <tr>
-                <th class="text-center">OPERADOR: _________________</th>
+                <th class="text-center">OPERADOR:
+
+                    @foreach ($ruta->empleados as $r_empleado)
+                        @if ($r_empleado->empleado->ctg_area_id == 18)
+                            {{ $r_empleado->empleado->user->full_name }}
+                        @endif
+                    @endforeach
+
+                </th>
+
+                </th>
             </tr>
             <tr>
-                <th class="text-center">AUXILIAR: _____________________</th>
+                <th class="text-center">AUXILIAR:
+                    @foreach ($ruta->empleados as $r_empleado)
+                        @if ($r_empleado->empleado->ctg_area_id == 16)
+                            {{ $r_empleado->empleado->user->full_name }}
+                        @endif
+                    @endforeach
+                </th>
             </tr>
             <tr>
-                <th class="text-center">CUSAEM: _____________________</th>
+                <th class="text-center">CUSAEM: _________________
+                </th>
             </tr>
         </table>
     </div>

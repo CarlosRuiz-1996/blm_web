@@ -370,7 +370,7 @@
                         <div class="col-md-1 mb-3">
                             <label style="display: block;">Violado</label>
                             <input {{ $envases->evidencia_recolecta->violate ? 'checked' : '' }}
-                            type="checkbox" class="large-checkbox" disabled />
+                            type="checkbox"  class="large-checkbox" />
                         </div>
 
                         <div class="col-md-1 mb-3">
