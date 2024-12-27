@@ -202,6 +202,7 @@ class EmpleadosPerfil extends Component
             // Guardar los cambios
             $employee->user->save(); // Guardar cambios del usuario
             $employee->save(); // Guardar cambios del empleado
-            session()->flash('message', 'Empleado actualizado correctamente.');
+            $this->isOpenempleado = false; // Abre el modal
+            $this->dispatch('empleadoupdate', ['El empleado se modifico con éxito']);
         }
 }

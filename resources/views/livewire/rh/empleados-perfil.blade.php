@@ -375,4 +375,18 @@ style="@if($isOpenempleado) display: block; @endif"
     </div>
 </div>
 </div>
+<script>
+        document.addEventListener('livewire:initialized', () => {
+                        Livewire.on('empleadoupdate', function(message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: message,
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+            });
+            
+        });
+    </script>
 </div>
+
