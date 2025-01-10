@@ -25,6 +25,7 @@ use App\Http\Controllers\ValidacionMemorandumController;
 use App\Http\Controllers\ventasController;
 use App\Livewire\BancosGestion;
 use App\Livewire\Boveda\CambioEfectivo;
+use App\Livewire\CalculateDistance;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -179,6 +180,8 @@ Route::middleware([
     });
     
 });
+
+Route::get('/distance',CalculateDistance::class)->name('calculate-distance');
 
 Livewire::setUpdateRoute(function ($handle) {
     return Route::post('/livewire/update', $handle);

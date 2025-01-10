@@ -11,7 +11,7 @@ class CtgVehiculos extends Model
     use HasFactory;
     protected $table = 'ctg_vehiculos';
     protected $fillable = [
-        'descripcion', 'serie', 'anio', 'ctg_vehiculo_modelo_id', 'placas', 'status_ctg_vehiculos'
+        'descripcion', 'serie', 'anio', 'ctg_vehiculo_modelo_id', 'placas', 'status_ctg_vehiculos','litro_km','tipo_combustible'
     ];
 
 
