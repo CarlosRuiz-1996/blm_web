@@ -339,7 +339,6 @@ class RutaForm extends Form
                     $distancia = GoogleMapsHelper::calculateDistance($origen, $destino);
 
 
-
                     $servicio_ruta = RutaServicio::create([
                         'servicio_id' => $data['servicio_id'],
                         'ruta_id' => $this->ruta->id,

@@ -193,7 +193,7 @@
                                 wire-model="form.descripcion" type="text" />
                         </div>
                         <div class="col-md-6 mb-3">
-                            <x-input-validado label="Costo por litro:" placeholder="costo $"
+                            <x-input-validado label="Costo por litro:" placeholder="litros "
                                 wire-model="form.litro_km" type="text" />
                         </div>
                         <div class="col-md-6 mb-3">

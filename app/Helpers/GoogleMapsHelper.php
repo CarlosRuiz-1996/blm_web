@@ -22,7 +22,7 @@ class GoogleMapsHelper
 
             if ($element['status'] === 'OK') {
                 return [
-                    'distance' => $element['distance']['text'] ?? 'N/A',
+                    'distance' => floatval($element['distance']['text']) ?? 'N/A',
                     'duration' => $element['duration']['text'] ?? 'N/A',
                 ];
             }
