@@ -16,24 +16,25 @@ class GoogleMapsHelper
             'key' => $apiKey,
         ]);
         $data = $response->json();
-
         if ($response->successful() && isset($data['rows'][0]['elements'][0])) {
             $element = $data['rows'][0]['elements'][0];
-
             if ($element['status'] === 'OK') {
-                return [
-                    'distance' => floatval($element['distance']['text']) ?? 'N/A',
-                    'duration' => $element['duration']['text'] ?? 'N/A',
-                ];
+
+                return
+                    [
+                        'distance' => floatval($element['distance']['text']) ?? 0,
+                        'duration' => $element['duration']['text'] ?? 'N/A',
+                    ]
+                ;
             }
 
             // Si el estado no es "OK"
-            return ['distance' => 'N/A', 'duration' => 'N/A', 'error' => $element['status']];
+            return ['distance' => 0, 'duration' => 'N/A', 'error' => $element['status']];
         }
 
         // Si la respuesta no es exitosa
         return [
-            'distance' => 'N/A',
+            'distance' => 0,
             'duration' => 'N/A',
             'error' => $data['status'] ?? 'UNKNOWN_ERROR',
         ];

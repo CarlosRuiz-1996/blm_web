@@ -345,6 +345,8 @@ class RutaForm extends Form
 
                 foreach ($seleccionados as $index => $data) {
 
+
+                    Log::info('obtiene servicio');
                     $servicioActual = Servicios::find($data['servicio_id']);
                     // Definir el origen (para el primer servicio será la dirección de salida)
                     $origen = $ultimoServicio === null
@@ -353,11 +355,12 @@ class RutaForm extends Form
 
                     // Destino: dirección del servicio actual
                     $destino = $servicioActual->direccionCompleta();
-
+                    Log::info('obtiene destino');
+                    // dd($origen.'-'. $destino);
                     // Calcular la distancia entre el origen y el destino
                     $distancia = GoogleMapsHelper::calculateDistance($origen, $destino);
-
-
+                    // dd($distancia);
+                    Log::info('obtiene distancia: '.$distancia);
                     $servicio_ruta = RutaServicio::create([
                         'servicio_id' => $data['servicio_id'],
                         'ruta_id' => $this->ruta->id,
@@ -368,7 +371,7 @@ class RutaForm extends Form
                         'km' => $distancia['distance'],
 
                     ]);
-
+                    Log::info('guarda ruta servicio');
                     $servicio_ruta->servicio->status_servicio = 4;
                     $servicio_ruta->servicio->save();
 
@@ -402,7 +405,7 @@ class RutaForm extends Form
                 }
             }
 
-
+            Log::info('calcula total');
             $riesgo = $this->calculaRiesgo($totalRuta);
             $this->ruta->total_ruta += $totalRuta;
             $this->ruta->ctg_rutas_riesgo_id = $riesgo;

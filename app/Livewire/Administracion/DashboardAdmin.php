@@ -4,6 +4,7 @@ namespace App\Livewire\Administracion;
 
 use App\Models\Cliente;
 use App\Models\CtgRutaDias;
+use App\Models\CtgVehiculosRutaServicios;
 use App\Models\Inconsistencias;
 use App\Models\Reprogramacion;
 use App\Models\Ruta;
@@ -165,8 +166,7 @@ public function datosreprogramacion(){
             if ($this->startDate && $this->endDate) { 
             $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
-            return RutaServicio::whereBetween('created_at', [$startDate, $endDate])
-            ->where('status_ruta_servicios',6)
+            return CtgVehiculosRutaServicios::whereBetween('created_at', [$startDate, $endDate])
                 ->paginate(5, pageName: 'invoices-page5');
         }
     

@@ -286,33 +286,28 @@
                 
                     <thead>
                         <tr>
-                            <th>Servicio</th>
-                            <th>Sucursal</th>
                             <th>Ruta</th>
-                            <th>Cliente</th>
-                            <th>Vehiculo</th>
+                            <th>Servicio</th>
+                            <th>Serie</th>
                             <th>Placas</th>
-                            <th>KM</th>
-                            <th>Litros</th>
+                            <th>KM por litro</th>
                             <th>Combustible</th>
                             <th>Precio</th>
                             <th>Total</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody>                        
+                        {{-- ruta servicio --}}
                     @forelse($vehiculosservi as $vehiculosservicios)
                         <tr>
-                            <td>{{$vehiculosservicios->servicio->ctg_servicio->descripcion}}</td>
-                            <td>{{$vehiculosservicios->servicio->sucursal->sucursal->sucursal}}</td>
-                            <td>{{$vehiculosservicios->ruta->nombre->name}}</td>
-                            <td>{{$vehiculosservicios->servicio->cliente->razon_social}}</td>
-                            <td>ford</td>
-                            <td>MTD4580</td>
-                            <td>250</td>
-                            <td>100</td>
-                            <td>Magna</td>
-                            <td>$500</td>
-                            <td>$1,500</td>
+                            <td>{{$vehiculosservicios->rutaServicioVehiculo->ruta->nombre->name}}</td>
+                            <td>{{$vehiculosservicios->rutaServicioVehiculo->servicio->ctg_servicio->descripcion}}</td>
+                            <td>{{$vehiculosservicios->vehiculoRuta->serie}}</td>
+                            <td>{{$vehiculosservicios->vehiculoRuta->placas}}</td>
+                            <td>{{$vehiculosservicios->vehiculoRuta->litro_km}}</td>
+                            <td>{{$vehiculosservicios->vehiculoRuta->tipo_combustible}}</td>
+                           <td></td>
+                           <td>|</td>
                         </tr>
                     @empty
                         <p>No hay elementos disponibles.</p>
