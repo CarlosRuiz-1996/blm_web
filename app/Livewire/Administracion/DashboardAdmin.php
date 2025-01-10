@@ -26,6 +26,7 @@ class DashboardAdmin extends Component
     public $recoleccionServicios2;
     public $totalactas;
     public $totalreprogramacion;
+    public $vehiculosservicios;
 
     //incializa el componenete con la fecha de inicio de mes y fin del mes actual
     public function mount()
@@ -45,10 +46,11 @@ class DashboardAdmin extends Component
         $entregaServicios=$this->datosentrega();
         $inconsistencias=$this->datosinconsistencias();
         $reprogramacion=$this->datosreprogramacion();
+        $vehiculosservi=$this->datsovehiculosServicios();
 
         $diasrutas = CtgRutaDias::withCount('rutasdia')->get();
         $totalderutas=Ruta::count();
-        return view('livewire.administracion.dashboard-admin',compact('diasrutas','totalderutas','recoleccionServicios','entregaServicios','resguardototal','inconsistencias','reprogramacion'));
+        return view('livewire.administracion.dashboard-admin',compact('diasrutas','totalderutas','recoleccionServicios','entregaServicios','resguardototal','inconsistencias','reprogramacion','vehiculosservi'));
     }
 //actulliza la informacion con el filtro del las fechas seleccionadas en la grafica
     public function updateData()
@@ -159,5 +161,15 @@ public function datosreprogramacion(){
     return Reprogramacion::paginate(5, pageName: 'invoices-page4'); // Devuelve paginación por defecto
 }
 
-
+        public function datsovehiculosServicios(){
+            if ($this->startDate && $this->endDate) { 
+            $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+            $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
+            return RutaServicio::whereBetween('created_at', [$startDate, $endDate])
+            ->where('status_ruta_servicios',6)
+                ->paginate(5, pageName: 'invoices-page5');
+        }
+    
+        return Reprogramacion::paginate(5, pageName: 'invoices-page5'); // Devuelve paginación por defecto 
+        }
 }

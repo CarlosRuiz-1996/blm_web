@@ -154,7 +154,7 @@
                         <div class="col-md-4 mb-3">
                             <x-input-validado label="Año:" placeholder="año" wire-model="form.anio" type="text" />
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <x-select-validado label="Modelo:" placeholder="" wire-model="form.ctg_vehiculo_modelo_id"
                                 required>
 
@@ -168,14 +168,10 @@
                                 @endif
                             </x-select-validado>
                         </div>
-
-
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <x-input-validado label="Serie:" placeholder="serie" wire-model="form.serie"
                                 type="text" />
                         </div>
-
-
                         <div class="col-md-12 mb-3">
                             <x-input-validado label="Descripción:" placeholder="descripción"
                                 wire-model="form.descripcion" type="text" />

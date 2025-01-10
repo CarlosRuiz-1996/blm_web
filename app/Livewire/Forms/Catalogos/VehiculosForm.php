@@ -21,7 +21,7 @@ class VehiculosForm extends Form
         // 'anio' => 'required', 
         'ctg_vehiculo_marca_id' => 'required',
         'ctg_vehiculo_modelo_id' => 'required',
-        'placas' => 'required',
+        'placas' => 'required'
     ];
     public function getAllVehiculos($search)
     {

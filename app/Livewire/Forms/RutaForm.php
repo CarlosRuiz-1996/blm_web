@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\CtgRutaDias;
 use App\Models\CtgRutas;
 use App\Models\CtgVehiculos;
+use App\Models\CtgVehiculosRutaServicios;
 use App\Models\Empleado;
 use App\Models\Notification as ModelsNotification;
 use App\Models\Ruta;
@@ -179,6 +180,24 @@ class RutaForm extends Form
     {
 
         try {
+             // Obtener los servicios de la ruta que no tienen status 6
+                $servicios = RutaServicio::where('ruta_id', $this->ruta->id)
+                ->where('status_ruta_servicios', '!=', 6)
+                ->get();
+
+            // Obtener los vehículos relacionados con la ruta
+            $vehiculos = RutaVehiculo::where('ruta_id', $this->ruta->id)->where('status_ruta_vehiculos', '=', 1)->get();
+
+            // Iterar sobre los vehículos y asociarles los servicios
+            foreach ($vehiculos as $vehiculo) {
+                foreach ($servicios as $servicio) {
+                    // Aquí se inserta la relación entre vehículo y servicio
+                    CtgVehiculosRutaServicios::create([
+                        'ctg_vehiculo_id' => $vehiculo->ctg_vehiculo_id,
+                        'ruta_servicio_id' => $servicio->id,
+                    ]);
+                }
+            }
             $this->ruta->ctg_rutas_estado_id = 2;
             $this->ruta->save();
             return 1;

@@ -271,6 +271,72 @@
                         </div>
                     </div>
                 </div>
+
+
+                  <div class="col-md-12">
+    <div class="card">
+        <div class="card-header bg-dark d-flex align-items-center">
+            <h4 class="card-title">Vehiculos</h4>
+            <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse" data-target="#collapseVehiculosReporte" aria-expanded="true" aria-controls="collapseVehiculosReporte" style="cursor: pointer;"></i>
+        </div>
+        <div id="collapseVehiculosReporte" class="collapse show">
+            <div class="card-body">
+                <!-- Tabla de Vehículos -->
+                <table class="table table-bordered table-striped">
+                
+                    <thead>
+                        <tr>
+                            <th>Servicio</th>
+                            <th>Sucursal</th>
+                            <th>Ruta</th>
+                            <th>Cliente</th>
+                            <th>Vehiculo</th>
+                            <th>Placas</th>
+                            <th>KM</th>
+                            <th>Litros</th>
+                            <th>Combustible</th>
+                            <th>Precio</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @forelse($vehiculosservi as $vehiculosservicios)
+                        <tr>
+                            <td>{{$vehiculosservicios->servicio->ctg_servicio->descripcion}}</td>
+                            <td>{{$vehiculosservicios->servicio->sucursal->sucursal->sucursal}}</td>
+                            <td>{{$vehiculosservicios->ruta->nombre->name}}</td>
+                            <td>{{$vehiculosservicios->servicio->cliente->razon_social}}</td>
+                            <td>ford</td>
+                            <td>MTD4580</td>
+                            <td>250</td>
+                            <td>100</td>
+                            <td>Magna</td>
+                            <td>$500</td>
+                            <td>$1,500</td>
+                        </tr>
+                    @empty
+                        <p>No hay elementos disponibles.</p>
+                    @endforelse
+                    </tbody>
+                </table>
+ {{ $vehiculosservi->links() }} 
+                <!-- Gráfica de Dona 1 - Vehículos más usados -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Vehículos más usados</h5>
+                        <canvas id="vehiculosDonaChart"></canvas>
+                    </div>
+
+                    <!-- Gráfica de Dona 2 - Kilometraje -->
+                    <div class="col-md-6">
+                        <h5>Kilometraje por Vehículo</h5>
+                        <canvas id="kmtrajeDonaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>
+</div> 
     </div>
     
     
@@ -435,5 +501,64 @@
         });
         });
     </script>
+    <script>
+    // Gráfico de Dona - Vehículos más usados
+    var ctxVehiculos = document.getElementById('vehiculosDonaChart').getContext('2d');
+    var vehiculosDonaChart = new Chart(ctxVehiculos, {
+        type: 'doughnut',
+        data: {
+            labels: ['Vehículo A', 'Vehículo B', 'Vehículo C', 'Vehículo D'],
+            datasets: [{
+                data: [120, 150, 180, 100],
+                backgroundColor: ['#FF6347', '#36A2EB', '#FFCE56', '#4CAF50'],
+                hoverBackgroundColor: ['#FF4500', '#3D8BFF', '#FFD700', '#4CAF50']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw + ' km';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Gráfico de Dona - Kilometraje por Vehículo
+    var ctxKmtraje = document.getElementById('kmtrajeDonaChart').getContext('2d');
+    var kmtrajeDonaChart = new Chart(ctxKmtraje, {
+        type: 'doughnut',
+        data: {
+            labels: ['Vehículo A', 'Vehículo B', 'Vehículo C', 'Vehículo D'],
+            datasets: [{
+                data: [250, 320, 200, 150],
+                backgroundColor: ['#FF6347', '#36A2EB', '#FFCE56', '#4CAF50'],
+                hoverBackgroundColor: ['#FF4500', '#3D8BFF', '#FFD700', '#4CAF50']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw + ' km';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
     @endpush
 </div>

@@ -8,7 +8,7 @@
         "php": "^8.1",
         "barryvdh/laravel-dompdf": "^2.1",
         "beyondcode/laravel-websockets": "^1.14",
-        "guzzlehttp/guzzle": "^7.2",
+        "guzzlehttp/guzzle": "^7.8",
         "jeroennoten/laravel-adminlte": "^3.9",
         "laravel/framework": "^10.10",
         "laravel/jetstream": "^4.2",
@@ -20,6 +20,7 @@
         "phpoffice/phpword": "^1.2",
         "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-permission": "^6.3",
+        "symfony/dom-crawler": "^7.2",
         "wire-elements/modal": "^2.0"
     },
     "require-dev": {

@@ -11,6 +11,7 @@ use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\ClientesActivosController;
 use App\Http\Controllers\cumplimientoController;
 use App\Http\Controllers\Factibilidad;
+use App\Http\Controllers\GasolineScrapingController;
 use App\Http\Controllers\juridicoController;
 use App\Http\Controllers\MemorandumController;
 use App\Http\Controllers\OperacionesController;
@@ -138,7 +139,7 @@ Route::middleware([
         Route::get('seguridad/reporte/{anexo}', [Factibilidad::class, 'reporte'])->name('seguridad.reporte');
         Route::get('seguridad/reportePDF', [Factibilidad::class, 'showPDF'])->name('seguridad.pdf');
     });
-
+    Route::get('/scrape-prices', [GasolineScrapingController::class, 'scrapePrices']);
 
 
 
