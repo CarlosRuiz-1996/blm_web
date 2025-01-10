@@ -19,7 +19,7 @@
 
 
                 <div class="card-body" wire:ignore.self>
-                 
+
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">
@@ -33,101 +33,114 @@
                     </div>
                     @if (count($vehiculos))
 
-                        <table class="table table-bordered table-striped table-hover">
-                            <thead class="table-info">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Placa</th>
-                                    <th>Marca</th>
-                                    <th>Año</th>
-                                    <th>Modelo</th>
-                                    <th>Serie</th>
-                                    <th>Descripcion</th>
-                                    <th>Estatus</th>
-                                    <th style="width: 120px">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($vehiculos as $vehiculo)
-                                <tr>
-                                    <td>{{ $vehiculo->id }}</td>
-                                    <td>{{ $vehiculo->placas }}</td>
-                                    <td>{{ $vehiculo->modelo->marca->name }}</td>
-                                    <td>{{ $vehiculo->anio }}</td>
-                                    <td>{{ $vehiculo->modelo->name }}</td>
-                                    <td>{{ $vehiculo->serie }}</td>
-                                    <td>{{ $vehiculo->descripcion }}</td>
-                                    <td><i class="fa fa-circle" aria-hidden="true"
-                                            style="color:{{ $vehiculo->status_ctg_vehiculos == 1 ? 'green' : 'red' }};"></i>
-                                    </td>
-                                    <td>
-    
-                                        <div class="btn-group">
-    
-                                            @if ($vehiculo->status_ctg_vehiculos == 1)
-                                                <button class="btn text-success" title="Editar"
-                                                    wire:click="setVehiculo({{ $vehiculo }})">
-                                                    <i class="fa fa-lg fa-fw fa-pen"></i>
-                                                </button>
-    
-                                                <button class="btn text-danger" title="Dar de baja"
-                                                    wire:click="$dispatch('confirm-baja',{{ $vehiculo }})">
-    
-                                                    <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                                                </button>
-                                            @else
-                                                <button class="btn btn-primary" title="Reactivar"
-                                                    wire:click="$dispatch('confirm-reactivar',{{ $vehiculo }})">
-                                                    Reactivar
-                                                </button>
-                                            @endif
-    
-                                            <button class="btn text-danger" title="Eliminar"
-                                                wire:click="$dispatch('confirm-delete',{{ $vehiculo }})">
-                                                <i class="fa fa-lg fa-fw fa-trash"></i>
-                                            </button>
-    
-                                        </div>
-    
-                                    </td>
-                                </tr>
+                    <table class="table table-bordered table-striped table-hover">
+                        <thead class="table-info">
+                            <tr>
+                                <th>ID</th>
+                                <th>Placa</th>
+                                <th>Marca</th>
+                                <th>Año</th>
+                                <th>Modelo</th>
+                                <th>Serie</th>
+                                <th>Descripcion</th>
+                                <th>Litros por Kilometros</th>
+                                <th>Tipo combustible</th>
+                                <th>Estatus</th>
+                                <th style="width: 120px">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($vehiculos as $vehiculo)
+                            <tr>
+                                <td>{{ $vehiculo->id }}</td>
+                                <td>{{ $vehiculo->placas }}</td>
+                                <td>{{ $vehiculo->modelo->marca->name }}</td>
+                                <td>{{ $vehiculo->anio }}</td>
+                                <td>{{ $vehiculo->modelo->name }}</td>
+                                <td>{{ $vehiculo->serie }}</td>
+                                <td>{{ $vehiculo->descripcion }}</td>
+                                <td>
+                                    {{ $vehiculo->litro_km}}
+
+                                </td>
+                                <td>
+                                    {{$vehiculo->tipo_combustible==1?'Magna':''}}
+                                    {{$vehiculo->tipo_combustible==2?'Premium':''}}
+
+                                    {{$vehiculo->tipo_combustible==3?'Diesel':''}}
+
+                                </td>
+                                <td><i class="fa fa-circle" aria-hidden="true"
+                                        style="color:{{ $vehiculo->status_ctg_vehiculos == 1 ? 'green' : 'red' }};"></i>
+                                </td>
+                                <td>
+
+                                    <div class="btn-group">
+
+                                        @if ($vehiculo->status_ctg_vehiculos == 1)
+                                        <button class="btn text-success" title="Editar"
+                                            wire:click="setVehiculo({{ $vehiculo }})">
+                                            <i class="fa fa-lg fa-fw fa-pen"></i>
+                                        </button>
+
+                                        <button class="btn text-danger" title="Dar de baja"
+                                            wire:click="$dispatch('confirm-baja',{{ $vehiculo }})">
+
+                                            <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                                        </button>
+                                        @else
+                                        <button class="btn btn-primary" title="Reactivar"
+                                            wire:click="$dispatch('confirm-reactivar',{{ $vehiculo }})">
+                                            Reactivar
+                                        </button>
+                                        @endif
+
+                                        <button class="btn text-danger" title="Eliminar"
+                                            wire:click="$dispatch('confirm-delete',{{ $vehiculo }})">
+                                            <i class="fa fa-lg fa-fw fa-trash"></i>
+                                        </button>
+
+                                    </div>
+
+                                </td>
+                            </tr>
                             @endforeach
 
-                            </tbody>
-                        </table>
+                        </tbody>
+                    </table>
 
 
-                        @if ($vehiculos->hasPages())
-                            <div class="col-md-12 text-center">
-                                {{ $vehiculos->links() }}
-                            </div>
-                        @endif
+                    @if ($vehiculos->hasPages())
+                    <div class="col-md-12 text-center">
+                        {{ $vehiculos->links() }}
+                    </div>
+                    @endif
                     @else
-                        @if ($readyToLoad)
-                            <h3 class="col-md-12 text-center">No hay datos disponibles</h3>
-                        @else
-                            <!-- Muestra un spinner mientras los datos se cargan -->
-                            <div class="col-md-12 text-center">
-                                <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
-                                    role="status">
-                                    {{-- <span class="visually-hidden">Loading...</span> --}}
-                                </div>
-                            </div>
-                        @endif
+                    @if ($readyToLoad)
+                    <h3 class="col-md-12 text-center">No hay datos disponibles</h3>
+                    @else
+                    <!-- Muestra un spinner mientras los datos se cargan -->
+                    <div class="col-md-12 text-center">
+                        <div class="spinner-border" style="width: 5rem; height: 5rem; border-width: 0.5em;"
+                            role="status">
+                            {{-- <span class="visually-hidden">Loading...</span> --}}
+                        </div>
+                    </div>
+                    @endif
                     @endif
 
 
                 </div>
             </div>
-          
+
         </div>
     </div>
 
 
 
     {{-- Themed --}}
-    <x-adminlte-modal wire:ignore.self id="vehiculo" title="Agregar vehiculo" theme="info" icon="fas fa-bolt"
-        size='lg' disable-animations>
+    <x-adminlte-modal wire:ignore.self id="vehiculo" title="Agregar vehiculo" theme="info" icon="fas fa-bolt" size='lg'
+        disable-animations>
         <div class="col-md-12">
             <div class="card card-outline card-info">
 
@@ -146,7 +159,7 @@
                                 wire-model="form.ctg_vehiculo_marca_id" required>
 
                                 @foreach ($marcas as $marca)
-                                    <option value="{{ $marca->id }}">{{ $marca->name }}</option>
+                                <option value="{{ $marca->id }}">{{ $marca->name }}</option>
                                 @endforeach
                             </x-select-validadolive>
                         </div>
@@ -161,22 +174,37 @@
                                 <option value="0" selected>Selecciona</option>
                                 @if($modelos)
                                 @foreach ($modelos as $modelo)
-                                    <option value="{{ $modelo->id }}">{{ $modelo->name }}</option>
+                                <option value="{{ $modelo->id }}">{{ $modelo->name }}</option>
                                 @endforeach
-                                @else 
+                                @else
                                 <option value="0" disabled>Esperando que seleccione la marca</option>
                                 @endif
                             </x-select-validado>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <x-input-validado label="Serie:" placeholder="serie" wire-model="form.serie"
-                                type="text" />
+
+
+                        <div class="col-md-6 mb-3">
+                            <x-input-validado label="Serie:" placeholder="serie" wire-model="form.serie" type="text" />
                         </div>
                         <div class="col-md-12 mb-3">
                             <x-input-validado label="Descripción:" placeholder="descripción"
                                 wire-model="form.descripcion" type="text" />
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <x-input-validado label="Costo por litro:" placeholder="litros "
+                                wire-model="form.litro_km" type="text" />
+                        </div>
+                        <div class="col-md-6 mb-3">
 
+                            <x-select-validado label="Tipo de Combustible:" placeholder=""
+                                wire-model="form.tipo_combustible" required>
+
+                                <option value="1" selected>Magna</option>
+                                <option value="2" selected>Premium</option>
+                                <option value="3" selected>Diesel</option>
+                               
+                            </x-select-validado>
+                        </div>
 
                     </div>
                 </div>
@@ -188,8 +216,8 @@
 
 
     @push('js')
-        <script>
-            document.addEventListener('livewire:initialized', () => {
+    <script>
+        document.addEventListener('livewire:initialized', () => {
                 @this.on('confirm', (opcion) => {
 
                     Swal.fire({
@@ -297,6 +325,6 @@
             });
 
 
-        </script>
+    </script>
     @endpush
 </div>

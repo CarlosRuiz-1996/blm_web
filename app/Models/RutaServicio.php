@@ -21,7 +21,8 @@ class RutaServicio extends Model
         'keys',
         'morralla',
         'puerta',
-        'fecha_servicio'
+        'fecha_servicio',
+        'km'
     ];
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Helpers\GoogleMapsHelper;
 use App\Livewire\Catalogos\RutasDias;
 use App\Models\Cliente;
 use App\Models\CtgRutaDias;
@@ -36,7 +37,7 @@ class RutaForm extends Form
     public $ctg_rutas_estado_id;
     public $diasfiltro;
     public $diaid;
-    public $botonhablitarruta=false;
+    public $botonhablitarruta = false;
 
     //para poder guardardar el model de la ruta
     public $ruta;
@@ -334,27 +335,47 @@ class RutaForm extends Form
     }
     public function storeRutaServicio($seleccionados, $seleccionadosRecolecta)
     {
-        
+
         try {
             DB::beginTransaction();
             $totalRuta = 0;
 
             if (count($seleccionados)) {
-                foreach ($seleccionados as $data) {
+                $ultimoServicio = null;
+
+                foreach ($seleccionados as $index => $data) {
+
+                    $servicioActual = Servicios::find($data['servicio_id']);
+                    // Definir el origen (para el primer servicio será la dirección de salida)
+                    $origen = $ultimoServicio === null
+                        ? env('ORIGEN_SALIDA') // Cambia por la dirección de salida (formato "calle, colonia, cp")
+                        : $ultimoServicio->direccionCompleta(); // Dirección del último servicio (definimos un método en el modelo)
+
+                    // Destino: dirección del servicio actual
+                    $destino = $servicioActual->direccionCompleta();
+
+                    // Calcular la distancia entre el origen y el destino
+                    $distancia = GoogleMapsHelper::calculateDistance($origen, $destino);
+
+
                     $servicio_ruta = RutaServicio::create([
                         'servicio_id' => $data['servicio_id'],
                         'ruta_id' => $this->ruta->id,
                         'monto' => $data['monto'],
                         'folio' => $data['folio'] ?? '',
                         'tipo_servicio' => 1,
-                        'fecha_servicio'=>$this->dia_id_calendario,
-                        
+                        'fecha_servicio' => $this->dia_id_calendario,
+                        'km' => $distancia['distance'],
+
                     ]);
 
                     $servicio_ruta->servicio->status_servicio = 4;
                     $servicio_ruta->servicio->save();
 
                     $totalRuta += $data['monto'];
+
+                    // Guardar el último servicio para el próximo cálculo
+                    $ultimoServicio = $servicioActual;
                 }
             }
             if (count($seleccionadosRecolecta)) {
@@ -366,8 +387,8 @@ class RutaForm extends Form
                         'folio' => $data['folio'] ?? '',
                         'tipo_servicio' => 2,
                         'puerta' => $this->ruta->ctg_rutas_estado_id == 1 ? 0 : 1,
-                        'status_ruta_servicios'=>$this->ruta->ctg_rutas_estado_id == 1 ? 1 : 4,
-                        'fecha_servicio'=>$this->dia_id_calendario,
+                        'status_ruta_servicios' => $this->ruta->ctg_rutas_estado_id == 1 ? 1 : 4,
+                        'fecha_servicio' => $this->dia_id_calendario,
                     ]);
 
                     $servicio_ruta->servicio->status_servicio = 4;
@@ -377,7 +398,6 @@ class RutaForm extends Form
                         ServicioPuerta::create([
                             'ruta_servicio_id' => $servicio_ruta->id,
                         ]);
-
                     }
                 }
             }
@@ -696,19 +716,19 @@ class RutaForm extends Form
         }
     }
     public function calcularProximoDia($fecha, $diaPermitido)
-        {
-            // Obtener el día actual (0: Domingo, 1: Lunes, ..., 6: Sábado)
-            $diaActual = $fecha->format('w'); // Formato 'w' devuelve el día de la semana
-        
-            // Calcular cuántos días faltan hasta el día permitido
-            $diasHastaPermitido = ($diaPermitido - $diaActual + 7) % 7;
-        
-            // Si el día permitido es hoy, no sumamos días
-            if ($diasHastaPermitido === 0) {
-                return $fecha; // Retorna la fecha actual
-            }
-        
-            // Retorna la fecha ajustada al próximo día permitido
-            return $fecha->addDays($diasHastaPermitido);
+    {
+        // Obtener el día actual (0: Domingo, 1: Lunes, ..., 6: Sábado)
+        $diaActual = $fecha->format('w'); // Formato 'w' devuelve el día de la semana
+
+        // Calcular cuántos días faltan hasta el día permitido
+        $diasHastaPermitido = ($diaPermitido - $diaActual + 7) % 7;
+
+        // Si el día permitido es hoy, no sumamos días
+        if ($diasHastaPermitido === 0) {
+            return $fecha; // Retorna la fecha actual
         }
+
+        // Retorna la fecha ajustada al próximo día permitido
+        return $fecha->addDays($diasHastaPermitido);
+    }
 }

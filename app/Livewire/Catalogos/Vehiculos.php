@@ -100,7 +100,9 @@ class Vehiculos extends Component
         $this->form->serie = $vehiculo->serie;
         $this->form->ctg_vehiculo_modelo_id = $vehiculo->modelo->id;
         $this->form->ctg_vehiculo_marca_id = $vehiculo->modelo->marca->id;
-
+        $this->form->costo_litro = $vehiculo->costo_litro;
+        $this->form->tipo_combustible = $vehiculo->tipo_combustible;
+        
         $this->dispatch('edit-vehiculo');
     }
 
@@ -117,5 +119,7 @@ class Vehiculos extends Component
         $this->form->serie ="";
         $this->form->ctg_vehiculo_modelo_id ="";
         $this->form->ctg_vehiculo_marca_id ="";
+        $this->form->costo_litro ="";
+        $this->form->tipo_combustible ="";
     }
 }

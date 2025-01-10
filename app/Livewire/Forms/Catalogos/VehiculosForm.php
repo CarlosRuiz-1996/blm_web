@@ -14,14 +14,16 @@ class VehiculosForm extends Form
 {
     public $name;
 
-    public $descripcion, $serie, $anio, $ctg_vehiculo_marca_id, $ctg_vehiculo_modelo_id, $placas, $status_ctg_vehiculos;
+    public $descripcion, $serie, $anio, $ctg_vehiculo_marca_id, $ctg_vehiculo_modelo_id, $placas, $status_ctg_vehiculos, $litro_km,$tipo_combustible;
     protected $rules = [
         'descripcion' => 'required',
         'serie' => 'required',
         // 'anio' => 'required', 
         'ctg_vehiculo_marca_id' => 'required',
         'ctg_vehiculo_modelo_id' => 'required',
-        'placas' => 'required'
+        'placas' => 'required',
+        'litro_km'=>'required',
+        'tipo_combustible'=>'required'
     ];
     public function getAllVehiculos($search)
     {
@@ -151,7 +153,7 @@ class VehiculosForm extends Form
         try {
 
             $this->validate();
-            CtgVehiculos::create($this->only(['descripcion', 'serie', 'anio', 'ctg_vehiculo_modelo_id', 'placas']));
+            CtgVehiculos::create($this->only(['descripcion', 'serie', 'anio', 'ctg_vehiculo_modelo_id', 'placas','litro_km','tipo_combustible']));
             $this->reset();
             return 1;
         } catch (\Exception $e) {
@@ -166,7 +168,7 @@ class VehiculosForm extends Form
         try {
 
             $this->validate();
-            $vehiculo->update($this->only(['descripcion', 'serie', 'anio', 'ctg_vehiculo_modelo_id',  'placas']));
+            $vehiculo->update($this->only(['descripcion', 'serie', 'anio', 'ctg_vehiculo_modelo_id',  'placas','litro_km','tipo_combustible']));
             $this->reset();
             return 1;
         } catch (\Exception $e) {
