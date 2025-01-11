@@ -344,7 +344,10 @@
                                         $ {{ number_format($this->getPrice($vehiculosservicios), 2, '.', ',' )}}MXN
                                     </td>
                                     <td>
-                                        $ {{ number_format($this->costo($vehiculosservicios), 2, '.', ',') }}MXN
+                                        {{-- $ {{ number_format($this->costo($vehiculosservicios), 2, '.', ',') }}MXN --}}
+
+                                        {{ is_numeric($this->costo($vehiculosservicios)) ?'$'. number_format($this->costo($vehiculosservicios), 2, '.', ',') : $this->costo($vehiculosservicios) }} MXN
+
                                     </td>
 
                                 </tr>
