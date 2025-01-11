@@ -179,7 +179,8 @@ class RutaForm extends Form
 
     public function boveda()
     {
-
+        
+        // dd($distancia);
         try {
              // Obtener los servicios de la ruta que no tienen status 6
                 $servicios = RutaServicio::where('ruta_id', $this->ruta->id)
@@ -188,15 +189,31 @@ class RutaForm extends Form
 
             // Obtener los vehículos relacionados con la ruta
             $vehiculos = RutaVehiculo::where('ruta_id', $this->ruta->id)->where('status_ruta_vehiculos', '=', 1)->get();
-
+            $ultimoServicio = null;
             // Iterar sobre los vehículos y asociarles los servicios
             foreach ($vehiculos as $vehiculo) {
                 foreach ($servicios as $servicio) {
+
+                    $servicioActual = Servicios::find($servicio->servicio_id);
+                    $origen = $ultimoServicio === null
+                        ? env('ORIGEN_SALIDA') 
+                        : $ultimoServicio->direccionCompleta(); 
+                    $destino = $servicioActual->direccionCompleta();
+                    // Log::info($origen .' a '.$destino);
+                    $distancia = GoogleMapsHelper::calculateDistance($origen, $destino);
+                    Log::info('distancia: ');
+                    // Log::info($distancia);
+
                     // Aquí se inserta la relación entre vehículo y servicio
                     CtgVehiculosRutaServicios::create([
                         'ctg_vehiculo_id' => $vehiculo->ctg_vehiculo_id,
                         'ruta_servicio_id' => $servicio->id,
+                        'km'=>$distancia['distance']
                     ]);
+                    // $servicio->update(['km'=>$distancia['distance']]);
+                    
+                    $ultimoServicio = $servicioActual;
+
                 }
             }
             $this->ruta->ctg_rutas_estado_id = 2;
@@ -273,13 +290,6 @@ class RutaForm extends Form
     public function getServicios()
     {
 
-        // ->whereDoesntHave('rutas', function ($query) {
-        //     $dia_semana_ruta = $this->ruta->ctg_ruta_dia_id;
-
-        //     $query->whereHas('dia', function ($subquery) use ($dia_semana_ruta) {
-        //         $subquery->where('id', $dia_semana_ruta);
-        //     });
-        // })
         return Servicios::where('status_servicio', '>=', 3)
 
             ->whereHas('cliente', function ($subquerycliente) {
@@ -341,26 +351,9 @@ class RutaForm extends Form
             $totalRuta = 0;
 
             if (count($seleccionados)) {
-                $ultimoServicio = null;
 
                 foreach ($seleccionados as $index => $data) {
 
-
-                    Log::info('obtiene servicio');
-                    $servicioActual = Servicios::find($data['servicio_id']);
-                    // Definir el origen (para el primer servicio será la dirección de salida)
-                    $origen = $ultimoServicio === null
-                        ? env('ORIGEN_SALIDA') // Cambia por la dirección de salida (formato "calle, colonia, cp")
-                        : $ultimoServicio->direccionCompleta(); // Dirección del último servicio (definimos un método en el modelo)
-
-                    // Destino: dirección del servicio actual
-                    $destino = $servicioActual->direccionCompleta();
-                    Log::info('obtiene destino');
-                    // dd($origen.'-'. $destino);
-                    // Calcular la distancia entre el origen y el destino
-                    $distancia = GoogleMapsHelper::calculateDistance($origen, $destino);
-                    // dd($distancia);
-                    Log::info('obtiene distancia: '.$distancia);
                     $servicio_ruta = RutaServicio::create([
                         'servicio_id' => $data['servicio_id'],
                         'ruta_id' => $this->ruta->id,
@@ -368,17 +361,13 @@ class RutaForm extends Form
                         'folio' => $data['folio'] ?? '',
                         'tipo_servicio' => 1,
                         'fecha_servicio' => $this->dia_id_calendario,
-                        'km' => $distancia['distance'],
 
                     ]);
-                    Log::info('guarda ruta servicio');
                     $servicio_ruta->servicio->status_servicio = 4;
                     $servicio_ruta->servicio->save();
-
                     $totalRuta += $data['monto'];
 
                     // Guardar el último servicio para el próximo cálculo
-                    $ultimoServicio = $servicioActual;
                 }
             }
             if (count($seleccionadosRecolecta)) {
@@ -405,7 +394,6 @@ class RutaForm extends Form
                 }
             }
 
-            Log::info('calcula total');
             $riesgo = $this->calculaRiesgo($totalRuta);
             $this->ruta->total_ruta += $totalRuta;
             $this->ruta->ctg_rutas_riesgo_id = $riesgo;

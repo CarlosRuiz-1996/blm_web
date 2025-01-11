@@ -16,6 +16,9 @@ class GoogleMapsHelper
             'key' => $apiKey,
         ]);
         $data = $response->json();
+
+        // \Log::debug('Google Maps Response:', $data); // Verifica el contenido de la respuesta
+
         if ($response->successful() && isset($data['rows'][0]['elements'][0])) {
             $element = $data['rows'][0]['elements'][0];
             if ($element['status'] === 'OK') {

@@ -5,6 +5,7 @@ namespace App\Livewire\Administracion;
 use App\Models\Cliente;
 use App\Models\CtgRutaDias;
 use App\Models\CtgVehiculosRutaServicios;
+use App\Models\FuelPrice;
 use App\Models\Inconsistencias;
 use App\Models\Reprogramacion;
 use App\Models\Ruta;
@@ -171,5 +172,55 @@ public function datosreprogramacion(){
         }
     
         return Reprogramacion::paginate(5, pageName: 'invoices-page5'); // Devuelve paginación por defecto 
+        }
+
+        public function getPrice(CtgVehiculosRutaServicios $vehiculo){
+
+            $fecha_vehiculo = Carbon::parse($vehiculo->rutaServicioVehiculo->fecha_servicio);
+
+            $price=0;
+            $type_vehiculo = $vehiculo->vehiculoRuta->tipo_combustible;
+            if($type_vehiculo==1){
+                $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type', 'Magna')->value('price');
+
+            }elseif($type_vehiculo==2){
+                $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type','Premium')->value('price');
+            }else{
+                $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type','Diesel')->value('price');
+            }
+
+          
+            return $price;
+            
+            
+
+        }
+
+        public function costo(CtgVehiculosRutaServicios $vehiculo){
+
+            // $fecha_vehiculo = Carbon::createFromFormat('Y-m-d', $vehiculo->rutaServicioVehiculo->fecha_servicio);
+            $fecha_vehiculo = Carbon::parse($vehiculo->rutaServicioVehiculo->fecha_servicio);
+
+            $price=0;
+            $type_vehiculo = $vehiculo->vehiculoRuta->tipo_combustible;
+            if($type_vehiculo==1){
+                $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type', 'Magna')->value('price');
+
+            }elseif($type_vehiculo==2){
+                $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type','Premium')->value('price');
+            }else{
+                $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type','Diesel')->value('price');
+            }
+
+            $distancia = $vehiculo->km;
+            $litrosKm  = $vehiculo->vehiculoRuta->litro_km;
+
+            if($distancia==0 || $litrosKm==0){
+                return 'Sin información para calcular el valor';
+            }
+            return ($distancia/$litrosKm)*$price;
+            
+            
+
         }
 }

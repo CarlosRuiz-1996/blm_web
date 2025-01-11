@@ -82,7 +82,8 @@ class Servicios extends Model
     {
         // Accede a la relación y devuelve la dirección completa
         if ($this->sucursal && $this->sucursal->sucursal) {
-            return $this->sucursal->sucursal->direccion;
+            return $this->sucursal->sucursal->direccion. ', CP. '
+            .$this->sucursal->sucursal->cp->cp .' '.$this->sucursal->sucursal->cp->estado->name;
         }
 
         // Si alguna relación no existe, devuelve un valor predeterminado o null

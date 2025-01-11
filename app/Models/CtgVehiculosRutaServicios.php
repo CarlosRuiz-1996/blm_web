@@ -15,6 +15,7 @@ class CtgVehiculosRutaServicios extends Model
     protected $fillable = [
         'ctg_vehiculo_id',
         'ruta_servicio_id',
+        'km'
     ];
 
     /**

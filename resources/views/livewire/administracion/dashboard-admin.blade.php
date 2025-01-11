@@ -1,17 +1,21 @@
 <div>
     <style>
         .pagination {
-    font-size: 0.875rem; /* Cambia el tamaño de la fuente */
-}
+            font-size: 0.875rem;
+            /* Cambia el tamaño de la fuente */
+        }
 
-.pagination .page-link {
-    padding: 0.25rem 0.5rem; /* Ajusta el padding de los enlaces */
-}
+        .pagination .page-link {
+            padding: 0.25rem 0.5rem;
+            /* Ajusta el padding de los enlaces */
+        }
 
-.pagination .page-item.active .page-link {
-    background-color: #007bff; /* Color de fondo para la página activa */
-    border-color: #007bff; /* Color del borde para la página activa */
-}
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            /* Color de fondo para la página activa */
+            border-color: #007bff;
+            /* Color del borde para la página activa */
+        }
     </style>
     <div class="row">
         <!-- Filtros de Fecha -->
@@ -33,28 +37,29 @@
             </div>
         </div>
     </div>
-    
+
     <div class="row">
         <!-- Gráfico combinado -->
         <div class="col-md-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-info"><i class="fas fa-dollar-sign"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Resguardo</span>
-            
-                    
-                                <span class="info-box-number">
-            
-                                  $ {{ number_format($resguardototal, 2, '.', ',') }} MXN
-                                </span>
-                        </div>
-                    </div>
+            <div class="info-box">
+                <span class="info-box-icon bg-info"><i class="fas fa-dollar-sign"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Resguardo</span>
+
+
+                    <span class="info-box-number">
+
+                        $ {{ number_format($resguardototal, 2, '.', ',') }} MXN
+                    </span>
+                </div>
+            </div>
         </div>
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header bg-dark d-flex align-items-center">
                     <h4 class="card-title mb-0">Servicios de Entrega y Recolección</h4>
-                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse" data-target="#collapseChart" aria-expanded="true" aria-controls="collapseChart" style="cursor: pointer;"></i>
+                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse" data-target="#collapseChart"
+                        aria-expanded="true" aria-controls="collapseChart" style="cursor: pointer;"></i>
                 </div>
                 <div id="collapseChart" class="collapse show">
                     <div class="card-body" style="position: relative; height: 400px;">
@@ -63,19 +68,21 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Tarjeta para monto total de servicios de entrega -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-dark d-flex align-items-center">
                     <h4 class="card-title">Monto Total Entrega: ${{ number_format($totalMontosEntrega, 2) }}</h4>
-                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse" data-target="#collapseEntrega" aria-expanded="true" aria-controls="collapseEntrega" style="cursor: pointer;"></i>
+                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse"
+                        data-target="#collapseEntrega" aria-expanded="true" aria-controls="collapseEntrega"
+                        style="cursor: pointer;"></i>
                 </div>
                 <div id="collapseEntrega" class="collapse show">
                     <div class="card-body">
                         <div class="table-responsive">
                             @if ($entregaServicios->isNotEmpty())
-                           <table class="table table-bordered table-rounded table-sm text-xs">
+                            <table class="table table-bordered table-rounded table-sm text-xs">
                                 <thead class="bg-dark">
                                     <tr>
                                         <th>Ruta</th>
@@ -85,36 +92,40 @@
                                 </thead>
                                 <tbody>
                                     @foreach($entregaServicios as $servicio)
-                                        <tr>
-                                            <td class="text-xs">{{ $servicio->ruta->nombre->name}}</td>
-                                            <td class="text-xs">{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
-                                            <td class="text-xs">{{ $servicio->monto }}</td>
-                                        </tr>
+                                    <tr>
+                                        <td class="text-xs">{{ $servicio->ruta->nombre->name}}</td>
+                                        <td class="text-xs">{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+                                        <td class="text-xs">{{ $servicio->monto }}</td>
+                                    </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{ $entregaServicios->links() }} <!-- Aquí se imprime la paginación -->
-                        @else
+                            {{ $entregaServicios->links() }}
+                            <!-- Aquí se imprime la paginación -->
+                            @else
                             <p>No hay servicios de entrega disponibles.</p>
-                        @endif
-                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    
+
         <!-- Tarjeta para monto total de servicios de recolección -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-dark d-flex align-items-center">
-                    <h4 class="card-title">Monto Total Recolección: ${{ number_format($totalMontosRecoleccion, 2) }}</h4>
-                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse" data-target="#collapseRecoleccion" aria-expanded="true" aria-controls="collapseRecoleccion" style="cursor: pointer;"></i>
+                    <h4 class="card-title">Monto Total Recolección: ${{ number_format($totalMontosRecoleccion, 2) }}
+                    </h4>
+                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse"
+                        data-target="#collapseRecoleccion" aria-expanded="true" aria-controls="collapseRecoleccion"
+                        style="cursor: pointer;"></i>
                 </div>
                 <div id="collapseRecoleccion" class="collapse show">
                     <div class="card-body">
                         <div class="table-responsive">
                             @if ($recoleccionServicios->isNotEmpty())
-                           <table class="table table-bordered table-rounded table-sm text-xs">
+                            <table class="table table-bordered table-rounded table-sm text-xs">
                                 <thead class="bg-dark">
                                     <tr>
                                         <th>Ruta</th>
@@ -124,30 +135,32 @@
                                 </thead>
                                 <tbody>
                                     @foreach($recoleccionServicios as $servicio)
-                                        <tr>
-                                            <td class="text-xs">{{ $servicio->ruta->nombre->name}}</td>
-                                            <td class="text-xs">{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
-                                            <td class="text-xs">{{ $servicio->monto }}</td>
-                                        </tr>
+                                    <tr>
+                                        <td class="text-xs">{{ $servicio->ruta->nombre->name}}</td>
+                                        <td class="text-xs">{{ $servicio->servicio->ctg_servicio->descripcion }}</td>
+                                        <td class="text-xs">{{ $servicio->monto }}</td>
+                                    </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{ $recoleccionServicios->links() }} <!-- Aquí se imprime la paginación -->
-                        @else
+                            {{ $recoleccionServicios->links() }}
+                            <!-- Aquí se imprime la paginación -->
+                            @else
                             <p>No hay servicios de recolección disponibles.</p>
-                        @endif
-                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    
+
         <!-- Tarjeta para rutas totales -->
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-dark d-flex align-items-center">
                     <h4 class="card-title">Rutas totales: {{$totalderutas}}</h4>
-                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse" data-target="#collapseRoutes" aria-expanded="true" aria-controls="collapseRoutes"></i>
+                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse"
+                        data-target="#collapseRoutes" aria-expanded="true" aria-controls="collapseRoutes"></i>
                 </div>
                 <div id="collapseRoutes" class="collapse show">
                     <div class="card-body">
@@ -162,27 +175,28 @@
                                 </thead>
                                 <tbody>
                                     @foreach($diasrutas as $ruta)
-                                        <tr>
-                                            <td class="text-xs">{{ $ruta->name }}</td>
-                                            <td class="text-xs">{{ $ruta->rutasdia_count }}</td>
-                                            <td class="text-xs">
-                                                <div class="progress" style="position: relative;">
-                                                    <div class="progress-bar" role="progressbar" 
-                                                         style="width: {{ $totalderutas > 0 ? ($ruta->rutasdia_count / $totalderutas) * 100 : 0 }}%;" 
-                                                         aria-valuenow="{{ $totalderutas > 0 ? ($ruta->rutasdia_count / $totalderutas) * 100 : 0 }}" 
-                                                         aria-valuemin="0" 
-                                                         aria-valuemax="100">
-                                                    </div>
-                                                    <span class="text-center" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
-                                                        {{ number_format($totalderutas > 0 ? ($ruta->rutasdia_count / $totalderutas) * 100 : 0, 2) }}%
-                                                    </span>
+                                    <tr>
+                                        <td class="text-xs">{{ $ruta->name }}</td>
+                                        <td class="text-xs">{{ $ruta->rutasdia_count }}</td>
+                                        <td class="text-xs">
+                                            <div class="progress" style="position: relative;">
+                                                <div class="progress-bar" role="progressbar"
+                                                    style="width: {{ $totalderutas > 0 ? ($ruta->rutasdia_count / $totalderutas) * 100 : 0 }}%;"
+                                                    aria-valuenow="{{ $totalderutas > 0 ? ($ruta->rutasdia_count / $totalderutas) * 100 : 0 }}"
+                                                    aria-valuemin="0" aria-valuemax="100">
                                                 </div>
-                                            </td>
-                                        </tr>
+                                                <span class="text-center"
+                                                    style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+                                                    {{ number_format($totalderutas > 0 ? ($ruta->rutasdia_count /
+                                                    $totalderutas) * 100 : 0, 2) }}%
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                        </div>                    
+                        </div>
                     </div>
                 </div>
             </div>
@@ -192,13 +206,15 @@
             <div class="card">
                 <div class="card-header bg-dark d-flex align-items-center">
                     <h4 class="card-title">Total Reprogramaciones: {{ $totalreprogramacion }}</h4>
-                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse" data-target="#collapseReprogramacion" aria-expanded="true" aria-controls="collapseReprogramacion" style="cursor: pointer;"></i>
+                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse"
+                        data-target="#collapseReprogramacion" aria-expanded="true"
+                        aria-controls="collapseReprogramacion" style="cursor: pointer;"></i>
                 </div>
                 <div id="collapseReprogramacion" class="collapse show">
                     <div class="card-body">
                         <div class="table-responsive">
                             @if ($reprogramacion->isNotEmpty())
-                           <table class="table table-bordered table-rounded table-sm text-xs">
+                            <table class="table table-bordered table-rounded table-sm text-xs">
                                 <thead class="bg-dark">
                                     <tr>
                                         <th>Ruta Anterior</th>
@@ -208,134 +224,157 @@
                                 </thead>
                                 <tbody>
                                     @foreach($reprogramacion as $repro)
-                                        <tr>
-                                           <td>{{$repro->rutaOld->nombre->name}}</td>
-                                           <td>{{$repro->rutaNew?->nombre->name}}</td>
-                                           <td>{{$repro->motivo}}</td>
-                                        </tr>
+                                    <tr>
+                                        <td>{{$repro->rutaOld->nombre->name}}</td>
+                                        <td>{{$repro->rutaNew?->nombre->name}}</td>
+                                        <td>{{$repro->motivo}}</td>
+                                    </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-                            {{ $reprogramacion->links() }} <!-- Aquí se imprime la paginación -->
-                        @else
+                            {{ $reprogramacion->links() }}
+                            <!-- Aquí se imprime la paginación -->
+                            @else
                             <p>No hay servicios de reprogramacíon disponibles.</p>
-                        @endif
-                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-                <!-- Tarjeta para monto total de servicios de recolección -->
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header bg-dark d-flex align-items-center">
-                            <h4 class="card-title">Actas de diferencia: {{ $totalactas }}</h4>
-                            <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse" data-target="#collapseInconsistencias" aria-expanded="true" aria-controls="collapseInconsistencias" style="cursor: pointer;"></i>
+        <!-- Tarjeta para monto total de servicios de recolección -->
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark d-flex align-items-center">
+                    <h4 class="card-title">Actas de diferencia: {{ $totalactas }}</h4>
+                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse"
+                        data-target="#collapseInconsistencias" aria-expanded="true"
+                        aria-controls="collapseInconsistencias" style="cursor: pointer;"></i>
+                </div>
+                <div id="collapseInconsistencias" class="collapse show">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            @if ($inconsistencias->isNotEmpty())
+                            <table class="table table-bordered table-rounded table-sm text-xs">
+                                <thead class="bg-dark">
+                                    <tr>
+                                        <th>Cliente</th>
+                                        <th>Fecha</th>
+                                        <th>Folio</th>
+                                        <th>Imp.Indicado</th>
+                                        <th>Imp.Comprobado</th>
+                                        <th>Diferencia</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($inconsistencias as $inco)
+                                    <tr>
+                                        <td class="text-xs">{{ $inco->cliente->razon_social}}</td>
+                                        <td class="text-xs">{{ $inco->fecha_comprobante}}</td>
+                                        <td class="text-xs">{{ $inco->folio }}</td>
+                                        <td class="text-xs">${{ number_format($inco->importe_indicado, 2, ',', '.') }}
+                                        </td>
+                                        <td class="text-xs">${{ number_format($inco->importe_comprobado, 2, ',', '.') }}
+                                        </td>
+                                        <td class="text-xs">${{ number_format($inco->diferencia, 2, ',', '.') }}</td>
+                                        <td class="text-xs">{{ $inco->observacion }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            {{ $inconsistencias->links() }}
+                            <!-- Aquí se imprime la paginación -->
+                            @else
+                            <p>No hay Actas de diferencia disponibles.</p>
+                            @endif
                         </div>
-                        <div id="collapseInconsistencias" class="collapse show">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    @if ($inconsistencias->isNotEmpty())
-                                   <table class="table table-bordered table-rounded table-sm text-xs">
-                                        <thead class="bg-dark">
-                                            <tr>
-                                                <th>Cliente</th>
-                                                <th>Fecha</th>
-                                                <th>Folio</th>
-                                                <th>Imp.Indicado</th>
-                                                <th>Imp.Comprobado</th>
-                                                <th>Diferencia</th>
-                                                <th>Observaciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($inconsistencias as $inco)
-                                                <tr>
-                                                    <td class="text-xs">{{ $inco->cliente->razon_social}}</td>
-                                                    <td class="text-xs">{{ $inco->fecha_comprobante}}</td>
-                                                    <td class="text-xs">{{ $inco->folio }}</td>
-                                                    <td class="text-xs">${{ number_format($inco->importe_indicado, 2, ',', '.') }}</td>
-                                                    <td class="text-xs">${{ number_format($inco->importe_comprobado, 2, ',', '.') }}</td>
-                                                    <td class="text-xs">${{ number_format($inco->diferencia, 2, ',', '.') }}</td>                                                    
-                                                    <td class="text-xs">{{ $inco->observacion }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                    {{ $inconsistencias->links() }} <!-- Aquí se imprime la paginación -->
-                                @else
-                                    <p>No hay Actas de diferencia disponibles.</p>
-                                @endif
-                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark d-flex align-items-center">
+                    <h4 class="card-title">Vehiculos</h4>
+                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse"
+                        data-target="#collapseVehiculosReporte" aria-expanded="true"
+                        aria-controls="collapseVehiculosReporte" style="cursor: pointer;"></i>
+                </div>
+                <div id="collapseVehiculosReporte" class="collapse show">
+                    <div class="card-body">
+                        <!-- Tabla de Vehículos -->
+                        <table class="table table-bordered table-striped">
+
+                            <thead>
+                                <tr>
+                                    <th>Ruta</th>
+                                    <th>Servicio</th>
+                                    <th>Serie</th>
+                                    <th>Placas</th>
+                                    <th>KM por litro</th>
+                                    <th>Combustible</th>
+                                    <th>Distancia Km</th>
+                                    <th>Precio</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{-- ruta servicio --}}
+                                @forelse($vehiculosservi as $vehiculosservicios)
+                                <tr>
+                                    <td>{{$vehiculosservicios->rutaServicioVehiculo->ruta->nombre->name}}</td>
+                                    <td>{{$vehiculosservicios->rutaServicioVehiculo->servicio->ctg_servicio->descripcion}}
+                                    </td>
+                                    <td>{{$vehiculosservicios->vehiculoRuta->serie}}</td>
+                                    <td>{{$vehiculosservicios->vehiculoRuta->placas}}</td>
+                                    <td>{{$vehiculosservicios->vehiculoRuta->litro_km}}</td>
+                                    <td>
+                                        {{$vehiculosservicios->vehiculoRuta->tipo_combustible==1?'Magna':''}}
+                                        {{$vehiculosservicios->vehiculoRuta->tipo_combustible==2?'Premium':''}}
+                                        {{$vehiculosservicios->vehiculoRuta->tipo_combustible==3?'Diesel':''}}
+                                    </td>
+                                    <td>
+                                        {{$vehiculosservicios->km}}
+                                    </td>
+                                    <td>
+
+                                        $ {{ number_format($this->getPrice($vehiculosservicios), 2, '.', ',' )}}MXN
+                                    </td>
+                                    <td>
+                                        $ {{ number_format($this->costo($vehiculosservicios), 2, '.', ',') }}MXN
+                                    </td>
+
+                                </tr>
+                                @empty
+                                <p>No hay elementos disponibles.</p>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        {{ $vehiculosservi->links() }}
+                        <!-- Gráfica de Dona 1 - Vehículos más usados -->
+                        {{-- <div class="row">
+                            <div class="col-md-6">
+                                <h5>Vehículos más usados</h5>
+                                <canvas id="vehiculosDonaChart"></canvas>
                             </div>
-                        </div>
-                    </div>
-                </div>
 
-
-                  <div class="col-md-12">
-    <div class="card">
-        <div class="card-header bg-dark d-flex align-items-center">
-            <h4 class="card-title">Vehiculos</h4>
-            <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse" data-target="#collapseVehiculosReporte" aria-expanded="true" aria-controls="collapseVehiculosReporte" style="cursor: pointer;"></i>
-        </div>
-        <div id="collapseVehiculosReporte" class="collapse show">
-            <div class="card-body">
-                <!-- Tabla de Vehículos -->
-                <table class="table table-bordered table-striped">
-                
-                    <thead>
-                        <tr>
-                            <th>Ruta</th>
-                            <th>Servicio</th>
-                            <th>Serie</th>
-                            <th>Placas</th>
-                            <th>KM por litro</th>
-                            <th>Combustible</th>
-                            <th>Precio</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>                        
-                        {{-- ruta servicio --}}
-                    @forelse($vehiculosservi as $vehiculosservicios)
-                        <tr>
-                            <td>{{$vehiculosservicios->rutaServicioVehiculo->ruta->nombre->name}}</td>
-                            <td>{{$vehiculosservicios->rutaServicioVehiculo->servicio->ctg_servicio->descripcion}}</td>
-                            <td>{{$vehiculosservicios->vehiculoRuta->serie}}</td>
-                            <td>{{$vehiculosservicios->vehiculoRuta->placas}}</td>
-                            <td>{{$vehiculosservicios->vehiculoRuta->litro_km}}</td>
-                            <td>{{$vehiculosservicios->vehiculoRuta->tipo_combustible}}</td>
-                           <td></td>
-                           <td>|</td>
-                        </tr>
-                    @empty
-                        <p>No hay elementos disponibles.</p>
-                    @endforelse
-                    </tbody>
-                </table>
- {{ $vehiculosservi->links() }} 
-                <!-- Gráfica de Dona 1 - Vehículos más usados -->
-                <div class="row">
-                    <div class="col-md-6">
-                        <h5>Vehículos más usados</h5>
-                        <canvas id="vehiculosDonaChart"></canvas>
-                    </div>
-
-                    <!-- Gráfica de Dona 2 - Kilometraje -->
-                    <div class="col-md-6">
-                        <h5>Kilometraje por Vehículo</h5>
-                        <canvas id="kmtrajeDonaChart"></canvas>
+                            <!-- Gráfica de Dona 2 - Kilometraje -->
+                            <div class="col-md-6">
+                                <h5>Kilometraje por Vehículo</h5>
+                                <canvas id="kmtrajeDonaChart"></canvas>
+                            </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
     </div>
-</div> 
-    </div>
-    
-    
-       
+
+
+
 
     @push('js')
     <script>
@@ -497,7 +536,7 @@
         });
     </script>
     <script>
-    // Gráfico de Dona - Vehículos más usados
+        // Gráfico de Dona - Vehículos más usados
     var ctxVehiculos = document.getElementById('vehiculosDonaChart').getContext('2d');
     var vehiculosDonaChart = new Chart(ctxVehiculos, {
         type: 'doughnut',
@@ -554,6 +593,6 @@
             }
         }
     });
-</script>
+    </script>
     @endpush
 </div>
