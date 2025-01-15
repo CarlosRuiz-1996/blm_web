@@ -433,7 +433,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-                        {{ $vehiculo->links() }}
+                        {{ $vehiculos->links() }}
                         <!-- Gráfica de Dona 1 - Vehículos más usados -->
                         {{-- <div class="row">
                             <div class="col-md-6">
