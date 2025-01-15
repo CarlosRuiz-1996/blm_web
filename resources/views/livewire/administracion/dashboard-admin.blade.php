@@ -298,74 +298,92 @@
             </div>
         </div>
 
-
+        {{-- rutas con vehiculos --}}
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header bg-dark d-flex align-items-center">
-                    <h4 class="card-title">Vehiculos</h4>
+                    <h4 class="card-title">Cosumo de kilometros por ruta</h4>
                     <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse"
-                        data-target="#collapseVehiculosReporte" aria-expanded="true"
-                        aria-controls="collapseVehiculosReporte" style="cursor: pointer;"></i>
+                        data-target="#collapseVehiculosrutaReporte" aria-expanded="true"
+                        aria-controls="collapseVehiculosrutaReporte" style="cursor: pointer;"></i>
                 </div>
-                <div id="collapseVehiculosReporte" class="collapse show">
-                    <div class="card-body">
-                        <!-- Tabla de Vehículos -->
-                        <table class="table table-bordered table-striped">
+                <div id="collapseVehiculosrutaReporte" class="collapse show">
 
-                            <thead>
-                                <tr>
-                                    <th>Ruta</th>
-                                    <th>Servicio</th>
-                                    <th>Serie</th>
-                                    <th>Placas</th>
-                                    <th>KM por litro</th>
-                                    <th>Combustible</th>
-                                    <th>Distancia Km</th>
-                                    <th>Precio</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{-- ruta servicio --}}
-                                @forelse($vehiculosservi as $vehiculosservicios)
+                    <div class="card col-md-12 ">
+                        <div class="row mt-3">
+
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="">Fecha de inicio</label>
+                                    <input type="date" class="form-control w-full" wire:model.live='fechaInicioR'>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="">Fecha de fin</label>
+                                    <input type="date" class="form-control w-full" wire:model.live='fechaFinR'>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="col-md-1">
+                                <div class="form-group" style="margin-top: 33px">
+                                    <button wire:click='cleanFiltrerRutas' class="btn btn-info btn-sm">Limpiar
+                                        Filtros</button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-1">
+                                <div class="form-group" style="margin-top: 33px">
+
+                                    <button wire:click='exportarCompras' class="btn btn-success">
+                                        Exportar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        @if (count($vehiculos))
+
+                            <table class="table table-bordered table-striped table-hover mt-3">
+                                <thead class="table-info">
                                     <tr>
-                                        <td>{{ $vehiculosservicios->rutaServicioVehiculo->ruta->nombre->name }}</td>
-                                        <td>{{ $vehiculosservicios->rutaServicioVehiculo->servicio->ctg_servicio->descripcion }}
-                                        </td>
-                                        <td>{{ $vehiculosservicios->vehiculoRuta->serie }}</td>
-                                        <td>{{ $vehiculosservicios->vehiculoRuta->placas }}</td>
-                                        <td>{{ $vehiculosservicios->vehiculoRuta->litro_km }}</td>
-                                        <td>
-                                            {{ $vehiculosservicios->vehiculoRuta->tipo_combustible == 1 ? 'Magna' : '' }}
-                                            {{ $vehiculosservicios->vehiculoRuta->tipo_combustible == 2 ? 'Premium' : '' }}
-                                            {{ $vehiculosservicios->vehiculoRuta->tipo_combustible == 3 ? 'Diesel' : '' }}
-                                        </td>
-                                        <td>
-                                            {{ $vehiculosservicios->km }}
-                                        </td>
-                                        <td>
-
-                                            $
-                                            {{ number_format($this->getPrice($vehiculosservicios), 2, '.', ',') }}MXN
-                                        </td>
-                                        <td>
-                                            {{-- $ {{ number_format($this->costo($vehiculosservicios), 2, '.', ',') }}MXN
-                                        --}}
-
-                                            {{ is_numeric($this->costo($vehiculosservicios))
-                                                ? '$' . number_format($this->costo($vehiculosservicios), 2, '.', ',')
-                                                : $this->costo($vehiculosservicios) }}
-                                            MXN
-
-                                        </td>
-
+                                        <th>Ruta</th>
+                                        <th>Día</th>
+                                        <th>Total km</th>
+                                        <th>Costo total</th>
                                     </tr>
-                                @empty
-                                    <p>No hay elementos disponibles.</p>
-                                @endforelse
-                            </tbody>
-                        </table>
-                        {{ $vehiculosservi->links() }}
+                                </thead>
+                                <tbody>
+                                        
+                                    @foreach($rutas as $ruta)
+                                    <tr>
+                                        <td>{{ $ruta->nombre->name }}</td>
+                                        <td>{{ $ruta->dia->name }}</td>
+                                        <td>{{ $ruta->kilometrosTotales($fechaInicioR, $fechaFinR) }}</td>
+
+                                        <td></td>
+                                    </tr>
+
+                                @endforeach
+                                </tbody>
+                            </table>
+
+
+                            @if ($rutas->hasPages())
+                                <div class="col-md-12 text-center">
+                                    {{ $rutas->links() }}
+                                </div>
+                            @endif
+
+                        @endif
+                    </div>
+
+                        <!-- Tabla de Vehículos -->
+                        
+                       
                         <!-- Gráfica de Dona 1 - Vehículos más usados -->
                         {{-- <div class="row">
                             <div class="col-md-6">
@@ -379,12 +397,11 @@
                                 <canvas id="kmtrajeDonaChart"></canvas>
                             </div>
                         </div> --}}
-                    </div>
                 </div>
             </div>
         </div>
 
-
+        {{-- vehiculos --}}
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header bg-dark d-flex align-items-center">
@@ -394,87 +411,83 @@
                         aria-controls="collapseVehiculosReporte" style="cursor: pointer;"></i>
                 </div>
                 <div id="collapseVehiculosReporte" class="collapse show">
-                    <div class="card-head">
-                        
-                        <div class="card col-md-12 ">
-                            <div class="row mt-3">
-                               
 
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label for="">Fecha de inicio</label>
-                                        <input type="date" class="form-control w-full"
-                                            wire:model.live='fechaInicio'>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label for="">Fecha de fin</label>
-                                        <input type="date" class="form-control w-full"
-                                            wire:model.live='fechaFin'>
-                                    </div>
-                                </div>
+                    <div class="card col-md-12 ">
+                        <div class="row mt-3">
 
 
-                                
-
-                                <div class="col-md-1">
-                                    <div class="form-group" style="margin-top: 33px">
-                                        <button wire:click='cleanFiltrerVehiculos' class="btn btn-info btn-sm">Limpiar
-                                            Filtros</button>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-1">
-                                    <div class="form-group" style="margin-top: 33px">
-
-                                        <button wire:click='exportarCompras' class="btn btn-success">
-                                            Exportar
-                                        </button>
-                                    </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="">Fecha de inicio</label>
+                                    <input type="date" class="form-control w-full" wire:model.live='fechaInicio'>
                                 </div>
                             </div>
-                            @if (count($vehiculos))
-
-                                <table class="table table-bordered table-striped table-hover mt-3">
-                                    <thead class="table-info">
-                                        <tr>
-                                            <th>Serie</th>
-                                            <th>Placas</th>
-                                            <th>KM por litro</th>
-                                            <th>Combustible</th>
-                                            <th>Distancia Km</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($vehiculos as $vehiculo)
-                                            <tr>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="">Fecha de fin</label>
+                                    <input type="date" class="form-control w-full" wire:model.live='fechaFin'>
+                                </div>
+                            </div>
 
 
-                                                <td>{{ $vehiculo->serie }}</td>
-                                                <td>{{ $vehiculo->placas }}</td>
-                                                <td>{{ $vehiculo->litro_km }}</td>
-                                                <td>
-                                                    {{ $vehiculo->tipo_combustible == 1 ? 'Magna' : '' }}
-                                                    {{ $vehiculo->tipo_combustible == 2 ? 'Premium' : '' }}
-                                                    {{ $vehiculo->tipo_combustible == 3 ? 'Diesel' : '' }}
-                                                </td>
-                                                <td>{{ $vehiculo->kilometrosTotales($fechaInicio, $fechaFin) }}</td>
-
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
 
 
-                                @if ($vehiculos->hasPages())
-                                    <div class="col-md-12 text-center">
-                                        {{ $vehiculos->links() }}
-                                    </div>
-                                @endif
+                            <div class="col-md-1">
+                                <div class="form-group" style="margin-top: 33px">
+                                    <button wire:click='cleanFiltrerVehiculos' class="btn btn-info btn-sm">Limpiar
+                                        Filtros</button>
+                                </div>
+                            </div>
 
-                            @endif
+                            <div class="col-md-1">
+                                <div class="form-group" style="margin-top: 33px">
+
+                                    <button wire:click='exportarCompras' class="btn btn-success">
+                                        Exportar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+                        @if (count($vehiculos))
+
+                            <table class="table table-bordered table-striped table-hover mt-3">
+                                <thead class="table-info">
+                                    <tr>
+                                        <th>Serie</th>
+                                        <th>Placas</th>
+                                        <th>KM por litro</th>
+                                        <th>Combustible</th>
+                                        <th>Distancia Km</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($vehiculos as $vehiculo)
+                                        <tr>
+
+
+                                            <td>{{ $vehiculo->serie }}</td>
+                                            <td>{{ $vehiculo->placas }}</td>
+                                            <td>{{ $vehiculo->litro_km }}</td>
+                                            <td>
+                                                {{ $vehiculo->tipo_combustible == 1 ? 'Magna' : '' }}
+                                                {{ $vehiculo->tipo_combustible == 2 ? 'Premium' : '' }}
+                                                {{ $vehiculo->tipo_combustible == 3 ? 'Diesel' : '' }}
+                                            </td>
+                                            <td>{{ $vehiculo->kilometrosTotales($fechaInicio, $fechaFin) }}</td>
+
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+
+
+                            @if ($vehiculos->hasPages())
+                                <div class="col-md-12 text-center">
+                                    {{ $vehiculos->links() }}
+                                </div>
+                            @endif
+
+                        @endif
                     </div>
 
 

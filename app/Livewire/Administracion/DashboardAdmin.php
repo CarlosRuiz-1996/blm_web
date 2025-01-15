@@ -50,12 +50,12 @@ class DashboardAdmin extends Component
         $entregaServicios = $this->datosentrega();
         $inconsistencias = $this->datosinconsistencias();
         $reprogramacion = $this->datosreprogramacion();
-        $vehiculosservi = $this->datsovehiculosServicios();
 
         $vehiculos = $this->getVehiculos();
+        $rutas = $this->getRutas();
         $diasrutas = CtgRutaDias::withCount('rutasdia')->get();
         $totalderutas = Ruta::count();
-        return view('livewire.administracion.dashboard-admin', compact('diasrutas', 'totalderutas', 'recoleccionServicios', 'entregaServicios', 'resguardototal', 'inconsistencias', 'reprogramacion', 'vehiculosservi', 'vehiculos'));
+        return view('livewire.administracion.dashboard-admin', compact('diasrutas', 'totalderutas', 'recoleccionServicios', 'entregaServicios', 'resguardototal', 'inconsistencias', 'reprogramacion', 'rutas', 'vehiculos'));
     }
 
     //actulliza la informacion con el filtro del las fechas seleccionadas en la grafica
@@ -240,9 +240,25 @@ class DashboardAdmin extends Component
         return $vehiculos;
     }
 
+    public $fechaInicioR;
+    public $fechaFinR;
+    public function getRutas()
+    {
+        $rutas = Ruta::query()
+           
+            ->orderBy('id')
+            ->paginate(5);
+
+        return $rutas;
+    }
     public function cleanFiltrerVehiculos()
     {
         $this->fechaInicio = null;
         $this->fechaFin = null;
+    }
+    public function cleanFiltrerRutas()
+    {
+        $this->fechaInicioR = null;
+        $this->fechaFinR = null;
     }
 }
