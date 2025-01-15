@@ -345,7 +345,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if (count($vehiculos))
+                        @if (count($rutas))
 
                             <table class="table table-bordered table-striped table-hover mt-3">
                                 <thead class="table-info">
