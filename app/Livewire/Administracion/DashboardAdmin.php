@@ -40,7 +40,11 @@ class DashboardAdmin extends Component
         $this->startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
         $this->endDate = Carbon::now()->endOfMonth()->format('Y-m-d');
     }
-
+    public function updatingPage()
+    {
+        // Emitir un evento para notificar el cambio de página
+        $this->emit('scrollToPagination');
+    }
     //renderiza el componente
     public function render()
     {

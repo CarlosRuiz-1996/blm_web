@@ -327,7 +327,8 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <x-select-validadolive label="Ruta" placeholder="Seleccione" wire-model="ruta_name" required>
+                                    <x-select-validadolive label="Ruta" placeholder="Seleccione"
+                                        wire-model="ruta_name" required>
                                         @foreach ($ctg_ruta_name as $ctg)
                                             <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
                                         @endforeach
@@ -336,8 +337,9 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                  
-                                    <x-select-validadolive label="Dia" placeholder="Seleccione" wire-model="ruta_dia" required>
+
+                                    <x-select-validadolive label="Dia" placeholder="Seleccione"
+                                        wire-model="ruta_dia" required>
                                         @foreach ($ctg_ruta_dia as $ctg)
                                             <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
                                         @endforeach
@@ -387,10 +389,10 @@
                                 </tbody>
                             </table>
 
+                            <div id="pagination">
 
-
-                            {{ $rutas->links() }}
-
+                                {{ $rutas->links() }}
+                            </div>
 
                         @endif
                     </div>
@@ -456,11 +458,12 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                  
-                                    <x-select-validadolive label="Tipo combistible" placeholder="Seleccione" wire-model="tipo_combustible" required>
-                                            <option value="1">Magna</option>
-                                            <option value="2">Premium</option>
-                                            <option value="3">Diesel</option>
+
+                                    <x-select-validadolive label="Tipo combistible" placeholder="Seleccione"
+                                        wire-model="tipo_combustible" required>
+                                        <option value="1">Magna</option>
+                                        <option value="2">Premium</option>
+                                        <option value="3">Diesel</option>
                                     </x-select-validadolive>
                                 </div>
                             </div>
@@ -517,9 +520,11 @@
 
 
 
-                            {{ $vehiculos->links() }}
 
+                            <div id="pagination">
 
+                                {{ $vehiculos->links() }}
+                            </div>
                         @endif
                     </div>
 
@@ -759,6 +764,20 @@
                         }
                     }
                 }
+            });
+        </script>
+
+        <script>
+            document.addEventListener('livewire:load', () => {
+                Livewire.on('scrollToPagination', () => {
+                    const pagination = document.getElementById('pagination');
+                    if (pagination) {
+                        pagination.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
             });
         </script>
     @endpush
