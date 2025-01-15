@@ -391,7 +391,7 @@
 
                             <div wire:scroll>
 
-                                {{ $rutas->links() }}
+                                {{ $rutas->links(data: ['scrollTo' => false]) }}
                             </div>
 
                         @endif
