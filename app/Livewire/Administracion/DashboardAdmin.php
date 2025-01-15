@@ -241,9 +241,9 @@ class DashboardAdmin extends Component
                     $query->whereBetween('created_at', [$this->fechaInicio, $this->fechaFin]);
                 }
             }])
-            ->where('placas','like'. '%'.$this->placas.'%')
-            ->where('serie','like'. '%',$this->serie.'%')
-            ->where('tipo_combustible','like'. '%'.$this->tipo_combustible.'%')
+            ->where('placas','like', '%'.$this->placas.'%')
+            ->where('serie','like', '%'.$this->serie.'%')
+            ->where('tipo_combustible','like', '%'.$this->tipo_combustible.'%')
             ->orderBy('id')
             ->paginate(5);
 
