@@ -362,7 +362,7 @@
                                         <tr>
                                             <td>{{ $ruta->nombre->name }}</td>
                                             <td>{{ $ruta->dia->name }}</td>
-                                            <td>{{ $ruta->kilometrosTotales($fechaInicioR, $fechaFinR) }}</td>
+                                            <td>{{ $ruta->rutaServicios->kilometrosTotales($fechaInicioR, $fechaFinR) }}</td>
 
                                             <td></td>
                                         </tr>

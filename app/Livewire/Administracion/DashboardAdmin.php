@@ -245,7 +245,7 @@ class DashboardAdmin extends Component
     public function getRutas()
     {
         $rutas = Ruta::query()
-           ->with(['rutaServicios'])
+           
             ->orderBy('id')
             ->paginate(5);
 
