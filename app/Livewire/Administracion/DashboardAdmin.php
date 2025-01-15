@@ -229,6 +229,10 @@ class DashboardAdmin extends Component
 
     public $fechaInicio;
     public $fechaFin;
+    public $placas;
+    
+    public $serie;
+    public $tipo_combustible;
     public function getVehiculos()
     {
         $vehiculos = CtgVehiculos::query()
@@ -237,6 +241,9 @@ class DashboardAdmin extends Component
                     $query->whereBetween('created_at', [$this->fechaInicio, $this->fechaFin]);
                 }
             }])
+            ->where('placas','like'. '%',$this->placas,'%')
+            ->where('serie','like'. '%',$this->serie,'%')
+            ->where('tipo_combustible','like'. '%',$this->tipo_combustible,'%')
             ->orderBy('id')
             ->paginate(5);
 
@@ -269,6 +276,9 @@ class DashboardAdmin extends Component
     {
         $this->fechaInicio = null;
         $this->fechaFin = null;
+        $this->placas = null;
+        $this->serie = null;
+        $this->tipo_combustible = null;
     }
     public function cleanFiltrerRutas()
     {

@@ -442,7 +442,28 @@
                                     <input type="date" class="form-control w-full" wire:model.live='fechaFin'>
                                 </div>
                             </div>
-
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="">Placas</label>
+                                    <input type="date" class="form-control w-full" wire:model.live='placas'>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="">Serie</label>
+                                    <input type="date" class="form-control w-full" wire:model.live='serie'>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                  
+                                    <x-select-validadolive label="Tipo combistible" placeholder="Seleccione" wire-model="tipo_combustible" required>
+                                            <option value="1">Magna</option>
+                                            <option value="2">Premium</option>
+                                            <option value="3">Diesel</option>
+                                    </x-select-validadolive>
+                                </div>
+                            </div>
 
 
 
