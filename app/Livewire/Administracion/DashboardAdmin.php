@@ -19,7 +19,7 @@ use Livewire\WithPagination;
 
 class DashboardAdmin extends Component
 {
-    use WithPagination, WithoutUrlPagination; 
+    use WithPagination, WithoutUrlPagination;
     public $startDate;
     public $endDate;
     public $serviciosEntrega = [];
@@ -46,184 +46,197 @@ class DashboardAdmin extends Component
         $this->updateData();
         $this->datosMontos();
         $resguardototal = Cliente::where('status_cliente', 1)->sum('resguardo');
-        $recoleccionServicios=$this->datosrecoleccion();
-        $entregaServicios=$this->datosentrega();
-        $inconsistencias=$this->datosinconsistencias();
-        $reprogramacion=$this->datosreprogramacion();
-        $vehiculosservi=$this->datsovehiculosServicios();
+        $recoleccionServicios = $this->datosrecoleccion();
+        $entregaServicios = $this->datosentrega();
+        $inconsistencias = $this->datosinconsistencias();
+        $reprogramacion = $this->datosreprogramacion();
+        $vehiculosservi = $this->datsovehiculosServicios();
 
-        $vehiculos = CtgVehiculos::orderBy('id')->paginate(10);
+        $vehiculos = $this->getVehiculos();
         $diasrutas = CtgRutaDias::withCount('rutasdia')->get();
-        $totalderutas=Ruta::count();
-        return view('livewire.administracion.dashboard-admin',compact('diasrutas','totalderutas','recoleccionServicios','entregaServicios','resguardototal','inconsistencias','reprogramacion','vehiculosservi','vehiculos'));
+        $totalderutas = Ruta::count();
+        return view('livewire.administracion.dashboard-admin', compact('diasrutas', 'totalderutas', 'recoleccionServicios', 'entregaServicios', 'resguardototal', 'inconsistencias', 'reprogramacion', 'vehiculosservi', 'vehiculos'));
     }
-//actulliza la informacion con el filtro del las fechas seleccionadas en la grafica
+
+    //actulliza la informacion con el filtro del las fechas seleccionadas en la grafica
     public function updateData()
-{
-    // Verificar si ambos filtros están presentes
-    if ($this->startDate && $this->endDate) {
-        $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
-        $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
-        
-        // Consultas para entrega y recolección con el rango de fechas
-        $this->serviciosEntrega = RutaServicio::whereBetween('created_at', [$startDate, $endDate])
-            ->where('tipo_servicio', '1')
-            ->selectRaw('DATE(created_at) as fecha, COUNT(*) as cantidad')
-            ->groupBy('fecha')
-            ->orderBy('fecha')
-            ->get()
-            ->pluck('cantidad', 'fecha')
-            ->toArray();
+    {
+        // Verificar si ambos filtros están presentes
+        if ($this->startDate && $this->endDate) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+            $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
 
-        $this->serviciosRecoleccion = RutaServicio::whereBetween('created_at', [$startDate, $endDate])
-            ->where('tipo_servicio', '2')
-            ->selectRaw('DATE(created_at) as fecha, COUNT(*) as cantidad')
-            ->groupBy('fecha')
-            ->orderBy('fecha')
-            ->get()
-            ->pluck('cantidad', 'fecha')
-            ->toArray();
-        
-        // Emitir evento para actualizar gráficos
-        $this->dispatch('updatedChartData', serviciosEntrega:$this->serviciosEntrega, serviciosRecoleccion:$this->serviciosRecoleccion);
+            // Consultas para entrega y recolección con el rango de fechas
+            $this->serviciosEntrega = RutaServicio::whereBetween('created_at', [$startDate, $endDate])
+                ->where('tipo_servicio', '1')
+                ->selectRaw('DATE(created_at) as fecha, COUNT(*) as cantidad')
+                ->groupBy('fecha')
+                ->orderBy('fecha')
+                ->get()
+                ->pluck('cantidad', 'fecha')
+                ->toArray();
+
+            $this->serviciosRecoleccion = RutaServicio::whereBetween('created_at', [$startDate, $endDate])
+                ->where('tipo_servicio', '2')
+                ->selectRaw('DATE(created_at) as fecha, COUNT(*) as cantidad')
+                ->groupBy('fecha')
+                ->orderBy('fecha')
+                ->get()
+                ->pluck('cantidad', 'fecha')
+                ->toArray();
+
+            // Emitir evento para actualizar gráficos
+            $this->dispatch('updatedChartData', serviciosEntrega: $this->serviciosEntrega, serviciosRecoleccion: $this->serviciosRecoleccion);
+        }
     }
-}
-//obtiene informacion de montos de fechas seleccionadas
-public function datosMontos()
-{
-    // Verificar si ambos filtros están presentes
-    if ($this->startDate && $this->endDate) {
-        $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
-        $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
+    //obtiene informacion de montos de fechas seleccionadas
+    public function datosMontos()
+    {
+        // Verificar si ambos filtros están presentes
+        if ($this->startDate && $this->endDate) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+            $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
 
-        // Sumar montos para servicios de entrega
-        $this->totalMontosEntrega = RutaServicio::whereBetween('created_at', [$startDate, $endDate])
-            ->where('tipo_servicio', '1')
-            ->sum('monto');
+            // Sumar montos para servicios de entrega
+            $this->totalMontosEntrega = RutaServicio::whereBetween('created_at', [$startDate, $endDate])
+                ->where('tipo_servicio', '1')
+                ->sum('monto');
 
-        // Sumar montos para servicios de recolección
-        $this->totalMontosRecoleccion = RutaServicio::whereBetween('created_at', [$startDate, $endDate])
-            ->where('tipo_servicio', '2')
-            ->sum('monto');
-    }
-}
-
-//obtiene informacion de recoleccion por fechas
-public function datosrecoleccion()
-{
-    if ($this->startDate && $this->endDate) {
-        $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
-        $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
-
-        return RutaServicio::whereBetween('created_at', [$startDate, $endDate])
-            ->where('tipo_servicio', '2')
-            ->paginate(5, pageName: 'invoices-pagedos');
+            // Sumar montos para servicios de recolección
+            $this->totalMontosRecoleccion = RutaServicio::whereBetween('created_at', [$startDate, $endDate])
+                ->where('tipo_servicio', '2')
+                ->sum('monto');
+        }
     }
 
-    return RutaServicio::where('tipo_servicio', '2')->paginate(5, pageName: 'invoices-pagedos'); // Devuelve paginación por defecto
-}
+    //obtiene informacion de recoleccion por fechas
+    public function datosrecoleccion()
+    {
+        if ($this->startDate && $this->endDate) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+            $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
 
-//obtiene informacion de entregas por fecha seleccionada
-public function datosentrega()
-{
-    if ($this->startDate && $this->endDate) {
-        $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
-        $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
+            return RutaServicio::whereBetween('created_at', [$startDate, $endDate])
+                ->where('tipo_servicio', '2')
+                ->paginate(5, pageName: 'invoices-pagedos');
+        }
 
-        return RutaServicio::whereBetween('created_at', [$startDate, $endDate])
-            ->where('tipo_servicio', '1')
-            ->paginate(5, pageName: 'invoices-page');
+        return RutaServicio::where('tipo_servicio', '2')->paginate(5, pageName: 'invoices-pagedos'); // Devuelve paginación por defecto
     }
 
-    return RutaServicio::where('tipo_servicio', '1')->paginate(5, pageName: 'invoices-page'); // Devuelve paginación por defecto
-}
+    //obtiene informacion de entregas por fecha seleccionada
+    public function datosentrega()
+    {
+        if ($this->startDate && $this->endDate) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+            $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
 
-//obtiene informacion de inconsistencias
-public function datosinconsistencias()
-{
-    if ($this->startDate && $this->endDate) {
-        $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
-        $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
-        $this->totalactas=Inconsistencias::whereBetween('fecha_comprobante', [$startDate, $endDate])->count();
-        return Inconsistencias::whereBetween('fecha_comprobante', [$startDate, $endDate])
-            ->paginate(5, pageName: 'invoices-page3');
+            return RutaServicio::whereBetween('created_at', [$startDate, $endDate])
+                ->where('tipo_servicio', '1')
+                ->paginate(5, pageName: 'invoices-page');
+        }
+
+        return RutaServicio::where('tipo_servicio', '1')->paginate(5, pageName: 'invoices-page'); // Devuelve paginación por defecto
     }
 
-    return Inconsistencias::paginate(5, pageName: 'invoices-page3'); // Devuelve paginación por defecto
-}
-  
-//obtiene informacion de los servicios que fueron reporgramados
-public function datosreprogramacion(){
+    //obtiene informacion de inconsistencias
+    public function datosinconsistencias()
+    {
+        if ($this->startDate && $this->endDate) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+            $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
+            $this->totalactas = Inconsistencias::whereBetween('fecha_comprobante', [$startDate, $endDate])->count();
+            return Inconsistencias::whereBetween('fecha_comprobante', [$startDate, $endDate])
+                ->paginate(5, pageName: 'invoices-page3');
+        }
 
-    if ($this->startDate && $this->endDate) {
-        $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
-        $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
-        $this->totalreprogramacion=Reprogramacion::whereBetween('created_at', [$startDate, $endDate])->count();
-        return Reprogramacion::whereBetween('created_at', [$startDate, $endDate])
-            ->paginate(5, pageName: 'invoices-page4');
+        return Inconsistencias::paginate(5, pageName: 'invoices-page3'); // Devuelve paginación por defecto
     }
 
-    return Reprogramacion::paginate(5, pageName: 'invoices-page4'); // Devuelve paginación por defecto
-}
+    //obtiene informacion de los servicios que fueron reporgramados
+    public function datosreprogramacion()
+    {
 
-        public function datsovehiculosServicios(){
-            if ($this->startDate && $this->endDate) { 
+        if ($this->startDate && $this->endDate) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
+            $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
+            $this->totalreprogramacion = Reprogramacion::whereBetween('created_at', [$startDate, $endDate])->count();
+            return Reprogramacion::whereBetween('created_at', [$startDate, $endDate])
+                ->paginate(5, pageName: 'invoices-page4');
+        }
+
+        return Reprogramacion::paginate(5, pageName: 'invoices-page4'); // Devuelve paginación por defecto
+    }
+
+    public function datsovehiculosServicios()
+    {
+        if ($this->startDate && $this->endDate) {
             $startDate = Carbon::createFromFormat('Y-m-d', $this->startDate)->startOfDay();
             $endDate = Carbon::createFromFormat('Y-m-d', $this->endDate)->endOfDay();
             return CtgVehiculosRutaServicios::whereBetween('created_at', [$startDate, $endDate])
                 ->paginate(5, pageName: 'invoices-page5');
         }
-    
+
         return Reprogramacion::paginate(5, pageName: 'invoices-page5'); // Devuelve paginación por defecto 
+    }
+
+    public function getPrice(CtgVehiculosRutaServicios $vehiculo)
+    {
+
+        $fecha_vehiculo = Carbon::parse($vehiculo->rutaServicioVehiculo->fecha_servicio);
+
+        $price = 0;
+        $type_vehiculo = $vehiculo->vehiculoRuta->tipo_combustible;
+        if ($type_vehiculo == 1) {
+            $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type', 'Magna')->value('price');
+        } elseif ($type_vehiculo == 2) {
+            $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type', 'Premium')->value('price');
+        } else {
+            $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type', 'Diesel')->value('price');
         }
 
-        public function getPrice(CtgVehiculosRutaServicios $vehiculo){
 
-            $fecha_vehiculo = Carbon::parse($vehiculo->rutaServicioVehiculo->fecha_servicio);
+        return $price;
+    }
 
-            $price=0;
-            $type_vehiculo = $vehiculo->vehiculoRuta->tipo_combustible;
-            if($type_vehiculo==1){
-                $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type', 'Magna')->value('price');
+    public function costo(CtgVehiculosRutaServicios $vehiculo)
+    {
 
-            }elseif($type_vehiculo==2){
-                $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type','Premium')->value('price');
-            }else{
-                $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type','Diesel')->value('price');
-            }
+        // $fecha_vehiculo = Carbon::createFromFormat('Y-m-d', $vehiculo->rutaServicioVehiculo->fecha_servicio);
+        $fecha_vehiculo = Carbon::parse($vehiculo->rutaServicioVehiculo->fecha_servicio);
 
-          
-            return $price;
-            
-            
-
+        $price = 0;
+        $type_vehiculo = $vehiculo->vehiculoRuta->tipo_combustible;
+        if ($type_vehiculo == 1) {
+            $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type', 'Magna')->value('price');
+        } elseif ($type_vehiculo == 2) {
+            $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type', 'Premium')->value('price');
+        } else {
+            $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type', 'Diesel')->value('price');
         }
 
-        public function costo(CtgVehiculosRutaServicios $vehiculo){
+        $distancia = $vehiculo->km;
+        $litrosKm  = $vehiculo->vehiculoRuta->litro_km;
 
-            // $fecha_vehiculo = Carbon::createFromFormat('Y-m-d', $vehiculo->rutaServicioVehiculo->fecha_servicio);
-            $fecha_vehiculo = Carbon::parse($vehiculo->rutaServicioVehiculo->fecha_servicio);
-
-            $price=0;
-            $type_vehiculo = $vehiculo->vehiculoRuta->tipo_combustible;
-            if($type_vehiculo==1){
-                $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type', 'Magna')->value('price');
-
-            }elseif($type_vehiculo==2){
-                $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type','Premium')->value('price');
-            }else{
-                $price = FuelPrice::where('fecha', $fecha_vehiculo)->where('type','Diesel')->value('price');
-            }
-
-            $distancia = $vehiculo->km;
-            $litrosKm  = $vehiculo->vehiculoRuta->litro_km;
-
-            if($distancia==0 || $litrosKm==0){
-                return 'Sin información para calcular el valor';
-            }
-            return ($distancia/$litrosKm)*$price;
-            
-            
-
+        if ($distancia == 0 || $litrosKm == 0) {
+            return 'Sin información para calcular el valor';
         }
+        return ($distancia / $litrosKm) * $price;
+    }
+
+    public $fechaInicio;
+    public $fechaFin;
+    public function getVehiculos()
+    {
+        $vehiculos = CtgVehiculos::query()
+            ->with(['servicios_rutas' => function ($query) {
+                if ($this->fechaInicio && $this->fechaFin) {
+                    $query->whereBetween('fecha', [$this->fechaInicio, $this->fechaFin]);
+                }
+            }])
+            ->orderBy('id')
+            ->paginate(30);
+
+        return $vehiculos;
+    }
 }
