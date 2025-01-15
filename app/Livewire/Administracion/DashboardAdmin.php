@@ -235,8 +235,14 @@ class DashboardAdmin extends Component
                 }
             }])
             ->orderBy('id')
-            ->paginate(30);
+            ->paginate(5);
 
         return $vehiculos;
+    }
+
+    public function cleanFiltrerVehiculos()
+    {
+        $this->fechaInicio = null;
+        $this->fechaFin = null;
     }
 }

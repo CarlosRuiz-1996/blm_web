@@ -420,7 +420,7 @@
 
                                 <div class="col-md-1">
                                     <div class="form-group" style="margin-top: 33px">
-                                        <button wire:click='cleanFiltrerCompra' class="btn btn-info btn-sm">Limpiar
+                                        <button wire:click='cleanFiltrerVehiculos' class="btn btn-info btn-sm">Limpiar
                                             Filtros</button>
                                     </div>
                                 </div>
