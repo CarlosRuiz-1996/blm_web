@@ -486,49 +486,48 @@
                                 </div>
                             </div>
                         </div>
-                        @if (count($vehiculos))
 
-                            <table class="table table-bordered table-striped table-hover mt-3">
-                                <thead class="table-info">
-                                    <tr>
-                                        <th>Serie</th>
-                                        <th>Placas</th>
-                                        <th>KM por litro</th>
-                                        <th>Combustible</th>
-                                        <th>Distancia Km</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($vehiculos as $vehiculo)
-                                        <tr>
+                        @persist('scrollbar')
 
-
-                                            <td>{{ $vehiculo->serie }}</td>
-                                            <td>{{ $vehiculo->placas }}</td>
-                                            <td>{{ $vehiculo->litro_km }}</td>
-                                            <td>
-                                                {{ $vehiculo->tipo_combustible == 1 ? 'Magna' : '' }}
-                                                {{ $vehiculo->tipo_combustible == 2 ? 'Premium' : '' }}
-                                                {{ $vehiculo->tipo_combustible == 3 ? 'Diesel' : '' }}
-                                            </td>
-                                            <td>{{ $vehiculo->kilometrosTotales($fechaInicio, $fechaFin) }}</td>
-
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                            <div class="overflow-y-scroll" wire:scroll>
+                                @if (count($vehiculos))
+                                    <table class="table table-bordered table-striped table-hover mt-3">
+                                        <thead class="table-info">
+                                            <tr>
+                                                <th>Serie</th>
+                                                <th>Placas</th>
+                                                <th>KM por litro</th>
+                                                <th>Combustible</th>
+                                                <th>Distancia Km</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($vehiculos as $vehiculo)
+                                                <tr>
 
 
+                                                    <td>{{ $vehiculo->serie }}</td>
+                                                    <td>{{ $vehiculo->placas }}</td>
+                                                    <td>{{ $vehiculo->litro_km }}</td>
+                                                    <td>
+                                                        {{ $vehiculo->tipo_combustible == 1 ? 'Magna' : '' }}
+                                                        {{ $vehiculo->tipo_combustible == 2 ? 'Premium' : '' }}
+                                                        {{ $vehiculo->tipo_combustible == 3 ? 'Diesel' : '' }}
+                                                    </td>
+                                                    <td>{{ $vehiculo->kilometrosTotales($fechaInicio, $fechaFin) }}</td>
 
-                            @persist('scrollbar')
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
 
-                            <div class="overflow-y-scroll" wire:scroll> 
 
-                                {{ $vehiculos->links() }}
+
+
+                                    {{ $vehiculos->links() }}
+                                @endif
                             </div>
-                            @endpersist
-
-                        @endif
+                        @endpersist
                     </div>
 
 
@@ -769,7 +768,5 @@
                 }
             });
         </script>
-
-       
     @endpush
 </div>
