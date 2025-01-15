@@ -520,11 +520,14 @@
 
 
 
+                            @persist('scrollbar')
 
-                            <div  wire:scroll>
+                            <div class="overflow-y-scroll" wire:scroll> 
 
                                 {{ $vehiculos->links() }}
                             </div>
+                            @endpersist
+
                         @endif
                     </div>
 
