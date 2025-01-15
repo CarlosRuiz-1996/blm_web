@@ -249,12 +249,12 @@ class DashboardAdmin extends Component
         $rutas = Ruta::query()
             ->when($this->ruta_name, function ($query) {
                 $query->whereHas('nombre', function ($q) {
-                    $q->where('name', $this->ruta_name);
+                    $q->where('name','like', '%'.$this->ruta_name.'%');
                 });
             })
             ->when($this->ruta_dia, function ($query) {
                 $query->whereHas('dia', function ($q) {
-                    $q->where('name', $this->ruta_dia);
+                    $q->where('name', 'like', '%'.$this->ruta_dia.'%');
                 });
             })
             ->orderBy('id')
@@ -271,5 +271,7 @@ class DashboardAdmin extends Component
     {
         $this->fechaInicioR = null;
         $this->fechaFinR = null;
+        $this->ruta_dia = null;
+        $this->ruta_name = null;
     }
 }
