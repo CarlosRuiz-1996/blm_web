@@ -487,9 +487,7 @@
                             </div>
                         </div>
 
-                        @persist('scrollbar')
-
-                            <div class="overflow-y-scroll" wire:scroll>
+                     
                                 @if (count($vehiculos))
                                     <table class="table table-bordered table-striped table-hover mt-3">
                                         <thead class="table-info">
@@ -524,10 +522,9 @@
 
 
 
-                                    {{ $vehiculos->links() }}
+                                    {{ $vehiculos->links(data: ['scrollTo' => false]) }}
                                 @endif
-                            </div>
-                        @endpersist
+                           
                     </div>
 
 
