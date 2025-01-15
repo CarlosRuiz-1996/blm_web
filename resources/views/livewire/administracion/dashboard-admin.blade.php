@@ -415,7 +415,7 @@
                                         {{$vehiculo->tipo_combustible==3?'Diesel':''}}
                                     </td>
                                     <td>
-                                        {{$vehiculo->km}}
+                                        {{-- {{$vehiculo->km}} --}}
                                     </td>
                                     <td>
 
