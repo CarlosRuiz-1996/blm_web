@@ -357,46 +357,43 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                        
-                                    @foreach($rutas as $ruta)
-                                    <tr>
-                                        <td>{{ $ruta->nombre->name }}</td>
-                                        <td>{{ $ruta->dia->name }}</td>
-                                        <td>{{ $ruta->kilometrosTotales($fechaInicioR, $fechaFinR) }}</td>
 
-                                        <td></td>
-                                    </tr>
+                                    @foreach ($rutas as $ruta)
+                                        <tr>
+                                            <td>{{ $ruta->nombre->name }}</td>
+                                            <td>{{ $ruta->dia->name }}</td>
+                                            <td>{{ $ruta->kilometrosTotales($fechaInicioR, $fechaFinR) }}</td>
 
-                                @endforeach
+                                            <td></td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
 
 
-                            @if ($rutas->hasPages())
-                                <div class="col-md-12 text-center">
-                                    {{ $rutas->links() }}
-                                </div>
-                            @endif
+
+                            {{ $rutas->links() }}
+
 
                         @endif
                     </div>
 
-                        <!-- Tabla de Vehículos -->
-                        
-                       
-                        <!-- Gráfica de Dona 1 - Vehículos más usados -->
-                        {{-- <div class="row">
-                            <div class="col-md-6">
-                                <h5>Vehículos más usados</h5>
-                                <canvas id="vehiculosDonaChart"></canvas>
-                            </div>
+                    <!-- Tabla de Vehículos -->
 
-                            <!-- Gráfica de Dona 2 - Kilometraje -->
-                            <div class="col-md-6">
-                                <h5>Kilometraje por Vehículo</h5>
-                                <canvas id="kmtrajeDonaChart"></canvas>
-                            </div>
-                        </div> --}}
+
+                    <!-- Gráfica de Dona 1 - Vehículos más usados -->
+                    {{-- <div class="row">
+                        <div class="col-md-6">
+                            <h5>Vehículos más usados</h5>
+                            <canvas id="vehiculosDonaChart"></canvas>
+                        </div>
+
+                        <!-- Gráfica de Dona 2 - Kilometraje -->
+                        <div class="col-md-6">
+                            <h5>Kilometraje por Vehículo</h5>
+                            <canvas id="kmtrajeDonaChart"></canvas>
+                        </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -461,7 +458,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($vehiculos as $vehiculo)
+                                    @foreach ($vehiculos as $vehiculo)
                                         <tr>
 
 
@@ -481,11 +478,9 @@
                             </table>
 
 
-                            @if ($vehiculos->hasPages())
-                                <div class="col-md-12 text-center">
-                                    {{ $vehiculos->links() }}
-                                </div>
-                            @endif
+
+                            {{ $vehiculos->links() }}
+
 
                         @endif
                     </div>
