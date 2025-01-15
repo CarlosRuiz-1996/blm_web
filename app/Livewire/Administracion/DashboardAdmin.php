@@ -241,11 +241,11 @@ class DashboardAdmin extends Component
                     $query->whereBetween('created_at', [$this->fechaInicio, $this->fechaFin]);
                 }
             }])
-            ->where('placas','like', '%'.$this->placas.'%')
-            ->where('serie','like', '%'.$this->serie.'%')
-            ->where('tipo_combustible','like', '%'.$this->tipo_combustible.'%')
+            ->where('placas','ilike', '%'.$this->placas.'%')
+            ->where('serie','ilike', '%'.$this->serie.'%')
+            ->where('tipo_combustible','ilike', '%'.$this->tipo_combustible.'%')
             ->orderBy('id')
-            ->paginate(5);
+            ->paginate(5,pageName: 'invoices-page6');
 
         return $vehiculos;
     }
@@ -268,7 +268,7 @@ class DashboardAdmin extends Component
                 });
             })
             ->orderBy('id')
-            ->paginate(5);
+            ->paginate(5, pageName: 'invoices-page7');
 
         return $rutas;
     }
