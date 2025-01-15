@@ -231,7 +231,7 @@ class DashboardAdmin extends Component
         $vehiculos = CtgVehiculos::query()
             ->with(['servicios_rutas' => function ($query) {
                 if ($this->fechaInicio && $this->fechaFin) {
-                    $query->whereBetween('fecha', [$this->fechaInicio, $this->fechaFin]);
+                    $query->whereBetween('created_at', [$this->fechaInicio, $this->fechaFin]);
                 }
             }])
             ->orderBy('id')
