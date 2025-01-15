@@ -445,13 +445,13 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="">Placas</label>
-                                    <input type="date" class="form-control w-full" wire:model.live='placas'>
+                                    <input type="text" class="form-control w-full" wire:model.live='placas'>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="">Serie</label>
-                                    <input type="date" class="form-control w-full" wire:model.live='serie'>
+                                    <input type="text" class="form-control w-full" wire:model.live='serie'>
                                 </div>
                             </div>
                             <div class="col-md-2">
