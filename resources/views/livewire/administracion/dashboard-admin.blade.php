@@ -325,8 +325,18 @@
                                     <input type="date" class="form-control w-full" wire:model.live='fechaFinR'>
                                 </div>
                             </div>
-
-
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="">Ruta</label>
+                                    <input type="text" class="form-control w-full" wire:model.live='ruta_name'>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="">Dia</label>
+                                    <input type="text" class="form-control w-full" wire:model.live='ruta_dia'>
+                                </div>
+                            </div>
 
 
                             <div class="col-md-1">

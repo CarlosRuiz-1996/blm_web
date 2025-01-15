@@ -242,10 +242,21 @@ class DashboardAdmin extends Component
 
     public $fechaInicioR;
     public $fechaFinR;
+    public $ruta_name;
+    public $ruta_dia;
     public function getRutas()
     {
         $rutas = Ruta::query()
-           
+            ->with(['nombre' => function ($query) {
+                if ($this->ruta_name) {
+                    $query->where('name', $this->ruta_name );
+                }
+            }])
+            ->with(['dia' => function ($query) {
+                if ($this->ruta_dia) {
+                    $query->where('name', $this->ruta_dia );
+                }
+            }])
             ->orderBy('id')
             ->paginate(5);
 
