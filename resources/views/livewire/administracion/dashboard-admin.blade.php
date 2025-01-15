@@ -389,7 +389,7 @@
                                 </tbody>
                             </table>
 
-                            <div id="pagination">
+                            <div wire:scroll>
 
                                 {{ $rutas->links() }}
                             </div>
@@ -521,7 +521,7 @@
 
 
 
-                            <div id="pagination">
+                            <div  wire:scroll>
 
                                 {{ $vehiculos->links() }}
                             </div>
@@ -767,18 +767,6 @@
             });
         </script>
 
-        <script>
-            document.addEventListener('livewire:load', () => {
-                Livewire.on('scrollToPagination', () => {
-                    const pagination = document.getElementById('pagination');
-                    if (pagination) {
-                        pagination.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
-        </script>
+       
     @endpush
 </div>
