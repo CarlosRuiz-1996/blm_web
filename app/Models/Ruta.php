@@ -59,7 +59,7 @@ class Ruta extends Model
     }
     public function kilometrosTotales($fechaInicio = null, $fechaFin = null)
     {
-        return $this->servicios->sum(function ($servicio) use ($fechaInicio, $fechaFin) {
+        return $this->rutaServicios->sum(function ($servicio) use ($fechaInicio, $fechaFin) {
             return $servicio->kilometrosTotales($fechaInicio, $fechaFin);
         });
     }
