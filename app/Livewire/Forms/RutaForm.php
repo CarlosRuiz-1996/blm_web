@@ -180,7 +180,6 @@ class RutaForm extends Form
     public function boveda()
     {
         
-        // dd($distancia);
         try {
              // Obtener los servicios de la ruta que no tienen status 6
                 $servicios = RutaServicio::where('ruta_id', $this->ruta->id)
@@ -199,19 +198,17 @@ class RutaForm extends Form
                         ? env('ORIGEN_SALIDA') 
                         : $ultimoServicio->direccionCompleta(); 
                     $destino = $servicioActual->direccionCompleta();
-                    // Log::info($origen .' a '.$destino);
+                    Log::info($origen .' a '.$destino);
                     $distancia = GoogleMapsHelper::calculateDistance($origen, $destino);
                     Log::info('distancia: ');
-                    // Log::info($distancia);
+                    Log::info($distancia);
 
                     // Aquí se inserta la relación entre vehículo y servicio
                     CtgVehiculosRutaServicios::create([
                         'ctg_vehiculo_id' => $vehiculo->ctg_vehiculo_id,
                         'ruta_servicio_id' => $servicio->id,
                         'km'=>$distancia['distance']
-                    ]);
-                    // $servicio->update(['km'=>$distancia['distance']]);
-                    
+                    ]);                   
                     $ultimoServicio = $servicioActual;
 
                 }

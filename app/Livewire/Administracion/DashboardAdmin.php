@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Administracion;
 
+use App\Livewire\Catalogos\Vehiculos;
 use App\Models\Cliente;
 use App\Models\CtgRutaDias;
+use App\Models\CtgVehiculos;
 use App\Models\CtgVehiculosRutaServicios;
 use App\Models\FuelPrice;
 use App\Models\Inconsistencias;
@@ -50,9 +52,10 @@ class DashboardAdmin extends Component
         $reprogramacion=$this->datosreprogramacion();
         $vehiculosservi=$this->datsovehiculosServicios();
 
+        $vehiculos = CtgVehiculos::orderBy('id')->paginate(10);
         $diasrutas = CtgRutaDias::withCount('rutasdia')->get();
         $totalderutas=Ruta::count();
-        return view('livewire.administracion.dashboard-admin',compact('diasrutas','totalderutas','recoleccionServicios','entregaServicios','resguardototal','inconsistencias','reprogramacion','vehiculosservi'));
+        return view('livewire.administracion.dashboard-admin',compact('diasrutas','totalderutas','recoleccionServicios','entregaServicios','resguardototal','inconsistencias','reprogramacion','vehiculosservi','vehiculos'));
     }
 //actulliza la informacion con el filtro del las fechas seleccionadas en la grafica
     public function updateData()

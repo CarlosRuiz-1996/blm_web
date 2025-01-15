@@ -374,6 +374,83 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark d-flex align-items-center">
+                    <h4 class="card-title">Vehiculos</h4>
+                    <i class="fas fa-chevron-up toggle-icon ml-auto" data-toggle="collapse"
+                        data-target="#collapseVehiculosReporte" aria-expanded="true"
+                        aria-controls="collapseVehiculosReporte" style="cursor: pointer;"></i>
+                </div>
+                <div id="collapseVehiculosReporte" class="collapse show">
+                    <div class="card-body">
+                        <!-- Tabla de Vehículos -->
+                        <table class="table table-bordered table-striped">
+
+                            <thead>
+                                <tr>
+                                    <th>Serie</th>
+                                    <th>Placas</th>
+                                    <th>KM por litro</th>
+                                    <th>Combustible</th>
+                                    <th>Distancia Km</th>
+                                    <th>Precio</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{-- ruta servicio --}}
+                                @forelse($vehiculos as $vehiculo)
+                                <tr>
+                                   
+                                   
+                                    <td>{{$vehiculo->serie}}</td>
+                                    <td>{{$vehiculo->placas}}</td>
+                                    <td>{{$vehiculo->litro_km}}</td>
+                                    <td>
+                                        {{$vehiculo->tipo_combustible==1?'Magna':''}}
+                                        {{$vehiculo->tipo_combustible==2?'Premium':''}}
+                                        {{$vehiculo->tipo_combustible==3?'Diesel':''}}
+                                    </td>
+                                    <td>
+                                        {{$vehiculo->km}}
+                                    </td>
+                                    <td>
+
+                                        {{-- $ {{ number_format($this->getPrice($vehiculosservicios), 2, '.', ',' )}}MXN --}}
+                                    </td>
+                                    <td>
+
+                                        {{-- {{ is_numeric($this->costo($vehiculosservicios)) ?'$'. number_format($this->costo($vehiculosservicios), 2, '.', ',') : $this->costo($vehiculosservicios) }} MXN --}}
+
+                                    </td>
+
+                                </tr>
+                                @empty
+                                <p>No hay elementos disponibles.</p>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        {{ $vehiculo->links() }}
+                        <!-- Gráfica de Dona 1 - Vehículos más usados -->
+                        {{-- <div class="row">
+                            <div class="col-md-6">
+                                <h5>Vehículos más usados</h5>
+                                <canvas id="vehiculosDonaChart"></canvas>
+                            </div>
+
+                            <!-- Gráfica de Dona 2 - Kilometraje -->
+                            <div class="col-md-6">
+                                <h5>Kilometraje por Vehículo</h5>
+                                <canvas id="kmtrajeDonaChart"></canvas>
+                            </div>
+                        </div> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 

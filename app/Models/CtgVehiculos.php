@@ -24,4 +24,6 @@ class CtgVehiculos extends Model
     {
         return $this->belongsToMany(Ruta::class, 'ruta_vehiculos', 'ctg_vehiculo_id', 'ruta_id');
     }
+    
+    // contar cuanto se ha gastado en km 
 }
