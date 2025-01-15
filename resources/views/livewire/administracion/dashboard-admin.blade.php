@@ -327,22 +327,21 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="">Ruta</label>
-                                    <select class="form-control  w-full" wire:model.live='ruta_name'>
+                                    <x-select-validadolive label="Ruta" placeholder="Seleccione" wire-model="ruta_name" required>
                                         @foreach ($ctg_ruta_name as $ctg)
-                                            <option value="{{$ctg->id}}">{{$ctg->name}}</option>
+                                            <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
                                         @endforeach
-                                    </select>
+                                    </x-select-validadolive>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="">Dia</label>
-                                    <select class="form-control  w-full" wire:model.live='ruta_dia'>
+                                  
+                                    <x-select-validadolive label="Dia" placeholder="Seleccione" wire-model="ruta_dia" required>
                                         @foreach ($ctg_ruta_dia as $ctg)
-                                            <option value="{{$ctg->id}}">{{$ctg->name}}</option>
+                                            <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
                                         @endforeach
-                                    </select>
+                                    </x-select-validadolive>
                                 </div>
                             </div>
 
