@@ -328,13 +328,21 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="">Ruta</label>
-                                    <input type="text" class="form-control w-full" wire:model.live='ruta_name'>
+                                    <select class="form-control  w-full" wire:model.live='ruta_name'>
+                                        @foreach ($ctg_ruta_name as $ctg)
+                                            <option value="{{$ctg->id}}">{{$ctg->name}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label for="">Dia</label>
-                                    <input type="text" class="form-control w-full" wire:model.live='ruta_dia'>
+                                    <select class="form-control  w-full" wire:model.live='ruta_dia'>
+                                        @foreach ($ctg_ruta_dia as $ctg)
+                                            <option value="{{$ctg->id}}">{{$ctg->name}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
 

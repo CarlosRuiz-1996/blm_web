@@ -5,6 +5,7 @@ namespace App\Livewire\Administracion;
 use App\Livewire\Catalogos\Vehiculos;
 use App\Models\Cliente;
 use App\Models\CtgRutaDias;
+use App\Models\CtgRutas;
 use App\Models\CtgVehiculos;
 use App\Models\CtgVehiculosRutaServicios;
 use App\Models\FuelPrice;
@@ -55,7 +56,9 @@ class DashboardAdmin extends Component
         $rutas = $this->getRutas();
         $diasrutas = CtgRutaDias::withCount('rutasdia')->get();
         $totalderutas = Ruta::count();
-        return view('livewire.administracion.dashboard-admin', compact('diasrutas', 'totalderutas', 'recoleccionServicios', 'entregaServicios', 'resguardototal', 'inconsistencias', 'reprogramacion', 'rutas', 'vehiculos'));
+        $ctg_ruta_dia= CtgRutaDias::all();
+        $ctg_ruta_name= CtgRutas::all();
+        return view('livewire.administracion.dashboard-admin', compact('ctg_ruta_name','ctg_ruta_dia','diasrutas', 'totalderutas', 'recoleccionServicios', 'entregaServicios', 'resguardototal', 'inconsistencias', 'reprogramacion', 'rutas', 'vehiculos'));
     }
 
     //actulliza la informacion con el filtro del las fechas seleccionadas en la grafica
@@ -249,12 +252,12 @@ class DashboardAdmin extends Component
         $rutas = Ruta::query()
             ->when($this->ruta_name, function ($query) {
                 $query->whereHas('nombre', function ($q) {
-                    $q->where('name','like', '%'.$this->ruta_name.'%');
+                    $q->where('id',$this->ruta_name);
                 });
             })
             ->when($this->ruta_dia, function ($query) {
                 $query->whereHas('dia', function ($q) {
-                    $q->where('name', 'like', '%'.$this->ruta_dia.'%');
+                    $q->where('id', $this->ruta_dia);
                 });
             })
             ->orderBy('id')
