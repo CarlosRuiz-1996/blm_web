@@ -57,4 +57,20 @@ class RutaServicio extends Model
     public function puertaHas(){
         return $this->hasOne(ServicioPuerta::class, 'ruta_servicio_id');
     }
+
+
+    public function vehiculo_servicio(){
+        return $this->hasMany(CtgVehiculosRutaServicios::class, 'ruta_servicio_id');
+    }
+
+    public function kilometrosTotales($fechaInicio = null, $fechaFin = null)
+    {
+        $query = $this->vehiculo_servicio();
+
+        if ($fechaInicio && $fechaFin) {
+            $query->whereBetween('created_at', [$fechaInicio, $fechaFin]);
+        }
+
+        return $query->sum('km');
+    }
 }
