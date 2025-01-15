@@ -44,7 +44,7 @@ class CtgVehiculos extends Model
         $query = $this->servicios_rutas();
 
         if ($fechaInicio && $fechaFin) {
-            $query->whereBetween('created_at', [$fechaInicio, $fechaFin]);
+            $query->whereBetween('fecha', [$fechaInicio, $fechaFin]);
         }
 
         return $query->sum('km');
