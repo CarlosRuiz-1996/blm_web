@@ -82,29 +82,29 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             @if ($entregaServicios->isNotEmpty())
-                            <table class="table table-bordered table-rounded table-sm text-xs">
-                                <thead class="bg-dark">
-                                    <tr>
-                                        <th>Ruta</th>
-                                        <th>Servicio</th>
-                                        <th>Monto</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($entregaServicios as $servicio)
-                                    <tr>
-                                        <td class="text-xs">{{ $servicio->ruta->nombre->name }}</td>
-                                        <td class="text-xs">{{ $servicio->servicio->ctg_servicio->descripcion }}
-                                        </td>
-                                        <td class="text-xs">{{ $servicio->monto }}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            {{ $entregaServicios->links() }}
-                            <!-- Aquí se imprime la paginación -->
+                                <table class="table table-bordered table-rounded table-sm text-xs">
+                                    <thead class="bg-dark">
+                                        <tr>
+                                            <th>Ruta</th>
+                                            <th>Servicio</th>
+                                            <th>Monto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($entregaServicios as $servicio)
+                                            <tr>
+                                                <td class="text-xs">{{ $servicio->ruta->nombre->name }}</td>
+                                                <td class="text-xs">{{ $servicio->servicio->ctg_servicio->descripcion }}
+                                                </td>
+                                                <td class="text-xs">{{ $servicio->monto }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                {{ $entregaServicios->links() }}
+                                <!-- Aquí se imprime la paginación -->
                             @else
-                            <p>No hay servicios de entrega disponibles.</p>
+                                <p>No hay servicios de entrega disponibles.</p>
                             @endif
                         </div>
                     </div>
@@ -126,29 +126,29 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             @if ($recoleccionServicios->isNotEmpty())
-                            <table class="table table-bordered table-rounded table-sm text-xs">
-                                <thead class="bg-dark">
-                                    <tr>
-                                        <th>Ruta</th>
-                                        <th>Servicio</th>
-                                        <th>Monto</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($recoleccionServicios as $servicio)
-                                    <tr>
-                                        <td class="text-xs">{{ $servicio->ruta->nombre->name }}</td>
-                                        <td class="text-xs">{{ $servicio->servicio->ctg_servicio->descripcion }}
-                                        </td>
-                                        <td class="text-xs">{{ $servicio->monto }}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            {{ $recoleccionServicios->links() }}
-                            <!-- Aquí se imprime la paginación -->
+                                <table class="table table-bordered table-rounded table-sm text-xs">
+                                    <thead class="bg-dark">
+                                        <tr>
+                                            <th>Ruta</th>
+                                            <th>Servicio</th>
+                                            <th>Monto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($recoleccionServicios as $servicio)
+                                            <tr>
+                                                <td class="text-xs">{{ $servicio->ruta->nombre->name }}</td>
+                                                <td class="text-xs">{{ $servicio->servicio->ctg_servicio->descripcion }}
+                                                </td>
+                                                <td class="text-xs">{{ $servicio->monto }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                {{ $recoleccionServicios->links() }}
+                                <!-- Aquí se imprime la paginación -->
                             @else
-                            <p>No hay servicios de recolección disponibles.</p>
+                                <p>No hay servicios de recolección disponibles.</p>
                             @endif
                         </div>
                     </div>
@@ -177,24 +177,23 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($diasrutas as $ruta)
-                                    <tr>
-                                        <td class="text-xs">{{ $ruta->name }}</td>
-                                        <td class="text-xs">{{ $ruta->rutasdia_count }}</td>
-                                        <td class="text-xs">
-                                            <div class="progress" style="position: relative;">
-                                                <div class="progress-bar" role="progressbar"
-                                                    style="width: {{ $totalderutas > 0 ? ($ruta->rutasdia_count / $totalderutas) * 100 : 0 }}%;"
-                                                    aria-valuenow="{{ $totalderutas > 0 ? ($ruta->rutasdia_count / $totalderutas) * 100 : 0 }}"
-                                                    aria-valuemin="0" aria-valuemax="100">
+                                        <tr>
+                                            <td class="text-xs">{{ $ruta->name }}</td>
+                                            <td class="text-xs">{{ $ruta->rutasdia_count }}</td>
+                                            <td class="text-xs">
+                                                <div class="progress" style="position: relative;">
+                                                    <div class="progress-bar" role="progressbar"
+                                                        style="width: {{ $totalderutas > 0 ? ($ruta->rutasdia_count / $totalderutas) * 100 : 0 }}%;"
+                                                        aria-valuenow="{{ $totalderutas > 0 ? ($ruta->rutasdia_count / $totalderutas) * 100 : 0 }}"
+                                                        aria-valuemin="0" aria-valuemax="100">
+                                                    </div>
+                                                    <span class="text-center"
+                                                        style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+                                                        {{ number_format($totalderutas > 0 ? ($ruta->rutasdia_count / $totalderutas) * 100 : 0, 2) }}%
+                                                    </span>
                                                 </div>
-                                                <span class="text-center"
-                                                    style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
-                                                    {{ number_format($totalderutas > 0 ? ($ruta->rutasdia_count /
-                                                    $totalderutas) * 100 : 0, 2) }}%
-                                                </span>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -216,28 +215,28 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             @if ($reprogramacion->isNotEmpty())
-                            <table class="table table-bordered table-rounded table-sm text-xs">
-                                <thead class="bg-dark">
-                                    <tr>
-                                        <th>Ruta Anterior</th>
-                                        <th>Ruta Actual</th>
-                                        <th>Motivo</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($reprogramacion as $repro)
-                                    <tr>
-                                        <td>{{ $repro->rutaOld->nombre->name }}</td>
-                                        <td>{{ $repro->rutaNew?->nombre->name }}</td>
-                                        <td>{{ $repro->motivo }}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            {{ $reprogramacion->links() }}
-                            <!-- Aquí se imprime la paginación -->
+                                <table class="table table-bordered table-rounded table-sm text-xs">
+                                    <thead class="bg-dark">
+                                        <tr>
+                                            <th>Ruta Anterior</th>
+                                            <th>Ruta Actual</th>
+                                            <th>Motivo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($reprogramacion as $repro)
+                                            <tr>
+                                                <td>{{ $repro->rutaOld->nombre->name }}</td>
+                                                <td>{{ $repro->rutaNew?->nombre->name }}</td>
+                                                <td>{{ $repro->motivo }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                {{ $reprogramacion->links() }}
+                                <!-- Aquí se imprime la paginación -->
                             @else
-                            <p>No hay servicios de reprogramacíon disponibles.</p>
+                                <p>No hay servicios de reprogramacíon disponibles.</p>
                             @endif
                         </div>
                     </div>
@@ -257,41 +256,41 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             @if ($inconsistencias->isNotEmpty())
-                            <table class="table table-bordered table-rounded table-sm text-xs">
-                                <thead class="bg-dark">
-                                    <tr>
-                                        <th>Cliente</th>
-                                        <th>Fecha</th>
-                                        <th>Folio</th>
-                                        <th>Imp.Indicado</th>
-                                        <th>Imp.Comprobado</th>
-                                        <th>Diferencia</th>
-                                        <th>Observaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($inconsistencias as $inco)
-                                    <tr>
-                                        <td class="text-xs">{{ $inco->cliente->razon_social }}</td>
-                                        <td class="text-xs">{{ $inco->fecha_comprobante }}</td>
-                                        <td class="text-xs">{{ $inco->folio }}</td>
-                                        <td class="text-xs">
-                                            ${{ number_format($inco->importe_indicado, 2, ',', '.') }}
-                                        </td>
-                                        <td class="text-xs">
-                                            ${{ number_format($inco->importe_comprobado, 2, ',', '.') }}
-                                        </td>
-                                        <td class="text-xs">
-                                            ${{ number_format($inco->diferencia, 2, ',', '.') }}</td>
-                                        <td class="text-xs">{{ $inco->observacion }}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            {{ $inconsistencias->links() }}
-                            <!-- Aquí se imprime la paginación -->
+                                <table class="table table-bordered table-rounded table-sm text-xs">
+                                    <thead class="bg-dark">
+                                        <tr>
+                                            <th>Cliente</th>
+                                            <th>Fecha</th>
+                                            <th>Folio</th>
+                                            <th>Imp.Indicado</th>
+                                            <th>Imp.Comprobado</th>
+                                            <th>Diferencia</th>
+                                            <th>Observaciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($inconsistencias as $inco)
+                                            <tr>
+                                                <td class="text-xs">{{ $inco->cliente->razon_social }}</td>
+                                                <td class="text-xs">{{ $inco->fecha_comprobante }}</td>
+                                                <td class="text-xs">{{ $inco->folio }}</td>
+                                                <td class="text-xs">
+                                                    ${{ number_format($inco->importe_indicado, 2, ',', '.') }}
+                                                </td>
+                                                <td class="text-xs">
+                                                    ${{ number_format($inco->importe_comprobado, 2, ',', '.') }}
+                                                </td>
+                                                <td class="text-xs">
+                                                    ${{ number_format($inco->diferencia, 2, ',', '.') }}</td>
+                                                <td class="text-xs">{{ $inco->observacion }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                {{ $inconsistencias->links() }}
+                                <!-- Aquí se imprime la paginación -->
                             @else
-                            <p>No hay Actas de diferencia disponibles.</p>
+                                <p>No hay Actas de diferencia disponibles.</p>
                             @endif
                         </div>
                     </div>
@@ -328,10 +327,10 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <x-select-validadolive label="Ruta" placeholder="Seleccione" wire-model="ruta_name"
-                                        required>
+                                    <x-select-validadolive label="Ruta" placeholder="Seleccione"
+                                        wire-model="ruta_name" required>
                                         @foreach ($ctg_ruta_name as $ctg)
-                                        <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
+                                            <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
                                         @endforeach
                                     </x-select-validadolive>
                                 </div>
@@ -339,10 +338,10 @@
                             <div class="col-md-2">
                                 <div class="form-group">
 
-                                    <x-select-validadolive label="Dia" placeholder="Seleccione" wire-model="ruta_dia"
-                                        required>
+                                    <x-select-validadolive label="Dia" placeholder="Seleccione"
+                                        wire-model="ruta_dia" required>
                                         @foreach ($ctg_ruta_dia as $ctg)
-                                        <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
+                                            <option value="{{ $ctg->id }}">{{ $ctg->name }}</option>
                                         @endforeach
                                     </x-select-validadolive>
                                 </div>
@@ -367,36 +366,37 @@
                         </div>
                         @if (count($rutas))
 
-                        <table class="table table-bordered table-striped table-hover mt-3">
-                            <thead class="table-info">
-                                <tr>
-                                    <th>Ruta</th>
-                                    <th>Día</th>
-                                    <th>Total km</th>
-                                    <th>Costo total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                            <table class="table table-bordered table-striped table-hover mt-3">
+                                <thead class="table-info">
+                                    <tr>
+                                        <th>Ruta</th>
+                                        <th>Día</th>
+                                        <th>Total km</th>
+                                        <th>Costo total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                                @foreach ($rutas as $ruta)
-                                <tr>
-                                    <td>{{ $ruta->nombre->name }}</td>
-                                    <td>{{ $ruta->dia->name }}</td>
-                                    <td>{{ $ruta->kilometrosTotales($fechaInicioR, $fechaFinR) }}</td>
+                                    @foreach ($rutas as $ruta)
+                                        <tr>
+                                            <td>{{ $ruta->nombre->name }}</td>
+                                            <td>{{ $ruta->dia->name }}</td>
+                                            <td>{{ $ruta->kilometrosTotales($fechaInicioR, $fechaFinR) }}</td>
 
 
-                                    <td>$ {{ number_format($ruta->calcularCostoTotalGasolina($fechaInicioR, $fechaFinR),
-                                        2) }}</td>
+                                            <td>$
+                                                {{ number_format($ruta->calcularCostoTotalGasolina($fechaInicioR, $fechaFinR), 2) }}
+                                            </td>
 
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
 
-                        <div wire:scroll>
+                            <div wire:scroll>
 
-                            {{ $rutas->links(data: ['scrollTo' => false]) }}
-                        </div>
+                                {{ $rutas->links(data: ['scrollTo' => false]) }}
+                            </div>
 
                         @endif
                     </div>
@@ -493,40 +493,44 @@
 
 
                         @if (count($vehiculos))
-                        <table class="table table-bordered table-striped table-hover mt-3">
-                            <thead class="table-info">
-                                <tr>
-                                    <th>Serie</th>
-                                    <th>Descripción</th>
-                                    <th>KM por litro</th>
-                                    <th>Combustible</th>
-                                    <th>Distancia Km</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($vehiculos as $vehiculo)
-                                <tr>
+                            <table class="table table-bordered table-striped table-hover mt-3">
+                                <thead class="table-info">
+                                    <tr>
+                                        <th>Serie</th>
+                                        <th>Descripción</th>
+                                        <th>KM por litro</th>
+                                        <th>Combustible</th>
+                                        <th>Distancia Km</th>
+                                        <th>Costo total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($vehiculos as $vehiculo)
+                                        <tr>
 
 
-                                    <td>{{ $vehiculo->serie }}</td>
-                                    <td>{{ $vehiculo->descripcion }}</td>
-                                    <td>{{ $vehiculo->litro_km }}</td>
-                                    <td>
-                                        {{ $vehiculo->tipo_combustible == 1 ? 'Magna' : '' }}
-                                        {{ $vehiculo->tipo_combustible == 2 ? 'Premium' : '' }}
-                                        {{ $vehiculo->tipo_combustible == 3 ? 'Diesel' : '' }}
-                                    </td>
-                                    <td>{{ $vehiculo->kilometrosTotales($fechaInicio, $fechaFin) }}</td>
+                                            <td>{{ $vehiculo->serie }}</td>
+                                            <td>{{ $vehiculo->descripcion }}</td>
+                                            <td>{{ $vehiculo->litro_km }}</td>
+                                            <td>
+                                                {{ $vehiculo->tipo_combustible == 1 ? 'Magna' : '' }}
+                                                {{ $vehiculo->tipo_combustible == 2 ? 'Premium' : '' }}
+                                                {{ $vehiculo->tipo_combustible == 3 ? 'Diesel' : '' }}
+                                            </td>
+                                            <td>{{ $vehiculo->kilometrosTotales($fechaInicio, $fechaFin) }}</td>
+                                            <td>$
+                                                {{ number_format($vehiculo->calcularCostoGasolina($fechaInicioR, $fechaFinR), 2) }}
+                                            </td>
 
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
 
 
 
 
-                        {{ $vehiculos->links(data: ['scrollTo' => false]) }}
+                            {{ $vehiculos->links(data: ['scrollTo' => false]) }}
                         @endif
 
                     </div>
@@ -541,8 +545,8 @@
 
 
     @push('js')
-    <script>
-        document.addEventListener('livewire:initialized', () => {
+        <script>
+            document.addEventListener('livewire:initialized', () => {
                 let combinedChart;
 
                 function initCombinedChart(chartType, ctx, labels, entregaData, recoleccionData) {
@@ -709,9 +713,9 @@
                         'fa-chevron-down');
                 });
             });
-    </script>
-    <script>
-        // Gráfico de Dona - Vehículos más usados
+        </script>
+        <script>
+            // Gráfico de Dona - Vehículos más usados
             var ctxVehiculos = document.getElementById('vehiculosDonaChart').getContext('2d');
             var vehiculosDonaChart = new Chart(ctxVehiculos, {
                 type: 'doughnut',
@@ -768,6 +772,6 @@
                     }
                 }
             });
-    </script>
+        </script>
     @endpush
 </div>

@@ -50,5 +50,35 @@ class CtgVehiculos extends Model
         return $query->sum('km');
     }
 
-   
+    public function calcularCostoGasolina($fechaInicio = null, $fechaFin = null)
+    {
+        $query = $this->servicios_rutas();
+
+        if ($fechaInicio && $fechaFin) {
+            $query->whereBetween('created_at', [$fechaInicio, $fechaFin]);
+        }
+
+        return $query->get()->sum(function ($vehiculoServicio) {
+
+            $type = 0;
+            switch ($this->tipo_combustible) {
+                case 1:
+                    $type = 'Magna';
+                    break;
+                case 2:
+                    $type = 'Premium';
+                    break;
+                case 3:
+                    $type = 'Diesel';
+                    break;
+            }
+
+
+            $precioGasolina = FuelPrice::where('fecha', $vehiculoServicio->created_at->toDateString())
+                ->where('type', $type)
+                ->value('price');
+
+            return ($vehiculoServicio->km / $this->litro_km) * ($precioGasolina ?? 0); // Considera precio 0 si no hay dato
+        });
+    }
 }
