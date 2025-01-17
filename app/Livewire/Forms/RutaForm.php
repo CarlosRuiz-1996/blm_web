@@ -195,7 +195,7 @@ class RutaForm extends Form
 
                     $servicioActual = Servicios::find($servicio->servicio_id);
                     $origen = $ultimoServicio === null
-                        ? env('ORIGEN_SALIDA') 
+                        ? config('services.google_maps.origen')
                         : $ultimoServicio->direccionCompleta(); 
                     $destino = $servicioActual->direccionCompleta();
                     Log::info($origen .' -a- '.$destino);
