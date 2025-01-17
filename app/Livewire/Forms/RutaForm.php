@@ -179,7 +179,7 @@ class RutaForm extends Form
 
     public function boveda()
     {
-        
+        Log::info('env salida: '.env('ORIGEN_SALIDA'));
         try {
              // Obtener los servicios de la ruta que no tienen status 6
                 $servicios = RutaServicio::where('ruta_id', $this->ruta->id)
@@ -198,7 +198,7 @@ class RutaForm extends Form
                         ? env('ORIGEN_SALIDA') 
                         : $ultimoServicio->direccionCompleta(); 
                     $destino = $servicioActual->direccionCompleta();
-                    Log::info($origen .' a '.$destino);
+                    Log::info($origen .' -a- '.$destino);
                     $distancia = GoogleMapsHelper::calculateDistance($origen, $destino);
                     Log::info('distancia: ');
                     Log::info($distancia);

@@ -385,7 +385,7 @@
                                     <td>{{ $ruta->kilometrosTotales($fechaInicioR, $fechaFinR) }}</td>
 
 
-                                    <td>{{ number_format($ruta->calcularCostoTotalGasolina($fechaInicioR, $fechaFinR),
+                                    <td>$ {{ number_format($ruta->calcularCostoTotalGasolina($fechaInicioR, $fechaFinR),
                                         2) }}</td>
 
                                 </tr>

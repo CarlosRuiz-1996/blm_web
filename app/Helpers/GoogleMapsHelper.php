@@ -3,12 +3,15 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class GoogleMapsHelper
 {
     public static function calculateDistance($origin, $destination)
     {
         $apiKey = config('services.google_maps.api_key');
+        Log::info('apiKey: '.config('services.google_maps.api_key'));
+
         $url = "https://maps.googleapis.com/maps/api/distancematrix/json";
         $response = Http::get($url, [
             'origins' => $origin,
