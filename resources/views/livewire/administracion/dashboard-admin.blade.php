@@ -383,7 +383,11 @@
                                             <td>{{ $ruta->dia->name }}</td>
                                             <td>{{ $ruta->kilometrosTotales($fechaInicioR, $fechaFinR) }}</td>
 
-                                            <td></td>
+                                            <td>
+                                                {{-- costo total por dia  --}}
+                                                <td>{{ number_format($ruta->calcularCostoTotalGasolina($fechaInicioR, $fechaFinR), 2) }}</td>
+
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -493,7 +497,7 @@
                                         <thead class="table-info">
                                             <tr>
                                                 <th>Serie</th>
-                                                <th>Placas</th>
+                                                <th>Descripción</th>
                                                 <th>KM por litro</th>
                                                 <th>Combustible</th>
                                                 <th>Distancia Km</th>
@@ -505,7 +509,7 @@
 
 
                                                     <td>{{ $vehiculo->serie }}</td>
-                                                    <td>{{ $vehiculo->placas }}</td>
+                                                    <td>{{ $vehiculo->descripcion }}</td>
                                                     <td>{{ $vehiculo->litro_km }}</td>
                                                     <td>
                                                         {{ $vehiculo->tipo_combustible == 1 ? 'Magna' : '' }}

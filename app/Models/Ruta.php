@@ -64,5 +64,11 @@ class Ruta extends Model
         });
     }
     
-   
+    public function calcularCostoTotalGasolina($fechaInicio = null, $fechaFin = null)
+    {
+        return $this->rutaServicios->sum(function ($servicio) use ($fechaInicio, $fechaFin) {
+            return $servicio->calcularCostoGasolina($fechaInicio, $fechaFin);
+        });
+    }
+    
 }

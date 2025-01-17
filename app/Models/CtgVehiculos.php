@@ -49,4 +49,14 @@ class CtgVehiculos extends Model
 
         return $query->sum('km');
     }
+
+    public function getTipoCombustibleLabelAttribute()
+    {
+        return match ($this->tipo_combustible) {
+            1 => 'Magna',
+            2 => 'Premium',
+            3 => 'Diesel',
+            default => 'Unknown',
+        };
+    }
 }
