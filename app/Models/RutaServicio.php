@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class RutaServicio extends Model
 {
@@ -93,11 +94,21 @@ class RutaServicio extends Model
         }
 
         return $query->get()->sum(function ($vehiculoServicio) {
+
+            Log::info($vehiculoServicio);
+            $type=0;
+            switch ($vehiculoServicio->vehiculoRuta->tipo_combustible){
+                case 1: $type = 'Magna';break;
+                case 2: $type = 'Premium';break;
+                case 3: $type = 'Diesel';break;
+            }
+
+          
             $precioGasolina = FuelPrice::where('fecha', $vehiculoServicio->created_at->toDateString())
-                ->where('type', $vehiculoServicio->vehiculoRuta->tipo_combustible)
+                ->where('type', $type)
                 ->value('price');
 
-            return $vehiculoServicio->km * ($precioGasolina ?? 0); // Considera precio 0 si no hay dato
+            return ($vehiculoServicio->km/$vehiculoServicio->vehiculoRuta->litro_km) * ($precioGasolina ?? 0); // Considera precio 0 si no hay dato
         });
     }
 }
