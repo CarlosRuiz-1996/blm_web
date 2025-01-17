@@ -185,7 +185,7 @@ class DashboardAdmin extends Component
   
     public $fechaInicio;
     public $fechaFin;
-    public $placas;
+    public $descripcion;
     
     public $serie;
     public $tipo_combustible;
@@ -197,7 +197,7 @@ class DashboardAdmin extends Component
                     $query->whereBetween('created_at', [$this->fechaInicio, $this->fechaFin]);
                 }
             }])
-            ->where('placas','ilike', '%'.$this->placas.'%')
+            ->where('descripcion','ilike', '%'.$this->descripcion.'%')
             ->where('serie','ilike', '%'.$this->serie.'%')
             ->where('tipo_combustible','ilike', '%'.$this->tipo_combustible.'%')
             ->orderBy('id')
@@ -232,7 +232,7 @@ class DashboardAdmin extends Component
     {
         $this->fechaInicio = null;
         $this->fechaFin = null;
-        $this->placas = null;
+        $this->descripcion = null;
         $this->serie = null;
         $this->tipo_combustible = null;
     }

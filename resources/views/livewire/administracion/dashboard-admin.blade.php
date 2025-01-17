@@ -450,8 +450,8 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="">Placas</label>
-                                    <input type="text" class="form-control w-full" wire:model.live='placas'>
+                                    <label for="">Descripción</label>
+                                    <input type="text" class="form-control w-full" wire:model.live='descripcion'>
                                 </div>
                             </div>
                             <div class="col-md-2">
