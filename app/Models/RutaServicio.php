@@ -94,7 +94,7 @@ class RutaServicio extends Model
 
         return $query->get()->sum(function ($vehiculoServicio) {
             $precioGasolina = FuelPrice::where('fecha', $vehiculoServicio->created_at->toDateString())
-                ->where('type', $vehiculoServicio->vehiculo->tipo_combustible)
+                ->where('type', $vehiculoServicio->vehiculoRuta->tipo_combustible)
                 ->value('price');
 
             return $vehiculoServicio->km * ($precioGasolina ?? 0); // Considera precio 0 si no hay dato
